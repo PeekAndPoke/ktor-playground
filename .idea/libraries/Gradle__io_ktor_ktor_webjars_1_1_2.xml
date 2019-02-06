@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: io.ktor:ktor-webjars:1.1.2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-webjars/1.1.2/244f32d698a713b411dc308266d02816ffac5944/ktor-webjars-1.1.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-webjars/1.1.2/79f21acf7793512fdd8d823c0ce586ea658404c0/ktor-webjars-1.1.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
