@@ -4,8 +4,7 @@ import com.arangodb.ArangoDB
 import com.arangodb.VelocyJack
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.peekandpoke.karango.Db
-import de.peekandpoke.karango.query.IN
-import de.peekandpoke.karango.query.REGEX
+import de.peekandpoke.karango.query.CONTAINS
 import kotlin.system.measureTimeMillis
 
 fun main() {
@@ -47,24 +46,26 @@ fun main() {
 
             val result = db.query {
 
-                FOR(Persons) { t ->
+                val x = LET("x") { "Karsten" }
+                
+                FOR(Persons) { person ->
 
-                    FILTER { t.name IN arrayOf("Eddi", "Karsten") }
-                    FILTER { t.name REGEX "^Ka.*$" }
+                    FILTER { person.name CONTAINS x }
+//                    FILTER { t.name IN arrayOf("Eddi", "Karsten") }
+//                    FILTER { t.name REGEX "^Ka.*$" }
 
-//                    FOR(Addresses) { a ->
-//                        SORT { a.city.ASC() }
-//                        FILTER { t.city.EQ(a.city) }
+//                    FOR(Addresses) { address ->
+//                        SORT { address.city.ASC }
+//                        FILTER { person.city EQ address.city }
 //                    }
 
-                    LIMIT(0, 10)
-                    RETURN()
+                    LIMIT(0, 1000)
+                    RETURN(person)
                 }
 
             }
 
             result.forEach { println(it) }
-
         }
 
         println("fetchAll took $timeAll ms\n\n")

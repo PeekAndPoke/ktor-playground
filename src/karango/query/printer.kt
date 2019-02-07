@@ -1,6 +1,7 @@
 package de.peekandpoke.karango.query
 
-import de.peekandpoke.karango.Column
+import de.peekandpoke.karango.Named
+import de.peekandpoke.karango.Statement
 
 class QueryPrinter {
 
@@ -10,13 +11,15 @@ class QueryPrinter {
     private val queryVars = mutableMapOf<String, Any>()
 
     private var indent = ""
-    private var newLine = true;
+    private var newLine = true
 
     fun build() = Result(stringBuilder.toString(), queryVars)
 
-    fun value(column: Column<*>, value: Any) = apply {
+    fun value(named: Named<*>, value: Any) = value(named.getQueryName().replace(".", "__"), value)
 
-        val key = column.fqn.replace(".", "__") + "_" + (queryVars.size + 1)
+    fun value(name: String, value: Any) = apply {
+
+        val key = name + "_" + (queryVars.size + 1)
 
         append("@$key")
         queryVars[key] = value
@@ -29,12 +32,12 @@ class QueryPrinter {
             newLine = false
         }
 
-        stringBuilder.append(str);
+        stringBuilder.append(str)
     }
 
-    fun append(expression: Expression) = apply { expression.print(this) }
+    fun append(statement: Statement) = apply { statement.print(this) }
 
-    fun appendAll(all: List<Expression>) = apply { all.forEach { append(it) }}
+    fun appendAll(all: List<Statement>) = apply { all.forEach { append(it) } }
 
     fun appendLine(str: String = "") = apply {
         append(str)

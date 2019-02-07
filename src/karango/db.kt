@@ -8,41 +8,35 @@ import com.arangodb.model.AqlQueryOptions
 import com.arangodb.model.CollectionCreateOptions
 import com.arangodb.model.DocumentCreateOptions
 import de.peekandpoke.karango.query.ForLoopBuilder
-import de.peekandpoke.karango.query.ReturnType
 import de.peekandpoke.karango.query.RootBuilder
-import kotlin.reflect.KClass
 
 class Db(private val database: ArangoDatabase) {
 
     fun <T : Entity, D : EntityCollectionDef<T>> collection(def: D): Collection<T, D> {
 
-        val coll = database.collection(def.getCollectionName());
+        val name = def.getRealName()
+        val coll = database.collection(name)
 
         if (!coll.exists()) {
-            database.createCollection(
-                def.getCollectionName(),
-                CollectionCreateOptions().type(CollectionType.DOCUMENT)
-            )
+            database.createCollection(name, CollectionCreateOptions().type(CollectionType.DOCUMENT))
         }
 
-        return Collection(this, database.collection(def.getCollectionName()), def)
+        return Collection(this, database.collection(name), def)
     }
 
     fun <T : Edge, D : EdgeCollectionDef<T>> edgeCollection(def: D): Collection<T, D> {
 
-        val coll = database.collection(def.getCollectionName());
+        val name = def.getRealName()
+        val coll = database.collection(name)
 
         if (!coll.exists()) {
-            database.createCollection(
-                def.getCollectionName(),
-                CollectionCreateOptions().type(CollectionType.EDGES)
-            )
+            database.createCollection(name, CollectionCreateOptions().type(CollectionType.EDGES))
         }
 
-        return Collection(this, database.collection(def.getCollectionName()), def)
+        return Collection(this, database.collection(name), def)
     }
 
-    fun <T : Any> query(builder: RootBuilder.() -> ReturnType<T>): ArangoCursor<T> {
+    fun <T> query(builder: RootBuilder.() -> Iteratable<T>): ArangoCursor<T> {
 
         val query = de.peekandpoke.karango.query.query(builder)
 
@@ -50,13 +44,14 @@ class Db(private val database: ArangoDatabase) {
 
         val options = AqlQueryOptions().count(true)
 
-        return database.query(query.query, query.vars, options, query.returnType.type)
+        return database.query(query.query, query.vars, options, query.returnType)
     }
 }
 
 @Suppress("unused")
-class Column<T>(private val coll: CollectionDef<*>, private val name: String) {
-    val fqn: String get() = "${coll.fqn}.$name"
+class Column<T>(private val coll: CollectionDef<*>, private val name: String) : Named<T> {
+    override fun getRealName() = name
+    override fun getQueryName() = "${coll.getQueryName()}.$name"
 }
 
 @Suppress("PropertyName")
@@ -70,23 +65,23 @@ interface Edge : Entity {
     val _to: String
 }
 
-interface CollectionDef<T: Any> {
-    val stores: KClass<T>
-    val fqn: String get() = "t_${getCollectionName()}"
-
-    fun getCollectionName(): String
+interface CollectionDef<T> : Iteratable<T> {
     
     fun string(name: String) = Column<String>(this, name)
     fun number(name: String) = Column<Number>(this, name)
     fun <T> array(name: String) = Column<List<T>>(this, name)
 }
 
-abstract class EntityCollectionDef<T : Entity>(private val name: String, override val stores: KClass<T>) : CollectionDef<T> {
-    override fun getCollectionName(): String = name
+abstract class EntityCollectionDef<T : Entity>(private val name: String, private val type: Class<T>) : CollectionDef<T> {
+    override fun getRealName() = name
+    override fun getQueryName() = "c_$name"
+    override fun getReturnType() = type
 }
 
-abstract class EdgeCollectionDef<T : Entity>(private val name: String, override val stores: KClass<T>) : CollectionDef<T> {
-    override fun getCollectionName(): String = name
+abstract class EdgeCollectionDef<T : Edge>(private val name: String, private val type: Class<T>) : CollectionDef<T> {
+    override fun getRealName() = name
+    override fun getQueryName() = "e_$name"
+    override fun getReturnType() = type
 }
 
 class Collection<T : Entity, D : CollectionDef<T>> internal constructor(
@@ -96,11 +91,11 @@ class Collection<T : Entity, D : CollectionDef<T>> internal constructor(
 ) {
     fun save(obj: T): T = dbColl.insertDocument(obj, DocumentCreateOptions().returnNew(true)).new
 
-    fun fetch(builder: ForLoopBuilder<T, D>.(D) -> Unit) =
+    fun fetch(builder: ForLoopBuilder<T>.(D) -> Unit) =
         db.query {
-            FOR(def) {
-                builder(def)
-                RETURN()
+            FOR(def) { t ->
+                builder(t)
+                RETURN(t)
             }
         }
 

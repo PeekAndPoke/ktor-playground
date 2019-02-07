@@ -6,7 +6,7 @@ import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.EntityCollectionDef
 
 
-object Movies : EntityCollectionDef<Movie>("movies", Movie::class) {
+object Movies : EntityCollectionDef<Movie>("movies", Movie::class.java) {
     val _id = string("_id")
     val _key = string("_key")
     val title = string("city")
@@ -22,7 +22,7 @@ data class Movie(
     val tagline: String
 ) : Entity
 
-object Actors : EntityCollectionDef<Actor>("actors", Actor::class) {
+object Actors : EntityCollectionDef<Actor>("actors", Actor::class.java) {
     val _id = string("_id")
     val _key = string("_key")
     val name = string("name")   
@@ -36,7 +36,7 @@ data class Actor(
     val born: Int
 ) : Entity
 
-object ActsInEdges : EdgeCollectionDef<ActsIn>("actsIn", ActsIn::class) {
+object ActsInEdges : EdgeCollectionDef<ActsIn>("actsIn", ActsIn::class.java) {
     val _id = string("_id")
     val _from = string("_from")
     val _to = string("_to")

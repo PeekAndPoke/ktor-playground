@@ -6,7 +6,7 @@ import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
-object TestDef : EntityCollectionDef<TestData>("test", TestData::class) {
+object TestDef : EntityCollectionDef<TestData>("test", TestData::class.java) {
     val name = string("name")
 }
 
@@ -30,52 +30,52 @@ class QueryBuilderSpec : StringSpec({
                 FILTER { t.name NOT_IN listOf("V_NOT_IN") }
                 FILTER { t.name LIKE "V_LIKE" }
                 FILTER { t.name REGEX "V_REGEX" }
-                RETURN()
+                RETURN(t)
             }
         }
 
         assertSoftly {
 
-            query.query.shouldContain("FOR t_test IN test")
-            query.query.shouldContain("FILTER t_test.name == @t_test__name_1")
-            query.query.shouldContain("FILTER t_test.name != @t_test__name_2")
-            query.query.shouldContain("FILTER t_test.name > @t_test__name_3")
-            query.query.shouldContain("FILTER t_test.name >= @t_test__name_4")
-            query.query.shouldContain("FILTER t_test.name < @t_test__name_5")
-            query.query.shouldContain("FILTER t_test.name <= @t_test__name_6")
-            query.query.shouldContain("FILTER t_test.name IN @t_test__name_7")
-            query.query.shouldContain("FILTER t_test.name NOT IN @t_test__name_8")
-            query.query.shouldContain("FILTER t_test.name LIKE @t_test__name_9")
-            query.query.shouldContain("FILTER t_test.name =~ @t_test__name_10")
+            query.query.shouldContain("FOR c_test IN test")
+            query.query.shouldContain("FILTER c_test.name == @c_test__name_1")
+            query.query.shouldContain("FILTER c_test.name != @c_test__name_2")
+            query.query.shouldContain("FILTER c_test.name > @c_test__name_3")
+            query.query.shouldContain("FILTER c_test.name >= @c_test__name_4")
+            query.query.shouldContain("FILTER c_test.name < @c_test__name_5")
+            query.query.shouldContain("FILTER c_test.name <= @c_test__name_6")
+            query.query.shouldContain("FILTER c_test.name IN @c_test__name_7")
+            query.query.shouldContain("FILTER c_test.name NOT IN @c_test__name_8")
+            query.query.shouldContain("FILTER c_test.name LIKE @c_test__name_9")
+            query.query.shouldContain("FILTER c_test.name =~ @c_test__name_10")
 
             query.query.shouldBe(
-                """|FOR t_test IN test
-                   |    FILTER t_test.name == @t_test__name_1
-                   |    FILTER t_test.name != @t_test__name_2
-                   |    FILTER t_test.name > @t_test__name_3
-                   |    FILTER t_test.name >= @t_test__name_4
-                   |    FILTER t_test.name < @t_test__name_5
-                   |    FILTER t_test.name <= @t_test__name_6
-                   |    FILTER t_test.name IN @t_test__name_7
-                   |    FILTER t_test.name NOT IN @t_test__name_8
-                   |    FILTER t_test.name LIKE @t_test__name_9
-                   |    FILTER t_test.name =~ @t_test__name_10
-                   |    RETURN t_test
+                """|FOR c_test IN test
+                   |    FILTER c_test.name == @c_test__name_1
+                   |    FILTER c_test.name != @c_test__name_2
+                   |    FILTER c_test.name > @c_test__name_3
+                   |    FILTER c_test.name >= @c_test__name_4
+                   |    FILTER c_test.name < @c_test__name_5
+                   |    FILTER c_test.name <= @c_test__name_6
+                   |    FILTER c_test.name IN @c_test__name_7
+                   |    FILTER c_test.name NOT IN @c_test__name_8
+                   |    FILTER c_test.name LIKE @c_test__name_9
+                   |    FILTER c_test.name =~ @c_test__name_10
+                   |    RETURN c_test
                    |
                 """.trimMargin()
             )
 
             query.vars.shouldBe(mapOf(
-                "t_test__name_1" to "V_EQ",
-                "t_test__name_2" to "V_NE",
-                "t_test__name_3" to "V_GT",
-                "t_test__name_4" to "V_GTE",
-                "t_test__name_5" to "V_LT",
-                "t_test__name_6" to "V_LTE",
-                "t_test__name_7" to listOf("V_IN"),
-                "t_test__name_8" to listOf("V_NOT_IN"),
-                "t_test__name_9" to "V_LIKE",
-                "t_test__name_10" to "V_REGEX"
+                "c_test__name_1" to "V_EQ",
+                "c_test__name_2" to "V_NE",
+                "c_test__name_3" to "V_GT",
+                "c_test__name_4" to "V_GTE",
+                "c_test__name_5" to "V_LT",
+                "c_test__name_6" to "V_LTE",
+                "c_test__name_7" to listOf("V_IN"),
+                "c_test__name_8" to listOf("V_NOT_IN"),
+                "c_test__name_9" to "V_LIKE",
+                "c_test__name_10" to "V_REGEX"
             ))
         }
     }

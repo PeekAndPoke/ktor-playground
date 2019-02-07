@@ -1,6 +1,8 @@
 package de.peekandpoke.karango.query
 
-internal data class OffsetAndLimit(val offset: Int, val limit: Int) : Expression {
+import de.peekandpoke.karango.Statement
+
+internal data class OffsetAndLimit(val offset: Int, val limit: Int) : Statement {
     override fun print(printer: QueryPrinter) {
         printer.append("$offset, $limit")
     }

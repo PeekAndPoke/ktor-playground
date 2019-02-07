@@ -3,7 +3,7 @@ package de.peekandpoke
 import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.EntityCollectionDef
 
-object Persons : EntityCollectionDef<Person>("persons", Person::class) {
+object Persons : EntityCollectionDef<Person>("persons", Person::class.java) {
     val name = string("name")
     val nr = number("nr")
     val city = string("city")
@@ -19,7 +19,7 @@ data class Person(
     val books: List<String> = listOf()
 ) : Entity
 
-object Addresses : EntityCollectionDef<Address>("addresses", Address::class) {
+object Addresses : EntityCollectionDef<Address>("addresses", Address::class.java) {
     val city = string("city")
 }
 

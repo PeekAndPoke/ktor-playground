@@ -8,6 +8,9 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.peekandpoke.karango.Db
 import kotlin.system.exitProcess
 
+/**
+ * See https://docs.arangodb.com/3.4/Cookbook/Graph/ExampleActorsAndMovies.html
+ */
 fun main() {
 
     val velocyJack = VelocyJack().apply { configure { mapper -> mapper.registerModule(KotlinModule()) } }

@@ -1,26 +1,23 @@
 package de.peekandpoke.karango.query
 
 import de.peekandpoke.karango.Column
+import de.peekandpoke.karango.Statement
 
-interface Sort : Expression {
+interface Sort : Statement {
 
     enum class Direction(val op: String) {
-        asc("ASC"),
-        desc("DESC"),
-    }
-
-    companion object {
-        fun asc(column: Column<*>): Sort = SortBy(column, Direction.asc)
-        fun desc(column: Column<*>): Sort = SortBy(column, Direction.desc)
+        ASC("ASC"),
+        DESC("DESC"),
     }
 }
+
+val <T> Column<T>.ASC: Sort get() = SortBy(this, Sort.Direction.ASC)
+val <T> Column<T>.DESC: Sort get() = SortBy(this, Sort.Direction.DESC)
 
 internal data class SortBy(val column: Column<*>, val direction: Sort.Direction) : Sort {
     override fun print(printer: QueryPrinter) {
-        printer.append("${column.fqn} $direction")
+        printer.append("${column.getQueryName()} ${direction.op}")
     }
 }
 
-fun <T> Column<T>.ASC(): Sort = Sort.asc(this)
-fun <T> Column<T>.desc(): Sort = Sort.desc(this)
 
