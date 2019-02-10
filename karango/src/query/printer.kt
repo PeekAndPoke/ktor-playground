@@ -1,6 +1,6 @@
 package de.peekandpoke.karango.query
 
-import de.peekandpoke.karango.Named
+import de.peekandpoke.karango.NamedType
 import de.peekandpoke.karango.Statement
 
 class QueryPrinter {
@@ -15,7 +15,7 @@ class QueryPrinter {
 
     fun build() = Result(stringBuilder.toString(), queryVars)
 
-    fun value(named: Named<*>, value: Any) = value(named.getQueryName().replace(".", "__"), value)
+    fun value(named: NamedType<*>, value: Any) = value(named.getQueryName().replace(".", "__"), value)
 
     fun value(name: String, value: Any) = apply {
 

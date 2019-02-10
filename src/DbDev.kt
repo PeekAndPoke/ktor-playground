@@ -1,14 +1,65 @@
 package de.peekandpoke
 
+import arrow.optics.optics
 import com.arangodb.ArangoDB
 import com.arangodb.VelocyJack
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import de.peekandpoke.domain.PersonCollection
+import de.peekandpoke.domain.address
+import de.peekandpoke.domain.city
+import de.peekandpoke.domain.name
 import de.peekandpoke.karango.Db
-import de.peekandpoke.karango.query.CONTAINS
+import de.peekandpoke.karango.configure
+import de.peekandpoke.karango.query.EQ
+import de.peekandpoke.karango.query.query
 import kotlin.system.measureTimeMillis
+
+
+fun x() {
+
+    println(PersonCollection.name.getPath())
+    println(PersonCollection.address.city.getPath())
+
+    val q = query {
+        FOR(PersonCollection) { p ->
+            FILTER { p.address.city EQ "Karsten" }
+            RETURN(p)
+        }
+    }
+
+    println(q)
+}
+
+
+@optics
+data class MyClass1(
+    val name: String,
+    val address: Address2
+) {
+    companion object
+}
+
+@optics
+data class MyClass2(
+    val name: String,
+    val address: Address2
+) {
+    companion object
+}
+
+@optics
+data class Address2(val city: String, val street: String) {
+    companion object
+}
+
 
 fun main() {
 
+//    x()
+    y()
+}
+
+fun y() {
     val velocyJack = VelocyJack().apply { configure { mapper -> mapper.registerModule(KotlinModule()) } }
     val arango = ArangoDB.Builder()
         .serializer(velocyJack)
@@ -22,35 +73,55 @@ fun main() {
 
     val db = Db(arango.db("kotlindev"))
 
-    val persons = db.collection(Persons)
-    val addresses = db.collection(Addresses)
+    val persons = db.collection(PersonCollection)
+//    val addresses = db.collection(Address.)
 
-//    println(addresses.insert(Address(null, "Leipzig")))
-//    println(addresses.insert(Address(null, "Dresden")))
+
+//    persons.removeAll()
 //
-//    personCol.removeAll()
+//    val personInserts = (1..1000).map { i ->
 //
-//    for (i in 1..100000) {
+//        val address = when {
+//            i % 3 == 0 -> Address("Leipzig")
+//            i % 3 == 1 -> Address("Dresden")
+//            else -> Address("irgendwo")
+//        }
 //
-//        personCol.insert(Person("Greta", i))
-//        personCol.insert(Person("Nadin", i))
-//        personCol.insert(Person("Karsten", i))
-//        personCol.insert(Person("Eddi", i))
+//        listOf(
+//            Person("Greta", i, address),
+//            Person("Nadin", i, address),
+//            Person("Karsten", i, address),
+//            Person("Eddi", i, address)
+//        )
+//    }.flatten()
+//
+//    
+//    val insertTime = measureTimeMillis {
+//        val numInserted = persons.bulkInsert(personInserts)
+//        println("Inserted $numInserted")
 //    }
-
+//
+//    println("Insertion took $insertTime ms")
+    
     // warm up (establish connection)
     persons.fetch { LIMIT(1) }.forEach { }
 
+    PersonCollection.name.configure("TEST")
+    
+    println(PersonCollection.configurations)
+    
+    
     for (y in 1..1) {
         val timeAll = measureTimeMillis {
 
             val result = db.query {
 
                 val x = LET("x") { "Karsten" }
-                
-                FOR(Persons) { person ->
 
-                    FILTER { person.name CONTAINS x }
+                FOR(PersonCollection) { person ->
+
+                    FILTER { person.name EQ "Karsten" }
+                    FILTER { person.address.city EQ "Leipzig" }
 //                    FILTER { t.name IN arrayOf("Eddi", "Karsten") }
 //                    FILTER { t.name REGEX "^Ka.*$" }
 
@@ -59,7 +130,7 @@ fun main() {
 //                        FILTER { person.city EQ address.city }
 //                    }
 
-                    LIMIT(0, 1000)
+                    LIMIT(0, 10)
                     RETURN(person)
                 }
 

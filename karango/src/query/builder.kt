@@ -4,7 +4,7 @@ import de.peekandpoke.karango.*
 
 data class TypedQuery<T>(val query: String, val vars: Map<String, Any>, val returnType: Class<T>)
 
-fun <T> query(builder: RootBuilder.() -> Iteratable<T>): TypedQuery<T> {
+fun <T> query(builder: RootBuilder.() -> IterableType<T>): TypedQuery<T> {
 
     val root = RootBuilder()
     val returnType = root.builder()
@@ -29,9 +29,9 @@ class RootBuilder internal constructor() : Statement {
         return result
     }
 
-    fun <T, D : Iteratable<T>> FOR(col: D, builder: ForLoopBuilder<T>.(D) -> Iteratable<T>): Iteratable<T> {
+    fun <T, D : IterableType<T>> FOR(col: D, builder: ForLoopBuilder<T>.(D) -> IterableType<T>): IterableType<T> {
 
-        val forLoop = ForLoopBuilder<T>(col.getRealName(), col.getQueryName())
+        val forLoop = ForLoopBuilder<T>(col.getSimpleName(), col.getQueryName())
         val returnType = forLoop.builder(col)
 
         stmts.add(forLoop)
@@ -44,13 +44,13 @@ class RootBuilder internal constructor() : Statement {
     }
 }
 
-class Let<T>(private val name: String, private val value: T) : Statement, Named<T> {
+class Let<T>(private val name: String, private val value: T) : Statement, NamedType<T> {
 
-    override fun getRealName() = name
+    override fun getSimpleName() = name
     override fun getQueryName() = "l_$name"
 
     override fun print(printer: QueryPrinter) {
-        printer.append("LET ${getQueryName()} = ").value(getRealName(), value as Any).appendLine()
+        printer.append("LET ${getQueryName()} = ").value(getSimpleName(), value as Any).appendLine()
     }
 }
 
@@ -74,9 +74,9 @@ class ForLoopBuilder<T> internal constructor(private val name : String, private 
         stmts.add(Op("SORT", builder()))
     }
 
-    fun <TO, DO : Iteratable<TO>> FOR(col: DO, builder: ForLoopBuilder<TO>.(DO) -> Unit) = apply {
+    fun <TO, DO : IterableType<TO>> FOR(col: DO, builder: ForLoopBuilder<TO>.(DO) -> Unit) = apply {
         stmts.add(
-            ForLoopBuilder<TO>(col.getRealName(), col.getQueryName()).apply { builder(col) }
+            ForLoopBuilder<TO>(col.getSimpleName(), col.getQueryName()).apply { builder(col) }
         )
     }
 
@@ -88,7 +88,7 @@ class ForLoopBuilder<T> internal constructor(private val name : String, private 
         stmts.add(Op("LIMIT", OffsetAndLimit(offset, limit)))
     }
 
-    fun RETURN(iterable: Iteratable<T>): Iteratable<T> {
+    fun RETURN(iterable: IterableType<T>): IterableType<T> {
         stmts.add(Op("RETURN", Name(fqn)))
 
         return iterable

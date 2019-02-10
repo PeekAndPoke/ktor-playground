@@ -12,9 +12,9 @@ import de.peekandpoke.karango.query.RootBuilder
 
 class Db(private val database: ArangoDatabase) {
 
-    fun <T : Entity, D : EntityCollectionDef<T>> collection(def: D): Collection<T, D> {
+    fun <T : Entity, D : EntityCollectionDefinition<T>> collection(def: D): Collection<T, D> {
 
-        val name = def.getRealName()
+        val name = def.getSimpleName()
         val coll = database.collection(name)
 
         if (!coll.exists()) {
@@ -24,9 +24,9 @@ class Db(private val database: ArangoDatabase) {
         return Collection(this, database.collection(name), def)
     }
 
-    fun <T : Edge, D : EdgeCollectionDef<T>> edgeCollection(def: D): Collection<T, D> {
+    fun <T : Edge, D : EdgeCollectionDefinition<T>> edgeCollection(def: D): Collection<T, D> {
 
-        val name = def.getRealName()
+        val name = def.getSimpleName()
         val coll = database.collection(name)
 
         if (!coll.exists()) {
@@ -36,7 +36,7 @@ class Db(private val database: ArangoDatabase) {
         return Collection(this, database.collection(name), def)
     }
 
-    fun <T> query(builder: RootBuilder.() -> Iteratable<T>): ArangoCursor<T> {
+    fun <T> query(builder: RootBuilder.() -> IterableType<T>): ArangoCursor<T> {
 
         val query = de.peekandpoke.karango.query.query(builder)
 
@@ -48,15 +48,9 @@ class Db(private val database: ArangoDatabase) {
     }
 }
 
-@Suppress("unused")
-class Column<T>(private val coll: CollectionDef<*>, private val name: String) : Named<T> {
-    override fun getRealName() = name
-    override fun getQueryName() = "${coll.getQueryName()}.$name"
-}
-
 @Suppress("PropertyName")
 interface Entity {
-    val _id: String?
+    val _id: String
 }
 
 @Suppress("PropertyName")
@@ -65,31 +59,49 @@ interface Edge : Entity {
     val _to: String
 }
 
-interface CollectionDef<T> : Iteratable<T> {
-    
-    fun string(name: String) = Column<String>(this, name)
-    fun number(name: String) = Column<Number>(this, name)
-    fun <T> array(name: String) = Column<List<T>>(this, name)
+@Suppress("PropertyName")
+interface WithKey {
+    val _key: String
 }
 
-abstract class EntityCollectionDef<T : Entity>(private val name: String, private val type: Class<T>) : CollectionDef<T> {
-    override fun getRealName() = name
-    override fun getQueryName() = "c_$name"
-    override fun getReturnType() = type
+@Suppress("PropertyName")
+interface WithRev {
+    val _rev: String
 }
 
-abstract class EdgeCollectionDef<T : Edge>(private val name: String, private val type: Class<T>) : CollectionDef<T> {
-    override fun getRealName() = name
-    override fun getQueryName() = "e_$name"
-    override fun getReturnType() = type
-}
+val String.asKey get() = if (contains('/')) split('/')[1] else this
 
-class Collection<T : Entity, D : CollectionDef<T>> internal constructor(
+class Collection<T : Entity, D : IterableType<T>> internal constructor(
     private val db: Db,
     private val dbColl: ArangoCollection,
     private val def: D
 ) {
-    fun save(obj: T): T = dbColl.insertDocument(obj, DocumentCreateOptions().returnNew(true)).new
+
+    /**
+     * Get document by _id or _key
+     */
+    fun get(idOrKey: String): T? = getAs(idOrKey, def.getReturnType())
+
+    /**
+     * Get document by _id or _key as the given type
+     */
+    fun <X> getAs(idOrKey: String, type: Class<X>): X? = dbColl.getDocument(idOrKey.asKey, type)
+
+    fun save(obj: T): T = dbColl.insertDocument(
+        obj,
+        DocumentCreateOptions()
+            .returnNew(true)
+            .overwrite(true)
+    ).new
+
+    fun bulkInsert(objs: List<T>) = dbColl.insertDocuments(
+        objs,
+        DocumentCreateOptions()
+            .waitForSync(false)
+            .overwrite(true)
+            .returnNew(false)
+            .returnOld(false)
+    ).documents.size
 
     fun fetch(builder: ForLoopBuilder<T>.(D) -> Unit) =
         db.query {

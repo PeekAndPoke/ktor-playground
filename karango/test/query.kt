@@ -1,25 +1,20 @@
 package de.peekandpoke.karango
 
 import de.peekandpoke.karango.query.*
+import de.peekandpoke.karango.testdomain.TestDataCollection
+import de.peekandpoke.karango.testdomain.name
 import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
-object TestDef : EntityCollectionDef<TestData>("test", TestData::class.java) {
-    val name = string("name")
-}
-
-data class TestData(
-    override val _id: String? = null
-) : Entity
 
 class QueryBuilderSpec : StringSpec({
 
     "Filter operators must be applied correctly" {
 
         val query = query {
-            FOR(TestDef) { t ->
+            FOR(TestDataCollection) { t ->
                 FILTER { t.name EQ "V_EQ" }
                 FILTER { t.name NE "V_NE" }
                 FILTER { t.name GT "V_GT" }
@@ -65,18 +60,20 @@ class QueryBuilderSpec : StringSpec({
                 """.trimMargin()
             )
 
-            query.vars.shouldBe(mapOf(
-                "c_test__name_1" to "V_EQ",
-                "c_test__name_2" to "V_NE",
-                "c_test__name_3" to "V_GT",
-                "c_test__name_4" to "V_GTE",
-                "c_test__name_5" to "V_LT",
-                "c_test__name_6" to "V_LTE",
-                "c_test__name_7" to listOf("V_IN"),
-                "c_test__name_8" to listOf("V_NOT_IN"),
-                "c_test__name_9" to "V_LIKE",
-                "c_test__name_10" to "V_REGEX"
-            ))
+            query.vars.shouldBe(
+                mapOf(
+                    "c_test__name_1" to "V_EQ",
+                    "c_test__name_2" to "V_NE",
+                    "c_test__name_3" to "V_GT",
+                    "c_test__name_4" to "V_GTE",
+                    "c_test__name_5" to "V_LT",
+                    "c_test__name_6" to "V_LTE",
+                    "c_test__name_7" to listOf("V_IN"),
+                    "c_test__name_8" to listOf("V_NOT_IN"),
+                    "c_test__name_9" to "V_LIKE",
+                    "c_test__name_10" to "V_REGEX"
+                )
+            )
         }
     }
 })

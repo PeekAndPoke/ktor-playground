@@ -9,7 +9,9 @@ buildscript {
 }
 
 apply plugin: 'kotlin'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'application'
+apply plugin: 'idea'
 
 group 'ktor-playground'
 version '0.0.1'
@@ -29,6 +31,8 @@ repositories {
     maven { url 'https://kotlin.bintray.com/kotlin-js-wrappers' }
 }
 
+def arrow_version = "0.8.2"
+
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile "io.ktor:ktor-server-netty:$ktor_version"
@@ -46,13 +50,30 @@ dependencies {
     compile "io.ktor:ktor-auth:$ktor_version"
     compile "io.ktor:ktor-jackson:$ktor_version"
 
-    compile 'org.jetbrains.kotlin:kotlin-reflect:1.3.20'
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    compile 'com.arangodb:arangodb-java-driver:5.0.4'
-    compile 'com.arangodb:jackson-dataformat-velocypack:0.1.3'
+    // Annotation processing
+    compile project(":karango")
+    kapt project(":karango")
+    // Annotation processing END
 
+    compile "io.arrow-kt:arrow-core:$arrow_version"
+    compile "io.arrow-kt:arrow-syntax:$arrow_version"
+    compile "io.arrow-kt:arrow-typeclasses:$arrow_version"
+    compile "io.arrow-kt:arrow-data:$arrow_version"
+    compile "io.arrow-kt:arrow-instances-core:$arrow_version"
+    compile "io.arrow-kt:arrow-instances-data:$arrow_version"
+    kapt    "io.arrow-kt:arrow-annotations-processor:$arrow_version"
+    compile "io.arrow-kt:arrow-optics:$arrow_version" //optional
+    
     testCompile "io.ktor:ktor-server-tests:$ktor_version"
+    testCompile project(":karango")
+//    kaptTest project(":karango")
     testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.2.1'
+}
+
+kapt {
+    includeCompileClasspath = false
 }
 
 test {

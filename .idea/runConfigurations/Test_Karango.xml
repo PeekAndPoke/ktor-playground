@@ -1,13 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Test Karango" type="JUnit" factoryName="JUnit">
-    <module name="ktor-playground.ktor-playground.test" />
-    <extension name="coverage">
-      <pattern>
-        <option name="PATTERN" value="karango.*" />
-        <option name="ENABLED" value="true" />
-      </pattern>
-    </extension>
-    <option name="PACKAGE_NAME" value="de.peekandpoke.karango" />
+    <module name="ktor-playground.karango.test" />
+    <option name="PACKAGE_NAME" value="" />
     <option name="MAIN_CLASS_NAME" value="" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="package" />
