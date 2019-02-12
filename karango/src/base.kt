@@ -9,12 +9,6 @@ interface Statement {
     fun print(printer: QueryPrinter)
 }
 
-internal class Name(private val name: String) : Statement {
-    override fun print(printer: QueryPrinter) {
-        printer.append(name)
-    }
-}
-
 interface NamedType<T> {
     fun getSimpleName() : String
     fun getQueryName() : String
@@ -25,9 +19,9 @@ interface IterableType<T> : NamedType<T> {
 }
 
 interface CollectionDefinition<T> : IterableType<T> {
-    val configurations : Map<List<String>, String>
+    val configurations : Map<PathInCollection<*, *>, String>
     
-    fun addConfiguration(key : List<String>, config: String)
+    fun addConfiguration(key : PathInCollection<*, *>, config: String)
 }
 
 interface EntityCollectionDefinition<T> : CollectionDefinition<T>
@@ -35,16 +29,16 @@ interface EntityCollectionDefinition<T> : CollectionDefinition<T>
 interface EdgeCollectionDefinition<T> : CollectionDefinition<T>
 
 abstract class CollectionDefinitionImpl<T> : CollectionDefinition<T> {
-    override val configurations = mutableMapOf<List<String>, String>()
+    override val configurations = mutableMapOf<PathInCollection<*, *>, String>()
 
-    override fun addConfiguration(key : List<String>, config: String) = run { configurations[key] = config }
+    override fun addConfiguration(key : PathInCollection<*, *>, config: String) = run { configurations[key] = config }
 }
 
 abstract class EntityCollectionDefinitionImpl<T> : CollectionDefinitionImpl<T>(), EntityCollectionDefinition<T>
 
 abstract class EdgeCollectionDefinitionImpl<T> : CollectionDefinitionImpl<T>(), EdgeCollectionDefinition<T>
 
-class PathInCollection<S, T>(
+data class PathInCollection<S, T>(
     private val collection: CollectionDefinition<S>,
     private val path: List<String> = listOf()
 ) : NamedType<T> {
@@ -55,9 +49,13 @@ class PathInCollection<S, T>(
     
     override fun getSimpleName() = collection.getSimpleName()
 
-    override fun getQueryName() = listOf(collection.getQueryName()).plus(path).joinToString(".")
+    override fun getQueryName() = listOf(collection.getQueryName()).plus(path).joinToString("")
 
     fun <NT> append(step: String) = PathInCollection<S, NT>(collection, path.plus(step))
 }
 
-fun <S, T> PathInCollection<S, T>.configure(value : String) = getCollection().addConfiguration(getPath(), value)
+fun <S, T> PathInCollection<S, T>.configure(value : String) = getCollection().addConfiguration(this, value)
+
+inline val <S, T> PathInCollection<S, List<T>>.`*` inline get() = append<T>("[*]")
+
+inline val <S, T> PathInCollection<S, T>.`**` inline get() = append<T>("[**]") 

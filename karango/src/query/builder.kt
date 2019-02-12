@@ -1,6 +1,9 @@
 package de.peekandpoke.karango.query
 
-import de.peekandpoke.karango.*
+import de.peekandpoke.karango.IterableType
+import de.peekandpoke.karango.KarangoDslMarker
+import de.peekandpoke.karango.NamedType
+import de.peekandpoke.karango.Statement
 
 data class TypedQuery<T>(val query: String, val vars: Map<String, Any>, val returnType: Class<T>)
 
@@ -31,14 +34,14 @@ class RootBuilder internal constructor() : Statement {
 
     fun <T, D : IterableType<T>> FOR(col: D, builder: ForLoopBuilder<T>.(D) -> IterableType<T>): IterableType<T> {
 
-        val forLoop = ForLoopBuilder<T>(col.getSimpleName(), col.getQueryName())
+        val forLoop = ForLoopBuilder(col)
         val returnType = forLoop.builder(col)
 
         stmts.add(forLoop)
 
         return returnType
     }
-    
+
     override fun print(printer: QueryPrinter) {
         printer.appendAll(stmts)
     }
@@ -56,11 +59,17 @@ class Let<T>(private val name: String, private val value: T) : Statement, NamedT
 
 @Suppress("FunctionName")
 @KarangoDslMarker
-class ForLoopBuilder<T> internal constructor(private val name : String, private val fqn : String) : Statement {
+class ForLoopBuilder<T> internal constructor(private val iterable: IterableType<T>) : Statement {
 
     internal class Op(private val keyword: String, private val inner: Statement) : Statement {
         override fun print(printer: QueryPrinter) {
             printer.append("$keyword ").append(inner).appendLine()
+        }
+    }
+
+    internal class NameOf(private val named: NamedType<*>) : Statement {
+        override fun print(printer: QueryPrinter) {
+            printer.name(named)
         }
     }
 
@@ -76,7 +85,7 @@ class ForLoopBuilder<T> internal constructor(private val name : String, private 
 
     fun <TO, DO : IterableType<TO>> FOR(col: DO, builder: ForLoopBuilder<TO>.(DO) -> Unit) = apply {
         stmts.add(
-            ForLoopBuilder<TO>(col.getSimpleName(), col.getQueryName()).apply { builder(col) }
+            ForLoopBuilder(col).apply { builder(col) }
         )
     }
 
@@ -89,13 +98,13 @@ class ForLoopBuilder<T> internal constructor(private val name : String, private 
     }
 
     fun RETURN(iterable: IterableType<T>): IterableType<T> {
-        stmts.add(Op("RETURN", Name(fqn)))
+        stmts.add(Op("RETURN", NameOf(iterable)))
 
         return iterable
     }
 
     override fun print(printer: QueryPrinter) {
-        printer.appendLine("FOR $fqn IN $name")
+        printer.append("FOR ").name(iterable).append(" IN `${iterable.getSimpleName()}`").appendLine()
 
         printer.indent {
             appendAll(stmts)

@@ -3,6 +3,7 @@
 package de.peekandpoke.karango.query
 
 import de.peekandpoke.karango.NamedType
+import de.peekandpoke.karango.PathInCollection
 import de.peekandpoke.karango.Statement
 
 interface Filter : Statement {
@@ -26,30 +27,54 @@ interface Filter : Statement {
     }
 }
 
+typealias PartialFilterOnValue<T> = (NamedType<T>) -> Filter
+
+infix fun <S, T> PathInCollection<S, T>.ANY(partial: PartialFilterOnValue<T>): Filter = append<T>(" ANY").let(partial)
+infix fun <S, T> PathInCollection<S, T>.NONE(partial: PartialFilterOnValue<T>): Filter = append<T>(" NONE").let(partial)
+infix fun <S, T> PathInCollection<S, T>.ALL(partial: PartialFilterOnValue<T>): Filter = append<T>(" ALL").let(partial)
+
+fun <T> EQ(value: T): PartialFilterOnValue<T> = { x -> x EQ value }
+fun <T> EQ(value: NamedType<T>): PartialFilterOnValue<T> = { x -> x EQ value }
 infix fun <T> NamedType<T>.EQ(value: T): Filter = FilterByValue(this, Filter.Comparator.EQ, value)
 infix fun <T> NamedType<T>.EQ(value: NamedType<T>): Filter = FilterByNamed(this, Filter.Comparator.EQ, value)
 
+fun <T> NE(value: T): PartialFilterOnValue<T> = { x -> x NE value }
+fun <T> NE(value: NamedType<T>): PartialFilterOnValue<T> = { x -> x NE value }
 infix fun <T> NamedType<T>.NE(value: T): Filter = FilterByValue(this, Filter.Comparator.NE, value)
 infix fun <T> NamedType<T>.NE(value: NamedType<T>): Filter = FilterByNamed(this, Filter.Comparator.NE, value)
 
+fun <T> GT(value: T): PartialFilterOnValue<T> = { x -> x GT value }
+fun <T> GT(value: NamedType<T>): PartialFilterOnValue<T> = { x -> x GT value }
 infix fun <T> NamedType<T>.GT(value: T): Filter = FilterByValue(this, Filter.Comparator.GT, value)
 infix fun <T> NamedType<T>.GT(value: NamedType<T>): Filter = FilterByNamed(this, Filter.Comparator.GT, value)
 
+fun <T> GTE(value: T): PartialFilterOnValue<T> = { x -> x GTE value }
+fun <T> GTE(value: NamedType<T>): PartialFilterOnValue<T> = { x -> x GTE value }
 infix fun <T> NamedType<T>.GTE(value: T): Filter = FilterByValue(this, Filter.Comparator.GTE, value)
 infix fun <T> NamedType<T>.GTE(value: NamedType<T>): Filter = FilterByNamed(this, Filter.Comparator.GTE, value)
 
+fun <T> LT(value: T): PartialFilterOnValue<T> = { x -> x LT value }
+fun <T> LT(value: NamedType<T>): PartialFilterOnValue<T> = { x -> x LT value }
 infix fun <T> NamedType<T>.LT(value: T): Filter = FilterByValue(this, Filter.Comparator.LT, value)
 infix fun <T> NamedType<T>.LT(value: NamedType<T>): Filter = FilterByNamed(this, Filter.Comparator.LT, value)
 
+fun <T> LTE(value: T): PartialFilterOnValue<T> = { x -> x LTE value }
+fun <T> LTE(value: NamedType<T>): PartialFilterOnValue<T> = { x -> x LTE value }
 infix fun <T> NamedType<T>.LTE(value: T): Filter = FilterByValue(this, Filter.Comparator.LTE, value)
 infix fun <T> NamedType<T>.LTE(value: NamedType<T>): Filter = FilterByNamed(this, Filter.Comparator.LTE, value)
 
+fun <T> IN(value: Array<T>): PartialFilterOnValue<T> = { x -> x IN value }
+fun <T> IN(value: Collection<T>): PartialFilterOnValue<T> = { x -> x IN value }
+fun <T> IN(value: NamedType<T>): PartialFilterOnValue<T> = { x -> x IN value }
 infix fun <T> NamedType<T>.IN(value: Array<T>): Filter = IN(value.toList())
-infix fun <T> NamedType<T>.IN(value: List<T>): Filter = FilterByArray(this, Filter.Comparator.IN, value)
+infix fun <T> NamedType<T>.IN(value: Collection<T>): Filter = FilterByCollection(this, Filter.Comparator.IN, value)
 infix fun <T> NamedType<T>.IN(value: NamedType<T>): Filter = FilterByNamed(this, Filter.Comparator.IN, value)
 
+fun <T> NOT_IN(value: Array<T>): PartialFilterOnValue<T> = { x -> x NOT_IN value }
+fun <T> NOT_IN(value: Collection<T>): PartialFilterOnValue<T> = { x -> x NOT_IN value }
+fun <T> NOT_IN(value: NamedType<T>): PartialFilterOnValue<T> = { x -> x NOT_IN value }
 infix fun <T> NamedType<T>.NOT_IN(value: Array<T>): Filter = NOT_IN(value.toList())
-infix fun <T> NamedType<T>.NOT_IN(value: List<T>): Filter = FilterByArray(this, Filter.Comparator.NOT_IN, value)
+infix fun <T> NamedType<T>.NOT_IN(value: Collection<T>): Filter = FilterByCollection(this, Filter.Comparator.NOT_IN, value)
 infix fun <T> NamedType<T>.NOT_IN(value: NamedType<T>): Filter = FilterByNamed(this, Filter.Comparator.NOT_IN, value)
 
 infix fun <T> NamedType<T>.LIKE(value: String): Filter = FilterByValue(this, Filter.Comparator.LIKE, value)
@@ -64,19 +89,19 @@ fun Filter.NOT(): Filter = FilterNot(this)
 
 internal data class FilterByValue<L, R>(val left: NamedType<L>, val op: Filter.Comparator, val right: R) : Filter {
     override fun print(printer: QueryPrinter) {
-        printer.append("${left.getQueryName()} ${op.op} ").value(left, right as Any)
+        printer.name(left).append(" ${op.op} ").value(left, right as Any)
     }
 }
 
-internal data class FilterByArray<L, R>(val left: NamedType<L>, val op: Filter.Comparator, val right: List<R>) : Filter {
+internal data class FilterByCollection<L, R>(val left: NamedType<L>, val op: Filter.Comparator, val right: Collection<R>) : Filter {
     override fun print(printer: QueryPrinter) {
-        printer.append("${left.getQueryName()} ${op.op} ").value(left, right)
+        printer.name(left).append(" ${op.op} ").value(left, right)
     }
 }
 
 internal data class FilterByNamed<L, R>(val left: NamedType<L>, val op: Filter.Comparator, val right: NamedType<R>) : Filter {
     override fun print(printer: QueryPrinter) {
-        printer.append("${left.getQueryName()} ${op.op} ${right.getQueryName()}")
+        printer.name(left).append(" ${op.op} ").name(right)
     }
 }
 

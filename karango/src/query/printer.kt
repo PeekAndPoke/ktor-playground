@@ -13,13 +13,25 @@ class QueryPrinter {
     private var indent = ""
     private var newLine = true
 
+    private fun String.toParamName() = this
+        .replace(".", "__")
+        .replace("[*]", "_STAR")
+        .replace("[**]", "_STAR2")
+        .replace("[^a-zA-Z0-9_]".toRegex(), "_")
+
+    private fun String.toName() = this
+        .split(".")
+        .joinToString(".") { it.replace("[^a-zA-Z0-9_\\[*\\] ]".toRegex(), "_") }
+
     fun build() = Result(stringBuilder.toString(), queryVars)
 
-    fun value(named: NamedType<*>, value: Any) = value(named.getQueryName().replace(".", "__"), value)
+    fun name(named: NamedType<*>) = append(named.getQueryName().toName())
+    
+    fun value(named: NamedType<*>, value: Any) = value(named.getQueryName(), value)
 
     fun value(name: String, value: Any) = apply {
 
-        val key = name + "_" + (queryVars.size + 1)
+        val key = name.toParamName() + "_" + (queryVars.size + 1)
 
         append("@$key")
         queryVars[key] = value
