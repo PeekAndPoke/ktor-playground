@@ -6,7 +6,12 @@ import com.arangodb.VelocyJack
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.peekandpoke.domain.*
 import de.peekandpoke.karango.Db
+import de.peekandpoke.karango.`**`
+import de.peekandpoke.karango.`*`
 import de.peekandpoke.karango.configure
+import de.peekandpoke.karango.query.ALL
+import de.peekandpoke.karango.query.EQ
+import de.peekandpoke.karango.query.IN
 import kotlin.system.measureTimeMillis
 
 
@@ -57,79 +62,54 @@ fun y() {
 //    val addresses = db.collection(Address.)
 
 
-    persons.removeAll()
-
-    val personInserts = (1..10).map { i ->
-
-        val lotr = Book("Lotr", 1960, listOf(Author("J.R.R.", "Tolkin"), Author("X.X.X.", "Polkin")))
-        val got = Book("GoT", 1980, listOf(Author("John", "Doe")))
-        val hp = Book("HP", 1990, listOf(Author("Jane", "Doe")))
-
-        val address = when {
-            i % 3 == 0 -> Address("Leipzig")
-            i % 3 == 1 -> Address("Dresden")
-            else -> Address("irgendwo")
-        }
-
-        listOf(
-            Person("Greta", i, address, listOf(lotr, got)),
-            Person("Nadin", i, address, listOf(hp)),
-            Person("Karsten", i, address, listOf(lotr)),
-            Person("Eddi", i, address, listOf(got))
-        )
-    }.flatten()
-
-
-    val insertTime = measureTimeMillis {
-        val numInserted = persons.bulkInsert(personInserts)
-        println("Inserted $numInserted")
-    }
-
-    println("Insertion took $insertTime ms")
-
-    // warm up (establish connection)
-    persons.fetch { LIMIT(1) }.forEach { }
-
     PersonCollection.name.configure("TEST")
 
     println(PersonCollection.configurations)
 
     
     exampleReturningFromLet(db)
-    
+
+    persons.removeAll()
+
+    val insertTime = measureTimeMillis {
+        exampleInsertFromLet(db)
+    }
+
+    println("Insertion took $insertTime ms")
+
 //    
 //    println(result)
     
-//    for (y in 1..1) {
-//        val timeAll = measureTimeMillis {
-//
-//            val result = db.query {
-//
-//                val str = LET("str", "Karsten")
-//                val num = LET("num", 7)
-//
-//                val names = LET("names") {
-//                    listOf("J.R.R.", "X.X.X.")
-//                }
-//
-//                FOR(PersonCollection) { person ->
-//
-//                    FILTER { person.name EQ str }
-//                    FILTER { person.nr EQ num }
-//                    FILTER { person.books.`*`.authors.`*`.firstName.`**` ALL IN(names) }
-//
-//                    LIMIT(0, 20)
-//                    RETURN(person)
-//                }
-//
-//            }
-//
-//            result.forEach { println(it) }
-//        }
-//
-//        println("fetchAll took $timeAll ms\n\n")
-//        println()
-//    }
+    for (y in 1..1) {
+        val timeAll = measureTimeMillis {
+
+            val result = db.query {
+
+                val str = LET("str", "Karsten")
+                val num = LET("num", 2)
+
+                val names = LET("names") {
+                    listOf("J.R.R.", "X.X.X.")
+                }
+
+                FOR(PersonCollection) { person ->
+
+                    FILTER { person.name EQ str }
+                    FILTER { person.nr EQ num }
+                    FILTER { person.books.`*`.authors.`*`.firstName.`**` ALL IN(names) }
+
+                    LIMIT(0, 20)
+                    RETURN(person)
+                }
+
+            }
+
+            result.forEach { println(it) }
+        }
+
+        println("fetchAll took $timeAll ms\n\n")
+        println()
+    }
     
     println(persons.count())
 }
@@ -153,6 +133,45 @@ fun exampleReturningFromLet(db: Db) {
     }
 
     result.forEach { println(it) }
+
+    println("/////////////////////////////////////////////////////////////////////////////////////////////////////////")
+}
+
+fun exampleInsertFromLet(db: Db) {
+
+    println("/////////////////////////////////////////////////////////////////////////////////////////////////////////")
+    println("//  EXAMPLE: Inserting objects into a collection that where sent in via LET")
+
+    val personInserts = (1..5).map { i ->
+
+        val lotr = Book("Lotr", 1960, listOf(Author("J.R.R.", "Tolkin"), Author("X.X.X.", "Polkin")))
+        val got = Book("GoT", 1980, listOf(Author("John", "Doe")))
+        val hp = Book("HP", 1990, listOf(Author("Jane", "Doe")))
+
+        val address = when {
+            i % 3 == 0 -> Address("Leipzig")
+            i % 3 == 1 -> Address("Dresden")
+            else -> Address("irgendwo")
+        }
+
+        listOf(
+            Person("Greta", i, address, listOf(lotr, got)),
+            Person("Nadin", i, address, listOf(hp)),
+            Person("Karsten", i, address, listOf(lotr)),
+            Person("Eddi", i, address, listOf(got))
+        )
+    }.flatten()
+
+
+    val result = db.query {
+        val objs = LET("objs") { personInserts }
+
+        FOR (objs) { o ->
+            INSERT (o) INTO  PersonCollection
+        }
+    }
+
+    println("Inserted " + result.stats.writesExecuted)
 
     println("/////////////////////////////////////////////////////////////////////////////////////////////////////////")
 }

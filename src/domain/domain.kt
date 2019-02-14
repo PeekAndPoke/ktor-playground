@@ -17,13 +17,11 @@ data class Person(
     companion object
 }
 
-@EntityCollection("books")
 data class Book(
     val title: String,
     val year: Int,
     val authors : List<Author>
 )
-
 
 @EntityCollection("authors")
 data class Author (

@@ -1,12 +1,12 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Demo Movies and Actors" type="JetRunConfigurationType" factoryName="Kotlin">
+  <configuration default="false" name="Karango Demo Game of Thrones" type="JetRunConfigurationType" factoryName="Kotlin">
     <module name="ktor-playground.ktor-playground.main" />
     <option name="VM_PARAMETERS" value="" />
     <option name="PROGRAM_PARAMETERS" value="" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <option name="PASS_PARENT_ENVS" value="true" />
-    <option name="MAIN_CLASS_NAME" value="de.peekandpoke.demos.movies_and_actors.Actors_and_moviesKt" />
+    <option name="MAIN_CLASS_NAME" value="de.peekandpoke.karango.examples.game_of_thrones.Game_of_thronesKt" />
     <option name="WORKING_DIRECTORY" value="" />
     <method v="2">
       <option name="Make" enabled="true" />

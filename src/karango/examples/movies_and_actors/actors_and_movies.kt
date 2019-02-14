@@ -1,11 +1,7 @@
 @file:Suppress("LocalVariableName")
 
-package de.peekandpoke.demos.movies_and_actors
+package de.peekandpoke.karango.examples.movies_and_actors
 
-import com.arangodb.ArangoDB
-import com.arangodb.VelocyJack
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.peekandpoke.karango.Db
 import kotlin.system.exitProcess
 
@@ -14,20 +10,7 @@ import kotlin.system.exitProcess
  */
 fun main() {
 
-    val velocyJack = VelocyJack().apply {
-        configure { mapper ->
-            mapper.registerModule(KotlinModule())
-            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        }
-    }
-
-    val arango = ArangoDB.Builder()
-        .serializer(velocyJack)
-        .user("root").password("root")
-        .host("localhost", 8529)
-        .build()
-
-    val db = Db(arango.db("kotlindev"))
+    val db = Db.default(user = "root", pass = "root", host = "localhost", port = 8529, database = "kotlindev")
 
     val movies = db.collection(MovieCollection)
     movies.removeAll()
@@ -44,16 +27,7 @@ fun main() {
     val Laurence = actors.save(Actor(_key = "Laurence", name = "Laurence Fishburne", born = 1961))._id
     val Hugo = actors.save(Actor(_key = "Hugo", name = "Hugo Weaving", born = 1960))._id
     val Emil = actors.save(Actor(_key = "Emil", name = "Emil Eifrem", born = 1978))._id
-    
-    val matrix = movies.get(TheMatrix)!! 
-    
-    println(movies.getAs(TheMatrix, HashMap::class.java))
-    println(matrix)
-    
-    val matrixModified = Movie.title.modify(matrix) {"NEW TITLE for The Matrix"}
-    val afterSave = movies.save(matrixModified)
-    println(afterSave)
-    
+
     actsIn.save(ActsIn(_from = Keanu, _to = TheMatrix, roles = listOf("Neo"), year = 1999))
     actsIn.save(ActsIn(_from = Carrie, _to = TheMatrix, roles = listOf("Trinity"), year = 1999))
     actsIn.save(ActsIn(_from = Laurence, _to = TheMatrix, roles = listOf("Morpheus"), year = 1999))
@@ -267,7 +241,6 @@ fun main() {
     actsIn.save(ActsIn(_from = MegR, _to = WhenHarryMetSally, roles = listOf("Sally Albright"), year = 1998))
     actsIn.save(ActsIn(_from = CarrieF, _to = WhenHarryMetSally, roles = listOf("Marie"), year = 1998))
     actsIn.save(ActsIn(_from = BrunoK, _to = WhenHarryMetSally, roles = listOf("Jess"), year = 1998))
-
 
     exitProcess(0)
 }

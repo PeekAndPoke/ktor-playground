@@ -14,9 +14,14 @@ interface NamedType<T> {
     fun getQueryName() : String
 }
 
-interface IterableType<T> : NamedType<Collection<T>> {
-    fun getReturnType() : Class<T>
+interface ReturnType<T> {
+    fun getReturnType(): Class<T>
 }
+
+interface IterableType<T> : NamedType<T>, ReturnType<T>
+
+inline val <T> CollectionDefinition<T>._id inline get() = de.peekandpoke.karango.PathInCollection<T, String>(this, kotlin.collections.listOf("._id"))
+inline val <T> CollectionDefinition<T>._key inline get() = de.peekandpoke.karango.PathInCollection<T, String>(this, kotlin.collections.listOf("._key"))
 
 interface CollectionDefinition<T> : IterableType<T> {
     val configurations : Map<PathInCollection<*, *>, String>

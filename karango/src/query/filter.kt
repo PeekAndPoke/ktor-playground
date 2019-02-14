@@ -103,7 +103,7 @@ internal data class FilterByCollection<L, R>(val left: NamedType<L>, val op: Fil
 
 internal data class FilterByNamed<L, R>(val left: NamedType<L>, val op: Filter.Comparator, val right: NamedType<R>) : Filter {
     override fun print(printer: QueryPrinter) {
-        printer.name(left).append(" ${op.op} ").name(right)
+        printer.name(left).append(" ${op.op} ").append("`${right.getSimpleName()}`")
     }
 }
 

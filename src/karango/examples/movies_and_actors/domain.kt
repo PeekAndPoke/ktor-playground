@@ -1,10 +1,8 @@
-package de.peekandpoke.demos.movies_and_actors
+package de.peekandpoke.karango.examples.movies_and_actors
 
-import arrow.optics.optics
 import de.peekandpoke.karango.*
 import de.peekandpoke.karango.meta.EntityCollection
 
-@optics
 @EntityCollection("movies")
 data class Movie constructor(
     val title: String,
@@ -25,7 +23,6 @@ data class Movie constructor(
     companion object
 }
 
-@optics
 @EntityCollection("actors")
 data class Actor(
     val name: String,
