@@ -2,6 +2,7 @@
 
 package de.peekandpoke.karango.query
 
+import de.peekandpoke.karango.IterableType
 import de.peekandpoke.karango.NamedType
 import de.peekandpoke.karango.PathInCollection
 import de.peekandpoke.karango.Statement
@@ -27,6 +28,7 @@ interface Filter : Statement {
     }
 }
 
+typealias PartialFilterOnIterable<T> = (IterableType<T>) -> Filter
 typealias PartialFilterOnValue<T> = (NamedType<T>) -> Filter
 
 infix fun <S, T> PathInCollection<S, T>.ANY(partial: PartialFilterOnValue<T>): Filter = append<T>(" ANY").let(partial)
@@ -65,17 +67,17 @@ infix fun <T> NamedType<T>.LTE(value: NamedType<T>): Filter = FilterByNamed(this
 
 fun <T> IN(value: Array<T>): PartialFilterOnValue<T> = { x -> x IN value }
 fun <T> IN(value: Collection<T>): PartialFilterOnValue<T> = { x -> x IN value }
-fun <T> IN(value: NamedType<T>): PartialFilterOnValue<T> = { x -> x IN value }
+fun <T> IN(value: IterableType<T>): PartialFilterOnValue<T> = { x -> x IN value }
 infix fun <T> NamedType<T>.IN(value: Array<T>): Filter = IN(value.toList())
 infix fun <T> NamedType<T>.IN(value: Collection<T>): Filter = FilterByCollection(this, Filter.Comparator.IN, value)
-infix fun <T> NamedType<T>.IN(value: NamedType<T>): Filter = FilterByNamed(this, Filter.Comparator.IN, value)
+infix fun <T> NamedType<T>.IN(value: IterableType<T>): Filter = FilterByNamed(this, Filter.Comparator.IN, value)
 
 fun <T> NOT_IN(value: Array<T>): PartialFilterOnValue<T> = { x -> x NOT_IN value }
 fun <T> NOT_IN(value: Collection<T>): PartialFilterOnValue<T> = { x -> x NOT_IN value }
-fun <T> NOT_IN(value: NamedType<T>): PartialFilterOnValue<T> = { x -> x NOT_IN value }
+fun <T> NOT_IN(value: IterableType<T>): PartialFilterOnValue<T> = { x -> x NOT_IN value }
 infix fun <T> NamedType<T>.NOT_IN(value: Array<T>): Filter = NOT_IN(value.toList())
 infix fun <T> NamedType<T>.NOT_IN(value: Collection<T>): Filter = FilterByCollection(this, Filter.Comparator.NOT_IN, value)
-infix fun <T> NamedType<T>.NOT_IN(value: NamedType<T>): Filter = FilterByNamed(this, Filter.Comparator.NOT_IN, value)
+infix fun <T> NamedType<T>.NOT_IN(value: IterableType<T>): Filter = FilterByNamed(this, Filter.Comparator.NOT_IN, value)
 
 infix fun <T> NamedType<T>.LIKE(value: String): Filter = FilterByValue(this, Filter.Comparator.LIKE, value)
 infix fun <T> NamedType<T>.LIKE(value: NamedType<String>): Filter = FilterByValue(this, Filter.Comparator.LIKE, value)

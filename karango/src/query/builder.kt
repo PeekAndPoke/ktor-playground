@@ -17,49 +17,21 @@ fun <T> query(builder: RootBuilder.() -> IterableType<T>): TypedQuery<T> {
     return TypedQuery(query.query, query.vars, returnType.getReturnType())
 }
 
-@Suppress("FunctionName")
 @KarangoDslMarker
-class RootBuilder internal constructor() : Statement {
+class RootBuilder internal constructor() : LetBuilderTrait, ForBuilderTrait, Statement {
 
-    private val stmts = mutableListOf<Statement>()
+    override val stmts = mutableListOf<Statement>()
 
-    fun <L> LET(name: String, builder: () -> L): Let<L> {
-
-        val result = Let(name, builder())
-
-        stmts.add(result)
-
-        return result
-    }
-
-    fun <T, D : IterableType<T>> FOR(col: D, builder: ForLoopBuilder<T>.(D) -> IterableType<T>): IterableType<T> {
-
-        val forLoop = ForLoopBuilder(col)
-        val returnType = forLoop.builder(col)
-
-        stmts.add(forLoop)
-
-        return returnType
-    }
+    inline fun <reified T, L : Collection<T>> LET(name: String, builder: () -> L) : IterableType<T> =
+        IterableLet(name, builder(), T::class.java).apply { stmts.add(this) }
 
     override fun print(printer: QueryPrinter) {
         printer.appendAll(stmts)
     }
 }
 
-class Let<T>(private val name: String, private val value: T) : Statement, NamedType<T> {
-
-    override fun getSimpleName() = name
-    override fun getQueryName() = "l_$name"
-
-    override fun print(printer: QueryPrinter) {
-        printer.append("LET ${getQueryName()} = ").value(getSimpleName(), value as Any).appendLine()
-    }
-}
-
-@Suppress("FunctionName")
 @KarangoDslMarker
-class ForLoopBuilder<T> internal constructor(private val iterable: IterableType<T>) : Statement {
+class ForLoopBuilder<T> internal constructor(private val iterable: IterableType<T>) : ForBuilderTrait, Statement {
 
     internal class Op(private val keyword: String, private val inner: Statement) : Statement {
         override fun print(printer: QueryPrinter) {
@@ -73,7 +45,7 @@ class ForLoopBuilder<T> internal constructor(private val iterable: IterableType<
         }
     }
 
-    private val stmts = mutableListOf<Statement>()
+    override val stmts = mutableListOf<Statement>()
 
     fun FILTER(builder: () -> Filter) = apply {
         stmts.add(Op("FILTER", builder()))
@@ -81,12 +53,6 @@ class ForLoopBuilder<T> internal constructor(private val iterable: IterableType<
 
     fun SORT(builder: () -> Sort) = apply {
         stmts.add(Op("SORT", builder()))
-    }
-
-    fun <TO, DO : IterableType<TO>> FOR(col: DO, builder: ForLoopBuilder<TO>.(DO) -> Unit) = apply {
-        stmts.add(
-            ForLoopBuilder(col).apply { builder(col) }
-        )
     }
 
     fun LIMIT(limit: Int) = apply {
@@ -104,11 +70,61 @@ class ForLoopBuilder<T> internal constructor(private val iterable: IterableType<
     }
 
     override fun print(printer: QueryPrinter) {
+
         printer.append("FOR ").name(iterable).append(" IN `${iterable.getSimpleName()}`").appendLine()
 
         printer.indent {
             appendAll(stmts)
         }
+    }
+}
+
+interface BuilderTrait {
+    val stmts: MutableList<Statement>
+}
+
+@Suppress("FunctionName")
+interface LetBuilderTrait : BuilderTrait {
+
+    fun LET(name: String, value: Int): NamedType<Int> = Let(name, value).apply { stmts.add(this) }
+
+    fun LET(name: String, value: Double): NamedType<Double> = Let(name, value).apply { stmts.add(this) }
+
+    fun LET(name: String, value: String): NamedType<String> = Let(name, value).apply { stmts.add(this) }
+}
+
+@Suppress("FunctionName")
+interface ForBuilderTrait : BuilderTrait {
+
+    fun <T, D : IterableType<T>> FOR(col: D, builder: ForLoopBuilder<T>.(D) -> IterableType<T>): IterableType<T> {
+
+        val forLoop = ForLoopBuilder(col)
+        val returnType = forLoop.builder(col)
+
+        stmts.add(forLoop)
+
+        return returnType
+    }
+}
+
+class IterableLet<T>(private val name: String, private val value: Collection<T>, private val type: Class<T>) : Statement, IterableType<T> {
+
+    override fun getSimpleName() = name
+    override fun getQueryName() = "l_$name"
+    override fun getReturnType() = type
+
+    override fun print(printer: QueryPrinter) {
+        printer.append("LET ${getSimpleName()} = ").value(getSimpleName(), value as Any).appendLine()
+    }
+}
+
+internal class Let<T>(private val name: String, private val value: T) : Statement, NamedType<T> {
+
+    override fun getSimpleName() = name
+    override fun getQueryName() = "l_$name"
+
+    override fun print(printer: QueryPrinter) {
+        printer.append("LET ${getSimpleName()} = ").value(getSimpleName(), value as Any).appendLine()
     }
 }
 

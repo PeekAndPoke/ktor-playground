@@ -14,7 +14,7 @@ interface NamedType<T> {
     fun getQueryName() : String
 }
 
-interface IterableType<T> : NamedType<T> {
+interface IterableType<T> : NamedType<Collection<T>> {
     fun getReturnType() : Class<T>
 }
 

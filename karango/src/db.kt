@@ -12,7 +12,7 @@ import de.peekandpoke.karango.query.RootBuilder
 
 class Db(private val database: ArangoDatabase) {
 
-    fun <T : Entity, D : EntityCollectionDefinition<T>> collection(def: D): Collection<T, D> {
+    fun <T : Entity, D : EntityCollectionDefinition<T>> collection(def: D): DbCollection<T, D> {
 
         val name = def.getSimpleName()
         val coll = database.collection(name)
@@ -21,10 +21,10 @@ class Db(private val database: ArangoDatabase) {
             database.createCollection(name, CollectionCreateOptions().type(CollectionType.DOCUMENT))
         }
 
-        return Collection(this, database.collection(name), def)
+        return DbCollection(this, database.collection(name), def)
     }
 
-    fun <T : Edge, D : EdgeCollectionDefinition<T>> edgeCollection(def: D): Collection<T, D> {
+    fun <T : Edge, D : EdgeCollectionDefinition<T>> edgeCollection(def: D): DbCollection<T, D> {
 
         val name = def.getSimpleName()
         val coll = database.collection(name)
@@ -33,14 +33,14 @@ class Db(private val database: ArangoDatabase) {
             database.createCollection(name, CollectionCreateOptions().type(CollectionType.EDGES))
         }
 
-        return Collection(this, database.collection(name), def)
+        return DbCollection(this, database.collection(name), def)
     }
 
     fun <T> query(builder: RootBuilder.() -> IterableType<T>): ArangoCursor<T> {
 
         val query = de.peekandpoke.karango.query.query(builder)
 
-        println(query)
+//        println(query)
 
         val options = AqlQueryOptions().count(true)
 
@@ -71,7 +71,7 @@ interface WithRev {
 
 val String.asKey get() = if (contains('/')) split('/')[1] else this
 
-class Collection<T : Entity, D : IterableType<T>> internal constructor(
+class DbCollection<T : Entity, D : IterableType<T>> internal constructor(
     private val db: Db,
     private val dbColl: ArangoCollection,
     private val def: D
