@@ -1,7 +1,9 @@
 package de.peekandpoke.karango.examples.game_of_thrones
 
-import de.peekandpoke.karango.Cursor
 import de.peekandpoke.karango.Db
+import de.peekandpoke.karango.examples.printDivider
+import de.peekandpoke.karango.examples.printQueryResult
+import de.peekandpoke.karango.examples.runDemo
 import de.peekandpoke.karango.query.AND
 import de.peekandpoke.karango.query.EQ
 
@@ -11,19 +13,36 @@ val characters = db.collection(CharacterCollection)
 
 fun main() {
 
-    clearData()
+    runDemo {
+        
+//        noop()
+        
+        steps(
+            ::intro,
+            ::clearData,
+            ::installData,
+            ::findBaratheons,
+            ::findStarks,
+            ::findBranStarkV1,
+            ::findBranStarkV2,
+            ::findThreeCharactersByIdV1,
+            ::findThreeCharactersByIdV2,
+            ::updateNedStarksAliveness
+        )   
+    }
+}
 
-    installData()
+fun intro() {
+    printDivider()
+    println(
+        """
+        Welcome to the Karango - Game of Thrones Demo !
 
-    queryBaratheons()
-
-    queryStarks()
-
-    queryBranStarkV1()
-
-    queryBranStarkV2()
-
-    queryThreeCharactersByIdV1()
+        For details see https://docs.arangodb.com/3.4/AQL/Tutorial/CRUD.html
+        """.trimIndent()
+    )
+    printDivider()
+    println()
 }
 
 fun clearData() {
@@ -44,7 +63,8 @@ fun installData() {
             listOf(
                 Character(name = "Robert", surname = "Baratheon", alive = false, traits = listOf("A", "H", "C")),
                 Character(name = "Jaime", surname = "Lannister", alive = true, age = 36, traits = listOf("A", "F", "B")),
-                Character(name = "Catelyn", surname = "Stark", alive = false, age = 40, traits = listOf("D", "H", "C")),
+                Character(name = "Eddard", surname = "Stark", alive = true, age = 47, traits = listOf("D", "H", "C")),
+                Character(name = "Catelyn", surname = "Stark", alive = true, age = 40, traits = listOf("D", "H", "C")),
                 Character(name = "Cersei", surname = "Lannister", alive = true, age = 36, traits = listOf("H", "E", "F")),
                 Character(name = "Daenerys", surname = "Targaryen", alive = true, age = 16, traits = listOf("D", "H", "C")),
                 Character(name = "Jorah", surname = "Mormont", alive = false, traits = listOf("A", "B", "C", "F")),
@@ -93,35 +113,14 @@ fun installData() {
     }
 }
 
-private fun <T> printQueryResult(result: Cursor<T>, output: (Int, T) -> String) {
+private fun printCharacter(idx: Int, it: Character) =
+    "  ${idx + 1}. ${it.name} ${it.surname} - age ${it.age} - ${if (it.alive) "alive" else "gone"}"
 
-    println()
-    println("+-----------+")
-    println("| AQL query |")
-    println("+-----------+")
-    println(result.query.aql)
-
-    println("+------------+")
-    println("| Query vars |")
-    println("+------------+")
-    println(result.query.vars)
-
-    println()
-    println("And we found (in ${result.timeMs} ms, execution time ${result.stats.executionTime} ms):")
-
-    result.forEachIndexed { idx, it -> println(output(idx, it)) }
-
-    println()
-}
-
-private fun printCharacter(idx: Int, it : Character) =
-    "  ${idx + 1}. ${it.name} ${it.surname}; age ${it.age}; ${if (it.alive) "alive" else "gone"}"
-
-fun queryBaratheons() {
+fun findBaratheons() {
     println("==========================================================================================================================")
-    println("Querying all Baratheons using our collection class")
+    println("Find all Baratheons using our collection class")
 
-    val result = characters.query { c ->
+    val result = characters.find { c ->
         FILTER { c.surname EQ "Baratheon" }
     }
 
@@ -129,9 +128,9 @@ fun queryBaratheons() {
 
 }
 
-fun queryStarks() {
+fun findStarks() {
     println("==========================================================================================================================")
-    println("Querying all Starks with an explicit query on the db object")
+    println("Find all Starks with an explicit query on the db object")
 
     val result = db.query {
         FOR(CharacterCollection) { c ->
@@ -143,13 +142,13 @@ fun queryStarks() {
     printQueryResult(result, ::printCharacter)
 }
 
-fun queryBranStarkV1() {
+fun findBranStarkV1() {
 
     // to do what we want to do, we need the ID of Bran Stark
-    val bransId = characters.queryOne { t -> FILTER { (t.name EQ "Bran") AND (t.surname EQ "Stark") } }!!._id
+    val bransId = characters.findOne { t -> FILTER { (t.name EQ "Bran") AND (t.surname EQ "Stark") } }!!._id
 
     println("==========================================================================================================================")
-    println("Query Bran Stark by ID with an explicit query on the db object")
+    println("Find Bran Stark by ID with an explicit query on the db object")
 
     val result = db.query {
         RETURN<Character>(bransId)
@@ -158,33 +157,65 @@ fun queryBranStarkV1() {
     printQueryResult(result, ::printCharacter)
 }
 
-fun queryBranStarkV2() {
+fun findBranStarkV2() {
 
     // to do what we want to do, we need the ID of Bran Stark
-    val bransId = characters.queryOne { t -> FILTER { (t.name EQ "Bran") AND (t.surname EQ "Stark") } }!!._id
+    val bransId = characters.findOne { t -> FILTER { (t.name EQ "Bran") AND (t.surname EQ "Stark") } }!!._id
 
     println("==========================================================================================================================")
-    println("Query Bran Stark by ID using our collection class")
+    println("Find Bran Stark by ID using our collection class")
 
-    val result = characters.queryByKey(bransId)!!
+    val result = characters.findByKey(bransId)!!
 
-    printCharacter(1, result)
+    println()
+    println(printCharacter(0, result))
     println()
 }
 
-fun queryThreeCharactersByIdV1() {
+fun findThreeCharactersByIdV1() {
 
     // to do what we want to do, we need the ID of Bran Stark
-    val bransId = characters.queryOne { t -> FILTER { (t.name EQ "Bran") AND (t.surname EQ "Stark") } }!!._id
-    val aryasId = characters.queryOne { t -> FILTER { (t.name EQ "Arya") AND (t.surname EQ "Stark") } }!!._id
-    val tyrionsId = characters.queryOne { t -> FILTER { (t.name EQ "Tyrion") AND (t.surname EQ "Lannister") } }!!._id
+    val bransId = characters.findOne { t -> FILTER { (t.name EQ "Bran") AND (t.surname EQ "Stark") } }!!._id
+    val aryasId = characters.findOne { t -> FILTER { (t.name EQ "Arya") AND (t.surname EQ "Stark") } }!!._id
+    val tyrionsId = characters.findOne { t -> FILTER { (t.name EQ "Tyrion") AND (t.surname EQ "Lannister") } }!!._id
 
     println("==========================================================================================================================")
-    println("Query Arya, Bran and Tyrion at once by their IDs using the db object")
+    println("Find Arya, Bran and Tyrion at once by their IDs using our collection class")
+
+    val result = characters.findByIds(aryasId, bransId, tyrionsId)
+
+    printQueryResult(result, ::printCharacter)
+}
+
+fun findThreeCharactersByIdV2() {
+
+    // to do what we want to do, we need the ID of Bran Stark
+    val bransId = characters.findOne { t -> FILTER { (t.name EQ "Bran") AND (t.surname EQ "Stark") } }!!._id
+    val aryasId = characters.findOne { t -> FILTER { (t.name EQ "Arya") AND (t.surname EQ "Stark") } }!!._id
+    val tyrionsId = characters.findOne { t -> FILTER { (t.name EQ "Tyrion") AND (t.surname EQ "Lannister") } }!!._id
+
+    println("==========================================================================================================================")
+    println("Find Arya, Bran and Tyrion at once by their IDs using the db object")
 
     val result = db.query {
         RETURN<Character>(aryasId, bransId, tyrionsId)
     }
 
+    printQueryResult(result, ::printCharacter)
+}
+
+
+fun updateNedStarksAliveness() {
+
+    val ned = characters.findOne { t -> FILTER { (t.name EQ "Eddard") AND (t.surname EQ "Stark") } }!!
+
+    println("==========================================================================================================================")
+    println("Spoiler Alert! Ned died... So we need to update his aliveness using the collection object")
+
+    val result = characters.update(ned) {t ->
+        t.alive with false
+        "hair" with "black"
+    }
+    
     printQueryResult(result, ::printCharacter)
 }

@@ -30,47 +30,47 @@ class QueryBuilderSpec : StringSpec({
 
         assertSoftly {
 
-            query.query.shouldContain("FOR c_test IN `test`")
-            query.query.shouldContain("FILTER c_test.name == @c_test__name_1")
-            query.query.shouldContain("FILTER c_test.name != @c_test__name_2")
-            query.query.shouldContain("FILTER c_test.name > @c_test__name_3")
-            query.query.shouldContain("FILTER c_test.name >= @c_test__name_4")
-            query.query.shouldContain("FILTER c_test.name < @c_test__name_5")
-            query.query.shouldContain("FILTER c_test.name <= @c_test__name_6")
-            query.query.shouldContain("FILTER c_test.name IN @c_test__name_7")
-            query.query.shouldContain("FILTER c_test.name NOT IN @c_test__name_8")
-            query.query.shouldContain("FILTER c_test.name LIKE @c_test__name_9")
-            query.query.shouldContain("FILTER c_test.name =~ @c_test__name_10")
+            query.aql.shouldContain("FOR i_test IN `test`")
+            query.aql.shouldContain("FILTER i_test.name == @test__name_1")
+            query.aql.shouldContain("FILTER i_test.name != @test__name_2")
+            query.aql.shouldContain("FILTER i_test.name > @test__name_3")
+            query.aql.shouldContain("FILTER i_test.name >= @test__name_4")
+            query.aql.shouldContain("FILTER i_test.name < @test__name_5")
+            query.aql.shouldContain("FILTER i_test.name <= @test__name_6")
+            query.aql.shouldContain("FILTER i_test.name IN @test__name_7")
+            query.aql.shouldContain("FILTER i_test.name NOT IN @test__name_8")
+            query.aql.shouldContain("FILTER i_test.name LIKE @test__name_9")
+            query.aql.shouldContain("FILTER i_test.name =~ @test__name_10")
 
-            query.query.shouldBe(
-                """ |FOR c_test IN `test`
-                    |    FILTER c_test.name == @c_test__name_1
-                    |    FILTER c_test.name != @c_test__name_2
-                    |    FILTER c_test.name > @c_test__name_3
-                    |    FILTER c_test.name >= @c_test__name_4
-                    |    FILTER c_test.name < @c_test__name_5
-                    |    FILTER c_test.name <= @c_test__name_6
-                    |    FILTER c_test.name IN @c_test__name_7
-                    |    FILTER c_test.name NOT IN @c_test__name_8
-                    |    FILTER c_test.name LIKE @c_test__name_9
-                    |    FILTER c_test.name =~ @c_test__name_10
-                    |    RETURN c_test
+            query.aql.shouldBe(
+                """ |FOR i_test IN `test`
+                    |    FILTER i_test.name == @test__name_1
+                    |    FILTER i_test.name != @test__name_2
+                    |    FILTER i_test.name > @test__name_3
+                    |    FILTER i_test.name >= @test__name_4
+                    |    FILTER i_test.name < @test__name_5
+                    |    FILTER i_test.name <= @test__name_6
+                    |    FILTER i_test.name IN @test__name_7
+                    |    FILTER i_test.name NOT IN @test__name_8
+                    |    FILTER i_test.name LIKE @test__name_9
+                    |    FILTER i_test.name =~ @test__name_10
+                    |    RETURN i_test
                     |
                 """.trimMargin()
             )
 
             query.vars.shouldBe(
                 mapOf(
-                    "c_test__name_1" to "V_EQ",
-                    "c_test__name_2" to "V_NE",
-                    "c_test__name_3" to "V_GT",
-                    "c_test__name_4" to "V_GTE",
-                    "c_test__name_5" to "V_LT",
-                    "c_test__name_6" to "V_LTE",
-                    "c_test__name_7" to listOf("V_IN"),
-                    "c_test__name_8" to listOf("V_NOT_IN"),
-                    "c_test__name_9" to "V_LIKE",
-                    "c_test__name_10" to "V_REGEX"
+                    "i_test__name_1" to "V_EQ",
+                    "i_test__name_2" to "V_NE",
+                    "i_test__name_3" to "V_GT",
+                    "i_test__name_4" to "V_GTE",
+                    "i_test__name_5" to "V_LT",
+                    "i_test__name_6" to "V_LTE",
+                    "i_test__name_7" to listOf("V_IN"),
+                    "i_test__name_8" to listOf("V_NOT_IN"),
+                    "i_test__name_9" to "V_LIKE",
+                    "i_test__name_10" to "V_REGEX"
                 )
             )
         }
@@ -85,10 +85,10 @@ class QueryBuilderSpec : StringSpec({
             }
         }
 
-        query.query.shouldBe(
-            """ |FOR c_test_persons IN `test-persons`
-                |    FILTER c_test_persons.addresses[*].street == @c_test_persons__addresses_STAR__street_1
-                |    RETURN c_test_persons
+        query.aql.shouldBe(
+            """ |FOR i_test_persons IN `test-persons`
+                |    FILTER i_test_persons.addresses[*].street == @test_persons__addresses_STAR__street_1
+                |    RETURN i_test_persons
                 |
             """.trimMargin()
         )
@@ -103,10 +103,10 @@ class QueryBuilderSpec : StringSpec({
             }
         }
 
-        query.query.shouldBe(
-            """ |FOR c_test_persons IN `test-persons`
-                |    FILTER c_test_persons.addresses[*].street[**] == @c_test_persons__addresses_STAR__street_STAR2_1
-                |    RETURN c_test_persons
+        query.aql.shouldBe(
+            """ |FOR i_test_persons IN `test-persons`
+                |    FILTER i_test_persons.addresses[*].street[**] == @test_persons__addresses_STAR__street_STAR2_1
+                |    RETURN i_test_persons
                 |
             """.trimMargin()
         )
@@ -123,12 +123,12 @@ class QueryBuilderSpec : StringSpec({
             }
         }
 
-        query.query.shouldBe(
-            """ |FOR c_test_persons IN `test-persons`
-                |    FILTER c_test_persons.addresses[*].street[**] ANY == @c_test_persons__addresses_STAR__street_STAR2_ANY_1
-                |    FILTER c_test_persons.addresses[*].street[**] ALL != @c_test_persons__addresses_STAR__street_STAR2_ALL_2
-                |    FILTER c_test_persons.addresses[*].street[**] NONE IN @c_test_persons__addresses_STAR__street_STAR2_NONE_3
-                |    RETURN c_test_persons
+        query.aql.shouldBe(
+            """ |FOR i_test_persons IN `test-persons`
+                |    FILTER i_test_persons.addresses[*].street[**] ANY == @test_persons__addresses_STAR__street_STAR2_ANY_1
+                |    FILTER i_test_persons.addresses[*].street[**] ALL != @test_persons__addresses_STAR__street_STAR2_ALL_2
+                |    FILTER i_test_persons.addresses[*].street[**] NONE IN @test_persons__addresses_STAR__street_STAR2_NONE_3
+                |    RETURN i_test_persons
                 |
             """.trimMargin()
         )

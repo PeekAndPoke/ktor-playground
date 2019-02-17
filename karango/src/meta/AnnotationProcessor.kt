@@ -74,11 +74,7 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
 
             listOf(
                 """
-            object ${simpleName}Collection : EntityCollectionDefinitionImpl<$simpleName>() {
-                override fun getSimpleName() = "$collectionName"
-                override fun getQueryName() = "c_$collectionName"
-                override fun getReturnType() = $simpleName::class.java
-            }
+            object ${simpleName}Collection : EntityCollectionDefinitionImpl<$simpleName>("$collectionName", $simpleName::class.java)
             """
             ).plus(
                 element.variables.map {
@@ -87,8 +83,8 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
                     val prop = it.simpleName
 
                     """
-            inline val ${simpleName}Collection.$prop inline get() = PathInCollection<$simpleName, $type>(this, listOf(".$prop")) 
-            """
+            inline val ${simpleName}Collection.$prop inline get() = startPropPath<$simpleName, $type>(".$prop") 
+            """                                                                                     
                 }
             )
 
@@ -101,7 +97,7 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
             val prop = it.simpleName
 
             """
-            inline val <S> PathInCollection<S, $simpleName>.$prop inline get() = append<$type>(".$prop")
+            inline val <S> PropertyPath<S, $simpleName>.$prop inline get() = append<$type>(".$prop")
             """
         }
 

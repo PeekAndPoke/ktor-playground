@@ -99,6 +99,7 @@ fun y() {
                     FILTER { person.books.`*`.authors.`*`.firstName.`**` ALL IN(names) }
 
                     LIMIT(0, 20)
+                    
                     RETURN(person)
                 }
 

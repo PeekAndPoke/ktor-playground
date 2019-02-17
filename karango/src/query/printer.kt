@@ -1,9 +1,16 @@
 package de.peekandpoke.karango.query
 
-import de.peekandpoke.karango.NamedType
-import de.peekandpoke.karango.Statement
+import de.peekandpoke.karango.Named
 
-class QueryPrinter {
+interface PrintableStatement {
+    fun printStmt(p: AqlPrinter): Any
+}
+
+interface PrintableExpression {
+    fun printExpr(p: AqlPrinter): Any
+}
+
+class AqlPrinter {
 
     data class Result(val query: String, val vars: Map<String, Any>)
 
@@ -21,13 +28,31 @@ class QueryPrinter {
 
     private fun String.toName() = this
         .split(".")
-        .joinToString(".") { it.replace("[^a-zA-Z0-9_\\[*\\] ]".toRegex(), "_") }
+        .joinToString(".") { it.replace("[^a-zA-Z0-9_\\[*\\] `]".toRegex(), "_") }
 
     fun build() = Result(stringBuilder.toString(), queryVars)
 
-    fun name(named: NamedType<*>) = append(named.getQueryName().toName())
+    fun expr(expr: PrintableExpression) = apply { expr.printExpr(this) }
+
+    fun stmt(stmt: PrintableStatement) = apply { stmt.printStmt(this) }
+
+    fun stmts(all: List<PrintableStatement>) = apply { all.forEach { stmt(it) } }
+
+    fun identifier(name: Named) = name("i_${name.getName()}")
     
-    fun value(named: NamedType<*>, value: Any) = value(named.getQueryName(), value)
+    fun name(name: Named) = name(name.getName())
+
+    private fun name(name: String) = append(name.toName())
+
+//    fun value(named: Queryable<*>, value: Any) = value(named.getQueryName(), value)
+
+    fun value(expr: Any, value: Any) = apply {
+        if (expr is Named) {
+            value(expr.getName(), value)
+        } else {
+            value("v", value)
+        }
+    }
 
     fun value(name: String, value: Any) = apply {
 
@@ -47,9 +72,6 @@ class QueryPrinter {
         stringBuilder.append(str)
     }
 
-    fun append(statement: Statement) = apply { statement.print(this) }
-
-    fun appendAll(all: List<Statement>) = apply { all.forEach { append(it) } }
 
     fun appendLine(str: String = "") = apply {
         append(str)
@@ -58,7 +80,7 @@ class QueryPrinter {
         newLine = true
     }
 
-    fun indent(cb: QueryPrinter.() -> Unit) {
+    fun indent(cb: AqlPrinter.() -> Unit) {
 
         indent += "    "
 

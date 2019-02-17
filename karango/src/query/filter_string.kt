@@ -2,21 +2,23 @@
 
 package de.peekandpoke.karango.query
 
-import de.peekandpoke.karango.NamedType
+import de.peekandpoke.karango.Expression
+import de.peekandpoke.karango.NamedExpression
 
-internal data class FilterContainsByValue(val column: NamedType<*>, val search: String) : Filter {
-    override fun print(printer: QueryPrinter) {
-        printer.append("CONTAINS(${column.getQueryName()}, ").value(column, search).append(")")
+internal data class FilterContainsByValue(val expr: NamedExpression<*>, val search: String) : FilterPredicate {
+
+    override fun printExpr(p: AqlPrinter) =
+        p.append("CONTAINS(").expr(expr).append(", ").value(expr, search).append(")")
+}
+
+internal data class FilterContainsByNamed(val expr: NamedExpression<*>, val search: Expression<String>) : FilterPredicate {
+    
+    override fun printExpr(p: AqlPrinter) {
+        p.append("CONTAINS(").expr(expr).append(", ").expr(search).append(")")
     }
 }
 
-internal data class FilterContainsByNamed(val column: NamedType<*>, val search: NamedType<String>) : Filter {
-    override fun print(printer: QueryPrinter) {
-        printer.append("CONTAINS(${column.getQueryName()}, ${search.getQueryName()})")
-    }
-}
-
-infix fun NamedType<String>.CONTAINS(value: String): Filter = FilterContainsByValue(this, value)
-infix fun NamedType<String>.CONTAINS(value: NamedType<String>): Filter = FilterContainsByNamed(this, value)
+infix fun NamedExpression<String>.CONTAINS(value: String): FilterPredicate = FilterContainsByValue(this, value)
+infix fun NamedExpression<String>.CONTAINS(value: Expression<String>): FilterPredicate = FilterContainsByNamed(this, value)
 
 

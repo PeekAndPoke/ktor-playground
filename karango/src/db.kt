@@ -7,10 +7,7 @@ import com.arangodb.model.CollectionCreateOptions
 import com.arangodb.model.DocumentCreateOptions
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import de.peekandpoke.karango.query.ForLoopBuilder
-import de.peekandpoke.karango.query.RootBuilder
-import de.peekandpoke.karango.query.TypedQuery
-import de.peekandpoke.karango.query.ensureKey
+import de.peekandpoke.karango.query.*
 import kotlin.system.measureTimeMillis
 
 class Db(private val database: ArangoDatabase) {
@@ -37,7 +34,7 @@ class Db(private val database: ArangoDatabase) {
 
     fun <T : Entity, D : EntityCollectionDefinition<T>> collection(def: D): DbCollection<T, D> {
 
-        val name = def.getSimpleName()
+        val name = def.getName()
         val coll = database.collection(name)
 
         if (!coll.exists()) {
@@ -49,7 +46,7 @@ class Db(private val database: ArangoDatabase) {
 
     fun <T : Edge, D : EdgeCollectionDefinition<T>> edgeCollection(def: D): DbCollection<T, D> {
 
-        val name = def.getSimpleName()
+        val name = def.getName()
         val coll = database.collection(name)
 
         if (!coll.exists()) {
@@ -59,27 +56,29 @@ class Db(private val database: ArangoDatabase) {
         return DbCollection(this, database.collection(name), def)
     }
 
-    fun <T> query(builder: RootBuilder.() -> ReturnType<T>): Cursor<T> {
+    fun <T> query(builder: RootBuilder.() -> Statement<T>): Cursor<T> {
 
         val query = de.peekandpoke.karango.query.query(builder)
 
 //        println(query)
-
+        
         val options = AqlQueryOptions().count(true)
 
         lateinit var result: ArangoCursor<T>
-        
-        val time = measureTimeMillis { 
+
+        val time = measureTimeMillis {
             result = database.query(query.aql, query.vars, options, query.returnType)
         }
-        
+
         return Cursor(result, query, time)
     }
 }
 
-class Cursor<T>(private val inner : ArangoCursor<T>, 
-                val query: TypedQuery<T>,
-                val timeMs: Long) : ArangoCursor<T> by inner 
+class Cursor<T>(
+    private val inner: ArangoCursor<T>,
+    val query: TypedQuery<T>,
+    val timeMs: Long
+) : ArangoCursor<T> by inner
 
 @Suppress("PropertyName")
 interface Entity {
@@ -118,23 +117,20 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
      */
     fun <X> getAs(idOrKey: String, type: Class<X>): X? = dbColl.getDocument(idOrKey.ensureKey, type)
 
-    fun save(obj: T): T = dbColl.insertDocument(
-        obj,
-        DocumentCreateOptions()
-            .returnNew(true)
-            .overwrite(true)
-    ).new
+    fun save(obj: T): T =
+        dbColl.insertDocument(
+            obj,
+            DocumentCreateOptions()
+                .returnNew(true)
+                .overwrite(true)
+        ).new
+    
+    fun update(entity: T, builder: KeyValueBuilder<T>.(D) -> Unit): Cursor<T> =
+        db.query {
+            UPDATE(entity, def, builder)
+        }
 
-    fun bulkInsert(objs: List<T>) = dbColl.insertDocuments(
-        objs,
-        DocumentCreateOptions()
-            .waitForSync(false)
-            .overwrite(true)
-            .returnNew(false)
-            .returnOld(false)
-    ).documents.size
-
-    fun query(builder: ForLoopBuilder<T>.(D) -> Unit) =
+    fun find(builder: ForLoopBuilder<T>.(D) -> Unit): Cursor<T> =
         db.query {
             FOR(def) { t ->
                 builder(t)
@@ -142,22 +138,30 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
             }
         }
 
-    fun queryOne(builder: ForLoopBuilder<T>.(D) -> Unit) : T? =
-            db.query {
-                FOR(def) {t ->
-                    builder(t)
-                    LIMIT(1)
-                    RETURN(t)
-                }
-            }.first()
-    
-    fun queryByKey(key: String) = db.query { 
-        RETURN(def.getSimpleName(), key.ensureKey, def.getReturnType())
-    }.first()
-    
+    fun findOne(builder: ForLoopBuilder<T>.(D) -> Unit): T? =
+        db.query {
+            FOR(def) { t ->
+                builder(t)
+                LIMIT(1)
+                RETURN(t)
+            }
+        }.first()
+
+    fun findByIds(vararg keys: String) =
+        db.query {
+            RETURN(def.getReturnType(), *keys.filter { it.startsWith(def.getName()) }.toTypedArray())
+        }
+
+    fun findByKey(key: String): T? =
+        db.query {
+            RETURN(def.getName(), key.ensureKey, def.getReturnType())
+        }.first()
+
+    // TODO: CREATE DSL
     fun count() =
         dbColl.db().query("RETURN COUNT(${dbColl.name()})", Int::class.java).first()!!
 
+    // TODO: CREATE DSL
     fun removeAll(): ArangoCursor<Any> =
         dbColl.db().query("FOR x IN ${dbColl.name()} REMOVE x IN ${dbColl.name()}", Any::class.java)
 }

@@ -91,8 +91,10 @@ interface ProcessorUtils : KotlinProcessingEnvironment {
                 if (it == "java.util") it.replace("java.util", "kotlin.collections")
                 else it
             }
+            .replace("int", "kotlin.Int")
             .replace("kotlin.Integer", "kotlin.Int")
             .replace("Integer", "Int")
+            .replace("java.lang.Int", "kotlin.Int")
             .replace("java.lang.String", "kotlin.String")
 
 }

@@ -4,120 +4,111 @@ import de.peekandpoke.karango.*
 
 data class TypedQuery<T>(val aql: String, val vars: Map<String, Any>, val returnType: Class<T>)
 
-fun <T> query(builder: RootBuilder.() -> ReturnType<T>): TypedQuery<T> {
+fun <T> query(builder: RootBuilder.() -> Statement<T>): TypedQuery<T> {
 
     val root = RootBuilder()
     val returnType = root.builder()
 
-    val query = QueryPrinter().append(root).build()
+    val query = AqlPrinter().stmt(root).build()
 
     return TypedQuery(query.query, query.vars, returnType.getReturnType())
 }
 
 @Suppress("FunctionName")
 @KarangoDslMarker
-class RootBuilder internal constructor() : LetBuilderTrait, ForBuilderTrait, Statement {
+class RootBuilder internal constructor() : LetBuilderTrait, ForBuilderTrait, PrintableStatement {
 
-    override val stmts = mutableListOf<Statement>()
+    override val stmts = mutableListOf<PrintableStatement>()
 
-    inline fun <reified T, L : Collection<T>> LET(name: String, builder: () -> L): IterableType<T> =
-        IterableLet(name, builder(), T::class.java).apply { stmts.add(this) }
+    inline fun <reified T> LET(name: String, value: T): NamedExpression<T> =
+        Let(name, value, T::class.java).apply { stmts.add(this) }.toExpression()
 
-    inline fun <reified T> RETURN(vararg ids: String): ReturnType<T> = 
+    inline fun <reified T, L : Collection<T>> LET(name: String, builder: () -> L): NamedIterableExpression<T> =
+        IterableLet(name, builder(), T::class.java).apply { stmts.add(this) }.toExpression()
+
+    inline fun <reified T> RETURN(vararg ids: String): Statement<T> =
         ReturnDocumentsByIds(ids.toList(), T::class.java).apply { stmts.add(this) }
-    
-    fun <T> RETURN(collection: String, key: String, type: Class<T>): ReturnType<T> =
+
+    fun <T> RETURN(type: Class<T>, vararg ids: String): Statement<T> =
+        ReturnDocumentsByIds(ids.toList(), type).apply { stmts.add(this) }
+
+    inline fun <reified T> RETURN(collection: String, key: String) = RETURN(collection, key, T::class.java)
+
+    fun <T> RETURN(collection: String, key: String, type: Class<T>): Statement<T> =
         ReturnDocumentById("$collection/$key", type).apply { stmts.add(this) }
 
-    override fun print(printer: QueryPrinter) {
-        printer.appendAll(stmts)
+    fun <T : Entity, D : CollectionDefinition<T>> UPDATE(entity: T, col: D, builder: KeyValueBuilder<T>.(D) -> Unit): Statement<T> =
+        UpdateDocumentStmt(entity, col, KeyValueBuilder<T>().apply { builder(col) }).apply { stmts.add(this) }
+
+    override fun printStmt(p: AqlPrinter) {
+        p.stmts(stmts)
     }
 }
 
 @Suppress("FunctionName")
 @KarangoDslMarker
-class ForLoopBuilder<T> internal constructor(private val iterable: IterableType<T>) : ForBuilderTrait, Statement {
+class ForLoopBuilder<T> internal constructor(private val iterable: NamedIterableExpression<T>) : ForBuilderTrait, Statement<T> {
 
-    internal class Op(private val keyword: String, private val inner: Statement) : Statement {
-        override fun print(printer: QueryPrinter) {
-            printer.append("$keyword ").append(inner).appendLine()
-        }
-    }
+    override val stmts = mutableListOf<PrintableStatement>()
 
-    internal class InsertInto(private val named: NamedType<*>, private val collection: CollectionDefinition<*>) : Statement {
-        override fun print(printer: QueryPrinter) {
-            printer.append("INSERT ").name(named).append(" INTO ").append("`${collection.getSimpleName()}`").appendLine()
-        }
-    }
+    override fun getReturnType() = iterable.getReturnType()
 
-    internal class NameOf(private val named: NamedType<*>) : Statement {
-        override fun print(printer: QueryPrinter) {
-            printer.name(named)
-        }
-    }
+    fun FILTER(builder: () -> FilterPredicate) = apply { stmts.add(Filter(builder())) }
 
-    class InsertStage<T>(val what: NamedType<T>)
+    fun SORT(builder: () -> Sort) = apply { stmts.add(builder()) }
 
-    override val stmts = mutableListOf<Statement>()
+    fun LIMIT(limit: Int) = apply { stmts.add(OffsetAndLimit(0, limit)) }
 
-    fun FILTER(builder: () -> Filter) = apply {
-        stmts.add(Op("FILTER", builder()))
-    }
+    fun LIMIT(offset: Int, limit: Int) = apply { stmts.add(OffsetAndLimit(offset, limit)) }
 
-    fun SORT(builder: () -> Sort) = apply {
-        stmts.add(Op("SORT", builder()))
-    }
+    fun RETURN(ret: NamedIterableExpression<T>): Statement<T> = ReturnNamed(ret, ret.getReturnType()).apply { stmts.add(this) }
 
-    fun LIMIT(limit: Int) = apply {
-        stmts.add(Op("LIMIT", OffsetAndLimit(0, limit)))
-    }
+    fun INSERT(what: NamedExpression<T>) = InsertPreStage(what)
 
-    fun LIMIT(offset: Int, limit: Int) = apply {
-        stmts.add(Op("LIMIT", OffsetAndLimit(offset, limit)))
-    }
+    infix fun InsertPreStage<T>.INTO(collection: CollectionDefinition<T>): Statement<T> = InsertInto(what, collection).apply { stmts.add(this) }
 
-    fun RETURN(iterable: IterableType<T>): IterableType<T> {
-        stmts.add(Op("RETURN", NameOf(iterable)))
+    override fun printStmt(p: AqlPrinter) {
 
-        return iterable
-    }
+        p.append("FOR ").identifier(iterable).append(" IN ").name(iterable).appendLine()
 
-    fun INSERT(what: NamedType<T>) = InsertStage(what)
-
-    infix fun InsertStage<T>.INTO(collection: CollectionDefinition<T>): CollectionDefinition<T> {
-        stmts.add(InsertInto(what, collection))
-
-        return collection
-    }
-
-    override fun print(printer: QueryPrinter) {
-
-        printer.append("FOR ").name(iterable).append(" IN `${iterable.getSimpleName()}`").appendLine()
-
-        printer.indent {
-            appendAll(stmts)
+        p.indent {
+            stmts(stmts)
         }
     }
 }
 
+@Suppress("FunctionName")
+@KarangoDslMarker
+class KeyValueBuilder<T : Entity> {
+
+    val pairs = mutableMapOf<String, Any>()
+
+    infix fun <X> PropertyPath<T, X>.with(value: X) =
+    // TODO: this does not look right here
+        apply { pairs[this.getPath().joinToString("").trimStart('.')] = value as Any }
+
+    infix fun String.with(value: Any) = apply { pairs[this] = value }
+}
+
 interface BuilderTrait {
-    val stmts: MutableList<Statement>
+    val stmts: MutableList<PrintableStatement>
 }
 
 @Suppress("FunctionName")
 interface LetBuilderTrait : BuilderTrait {
 
-    fun LET(name: String, value: Int): NamedType<Int> = Let(name, value).apply { stmts.add(this) }
 
-    fun LET(name: String, value: Double): NamedType<Double> = Let(name, value).apply { stmts.add(this) }
-
-    fun LET(name: String, value: String): NamedType<String> = Let(name, value).apply { stmts.add(this) }
+//    fun LET(name: String, value: Int): NamedExpression<Int> = Let(name, value).apply { stmts.add(this) }.toExpression()
+//
+//    fun LET(name: String, value: Double): NamedExpression<Double> = Let(name, value).apply { stmts.add(this) }.toExpression()
+//
+//    fun LET(name: String, value: String): NamedExpression<String> = Let(name, value).apply { stmts.add(this) }.toExpression()
 }
 
 @Suppress("FunctionName")
 interface ForBuilderTrait : BuilderTrait {
 
-    fun <T, D : IterableType<T>> FOR(col: D, builder: ForLoopBuilder<T>.(D) -> IterableType<T>): IterableType<T> {
+    fun <T, D : NamedIterableExpression<T>> FOR(col: D, builder: ForLoopBuilder<T>.(D) -> Statement<T>): Statement<T> {
 
         val forLoop = ForLoopBuilder(col)
         val returnType = forLoop.builder(col)
@@ -128,52 +119,62 @@ interface ForBuilderTrait : BuilderTrait {
     }
 }
 
-class IterableLet<T>(private val name: String, private val value: Collection<T>, private val type: Class<T>) : Statement, IterableType<T> {
+class IterableLet<T>(name: String, private val value: Collection<T>, private val type: Class<T>) : Statement<T> {
 
-    override fun getSimpleName() = name
-    override fun getQueryName() = "l_$name"
-    override fun getReturnType() = type
+    private val expr: NamedIterableExpression<T> = NamedIterableExpressionImpl("l_$name", type)
 
-    override fun print(printer: QueryPrinter) {
-        printer.append("LET ${getSimpleName()} = ").value(getSimpleName(), value as Any).appendLine()
-    }
-}
-
-internal class Let<T>(private val name: String, private val value: T) : Statement, NamedType<T> {
-
-    override fun getSimpleName() = name
-    override fun getQueryName() = "l_$name"
-
-    override fun print(printer: QueryPrinter) {
-        printer.append("LET ${getSimpleName()} = ").value(getSimpleName(), value as Any).appendLine()
-    }
-}
-
-class ReturnDocumentById<T>(private val id: String, private val type: Class<T>) : ReturnType<T>, Statement {
+    fun toExpression() = expr
 
     override fun getReturnType() = type
 
-    override fun print(printer: QueryPrinter) {
-        printer.append("RETURN DOCUMENT (").value("id", id).append(")").appendLine()
-    }
+    override fun printStmt(p: AqlPrinter) =
+        p.append("LET ").name(expr).append(" = ").value(this, value as Any).appendLine()
 }
 
-class ReturnDocumentsByIds<T>(private val ids: List<String>, private val type: Class<T>) : ReturnType<T>, Statement {
+class Let<T>(name: String, private val value: T, private val type: Class<T>) : Statement<T> {
+
+    private val expr: NamedExpression<T> = NamedExpressionImpl("l_$name", type)
+
+    fun toExpression() = expr
 
     override fun getReturnType() = type
 
-    override fun print(printer: QueryPrinter) {
-        printer.append("FOR x IN DOCUMENT (").value("ids", ids).append(") RETURN x").appendLine()
-    }
+    override fun printStmt(p: AqlPrinter) =
+        p.append("LET ").name(expr).append(" = ").value(this, value as Any).appendLine()
 }
 
-class Document<T>(private var ids: List<String>, private var type: Class<T>) : IterableType<T>, Statement {
+internal class UpdateDocumentStmt<T : Entity>(
+    private val entity: T,
+    private val col: CollectionDefinition<T>,
+    private val kv: KeyValueBuilder<T>
+) : Statement<T> {
 
-    override fun getReturnType() = type
-    override fun getSimpleName() = "doc"
-    override fun getQueryName() = "doc"
+    override fun getReturnType() = col.getReturnType()
 
-    override fun print(printer: QueryPrinter) {
-        printer.append("DOCUMENT (").value("ids", ids).append(")")
+    override fun printStmt(p: AqlPrinter) {
+
+        with(p) {
+
+            append("UPDATE \"").append(entity._id.ensureKey).append("\" WITH {").appendLine()
+
+            indent {
+
+                val pairs = kv.pairs.toMap()
+
+                pairs.keys.forEachIndexed { idx, key ->
+
+                    append("$key : ").value("kv", pairs.getValue(key))
+
+                    if (idx < pairs.size - 1) {
+                        append(",")
+                    }
+
+                    appendLine()
+                }
+            }
+
+            append("} IN ").name(col).appendLine()
+        }
+
     }
 }
