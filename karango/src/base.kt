@@ -3,8 +3,7 @@
 package de.peekandpoke.karango
 
 import de.peekandpoke.karango.query.AqlPrinter
-import de.peekandpoke.karango.query.PrintableExpression
-import de.peekandpoke.karango.query.PrintableStatement
+import de.peekandpoke.karango.query.Printable
 
 @DslMarker
 annotation class KarangoDslMarker
@@ -17,7 +16,9 @@ interface Named {
     fun getName(): String
 }
 
-interface Expression<T> : Typed<T>, PrintableExpression
+interface Statement : Printable
+
+interface Expression<T> : Typed<T>, Printable
 
 interface NamedExpression<T> : Expression<T>, Named
 
@@ -25,15 +26,13 @@ interface IterableExpression<T> : Expression<T>
 
 interface NamedIterableExpression<T> : IterableExpression<T>, NamedExpression<T>
 
-interface Statement<T> : Typed<T>, PrintableStatement
-
 internal class NamedExpressionImpl<T>(private val name_: String, private val type: Class<T>) : NamedExpression<T> {
 
     override fun getName() = name_
 
     override fun getReturnType() = type
 
-    override fun printExpr(p: AqlPrinter) = p.name(this)
+    override fun printAql(p: AqlPrinter) = p.name(this)
 }
 
 internal class NamedIterableExpressionImpl<T>(private val name_: String, private val type: Class<T>) : NamedIterableExpression<T> {
@@ -42,7 +41,7 @@ internal class NamedIterableExpressionImpl<T>(private val name_: String, private
 
     override fun getReturnType() = type
 
-    override fun printExpr(p: AqlPrinter) = p.name(this)
+    override fun printAql(p: AqlPrinter) = p.name(this)
 }
 //
 //interface Queryable<T> {
@@ -62,7 +61,7 @@ inline val <T> CollectionDefinition<T>._key
 inline val <T> CollectionDefinition<T>._rev
     inline get() = startPropPath<T, String>("._rev")
 
-inline fun <S, reified T> CollectionDefinition<S>.startPropPath(key: String) = PropertyPath(this, listOf(key), T::class.java)
+inline fun <S, reified T> NamedExpression<S>.startPropPath(key: String) = PropertyPath(this, listOf(key), T::class.java)
 
 interface CollectionDefinition<T> : NamedIterableExpression<T> {
 
@@ -83,7 +82,7 @@ abstract class CollectionDefinitionImpl<T>(private val name_: String, private va
 
     override fun getReturnType() = type
 
-    override fun printExpr(p: AqlPrinter) = p.name(this)
+    override fun printAql(p: AqlPrinter) = p.name(this)
 
     override fun addConfiguration(key: PropertyPath<*, *>, config: String) = run { configurations[key] = config }
 }
@@ -93,25 +92,23 @@ abstract class EntityCollectionDefinitionImpl<T>(name: String, type: Class<T>) :
 abstract class EdgeCollectionDefinitionImpl<T>(name: String, type: Class<T>) : CollectionDefinitionImpl<T>(name, type), EdgeCollectionDefinition<T>
 
 data class PropertyPath<S, T>(
-    private val collection: CollectionDefinition<S>,
+    private val named: NamedExpression<S>,
     private val path: List<String> = listOf(),
     private val type: Class<T>
 ) : NamedExpression<T> {
-    
-    override fun getName() = listOf(collection.getName()).plus(path).joinToString("")
-    
+
+    override fun getName() = listOf(named.getName()).plus(path).joinToString("")
+
     fun getPath() = path
 
-    fun getCollection() = collection
-
-    inline fun <reified NT> append(step: String) = PropertyPath(getCollection(), getPath().plus(step), NT::class.java)
+    fun getNamed() = named
+    
+    inline fun <reified NT> append(step: String) = PropertyPath(getNamed(), getPath().plus(step), NT::class.java)
 
     override fun getReturnType() = type
 
-    override fun printExpr(p: AqlPrinter) = p.identifier(this)
+    override fun printAql(p: AqlPrinter) = p.iterator(this)
 }
-
-fun <S, T> PropertyPath<S, T>.configure(value: String) = getCollection().addConfiguration(this, value)
 
 inline val <S, reified T> PropertyPath<S, List<T>>.`*` inline get() = append<T>("[*]")
 

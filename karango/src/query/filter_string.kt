@@ -7,14 +7,14 @@ import de.peekandpoke.karango.NamedExpression
 
 internal data class FilterContainsByValue(val expr: NamedExpression<*>, val search: String) : FilterPredicate {
 
-    override fun printExpr(p: AqlPrinter) =
-        p.append("CONTAINS(").expr(expr).append(", ").value(expr, search).append(")")
+    override fun printAql(p: AqlPrinter) =
+        p.append("CONTAINS(").append(expr).append(", ").value(expr, search).append(")")
 }
 
 internal data class FilterContainsByNamed(val expr: NamedExpression<*>, val search: Expression<String>) : FilterPredicate {
     
-    override fun printExpr(p: AqlPrinter) {
-        p.append("CONTAINS(").expr(expr).append(", ").expr(search).append(")")
+    override fun printAql(p: AqlPrinter) {
+        p.append("CONTAINS(").append(expr).append(", ").append(search).append(")")
     }
 }
 

@@ -83,7 +83,7 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
                     val prop = it.simpleName
 
                     """
-            inline val ${simpleName}Collection.$prop inline get() = startPropPath<$simpleName, $type>(".$prop") 
+            inline val NamedExpression<$simpleName>.$prop inline get() = startPropPath<$simpleName, $type>(".$prop") 
             """                                                                                     
                 }
             )

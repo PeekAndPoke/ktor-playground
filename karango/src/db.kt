@@ -56,11 +56,11 @@ class Db(private val database: ArangoDatabase) {
         return DbCollection(this, database.collection(name), def)
     }
 
-    fun <T> query(builder: RootBuilder.() -> Statement<T>): Cursor<T> {
+    fun <T> query(builder: RootBuilder.() -> Expression<T>): Cursor<T> {
 
         val query = de.peekandpoke.karango.query.query(builder)
 
-//        println(query)
+        println(query)
         
         val options = AqlQueryOptions().count(true)
 

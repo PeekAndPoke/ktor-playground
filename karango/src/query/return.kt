@@ -1,27 +1,36 @@
 package de.peekandpoke.karango.query
 
+import de.peekandpoke.karango.Expression
 import de.peekandpoke.karango.Named
-import de.peekandpoke.karango.Statement
 
-internal class ReturnNamed<T>(private val named: Named, private val type: Class<T>) : Statement<T> {
-    
+internal class ReturnNamed<T>(private val named: Named, private val type: Class<T>) : Expression<T> {
+
     override fun getReturnType() = type
 
-    override fun printStmt(p: AqlPrinter) = p.append("RETURN ").identifier(named).appendLine()
+    override fun printAql(p: AqlPrinter) =
+        p.append("RETURN ").name(named).appendLine()
 }
 
-class ReturnDocumentById<T>(private val id: String, private val type: Class<T>) : Statement<T> {
+internal class ReturnIterator<T>(private val named: Named, private val type: Class<T>) : Expression<T> {
 
     override fun getReturnType() = type
 
-    override fun printStmt(p: AqlPrinter) =
+    override fun printAql(p: AqlPrinter) =
+        p.append("RETURN ").iterator(named).appendLine()
+}
+
+class ReturnDocumentById<T>(private val id: String, private val type: Class<T>) : Expression<T> {
+
+    override fun getReturnType() = type
+
+    override fun printAql(p: AqlPrinter) =
         p.append("RETURN DOCUMENT (").value("id", id).append(")").appendLine()
 }
 
-class ReturnDocumentsByIds<T>(private val ids: List<String>, private val type: Class<T>) : Statement<T> {
+class ReturnDocumentsByIds<T>(private val ids: List<String>, private val type: Class<T>) : Expression<T> {
 
     override fun getReturnType() = type
 
-    override fun printStmt(p: AqlPrinter) =
+    override fun printAql(p: AqlPrinter) =
         p.append("FOR x IN DOCUMENT (").value("ids", ids).append(") RETURN x").appendLine()
 }

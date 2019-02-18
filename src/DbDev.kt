@@ -8,7 +8,6 @@ import de.peekandpoke.domain.*
 import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.`**`
 import de.peekandpoke.karango.`*`
-import de.peekandpoke.karango.configure
 import de.peekandpoke.karango.query.ALL
 import de.peekandpoke.karango.query.EQ
 import de.peekandpoke.karango.query.IN
@@ -62,12 +61,11 @@ fun y() {
 //    val addresses = db.collection(Address.)
 
 
-    PersonCollection.name.configure("TEST")
 
     println(PersonCollection.configurations)
 
-    
-    exampleReturningFromLet(db)
+    exampleReturningFromScalarLet(db)
+    exampleReturningFromIterableLet(db)
 
     persons.removeAll()
 
@@ -79,7 +77,7 @@ fun y() {
 
 //    
 //    println(result)
-    
+
     for (y in 1..1) {
         val timeAll = measureTimeMillis {
 
@@ -99,7 +97,7 @@ fun y() {
                     FILTER { person.books.`*`.authors.`*`.firstName.`**` ALL IN(names) }
 
                     LIMIT(0, 20)
-                    
+
                     RETURN(person)
                 }
 
@@ -111,31 +109,52 @@ fun y() {
         println("fetchAll took $timeAll ms\n\n")
         println()
     }
-    
+
     println(persons.count())
 }
 
-fun exampleReturningFromLet(db: Db) {
+fun exampleReturningFromScalarLet(db: Db) {
 
-    println("/////////////////////////////////////////////////////////////////////////////////////////////////////////")    
-    println("//  EXAMPLE: Returning values that where sent in via LET")    
-    
+    println("/////////////////////////////////////////////////////////////////////////////////////////////////////////")
+    println("//  EXAMPLE: Returning a scalar value that was sent in via LET")
+
     val result = db.query {
-        val objs = LET("objs") {
+        val let = LET("let", "TEST")
+
+        RETURN(let)
+    }
+
+    println("---------------------------------------------------------------------------------------------------------")
+    result.forEach { println(it) }
+    println("---------------------------------------------------------------------------------------------------------")
+    println()
+}
+
+fun exampleReturningFromIterableLet(db: Db) {
+
+    println("/////////////////////////////////////////////////////////////////////////////////////////////////////////")
+    println("//  EXAMPLE: Returning iterable values that where sent in via LET")
+
+    val result = db.query {
+        val let = LET("let") {
             listOf(
                 Author("first", "last"),
                 Author("first_2", "last_2")
             )
         }
 
-        FOR (objs) {
-            RETURN (objs)
-        }
+        RETURN (let)
+        
+//        FOR (let) { x ->
+//            FILTER { x.firstName EQ "first"}
+//            RETURN (x)
+//        }
     }
 
+    println("---------------------------------------------------------------------------------------------------------")
     result.forEach { println(it) }
-
-    println("/////////////////////////////////////////////////////////////////////////////////////////////////////////")
+    println("---------------------------------------------------------------------------------------------------------")
+    println()
 }
 
 fun exampleInsertFromLet(db: Db) {
@@ -167,8 +186,8 @@ fun exampleInsertFromLet(db: Db) {
     val result = db.query {
         val objs = LET("objs") { personInserts }
 
-        FOR (objs) { o ->
-            INSERT (o) INTO  PersonCollection
+        FOR(objs) { o ->
+            INSERT(o) INTO PersonCollection
         }
     }
 

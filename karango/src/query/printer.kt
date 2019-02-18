@@ -2,12 +2,8 @@ package de.peekandpoke.karango.query
 
 import de.peekandpoke.karango.Named
 
-interface PrintableStatement {
-    fun printStmt(p: AqlPrinter): Any
-}
-
-interface PrintableExpression {
-    fun printExpr(p: AqlPrinter): Any
+interface Printable {
+    fun printAql(p: AqlPrinter): Any
 }
 
 class AqlPrinter {
@@ -32,13 +28,11 @@ class AqlPrinter {
 
     fun build() = Result(stringBuilder.toString(), queryVars)
 
-    fun expr(expr: PrintableExpression) = apply { expr.printExpr(this) }
+    fun append(printable: Printable) = apply { printable.printAql(this) }
 
-    fun stmt(stmt: PrintableStatement) = apply { stmt.printStmt(this) }
+    fun append(printables: List<Printable>) = apply { printables.forEach { append(it) } }
 
-    fun stmts(all: List<PrintableStatement>) = apply { all.forEach { stmt(it) } }
-
-    fun identifier(name: Named) = name("i_${name.getName()}")
+    fun iterator(name: Named) = name("i_${name.getName()}")
     
     fun name(name: Named) = name(name.getName())
 
