@@ -11,7 +11,7 @@ fun <T> query(builder: RootBuilder.() -> Expression<T>): TypedQuery<T> {
 
     val query = AqlPrinter().append(root).build()
 
-    return TypedQuery(query.query, query.vars, returnType.getReturnType())
+    return TypedQuery(query.query, query.vars, returnType.getType())
 }
 
 @Suppress("FunctionName")
@@ -27,7 +27,7 @@ class RootBuilder internal constructor() : LetBuilderTrait, ForBuilderTrait, Pri
         IterableLet(name, builder(), T::class.java).apply { items.add(this) }.toExpression()
 
     fun <T> RETURN(named: NamedExpression<T>) : Expression<T> = 
-        ReturnNamed(named, named.getReturnType()).apply { items.add(this) } 
+        ReturnNamed(named, named.getType()).apply { items.add(this) } 
     
     inline fun <reified T> RETURN(vararg ids: String): Expression<T> =
         ReturnDocumentsByIds(ids.toList(), T::class.java).apply { items.add(this) }
@@ -54,7 +54,7 @@ class ForLoopBuilder<T> internal constructor(private val iterable: NamedIterable
 
     override val items = mutableListOf<Printable>()
 
-    override fun getReturnType() = iterable.getReturnType()
+    override fun getType() = iterable.getType()
 
     fun FILTER(builder: () -> FilterPredicate) = apply { items.add(Filter(builder())) }
 
@@ -64,9 +64,9 @@ class ForLoopBuilder<T> internal constructor(private val iterable: NamedIterable
 
     fun LIMIT(offset: Int, limit: Int) = apply { items.add(OffsetAndLimit(offset, limit)) }
 
-    fun RETURN(ret: NamedExpression<T>): Expression<T> = ReturnNamed(ret, ret.getReturnType()).apply { items.add(this) }
+    fun RETURN(ret: NamedExpression<T>): Expression<T> = ReturnNamed(ret, ret.getType()).apply { items.add(this) }
     
-    fun RETURN(ret: NamedIterableExpression<T>): Expression<T> = ReturnIterator(ret, ret.getReturnType()).apply { items.add(this) }
+    fun RETURN(ret: NamedIterableExpression<T>): Expression<T> = ReturnIterator(ret, ret.getType()).apply { items.add(this) }
 
     fun INSERT(what: NamedExpression<T>) = InsertPreStage(what)
 
@@ -148,7 +148,7 @@ internal class UpdateDocument<T : Entity>(
     private val entity: T, private val col: CollectionDefinition<T>, private val kv: KeyValueBuilder<T>
 ) : Expression<T> {
 
-    override fun getReturnType() = col.getReturnType()
+    override fun getType() = col.getType()
 
     override fun printAql(p: AqlPrinter) {
 

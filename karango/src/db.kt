@@ -110,7 +110,7 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
     /**
      * Get document by _id or _key
      */
-    fun get(idOrKey: String): T? = getAs(idOrKey, def.getReturnType())
+    fun get(idOrKey: String): T? = getAs(idOrKey, def.getType())
 
     /**
      * Get document by _id or _key as the given type
@@ -149,12 +149,12 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
 
     fun findByIds(vararg keys: String) =
         db.query {
-            RETURN(def.getReturnType(), *keys.filter { it.startsWith(def.getName()) }.toTypedArray())
+            RETURN(def.getType(), *keys.filter { it.startsWith(def.getName()) }.toTypedArray())
         }
 
     fun findByKey(key: String): T? =
         db.query {
-            RETURN(def.getName(), key.ensureKey, def.getReturnType())
+            RETURN(def.getName(), key.ensureKey, def.getType())
         }.first()
 
     // TODO: CREATE DSL

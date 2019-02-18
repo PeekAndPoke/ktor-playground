@@ -9,7 +9,7 @@ import de.peekandpoke.karango.query.Printable
 annotation class KarangoDslMarker
 
 interface Typed<T> {
-    fun getReturnType(): Class<T>
+    fun getType(): Class<T>
 }
 
 interface Named {
@@ -30,7 +30,7 @@ internal class NamedExpressionImpl<T>(private val name_: String, private val typ
 
     override fun getName() = name_
 
-    override fun getReturnType() = type
+    override fun getType() = type
 
     override fun printAql(p: AqlPrinter) = p.name(this)
 }
@@ -39,7 +39,7 @@ internal class NamedIterableExpressionImpl<T>(private val name_: String, private
 
     override fun getName() = name_
 
-    override fun getReturnType() = type
+    override fun getType() = type
 
     override fun printAql(p: AqlPrinter) = p.name(this)
 }
@@ -80,7 +80,7 @@ abstract class CollectionDefinitionImpl<T>(private val name_: String, private va
 
     override fun getName() = name_
 
-    override fun getReturnType() = type
+    override fun getType() = type
 
     override fun printAql(p: AqlPrinter) = p.name(this)
 
@@ -105,7 +105,7 @@ data class PropertyPath<S, T>(
     
     inline fun <reified NT> append(step: String) = PropertyPath(getNamed(), getPath().plus(step), NT::class.java)
 
-    override fun getReturnType() = type
+    override fun getType() = type
 
     override fun printAql(p: AqlPrinter) = p.iterator(this)
 }

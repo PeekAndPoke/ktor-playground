@@ -5,7 +5,7 @@ import de.peekandpoke.karango.Named
 
 internal class ReturnNamed<T>(private val named: Named, private val type: Class<T>) : Expression<T> {
 
-    override fun getReturnType() = type
+    override fun getType() = type
 
     override fun printAql(p: AqlPrinter) =
         p.append("RETURN ").name(named).appendLine()
@@ -13,7 +13,7 @@ internal class ReturnNamed<T>(private val named: Named, private val type: Class<
 
 internal class ReturnIterator<T>(private val named: Named, private val type: Class<T>) : Expression<T> {
 
-    override fun getReturnType() = type
+    override fun getType() = type
 
     override fun printAql(p: AqlPrinter) =
         p.append("RETURN ").iterator(named).appendLine()
@@ -21,7 +21,7 @@ internal class ReturnIterator<T>(private val named: Named, private val type: Cla
 
 class ReturnDocumentById<T>(private val id: String, private val type: Class<T>) : Expression<T> {
 
-    override fun getReturnType() = type
+    override fun getType() = type
 
     override fun printAql(p: AqlPrinter) =
         p.append("RETURN DOCUMENT (").value("id", id).append(")").appendLine()
@@ -29,7 +29,7 @@ class ReturnDocumentById<T>(private val id: String, private val type: Class<T>) 
 
 class ReturnDocumentsByIds<T>(private val ids: List<String>, private val type: Class<T>) : Expression<T> {
 
-    override fun getReturnType() = type
+    override fun getType() = type
 
     override fun printAql(p: AqlPrinter) =
         p.append("FOR x IN DOCUMENT (").value("ids", ids).append(") RETURN x").appendLine()

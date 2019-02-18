@@ -9,7 +9,7 @@ import de.peekandpoke.karango.Statement
 
 interface FilterPredicate : Expression<Boolean> {
 
-    override fun getReturnType() = Boolean::class.java
+    override fun getType() = Boolean::class.java
 
     enum class Comparator(val op: String) {
         EQ("=="),
@@ -98,7 +98,7 @@ fun FilterPredicate.NOT(): FilterPredicate = FilterNot(this)
 
 internal class ValueExpression(private val named: Expression<*>, private val value: Any) : Expression<Any> {
 
-    override fun getReturnType() = Any::class.java
+    override fun getType() = Any::class.java
 
     override fun printAql(p: AqlPrinter): Any = p.value(named, value)
 }

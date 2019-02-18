@@ -35,11 +35,43 @@ data class Address2(val city: String, val street: String) {
     companion object
 }
 
+inline fun <reified X> getType(v : X) : Class<X> {
+    return X::class.java
+}
+
+inline fun <reified L : List<X>, reified X> getType(v : L) : List<Class<*>> {
+    return listOf(L::class.java, X::class.java)
+}
+
+@JvmName("ll")
+inline fun <reified L2: List<L>, reified L : List<X>, reified X> getType(v : L2) : List<Class<*>> {
+    return listOf(L2::class.java, L::class.java, X::class.java)
+}
+
 
 fun main() {
 
+    val t1 = getType("Test")
+    println(t1)
+
+    println()
+    println("--------------")
+
+    val t2 = getType(listOf("Test"))
+    println(t2)
+
+    println()
+    println("--------------")
+
+    val t3 = getType(listOf(listOf("Test")))
+    println(t3)
+    
+    
+    
+    
+    
 //    x()
-    y()
+//    y()
 }
 
 fun y() {
