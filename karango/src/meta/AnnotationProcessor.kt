@@ -106,6 +106,7 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
             package $packageName 
             
             import de.peekandpoke.karango.*
+            import de.peekandpoke.karango.aql.*
             
             ${collFuns.joinToString("")}
             

@@ -1,7 +1,4 @@
-package de.peekandpoke.karango.query
-
-import de.peekandpoke.karango.Expression
-import de.peekandpoke.karango.Named
+package de.peekandpoke.karango.aql
 
 interface Printable {
     fun printAql(p: AqlPrinter): Any
@@ -25,7 +22,10 @@ class AqlPrinter {
 
     private fun String.toName() = this
         .split(".")
+        .map { it.tick() }
         .joinToString(".") { it.replace("[^a-zA-Z0-9_\\[*\\] `]".toRegex(), "_") }
+
+    private fun String.tick() = "`$this`"
 
     fun build() = Result(stringBuilder.toString(), queryVars)
 
@@ -34,7 +34,7 @@ class AqlPrinter {
     fun append(printables: List<Printable>) = apply { printables.forEach { append(it) } }
 
     fun iterator(name: Named) = name("i_${name.getName()}")
-    
+
     fun name(name: Named) = name(name.getName())
 
     private fun name(name: String) = append(name.toName())
@@ -58,17 +58,17 @@ class AqlPrinter {
     }
 
     fun join(args: List<Expression<*>>, delimiter: String = ", ") = apply {
-        
+
         args.forEachIndexed { idx, a ->
-            
+
             append(a)
-            
+
             if (idx < args.size - 1) {
                 append(delimiter)
             }
         }
     }
-    
+
     fun append(str: String) = apply {
 
         if (newLine) {

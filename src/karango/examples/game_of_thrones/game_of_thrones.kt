@@ -1,11 +1,11 @@
 package de.peekandpoke.karango.examples.game_of_thrones
 
 import de.peekandpoke.karango.Db
+import de.peekandpoke.karango.aql.AND
+import de.peekandpoke.karango.aql.EQ
 import de.peekandpoke.karango.examples.printDivider
 import de.peekandpoke.karango.examples.printQueryResult
 import de.peekandpoke.karango.examples.runDemo
-import de.peekandpoke.karango.query.AND
-import de.peekandpoke.karango.query.EQ
 
 val db = Db.default(user = "root", pass = "root", host = "localhost", port = 8529, database = "kotlindev")
 

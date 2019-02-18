@@ -1,9 +1,7 @@
-package de.peekandpoke.karango.query
+package de.peekandpoke.karango.aql
 
 import de.peekandpoke.karango.CollectionDefinition
 import de.peekandpoke.karango.Entity
-import de.peekandpoke.karango.Expression
-
 
 class UpdateDocument<T : Entity>(private val entity: T, private val col: CollectionDefinition<T>, private val kv: KeyValueBuilder<T>) : Expression<T> {
 

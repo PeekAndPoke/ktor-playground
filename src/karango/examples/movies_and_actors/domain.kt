@@ -1,6 +1,7 @@
 package de.peekandpoke.karango.examples.movies_and_actors
 
 import de.peekandpoke.karango.*
+import de.peekandpoke.karango.aql.typeRef
 import de.peekandpoke.karango.meta.EntityCollection
 
 @EntityCollection("movies")

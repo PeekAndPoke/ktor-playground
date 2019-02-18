@@ -1,6 +1,6 @@
 package de.peekandpoke.karango
 
-import de.peekandpoke.karango.query.*
+import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.testdomain.*
 import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.string.shouldContain

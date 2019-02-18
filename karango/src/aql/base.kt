@@ -1,7 +1,12 @@
-package de.peekandpoke.karango.query
+package de.peekandpoke.karango.aql
 
 import com.fasterxml.jackson.core.type.TypeReference
-import de.peekandpoke.karango.*
+import de.peekandpoke.karango.CollectionDefinition
+import de.peekandpoke.karango.Entity
+import de.peekandpoke.karango.PropertyPath
+
+@DslMarker
+annotation class KarangoDslMarker
 
 data class TypedQuery<T>(val aql: String, val vars: Map<String, Any>, val type: TypeReference<T>)
 
@@ -14,6 +19,43 @@ fun <T> query(builder: RootBuilder.() -> Expression<T>): TypedQuery<T> {
 
     return TypedQuery(query.query, query.vars, returnType.getType())
 }
+
+interface Typed<T> {
+    fun getType(): TypeRef<T>
+}
+
+interface Named {
+    fun getName(): String
+}
+
+interface Statement : Printable
+
+interface Expression<T> : Typed<T>, Printable
+
+interface NamedExpression<T> : Expression<T>, Named
+
+interface IterableExpression<T> : Expression<T>
+
+interface NamedIterableExpression<T> : IterableExpression<T>, NamedExpression<T>
+
+internal class NamedExpressionImpl<T>(private val name_: String, private val type: TypeRef<T>) : NamedExpression<T> {
+
+    override fun getName() = name_
+
+    override fun getType() = type
+
+    override fun printAql(p: AqlPrinter) = p.name(this)
+}
+
+internal class NamedIterableExpressionImpl<T>(private val name_: String, private val type: TypeRef<T>) : NamedIterableExpression<T> {
+
+    override fun getName() = name_
+
+    override fun getType() = type
+
+    override fun printAql(p: AqlPrinter) = p.name(this)
+}
+
 
 @Suppress("FunctionName")
 @KarangoDslMarker
@@ -63,3 +105,11 @@ interface BuilderTrait {
 
     fun <T : Printable> T.add(): T = apply { items.add(this) }
 }
+
+internal data class ValueExpression(private val named: Expression<*>, private val value: Any) : Expression<Any> {
+
+    override fun getType() = TypeRef.Any
+
+    override fun printAql(p: AqlPrinter): Any = p.value(named, value)
+}
+

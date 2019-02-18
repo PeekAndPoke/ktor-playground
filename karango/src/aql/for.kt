@@ -1,6 +1,6 @@
-package de.peekandpoke.karango.query
+package de.peekandpoke.karango.aql
 
-import de.peekandpoke.karango.*
+import de.peekandpoke.karango.CollectionDefinition
 
 @Suppress("FunctionName")
 interface ForBuilderTrait : BuilderTrait {

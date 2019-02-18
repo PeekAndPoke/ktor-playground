@@ -1,6 +1,4 @@
-package de.peekandpoke.karango.query
-
-import de.peekandpoke.karango.*
+package de.peekandpoke.karango.aql
 
 class IterableLet<T>(name: String, private val value: Collection<T>, type: TypeRef<T>) : Statement {
 

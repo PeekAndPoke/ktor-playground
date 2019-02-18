@@ -1,6 +1,4 @@
-package de.peekandpoke.karango.query
-
-import de.peekandpoke.karango.Statement
+package de.peekandpoke.karango.aql
 
 data class OffsetAndLimit(val offset: Int, val limit: Int) : Statement {
 

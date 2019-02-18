@@ -1,7 +1,5 @@
-package de.peekandpoke.karango.query
+package de.peekandpoke.karango.aql
 
-import de.peekandpoke.karango.Expression
-import de.peekandpoke.karango.Statement
 
 interface Sort : Statement {
 

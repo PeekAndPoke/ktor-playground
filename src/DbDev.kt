@@ -8,10 +8,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.peekandpoke.domain.*
 import de.peekandpoke.karango.Db
-import de.peekandpoke.karango.query.CONTAINS
-import de.peekandpoke.karango.query.EQ
+import de.peekandpoke.karango.aql.CONTAINS
+import de.peekandpoke.karango.aql.EQ
 import kotlin.system.measureTimeMillis
-
 
 @optics
 data class MyClass1(
@@ -102,7 +101,7 @@ fun main() {
     println(result)
     
 //    x()
-    y()
+//    y()
 }
 
 fun y() {

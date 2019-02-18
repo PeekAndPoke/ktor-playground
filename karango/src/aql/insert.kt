@@ -1,8 +1,6 @@
-package de.peekandpoke.karango.query
+package de.peekandpoke.karango.aql
 
 import de.peekandpoke.karango.CollectionDefinition
-import de.peekandpoke.karango.Expression
-import de.peekandpoke.karango.NamedExpression
 
 class InsertPreStage<T>(val what: NamedExpression<T>)
 

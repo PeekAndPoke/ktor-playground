@@ -1,8 +1,5 @@
-package de.peekandpoke.karango.query
+package de.peekandpoke.karango.aql
 
-import de.peekandpoke.karango.Expression
-import de.peekandpoke.karango.Named
-import de.peekandpoke.karango.TypeRef
 
 class ReturnNamed<T>(private val named: Named, private val type: TypeRef<T>) : Expression<T> {
 

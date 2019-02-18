@@ -10,7 +10,7 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import de.peekandpoke.karango.query.*
+import de.peekandpoke.karango.aql.*
 import kotlin.system.measureTimeMillis
 
 class Db(private val database: ArangoDatabase) {
@@ -61,9 +61,9 @@ class Db(private val database: ArangoDatabase) {
 
     fun <T> query(builder: RootBuilder.() -> Expression<T>): Cursor<T> {
 
-        val query = de.peekandpoke.karango.query.query(builder)
+        val query = de.peekandpoke.karango.aql.query(builder)
 
-        println(query)
+//        println(query)
 
         val options = AqlQueryOptions().count(true)
 

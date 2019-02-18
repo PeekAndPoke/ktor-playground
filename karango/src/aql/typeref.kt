@@ -1,4 +1,4 @@
-package de.peekandpoke.karango
+package de.peekandpoke.karango.aql
 
 import com.fasterxml.jackson.core.type.TypeReference
 

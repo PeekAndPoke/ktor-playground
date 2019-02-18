@@ -2,66 +2,7 @@
 
 package de.peekandpoke.karango
 
-import de.peekandpoke.karango.query.AqlPrinter
-import de.peekandpoke.karango.query.Printable
-
-@DslMarker
-annotation class KarangoDslMarker
-
-interface Typed<T> {
-    fun getType(): TypeRef<T>
-}
-
-interface Named {
-    fun getName(): String
-}
-
-interface Statement : Printable
-
-interface Expression<T> : Typed<T>, Printable
-
-interface NamedExpression<T> : Expression<T>, Named
-
-interface IterableExpression<T> : Expression<T>
-
-interface NamedIterableExpression<T> : IterableExpression<T>, NamedExpression<T>
-
-internal class NamedExpressionImpl<T>(private val name_: String, private val type: TypeRef<T>) : NamedExpression<T> {
-
-    override fun getName() = name_
-
-    override fun getType() = type
-
-    override fun printAql(p: AqlPrinter) = p.name(this)
-}
-
-internal class NamedIterableExpressionImpl<T>(private val name_: String, private val type: TypeRef<T>) : NamedIterableExpression<T> {
-
-    override fun getName() = name_
-
-    override fun getType() = type
-
-    override fun printAql(p: AqlPrinter) = p.name(this)
-}
-//
-//interface Queryable<T> {
-//    fun getQueryName() : String
-//}
-
-
-@Suppress("unused")
-inline val <T> CollectionDefinition<T>._id
-    inline get() = startPropPath<T, String>("._id")
-
-@Suppress("unused")
-inline val <T> CollectionDefinition<T>._key
-    inline get() = startPropPath<T, String>("._key")
-
-@Suppress("unused")
-inline val <T> CollectionDefinition<T>._rev
-    inline get() = startPropPath<T, String>("._rev")
-
-inline fun <S, reified T> NamedExpression<S>.startPropPath(key: String) = PropertyPath<S, T>(this, listOf(key), typeRef())
+import de.peekandpoke.karango.aql.*
 
 interface CollectionDefinition<T> : NamedIterableExpression<T> {
 
@@ -90,6 +31,20 @@ abstract class CollectionDefinitionImpl<T>(private val name_: String, private va
 abstract class EntityCollectionDefinitionImpl<T>(name: String, type: TypeRef<T>) : CollectionDefinitionImpl<T>(name, type), EntityCollectionDefinition<T>
 
 abstract class EdgeCollectionDefinitionImpl<T>(name: String, type: TypeRef<T>) : CollectionDefinitionImpl<T>(name, type), EdgeCollectionDefinition<T>
+
+inline fun <S, reified T> NamedExpression<S>.startPropPath(key: String) = PropertyPath<S, T>(this, listOf(key), typeRef())
+
+@Suppress("unused")
+inline val <T> CollectionDefinition<T>._id
+    inline get() = startPropPath<T, String>("._id")
+
+@Suppress("unused")
+inline val <T> CollectionDefinition<T>._key
+    inline get() = startPropPath<T, String>("._key")
+
+@Suppress("unused")
+inline val <T> CollectionDefinition<T>._rev
+    inline get() = startPropPath<T, String>("._rev")
 
 data class PropertyPath<S, T>(
     private val named: NamedExpression<S>, private val path: List<String> = listOf(), private val type: TypeRef<T>
