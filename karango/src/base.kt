@@ -9,7 +9,7 @@ import de.peekandpoke.karango.query.Printable
 annotation class KarangoDslMarker
 
 interface Typed<T> {
-    fun getType(): Class<T>
+    fun getType(): TypeRef<T>
 }
 
 interface Named {
@@ -26,7 +26,7 @@ interface IterableExpression<T> : Expression<T>
 
 interface NamedIterableExpression<T> : IterableExpression<T>, NamedExpression<T>
 
-internal class NamedExpressionImpl<T>(private val name_: String, private val type: Class<T>) : NamedExpression<T> {
+internal class NamedExpressionImpl<T>(private val name_: String, private val type: TypeRef<T>) : NamedExpression<T> {
 
     override fun getName() = name_
 
@@ -35,7 +35,7 @@ internal class NamedExpressionImpl<T>(private val name_: String, private val typ
     override fun printAql(p: AqlPrinter) = p.name(this)
 }
 
-internal class NamedIterableExpressionImpl<T>(private val name_: String, private val type: Class<T>) : NamedIterableExpression<T> {
+internal class NamedIterableExpressionImpl<T>(private val name_: String, private val type: TypeRef<T>) : NamedIterableExpression<T> {
 
     override fun getName() = name_
 
@@ -61,7 +61,7 @@ inline val <T> CollectionDefinition<T>._key
 inline val <T> CollectionDefinition<T>._rev
     inline get() = startPropPath<T, String>("._rev")
 
-inline fun <S, reified T> NamedExpression<S>.startPropPath(key: String) = PropertyPath(this, listOf(key), T::class.java)
+inline fun <S, reified T> NamedExpression<S>.startPropPath(key: String) = PropertyPath<S, T>(this, listOf(key), typeRef())
 
 interface CollectionDefinition<T> : NamedIterableExpression<T> {
 
@@ -74,7 +74,7 @@ interface EntityCollectionDefinition<T> : CollectionDefinition<T>
 
 interface EdgeCollectionDefinition<T> : CollectionDefinition<T>
 
-abstract class CollectionDefinitionImpl<T>(private val name_: String, private val type: Class<T>) : CollectionDefinition<T> {
+abstract class CollectionDefinitionImpl<T>(private val name_: String, private val type: TypeRef<T>) : CollectionDefinition<T> {
 
     override val configurations = mutableMapOf<PropertyPath<*, *>, String>()
 
@@ -87,14 +87,12 @@ abstract class CollectionDefinitionImpl<T>(private val name_: String, private va
     override fun addConfiguration(key: PropertyPath<*, *>, config: String) = run { configurations[key] = config }
 }
 
-abstract class EntityCollectionDefinitionImpl<T>(name: String, type: Class<T>) : CollectionDefinitionImpl<T>(name, type), EntityCollectionDefinition<T>
+abstract class EntityCollectionDefinitionImpl<T>(name: String, type: TypeRef<T>) : CollectionDefinitionImpl<T>(name, type), EntityCollectionDefinition<T>
 
-abstract class EdgeCollectionDefinitionImpl<T>(name: String, type: Class<T>) : CollectionDefinitionImpl<T>(name, type), EdgeCollectionDefinition<T>
+abstract class EdgeCollectionDefinitionImpl<T>(name: String, type: TypeRef<T>) : CollectionDefinitionImpl<T>(name, type), EdgeCollectionDefinition<T>
 
 data class PropertyPath<S, T>(
-    private val named: NamedExpression<S>,
-    private val path: List<String> = listOf(),
-    private val type: Class<T>
+    private val named: NamedExpression<S>, private val path: List<String> = listOf(), private val type: TypeRef<T>
 ) : NamedExpression<T> {
 
     override fun getName() = listOf(named.getName()).plus(path).joinToString("")
@@ -102,8 +100,8 @@ data class PropertyPath<S, T>(
     fun getPath() = path
 
     fun getNamed() = named
-    
-    inline fun <reified NT> append(step: String) = PropertyPath(getNamed(), getPath().plus(step), NT::class.java)
+
+    inline fun <reified NT> append(step: String) = PropertyPath<S, NT>(getNamed(), getPath().plus(step), typeRef())
 
     override fun getType() = type
 

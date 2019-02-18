@@ -6,6 +6,7 @@ import com.arangodb.entity.CursorEntity
 import com.arangodb.model.AqlQueryOptions
 import com.arangodb.model.CollectionCreateOptions
 import com.arangodb.model.DocumentCreateOptions
+import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -72,7 +73,7 @@ class Db(private val database: ArangoDatabase) {
             result = database.query(query.aql, query.vars, options, Object::class.java)
         }
 
-        return CursorImpl(result, query, time, query.returnType)
+        return CursorImpl(result, query, time)
     }
 }
 
@@ -90,13 +91,12 @@ private val cursorMapper = ObjectMapper()
 class CursorImpl<T>(
     private val arangoCursor: ArangoCursor<*>,
     override val query: TypedQuery<T>,
-    override val timeMs: Long,
-    type: Class<T>
+    override val timeMs: Long
 ) : Cursor<T> {
 
-    private val iterator = It(arangoCursor, type)
+    private val iterator = It(arangoCursor, query.type)
 
-    class It<T>(private val inner: ArangoIterator<*>, private val type: Class<T>) : Iterator<T> {
+    class It<T>(private val inner: ArangoIterator<*>, private val type: TypeReference<T>) : Iterator<T> {
 
         override fun hasNext(): Boolean = inner.hasNext()
 
@@ -134,17 +134,6 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
     private val dbColl: ArangoCollection,
     private val def: D
 ) {
-
-    /**
-     * Get document by _id or _key
-     */
-    fun get(idOrKey: String): T? = getAs(idOrKey, def.getType())
-
-    /**
-     * Get document by _id or _key as the given type
-     */
-    fun <X> getAs(idOrKey: String, type: Class<X>): X? = dbColl.getDocument(idOrKey.ensureKey, type)
-
     fun save(obj: T): T =
         dbColl.insertDocument(
             obj,

@@ -74,7 +74,7 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
 
             listOf(
                 """
-            object ${simpleName}Collection : EntityCollectionDefinitionImpl<$simpleName>("$collectionName", $simpleName::class.java)
+            object ${simpleName}Collection : EntityCollectionDefinitionImpl<$simpleName>("$collectionName", typeRef())
             """
             ).plus(
                 element.variables.map {

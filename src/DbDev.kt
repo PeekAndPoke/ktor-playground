@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.peekandpoke.domain.*
 import de.peekandpoke.karango.Db
+import de.peekandpoke.karango.query.CONTAINS
 import de.peekandpoke.karango.query.EQ
 import kotlin.system.measureTimeMillis
 
@@ -60,6 +61,8 @@ inline fun <reified X> TypeReference<List<X>>.wrap(): TypeReference<List<List<X>
 @JvmName("wrap2")
 inline fun <reified X> TypeReference<List<List<X>>>.wrap(): TypeReference<List<List<List<X>>>> = 
     object : TypeReference<List<List<List<X>>>>() {}
+
+
 
 fun main() {
 
@@ -153,6 +156,9 @@ fun y() {
                 FOR(PersonCollection) { person ->
 
                     FILTER { person.name EQ str }
+                    
+                    FILTER { person.name CONTAINS str }
+                    
 //                    FILTER { person.nr EQ num }
 //                    FILTER { person.books.`*`.authors.`*`.firstName.`**` ALL IN(names) }
 

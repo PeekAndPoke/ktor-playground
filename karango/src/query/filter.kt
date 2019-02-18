@@ -2,14 +2,11 @@
 
 package de.peekandpoke.karango.query
 
-import de.peekandpoke.karango.Expression
-import de.peekandpoke.karango.IterableExpression
-import de.peekandpoke.karango.PropertyPath
-import de.peekandpoke.karango.Statement
+import de.peekandpoke.karango.*
 
 interface FilterPredicate : Expression<Boolean> {
 
-    override fun getType() = Boolean::class.java
+    override fun getType() = TypeRef.Boolean
 
     enum class Comparator(val op: String) {
         EQ("=="),
@@ -30,7 +27,7 @@ interface FilterPredicate : Expression<Boolean> {
     }
 }
 
-internal class Filter(private val predicate: FilterPredicate) : Statement {
+internal class Filter(private val predicate: Expression<Boolean>) : Statement {
 
     override fun printAql(p: AqlPrinter) = p.append("FILTER ").append(predicate).appendLine()
 }
@@ -96,9 +93,9 @@ infix fun FilterPredicate.AND(other: FilterPredicate): FilterPredicate = FilterL
 infix fun FilterPredicate.OR(other: FilterPredicate): FilterPredicate = FilterLogic(this, FilterPredicate.Logic.OR, other)
 fun FilterPredicate.NOT(): FilterPredicate = FilterNot(this)
 
-internal class ValueExpression(private val named: Expression<*>, private val value: Any) : Expression<Any> {
+internal data class ValueExpression(private val named: Expression<*>, private val value: Any) : Expression<Any> {
 
-    override fun getType() = Any::class.java
+    override fun getType() = TypeRef.Any
 
     override fun printAql(p: AqlPrinter): Any = p.value(named, value)
 }

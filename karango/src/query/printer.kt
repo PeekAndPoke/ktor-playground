@@ -1,5 +1,6 @@
 package de.peekandpoke.karango.query
 
+import de.peekandpoke.karango.Expression
 import de.peekandpoke.karango.Named
 
 interface Printable {
@@ -56,6 +57,18 @@ class AqlPrinter {
         queryVars[key] = value
     }
 
+    fun join(args: List<Expression<*>>, delimiter: String = ", ") = apply {
+        
+        args.forEachIndexed { idx, a ->
+            
+            append(a)
+            
+            if (idx < args.size - 1) {
+                append(delimiter)
+            }
+        }
+    }
+    
     fun append(str: String) = apply {
 
         if (newLine) {

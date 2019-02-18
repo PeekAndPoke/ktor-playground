@@ -44,7 +44,7 @@ data class Actor(
 
 inline val ActsIn.Companion.Collection inline get() = ActsInCollection
 
-object ActsInCollection : EdgeCollectionDefinitionImpl<ActsIn>("actsIn", ActsIn::class.java)
+object ActsInCollection : EdgeCollectionDefinitionImpl<ActsIn>("actsIn", typeRef())
 
 data class ActsIn(
     override val _from: String,

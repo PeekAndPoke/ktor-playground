@@ -2,8 +2,9 @@ package de.peekandpoke.karango.query
 
 import de.peekandpoke.karango.Expression
 import de.peekandpoke.karango.Named
+import de.peekandpoke.karango.TypeRef
 
-internal class ReturnNamed<T>(private val named: Named, private val type: Class<T>) : Expression<T> {
+class ReturnNamed<T>(private val named: Named, private val type: TypeRef<T>) : Expression<T> {
 
     override fun getType() = type
 
@@ -11,7 +12,7 @@ internal class ReturnNamed<T>(private val named: Named, private val type: Class<
         p.append("RETURN ").name(named).appendLine()
 }
 
-internal class ReturnIterator<T>(private val named: Named, private val type: Class<T>) : Expression<T> {
+class ReturnIterator<T>(private val named: Named, private val type: TypeRef<T>) : Expression<T> {
 
     override fun getType() = type
 
@@ -19,7 +20,7 @@ internal class ReturnIterator<T>(private val named: Named, private val type: Cla
         p.append("RETURN ").iterator(named).appendLine()
 }
 
-class ReturnDocumentById<T>(private val id: String, private val type: Class<T>) : Expression<T> {
+class ReturnDocumentById<T>(private val id: String, private val type: TypeRef<T>) : Expression<T> {
 
     override fun getType() = type
 
@@ -27,7 +28,7 @@ class ReturnDocumentById<T>(private val id: String, private val type: Class<T>) 
         p.append("RETURN DOCUMENT (").value("id", id).append(")").appendLine()
 }
 
-class ReturnDocumentsByIds<T>(private val ids: List<String>, private val type: Class<T>) : Expression<T> {
+class ReturnDocumentsByIds<T>(private val ids: List<String>, private val type: TypeRef<T>) : Expression<T> {
 
     override fun getType() = type
 
