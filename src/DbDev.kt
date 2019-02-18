@@ -3,14 +3,12 @@ package de.peekandpoke
 import arrow.optics.optics
 import com.arangodb.ArangoDB
 import com.arangodb.VelocyJack
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.peekandpoke.domain.*
 import de.peekandpoke.karango.Db
-import de.peekandpoke.karango.`**`
-import de.peekandpoke.karango.`*`
-import de.peekandpoke.karango.query.ALL
 import de.peekandpoke.karango.query.EQ
-import de.peekandpoke.karango.query.IN
 import kotlin.system.measureTimeMillis
 
 
@@ -35,43 +33,73 @@ data class Address2(val city: String, val street: String) {
     companion object
 }
 
-inline fun <reified X> getType(v : X) : Class<X> {
-    return X::class.java
+inline fun <reified X> getType(v : X) : TypeReference<X> {
+    return object : TypeReference<X>() {}
 }
 
-inline fun <reified L : List<X>, reified X> getType(v : L) : List<Class<*>> {
-    return listOf(L::class.java, X::class.java)
+inline fun <reified L : List<X>, reified X> getType(v : L) : TypeReference<L> {
+    return object : TypeReference<L>() {}
 }
 
 @JvmName("ll")
-inline fun <reified L2: List<L>, reified L : List<X>, reified X> getType(v : L2) : List<Class<*>> {
-    return listOf(L2::class.java, L::class.java, X::class.java)
+inline fun <reified L2: List<L>, reified L : List<X>, reified X> getType(v : L2) : TypeReference<L2> {
+    return object : TypeReference<L2>() {}
 }
 
+@Suppress("unused")
+@JvmName("wrap0")
+inline fun <reified X> TypeReference<X>.wrap(): TypeReference<List<X>> = 
+    object: TypeReference<List<X>>() {}
+
+@Suppress("unused")
+@JvmName("wrap1")
+inline fun <reified X> TypeReference<List<X>>.wrap(): TypeReference<List<List<X>>> = 
+    object : TypeReference<List<List<X>>>() {}
+
+@Suppress("unused")
+@JvmName("wrap2")
+inline fun <reified X> TypeReference<List<List<X>>>.wrap(): TypeReference<List<List<List<X>>>> = 
+    object : TypeReference<List<List<List<X>>>>() {}
 
 fun main() {
 
+//    val l2 = ArrayList<String>::class.java 
+//    println()
+//    
+    println("--------------")
+
     val t1 = getType("Test")
     println(t1)
+    println(t1.type)
+//    println(t1.wrap().type)
 
     println()
     println("--------------")
 
     val t2 = getType(listOf("Test"))
     println(t2)
+    println(t2.type)
+//    println(t2.wrap().type)
 
     println()
     println("--------------")
 
     val t3 = getType(listOf(listOf("Test")))
     println(t3)
+    println(t3.type)
+//    println(t3.wrap().type)
+
+    println()
+    println("--------------")
     
+    val mapper = ObjectMapper()
     
+    val result : List<List<String>> = mapper.readValue("[[\"a\", \"b\"]]", t3)
     
-    
+    println(result)
     
 //    x()
-//    y()
+    y()
 }
 
 fun y() {
@@ -97,7 +125,7 @@ fun y() {
     println(PersonCollection.configurations)
 
     exampleReturningFromScalarLet(db)
-    exampleReturningFromIterableLet(db)
+//    exampleReturningFromIterableLet(db)
 
     persons.removeAll()
 
@@ -110,7 +138,7 @@ fun y() {
 //    
 //    println(result)
 
-    for (y in 1..1) {
+    for (y in 1..10) {
         val timeAll = measureTimeMillis {
 
             val result = db.query {
@@ -125,8 +153,8 @@ fun y() {
                 FOR(PersonCollection) { person ->
 
                     FILTER { person.name EQ str }
-                    FILTER { person.nr EQ num }
-                    FILTER { person.books.`*`.authors.`*`.firstName.`**` ALL IN(names) }
+//                    FILTER { person.nr EQ num }
+//                    FILTER { person.books.`*`.authors.`*`.firstName.`**` ALL IN(names) }
 
                     LIMIT(0, 20)
 

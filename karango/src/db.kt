@@ -2,10 +2,12 @@ package de.peekandpoke.karango
 
 import com.arangodb.*
 import com.arangodb.entity.CollectionType
+import com.arangodb.entity.CursorEntity
 import com.arangodb.model.AqlQueryOptions
 import com.arangodb.model.CollectionCreateOptions
 import com.arangodb.model.DocumentCreateOptions
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.peekandpoke.karango.query.*
 import kotlin.system.measureTimeMillis
@@ -61,24 +63,50 @@ class Db(private val database: ArangoDatabase) {
         val query = de.peekandpoke.karango.query.query(builder)
 
         println(query)
-        
+
         val options = AqlQueryOptions().count(true)
 
-        lateinit var result: ArangoCursor<T>
+        lateinit var result: ArangoCursor<*>
 
         val time = measureTimeMillis {
-            result = database.query(query.aql, query.vars, options, query.returnType)
+            result = database.query(query.aql, query.vars, options, Object::class.java)
         }
 
-        return Cursor(result, query, time)
+        return CursorImpl(result, query, time, query.returnType)
     }
 }
 
-class Cursor<T>(
-    private val inner: ArangoCursor<T>,
-    val query: TypedQuery<T>,
+interface Cursor<T> : Iterable<T> {
+    val query: TypedQuery<T>
     val timeMs: Long
-) : ArangoCursor<T> by inner
+
+    val stats: CursorEntity.Stats
+}
+
+private val cursorMapper = ObjectMapper()
+    .registerModule(KotlinModule())
+    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+
+class CursorImpl<T>(
+    private val arangoCursor: ArangoCursor<*>,
+    override val query: TypedQuery<T>,
+    override val timeMs: Long,
+    type: Class<T>
+) : Cursor<T> {
+
+    private val iterator = It(arangoCursor, type)
+
+    class It<T>(private val inner: ArangoIterator<*>, private val type: Class<T>) : Iterator<T> {
+
+        override fun hasNext(): Boolean = inner.hasNext()
+
+        override fun next(): T = cursorMapper.convertValue(inner.next(), type)
+    }
+
+    override fun iterator() = iterator
+
+    override val stats: CursorEntity.Stats get() = arangoCursor.stats
+}
 
 @Suppress("PropertyName")
 interface Entity {
@@ -124,7 +152,7 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
                 .returnNew(true)
                 .overwrite(true)
         ).new
-    
+
     fun update(entity: T, builder: KeyValueBuilder<T>.(D) -> Unit): Cursor<T> =
         db.query {
             UPDATE(entity, def, builder)
