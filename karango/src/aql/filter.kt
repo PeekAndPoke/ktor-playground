@@ -93,7 +93,7 @@ internal data class FilterBy<L, R>(val left: Expression<L>, val op: Operator, va
 
     companion object {
         fun <XL, XR> value(left: Expression<XL>, op: Operator, right: XR) =
-            FilterBy(left, op, ValueExpression(left, right as Any))
+            FilterBy(left, op, ValueExpr(left, right as Any))
 
         fun <XL, XR> expr(left: Expression<XL>, op: Operator, right: Expression<XR>) =
             FilterBy(left, op, right)

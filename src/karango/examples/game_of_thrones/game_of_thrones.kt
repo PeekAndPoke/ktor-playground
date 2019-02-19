@@ -2,6 +2,7 @@ package de.peekandpoke.karango.examples.game_of_thrones
 
 import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.aql.AND
+import de.peekandpoke.karango.aql.DOCUMENT
 import de.peekandpoke.karango.aql.EQ
 import de.peekandpoke.karango.examples.printDivider
 import de.peekandpoke.karango.examples.printQueryResult
@@ -151,7 +152,9 @@ fun findBranStarkV1() {
     println("Find Bran Stark by ID with an explicit query on the db object")
 
     val result = db.query {
-        RETURN<Character>(bransId)
+        RETURN<Character>(
+            DOCUMENT(bransId)
+        )
     }
 
     printQueryResult(result, ::printCharacter)
@@ -198,7 +201,9 @@ fun findThreeCharactersByIdV2() {
     println("Find Arya, Bran and Tyrion at once by their IDs using the db object")
 
     val result = db.query {
-        RETURN<Character>(aryasId, bransId, tyrionsId)
+        RETURN<Character>(
+            DOCUMENT(aryasId, bransId, tyrionsId)
+        )
     }
 
     printQueryResult(result, ::printCharacter)

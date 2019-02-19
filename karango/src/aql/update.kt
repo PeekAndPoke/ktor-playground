@@ -29,7 +29,7 @@ class UpdateDocument<T : Entity>(private val entity: T, private val col: Collect
                 }
             }
 
-            append("} IN ").name(col).appendLine()
+            append("} IN ").name(col.getName()).appendLine()
         }
     }
 }

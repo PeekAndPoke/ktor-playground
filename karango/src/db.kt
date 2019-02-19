@@ -63,7 +63,7 @@ class Db(private val database: ArangoDatabase) {
 
         val query = de.peekandpoke.karango.aql.query(builder)
 
-//        println(query)
+        println(query)
 
         val options = AqlQueryOptions().count(true)
 
@@ -147,7 +147,7 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
             UPDATE(entity, def, builder)
         }
 
-    fun find(builder: ForLoopBuilder<T>.(D) -> Unit): Cursor<T> =
+    fun find(builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> Unit): Cursor<T> =
         db.query {
             FOR(def) { t ->
                 builder(t)
@@ -155,7 +155,7 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
             }
         }
 
-    fun findOne(builder: ForLoopBuilder<T>.(D) -> Unit): T? =
+    fun findOne(builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> Unit): T? =
         db.query {
             FOR(def) { t ->
                 builder(t)
@@ -166,12 +166,19 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
 
     fun findByIds(vararg keys: String) =
         db.query {
-            RETURN(def.getType(), *keys.filter { it.startsWith(def.getName()) }.toTypedArray())
+
+            val params = keys.filter { it.startsWith(def.getName()) }
+            
+            FOR (DOCUMENT(def, params)) {d ->
+                RETURN (d)
+            }
         }
 
     fun findByKey(key: String): T? =
         db.query {
-            RETURN(def.getName(), key.ensureKey, def.getType())
+            RETURN(
+                DOCUMENT(def, key.ensureKey)
+            )
         }.first()
 
     // TODO: CREATE DSL

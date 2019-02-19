@@ -33,21 +33,7 @@ class AqlPrinter {
 
     fun append(printables: List<Printable>) = apply { printables.forEach { append(it) } }
 
-    fun iterator(name: Named) = name("i_${name.getName()}")
-
-    fun name(name: Named) = name(name.getName())
-
-    private fun name(name: String) = append(name.toName())
-
-//    fun value(named: Queryable<*>, value: Any) = value(named.getQueryName(), value)
-
-    fun value(expr: Any, value: Any) = apply {
-        if (expr is Named) {
-            value(expr.getName(), value)
-        } else {
-            value("v", value)
-        }
-    }
+    fun name(name: String) = append(name.toName())
 
     fun value(name: String, value: Any) = apply {
 

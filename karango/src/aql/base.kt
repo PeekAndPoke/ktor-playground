@@ -24,36 +24,28 @@ interface Typed<T> {
     fun getType(): TypeRef<T>
 }
 
-interface Named {
-    fun getName(): String
-}
-
 interface Statement : Printable
 
 interface Expression<T> : Typed<T>, Printable
 
-interface NamedExpression<T> : Expression<T>, Named
-
-interface IterableExpression<T> : Expression<T>
-
-interface NamedIterableExpression<T> : IterableExpression<T>, NamedExpression<T>
-
-internal class NamedExpressionImpl<T>(private val name_: String, private val type: TypeRef<T>) : NamedExpression<T> {
-
-    override fun getName() = name_
-
-    override fun getType() = type
-
-    override fun printAql(p: AqlPrinter) = p.name(this)
+interface IterableExpression<T> : Expression<T> {
+    fun toIterator(): IteratorExpr<T>
 }
 
-internal class NamedIterableExpressionImpl<T>(private val name_: String, private val type: TypeRef<T>) : NamedIterableExpression<T> {
-
-    override fun getName() = name_
+internal class ExpressionImpl<T>(private val name_: String, private val type: TypeRef<T>) : Expression<T> {
 
     override fun getType() = type
 
-    override fun printAql(p: AqlPrinter) = p.name(this)
+    override fun printAql(p: AqlPrinter) = p.name(name_)
+}
+
+internal class IterableExpressionImpl<T>(private val name_: String, private val type: TypeRef<T>) : IterableExpression<T> {
+
+    override fun toIterator() = IteratorExpr("i_$name_", this)
+    
+    override fun getType() = type
+
+    override fun printAql(p: AqlPrinter) = p.name(name_)
 }
 
 
@@ -67,15 +59,7 @@ class RootBuilder internal constructor() : ForBuilderTrait, Printable {
 
     inline fun <reified T, L : List<T>> LET(name: String, builder: () -> L) = IterableLet(name, builder(), typeRef()).add().toExpression()
 
-    fun <T> RETURN(named: NamedExpression<T>) = ReturnNamed(named, named.getType()).add()
-
-    inline fun <reified T> RETURN(vararg ids: String) = ReturnDocumentsByIds(ids.toList(), typeRef<T>()).add()
-
-    fun <T> RETURN(type: TypeRef<T>, vararg ids: String) = ReturnDocumentsByIds(ids.toList(), type).add()
-
-    inline fun <reified T> RETURN(collection: String, key: String) = RETURN(collection, key, typeRef<T>())
-
-    fun <T> RETURN(collection: String, key: String, type: TypeRef<T>) = ReturnDocumentById("$collection/$key", type).add()
+    fun <T> RETURN(expr: Expression<T>) : Expression<T> = Return(expr).add()
 
     fun <T : Entity, D : CollectionDefinition<T>> UPDATE(entity: T, col: D, builder: KeyValueBuilder<T>.(D) -> Unit) =
         UpdateDocument(entity, col, KeyValueBuilder<T>().apply { builder(col) }).add()
@@ -106,10 +90,29 @@ interface BuilderTrait {
     fun <T : Printable> T.add(): T = apply { items.add(this) }
 }
 
-internal data class ValueExpression(private val named: Expression<*>, private val value: Any) : Expression<Any> {
+data class IteratorExpr<T>(private val name: String, private val inner: IterableExpression<T>) : IterableExpression<T> {
+    
+    fun getName() : String = name
+    
+    override fun toIterator() = this
+    
+    override fun getType() = inner.getType()
+
+    override fun printAql(p: AqlPrinter) = p.name(name)
+}
+
+data class Value(private val name: String, private val value: Any) : Expression<Any> {
 
     override fun getType() = TypeRef.Any
 
-    override fun printAql(p: AqlPrinter): Any = p.value(named, value)
+    override fun printAql(p: AqlPrinter): Any = p.value(name, value)
+}
+
+// TODO: can we get the name back ... or should we remove this one?
+data class ValueExpr(private val expr: Expression<*>, private val value: Any) : Expression<Any> {
+
+    override fun getType() = TypeRef.Any
+    
+    override fun printAql(p: AqlPrinter): Any = p.value("v", value)
 }
 
