@@ -201,9 +201,10 @@ fun findThreeCharactersByIdV2() {
     println("Find Arya, Bran and Tyrion at once by their IDs using the db object")
 
     val result = db.query {
-        RETURN<Character>(
-            DOCUMENT(aryasId, bransId, tyrionsId)
-        )
+        
+        FOR (DOCUMENT<Character>(aryasId, bransId, tyrionsId)) {c ->
+            RETURN (c)
+        }
     }
 
     printQueryResult(result, ::printCharacter)

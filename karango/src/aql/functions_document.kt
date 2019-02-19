@@ -11,14 +11,16 @@ inline fun <reified T> DOCUMENT(id: String): Expression<T> =
         listOf(Value("id", id))
     )
 
-inline fun <reified T> DOCUMENT(vararg ids: String): Expression<T> = DOCUMENT(ids.toList())
+inline fun <reified T> DOCUMENT(vararg ids: String): IterableExpression<T> = DOCUMENT(ids.toList())
 
 inline fun <reified T> DOCUMENT(ids: List<String>): IterableExpression<T> =
     IterableFuncCall(
         "doc",
         typeRef(),
         AqlFunc.DOCUMENT,
-        ids.map { Value("id", it) }
+        listOf(
+            ArrayValue("ids", ids)
+        )
     )
 
 fun <T> DOCUMENT(collection: CollectionDefinition<T>, key: String): Expression<T> =
@@ -30,11 +32,14 @@ fun <T> DOCUMENT(collection: CollectionDefinition<T>, key: String): Expression<T
 
 fun <T> DOCUMENT(collection: CollectionDefinition<T>, vararg keys: String) = DOCUMENT(collection, keys.toList())
 
-fun <T> DOCUMENT(collection: CollectionDefinition<T>, keys: List<String>): IterableExpression<T> =
+fun <T> DOCUMENT(collection: CollectionDefinition<T>, keys: List<String>) = DOCUMENT(collection.getType(), collection.getName(), keys)
+
+fun <T> DOCUMENT(type: TypeRef<T>, collection: String, keys: List<String>): IterableExpression<T> =
     IterableFuncCall(
         "doc",
-        collection.getType(),
+        type,
         AqlFunc.DOCUMENT,
-        // TODO: fix me ... we need one parameter (ArrayValue)
-        keys.map { Value("id", "${collection.getName()}/${it.ensureKey}") }
+        listOf(
+            ArrayValue("ids", keys.map { "$collection/${it.ensureKey}" })
+        )
     )

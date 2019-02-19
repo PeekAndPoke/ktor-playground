@@ -108,6 +108,13 @@ data class Value(private val name: String, private val value: Any) : Expression<
     override fun printAql(p: AqlPrinter): Any = p.value(name, value)
 }
 
+data class ArrayValue(private val name: String, private val value: List<Any>): Expression<List<Any>> {
+    
+    override fun getType() = typeRef<List<Any>>()
+
+    override fun printAql(p: AqlPrinter): Any = p.value(name, value)
+}
+
 // TODO: can we get the name back ... or should we remove this one?
 data class ValueExpr(private val expr: Expression<*>, private val value: Any) : Expression<Any> {
 

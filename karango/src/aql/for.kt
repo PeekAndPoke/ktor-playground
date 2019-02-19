@@ -5,7 +5,7 @@ import de.peekandpoke.karango.CollectionDefinition
 @Suppress("FunctionName")
 interface ForBuilderTrait : BuilderTrait {
 
-    fun <T, D : IterableExpression<T>> FOR(col: D, builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> Expression<T>): Expression<T> {
+    fun <T, I : IterableExpression<T>> FOR(col: I, builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> Expression<T>): Expression<T> {
 
         val forLoop = ForLoopBuilder(col.toIterator(), col)
         val returnType = forLoop.builder(col.toIterator())
