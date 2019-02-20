@@ -29,9 +29,9 @@ internal class Filter(private val predicate: Expression<Boolean>) : Statement {
 
 typealias PartialFilterOnValue<T> = (Expression<T>) -> Expression<Boolean>
 
-inline infix fun <S, reified T> PropertyPath<S, T>.ANY(partial: PartialFilterOnValue<T>): Expression<Boolean> = append<T>(" ANY").let(partial)
-inline infix fun <S, reified T> PropertyPath<S, T>.NONE(partial: PartialFilterOnValue<T>): Expression<Boolean> = append<T>(" NONE").let(partial)
-inline infix fun <S, reified T> PropertyPath<S, T>.ALL(partial: PartialFilterOnValue<T>): Expression<Boolean> = append<T>(" ALL").let(partial)
+inline infix fun <reified T> PropertyPath<T>.ANY(partial: PartialFilterOnValue<T>): Expression<Boolean> = append<T>(" ANY").let(partial)
+inline infix fun <reified T> PropertyPath<T>.NONE(partial: PartialFilterOnValue<T>): Expression<Boolean> = append<T>(" NONE").let(partial)
+inline infix fun <reified T> PropertyPath<T>.ALL(partial: PartialFilterOnValue<T>): Expression<Boolean> = append<T>(" ALL").let(partial)
 
 fun <T> EQ(value: T): PartialFilterOnValue<T> = { x -> x EQ value }
 fun <T> EQ(value: Expression<T>): PartialFilterOnValue<T> = { x -> x EQ value }

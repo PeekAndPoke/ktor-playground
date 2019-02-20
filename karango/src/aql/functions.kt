@@ -23,8 +23,6 @@ open class IterableFuncCall<T>(
     private val func: AqlFunc, 
     private val args: List<Expression<*>>) : IterableFunctionCall<T> {
 
-    override fun toIterator() = IteratorExpr("i_$name_", this)
-
     override fun getType() = type
 
     override fun printAql(p: AqlPrinter) = p.append("${func.name}(").join(args).append(")")

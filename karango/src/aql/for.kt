@@ -5,15 +5,25 @@ import de.peekandpoke.karango.CollectionDefinition
 @Suppress("FunctionName")
 interface ForBuilderTrait : BuilderTrait {
 
-    fun <T, I : IterableExpression<T>> FOR(col: I, builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> Expression<T>): Expression<T> {
+    class For(private val trait: ForBuilderTrait, private val iteratorName: String) {
+        
+        infix fun <T> IN(forIn: In<T>) : Expression<T> {
 
-        val forLoop = ForLoopBuilder(col.toIterator(), col)
-        val returnType = forLoop.builder(col.toIterator())
+            val iterator = IteratorExpr(iteratorName, forIn.iterable)
+            val loop = ForLoopBuilder(iterator, forIn.iterable)
+            val result = loop.(forIn.builder)(iterator)
 
-        items.add(forLoop)
+            trait.items.add(loop)
 
-        return returnType
+            return result
+        }
     }
+    
+    operator fun <T> IterableExpression<T>.invoke(builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> Expression<T>) = In(this, builder)
+    
+    class In<T>(internal val iterable: IterableExpression<T>, internal val builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> Expression<T>)
+    
+    fun FOR(iteratorName: String) = For(this, iteratorName) 
 }
 
 @Suppress("FunctionName")
@@ -37,11 +47,7 @@ class ForLoopBuilder<T> internal constructor(
 
     fun RETURN(ret: Expression<T>): Expression<T> = Return(ret).add()
 
-    fun RETURN(ret: IterableExpression<T>): Expression<T> = Return(ret.toIterator()).add()
-
     fun INSERT(what: Expression<T>) = InsertPreStage(what)
-    
-    fun INSERT(what: IterableExpression<T>) = InsertPreStage(what.toIterator())
 
     infix fun InsertPreStage<T>.INTO(collection: CollectionDefinition<T>): Expression<T> = InsertInto(what, collection).add()
 

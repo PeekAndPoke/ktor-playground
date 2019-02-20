@@ -23,9 +23,9 @@ class AqlPrinter {
     private fun String.toName() = this
         .split(".")
         .map { it.tick() }
-        .joinToString(".") { it.replace("[^a-zA-Z0-9_\\[*\\] `]".toRegex(), "_") }
+        .joinToString(".")
 
-    private fun String.tick() = "`$this`"
+    private fun String.tick() = "`${replace("`", "?")}`"
 
     fun build() = Result(stringBuilder.toString(), queryVars)
 

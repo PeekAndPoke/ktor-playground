@@ -27,12 +27,12 @@ fun <T> DOCUMENT(collection: CollectionDefinition<T>, key: String): Expression<T
     FuncCall(
         collection.getType(),
         AqlFunc.DOCUMENT,
-        listOf(Value("id", "${collection.getName()}/${key.ensureKey}"))
+        listOf(Value("id", "${collection.getAlias()}/${key.ensureKey}"))
     )
 
 fun <T> DOCUMENT(collection: CollectionDefinition<T>, vararg keys: String) = DOCUMENT(collection, keys.toList())
 
-fun <T> DOCUMENT(collection: CollectionDefinition<T>, keys: List<String>) = DOCUMENT(collection.getType(), collection.getName(), keys)
+fun <T> DOCUMENT(collection: CollectionDefinition<T>, keys: List<String>) = DOCUMENT(collection.getType(), collection.getAlias(), keys)
 
 fun <T> DOCUMENT(type: TypeRef<T>, collection: String, keys: List<String>): IterableExpression<T> =
     IterableFuncCall(

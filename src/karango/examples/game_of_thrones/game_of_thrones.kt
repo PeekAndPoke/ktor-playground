@@ -15,9 +15,9 @@ val characters = db.collection(CharacterCollection)
 fun main() {
 
     runDemo {
-        
-//        noop()
-        
+
+        //        noop()
+
         steps(
             ::intro,
             ::clearData,
@@ -29,7 +29,7 @@ fun main() {
             ::findThreeCharactersByIdV1,
             ::findThreeCharactersByIdV2,
             ::updateNedStarksAliveness
-        )   
+        )
     }
 }
 
@@ -108,7 +108,7 @@ fun installData() {
             )
         }
 
-        FOR(data) { d ->
+        FOR("x") IN data { d ->
             INSERT(d) INTO (CharacterCollection)
         }
     }
@@ -134,7 +134,7 @@ fun findStarks() {
     println("Find all Starks with an explicit query on the db object")
 
     val result = db.query {
-        FOR(CharacterCollection) { c ->
+        FOR("x") IN (CharacterCollection) { c ->
             FILTER { c.surname EQ "Stark" }
             RETURN(c)
         }
@@ -201,9 +201,9 @@ fun findThreeCharactersByIdV2() {
     println("Find Arya, Bran and Tyrion at once by their IDs using the db object")
 
     val result = db.query {
-        
-        FOR (DOCUMENT<Character>(aryasId, bransId, tyrionsId)) {c ->
-            RETURN (c)
+
+        FOR("x") IN (DOCUMENT<Character>(aryasId, bransId, tyrionsId)) { c ->
+            RETURN(c)
         }
     }
 
@@ -218,10 +218,10 @@ fun updateNedStarksAliveness() {
     println("==========================================================================================================================")
     println("Spoiler Alert! Ned died... So we need to update his aliveness using the collection object")
 
-    val result = characters.update(ned) {t ->
+    val result = characters.update(ned) { t ->
         t.alive with false
-        "hair" with "black"
+//        "hair" with "black"
     }
-    
+
     printQueryResult(result, ::printCharacter)
 }

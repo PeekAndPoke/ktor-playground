@@ -20,6 +20,10 @@ fun <T> query(builder: RootBuilder.() -> Expression<T>): TypedQuery<T> {
     return TypedQuery(query.query, query.vars, returnType.getType())
 }
 
+interface Aliased {
+    fun getAlias(): String
+}
+
 interface Typed<T> {
     fun getType(): TypeRef<T>
 }
@@ -28,9 +32,8 @@ interface Statement : Printable
 
 interface Expression<T> : Typed<T>, Printable
 
-interface IterableExpression<T> : Expression<T> {
-    fun toIterator(): IteratorExpr<T>
-}
+// TODO: replace me with Expression<List<T>> or similar
+interface IterableExpression<T> : Expression<T>
 
 internal class ExpressionImpl<T>(private val name_: String, private val type: TypeRef<T>) : Expression<T> {
 
@@ -41,8 +44,6 @@ internal class ExpressionImpl<T>(private val name_: String, private val type: Ty
 
 internal class IterableExpressionImpl<T>(private val name_: String, private val type: TypeRef<T>) : IterableExpression<T> {
 
-    override fun toIterator() = IteratorExpr("i_$name_", this)
-    
     override fun getType() = type
 
     override fun printAql(p: AqlPrinter) = p.name(name_)
@@ -51,7 +52,7 @@ internal class IterableExpressionImpl<T>(private val name_: String, private val 
 
 @Suppress("FunctionName")
 @KarangoDslMarker
-class RootBuilder internal constructor() : ForBuilderTrait, Printable {
+class RootBuilder internal constructor() : ForBuilderTrait, BuilderTrait, Printable {
 
     override val items = mutableListOf<Printable>()
 
@@ -59,7 +60,7 @@ class RootBuilder internal constructor() : ForBuilderTrait, Printable {
 
     inline fun <reified T, L : List<T>> LET(name: String, builder: () -> L) = IterableLet(name, builder(), typeRef()).add().toExpression()
 
-    fun <T> RETURN(expr: Expression<T>) : Expression<T> = Return(expr).add()
+    fun <T> RETURN(expr: Expression<T>): Expression<T> = Return(expr).add()
 
     fun <T : Entity, D : CollectionDefinition<T>> UPDATE(entity: T, col: D, builder: KeyValueBuilder<T>.(D) -> Unit) =
         UpdateDocument(entity, col, KeyValueBuilder<T>().apply { builder(col) }).add()
@@ -74,13 +75,9 @@ class RootBuilder internal constructor() : ForBuilderTrait, Printable {
 @KarangoDslMarker
 class KeyValueBuilder<T : Entity> {
 
-    val pairs = mutableMapOf<String, Any>()
+    val pairs = mutableListOf<Pair<PropertyPath<*>, Any>>()
 
-    infix fun <X> PropertyPath<T, X>.with(value: X) =
-    // TODO: this does not look right here
-        apply { pairs[this.getPath().joinToString("").trimStart('.')] = value as Any }
-
-    infix fun String.with(value: Any) = apply { pairs[this] = value }
+    infix fun <X> PropertyPath<X>.with(value: X) = apply { pairs.add(Pair(this, value as Any)) }
 }
 
 interface BuilderTrait {
@@ -91,11 +88,7 @@ interface BuilderTrait {
 }
 
 data class IteratorExpr<T>(private val name: String, private val inner: IterableExpression<T>) : IterableExpression<T> {
-    
-    fun getName() : String = name
-    
-    override fun toIterator() = this
-    
+
     override fun getType() = inner.getType()
 
     override fun printAql(p: AqlPrinter) = p.name(name)
@@ -108,8 +101,8 @@ data class Value(private val name: String, private val value: Any) : Expression<
     override fun printAql(p: AqlPrinter): Any = p.value(name, value)
 }
 
-data class ArrayValue(private val name: String, private val value: List<Any>): Expression<List<Any>> {
-    
+data class ArrayValue(private val name: String, private val value: List<Any>) : Expression<List<Any>> {
+
     override fun getType() = typeRef<List<Any>>()
 
     override fun printAql(p: AqlPrinter): Any = p.value(name, value)
@@ -119,7 +112,10 @@ data class ArrayValue(private val name: String, private val value: List<Any>): E
 data class ValueExpr(private val expr: Expression<*>, private val value: Any) : Expression<Any> {
 
     override fun getType() = TypeRef.Any
-    
-    override fun printAql(p: AqlPrinter): Any = p.value("v", value)
+
+    override fun printAql(p: AqlPrinter): Any = p.value(
+        if (expr is Aliased) expr.getAlias() else "v",
+        value
+    )
 }
 

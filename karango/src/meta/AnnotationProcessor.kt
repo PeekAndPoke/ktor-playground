@@ -75,6 +75,7 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
             listOf(
                 """
             object ${simpleName}Collection : EntityCollectionDefinitionImpl<$simpleName>("$collectionName", typeRef())
+            
             """
             ).plus(
                 element.variables.map {
@@ -83,7 +84,7 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
                     val prop = it.simpleName
 
                     """
-            inline val IterableExpression<$simpleName>.$prop inline get() = startPropPath<$simpleName, $type>(".$prop") 
+            inline val IterableExpression<$simpleName>.$prop inline get() = PropertyPath.start(this).append<$type>("$prop")
             """                                                                                     
                 }
             )
@@ -97,7 +98,7 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
             val prop = it.simpleName
 
             """
-            inline val <S> PropertyPath<S, $simpleName>.$prop inline get() = append<$type>(".$prop")
+            inline val PropertyPath<$simpleName>.$prop inline get() = append<$type>("$prop")
             """
         }
 

@@ -37,7 +37,7 @@ class Db(private val database: ArangoDatabase) {
 
     fun <T : Entity, D : EntityCollectionDefinition<T>> collection(def: D): DbCollection<T, D> {
 
-        val name = def.getName()
+        val name = def.getAlias()
         val coll = database.collection(name)
 
         if (!coll.exists()) {
@@ -49,7 +49,7 @@ class Db(private val database: ArangoDatabase) {
 
     fun <T : Edge, D : EdgeCollectionDefinition<T>> edgeCollection(def: D): DbCollection<T, D> {
 
-        val name = def.getName()
+        val name = def.getAlias()
         val coll = database.collection(name)
 
         if (!coll.exists()) {
@@ -149,7 +149,7 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
 
     fun find(builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> Unit): Cursor<T> =
         db.query {
-            FOR(def) { t ->
+            FOR ("x") IN (def) { t ->
                 builder(t)
                 RETURN(t)
             }
@@ -157,7 +157,8 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
 
     fun findOne(builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> Unit): T? =
         db.query {
-            FOR(def) { t ->
+ 
+            FOR ("x") IN (def) { t ->
                 builder(t)
                 LIMIT(1)
                 RETURN(t)
@@ -167,9 +168,9 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
     fun findByIds(vararg keys: String) =
         db.query {
 
-            val params = keys.filter { it.startsWith(def.getName()) }
+            val params = keys.filter { it.startsWith(def.getAlias()) }
             
-            FOR (DOCUMENT(def, params)) {d ->
+            FOR ("x") IN (DOCUMENT(def, params)) {d ->
                 RETURN (d)
             }
         }

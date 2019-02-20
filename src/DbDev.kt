@@ -33,34 +33,33 @@ data class Address2(val city: String, val street: String) {
     companion object
 }
 
-inline fun <reified X> getType(v : X) : TypeReference<X> {
+inline fun <reified X> getType(v: X): TypeReference<X> {
     return object : TypeReference<X>() {}
 }
 
-inline fun <reified L : List<X>, reified X> getType(v : L) : TypeReference<L> {
+inline fun <reified L : List<X>, reified X> getType(v: L): TypeReference<L> {
     return object : TypeReference<L>() {}
 }
 
 @JvmName("ll")
-inline fun <reified L2: List<L>, reified L : List<X>, reified X> getType(v : L2) : TypeReference<L2> {
+inline fun <reified L2 : List<L>, reified L : List<X>, reified X> getType(v: L2): TypeReference<L2> {
     return object : TypeReference<L2>() {}
 }
 
 @Suppress("unused")
 @JvmName("wrap0")
-inline fun <reified X> TypeReference<X>.wrap(): TypeReference<List<X>> = 
-    object: TypeReference<List<X>>() {}
+inline fun <reified X> TypeReference<X>.wrap(): TypeReference<List<X>> =
+    object : TypeReference<List<X>>() {}
 
 @Suppress("unused")
 @JvmName("wrap1")
-inline fun <reified X> TypeReference<List<X>>.wrap(): TypeReference<List<List<X>>> = 
+inline fun <reified X> TypeReference<List<X>>.wrap(): TypeReference<List<List<X>>> =
     object : TypeReference<List<List<X>>>() {}
 
 @Suppress("unused")
 @JvmName("wrap2")
-inline fun <reified X> TypeReference<List<List<X>>>.wrap(): TypeReference<List<List<List<X>>>> = 
+inline fun <reified X> TypeReference<List<List<X>>>.wrap(): TypeReference<List<List<List<X>>>> =
     object : TypeReference<List<List<List<X>>>>() {}
-
 
 
 fun main() {
@@ -93,13 +92,13 @@ fun main() {
 
     println()
     println("--------------")
-    
+
     val mapper = ObjectMapper()
-    
-    val result : List<List<String>> = mapper.readValue("[[\"a\", \"b\"]]", t3)
-    
+
+    val result: List<List<String>> = mapper.readValue("[[\"a\", \"b\"]]", t3)
+
     println(result)
-    
+
 //    x()
 //    y()
 }
@@ -121,7 +120,6 @@ fun y() {
 
     val persons = db.collection(PersonCollection)
 //    val addresses = db.collection(Address.)
-
 
 
     println(PersonCollection.configurations)
@@ -152,12 +150,12 @@ fun y() {
                     listOf("J.R.R.", "X.X.X.")
                 }
 
-                FOR(PersonCollection) { person ->
+                FOR("x") IN (PersonCollection) { person ->
 
                     FILTER { person.name EQ str }
-                    
+
                     FILTER { person.name CONTAINS str }
-                    
+
 //                    FILTER { person.nr EQ num }
 //                    FILTER { person.books.`*`.authors.`*`.firstName.`**` ALL IN(names) }
 
@@ -208,8 +206,8 @@ fun exampleReturningFromIterableLet(db: Db) {
             )
         }
 
-        RETURN (let)
-        
+        RETURN(let)
+
 //        FOR (let) { x ->
 //            FILTER { x.firstName EQ "first"}
 //            RETURN (x)
@@ -251,7 +249,7 @@ fun exampleInsertFromLet(db: Db) {
     val result = db.query {
         val objs = LET("objs") { personInserts }
 
-        FOR(objs) { o ->
+        FOR("x") IN (objs) { o ->
             INSERT(o) INTO PersonCollection
         }
     }
