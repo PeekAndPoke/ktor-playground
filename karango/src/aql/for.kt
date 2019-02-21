@@ -6,8 +6,8 @@ import de.peekandpoke.karango.CollectionDefinition
 interface ForBuilderTrait : BuilderTrait {
 
     class For(private val trait: ForBuilderTrait, private val iteratorName: String) {
-        
-        infix fun <T> IN(forIn: In<T>) : Expression<T> {
+
+        infix fun <T> IN(forIn: In<T>): Expression<T> {
 
             val iterator = IteratorExpr(iteratorName, forIn.iterable)
             val loop = ForLoopBuilder(iterator, forIn.iterable)
@@ -18,12 +18,12 @@ interface ForBuilderTrait : BuilderTrait {
             return result
         }
     }
-    
+
     operator fun <T> IterableExpression<T>.invoke(builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> Expression<T>) = In(this, builder)
-    
+
     class In<T>(internal val iterable: IterableExpression<T>, internal val builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> Expression<T>)
-    
-    fun FOR(iteratorName: String) = For(this, iteratorName) 
+
+    fun FOR(iteratorName: String) = For(this, iteratorName)
 }
 
 @Suppress("FunctionName")
@@ -37,13 +37,13 @@ class ForLoopBuilder<T> internal constructor(
 
     override fun getType() = iterable.getType()
 
-    fun FILTER(builder: () -> Expression<Boolean>) = apply { items.add(Filter(builder())) }
+    fun FILTER(predicate: Expression<Boolean>): Unit = run { Filter(predicate).add() }
 
-    fun SORT(builder: () -> Sort) = builder().add()
+    fun SORT(sort: Sort): Unit = run { sort.add() }
 
-    fun LIMIT(limit: Int) = OffsetAndLimit(0, limit).add()
+    fun LIMIT(limit: Int): Unit = run { OffsetAndLimit(0, limit).add() }
 
-    fun LIMIT(offset: Int, limit: Int) = OffsetAndLimit(offset, limit).add()
+    fun LIMIT(offset: Int, limit: Int): Unit = run { OffsetAndLimit(offset, limit).add() }
 
     fun RETURN(ret: Expression<T>): Expression<T> = Return(ret).add()
 

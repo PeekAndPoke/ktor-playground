@@ -1,7 +1,10 @@
 package de.peekandpoke.karango
 
-import de.peekandpoke.karango.aql.query
+import de.peekandpoke.karango.aql.*
+import de.peekandpoke.karango.testdomain.*
 import io.kotlintest.assertSoftly
+import io.kotlintest.matchers.string.shouldContain
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
 
@@ -10,17 +13,17 @@ class QueryBuilderSpec : StringSpec({
     "Filter operators must be applied correctly" {
 
         val query = query {
-            FOR ("iter") IN (TestDataCollection) { t ->
-                FILTER { t.name EQ "V_EQ" }
-                FILTER { t.name NE "V_NE" }
-                FILTER { t.name GT "V_GT" }
-                FILTER { t.name GTE "V_GTE" }
-                FILTER { t.name LT "V_LT" }
-                FILTER { t.name LTE "V_LTE" }
-                FILTER { t.name IN listOf("V_IN") }
-                FILTER { t.name NOT_IN listOf("V_NOT_IN") }
-                FILTER { t.name LIKE "V_LIKE" }
-                FILTER { t.name REGEX "V_REGEX" }
+            FOR("iter") IN TestDataCollection { t ->
+                FILTER(t.name EQ "V_EQ")
+                FILTER(t.name NE "V_NE")
+                FILTER(t.name GT "V_GT")
+                FILTER(t.name GTE "V_GTE")
+                FILTER(t.name LT "V_LT")
+                FILTER(t.name LTE "V_LTE")
+                FILTER(t.name IN listOf("V_IN"))
+                FILTER(t.name NOT_IN listOf("V_NOT_IN"))
+                FILTER(t.name LIKE "V_LIKE")
+                FILTER(t.name REGEX "V_REGEX")
                 RETURN(t)
             }
         }
@@ -78,7 +81,7 @@ class QueryBuilderSpec : StringSpec({
 
         val query = query {
             FOR("iter") IN (TestPersonCollection) { p ->
-                FILTER { p.addresses.`*`.street EQ "street" }
+                FILTER(p.addresses.`*`.street EQ "street")
                 RETURN(p)
             }
         }
@@ -95,8 +98,8 @@ class QueryBuilderSpec : StringSpec({
     "Array expansion [*] and contraction [**] must be rendered correctly" {
 
         val query = query {
-            FOR("iter") IN(TestPersonCollection) { p ->
-                FILTER { p.addresses.`*`.street.`**` EQ "street" }
+            FOR("iter") IN (TestPersonCollection) { p ->
+                FILTER(p.addresses.`*`.street.`**` EQ "street")
                 RETURN(p)
             }
         }
@@ -113,10 +116,10 @@ class QueryBuilderSpec : StringSpec({
     "Array operators ANY, ALL, NONE must be rendered correctly" {
 
         val query = query {
-            FOR("iter") IN(TestPersonCollection) { p ->
-                FILTER { p.addresses.`*`.street.`**` ANY { it EQ "street" } }
-                FILTER { p.addresses.`*`.street.`**` ALL { it NE "street" } }
-                FILTER { p.addresses.`*`.street.`**` NONE { it IN listOf("street") } }
+            FOR("iter") IN TestPersonCollection { p ->
+                FILTER(p.addresses.`*`.street.`**` ANY { it EQ "street" })
+                FILTER(p.addresses.`*`.street.`**` ALL { it NE "street" })
+                FILTER(p.addresses.`*`.street.`**` NONE { it IN listOf("street") })
                 RETURN(p)
             }
         }

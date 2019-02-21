@@ -87,11 +87,11 @@ interface BuilderTrait {
     fun <T : Printable> T.add(): T = apply { items.add(this) }
 }
 
-data class IteratorExpr<T>(private val name: String, private val inner: IterableExpression<T>) : IterableExpression<T> {
+data class IteratorExpr<T>(private val __name__: String, private val __inner__: IterableExpression<T>) : IterableExpression<T> {
 
-    override fun getType() = inner.getType()
+    override fun getType() = __inner__.getType()
 
-    override fun printAql(p: AqlPrinter) = p.name(name)
+    override fun printAql(p: AqlPrinter) = p.name(__name__)
 }
 
 data class Value(private val name: String, private val value: Any) : Expression<Any> {
@@ -108,14 +108,11 @@ data class ArrayValue(private val name: String, private val value: List<Any>) : 
     override fun printAql(p: AqlPrinter): Any = p.value(name, value)
 }
 
-// TODO: can we get the name back ... or should we remove this one?
 data class ValueExpr(private val expr: Expression<*>, private val value: Any) : Expression<Any> {
 
     override fun getType() = TypeRef.Any
 
-    override fun printAql(p: AqlPrinter): Any = p.value(
-        if (expr is Aliased) expr.getAlias() else "v",
-        value
-    )
+    override fun printAql(p: AqlPrinter): Any =
+        p.value(if (expr is Aliased) expr.getAlias() else "v", value)
 }
 

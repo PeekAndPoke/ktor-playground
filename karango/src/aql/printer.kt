@@ -8,6 +8,10 @@ class AqlPrinter {
 
     data class Result(val query: String, val vars: Map<String, Any>)
 
+    companion object {
+        fun sandbox(builder: (AqlPrinter) -> Unit): String = AqlPrinter().apply(builder).build().query
+    }
+
     private val stringBuilder = StringBuilder()
     private val queryVars = mutableMapOf<String, Any>()
 
@@ -15,15 +19,13 @@ class AqlPrinter {
     private var newLine = true
 
     private fun String.toParamName() = this
+        .replace("`", "")
         .replace(".", "__")
         .replace("[*]", "_STAR")
         .replace("[**]", "_STAR2")
         .replace("[^a-zA-Z0-9_]".toRegex(), "_")
 
-    private fun String.toName() = this
-        .split(".")
-        .map { it.tick() }
-        .joinToString(".")
+    private fun String.toName() = split(".").joinToString(".") { it.tick() }
 
     private fun String.tick() = "`${replace("`", "?")}`"
 
@@ -77,7 +79,7 @@ class AqlPrinter {
 
         indent += "    "
 
-        cb()
+        this.cb()
 
         indent = indent.substring(0, Math.max(0, indent.length - 4))
     }

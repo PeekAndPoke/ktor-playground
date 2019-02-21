@@ -19,11 +19,13 @@ class UpdateDocument<T : Entity>(private val entity: T, private val col: Collect
 
                 pairs.keys.forEachIndexed { idx, key ->
 
-                    append(key.allExpressions().drop(1)).append(" : ").value("kv", pairs.getValue(key))
-
-                    if (idx < pairs.size - 1) {
-                        append(",")
-                    }
+                    // TODO: FIX the update
+                    
+//                    append(key.allExpressions().drop(1)).append(" : ").value("kv", pairs.getValue(key))
+//
+//                    if (idx < pairs.size - 1) {
+//                        append(",")
+//                    }
 
                     appendLine()
                 }

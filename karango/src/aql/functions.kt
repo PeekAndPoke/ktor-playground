@@ -4,7 +4,8 @@ enum class AqlFunc {
     CONTAINS,
     DOCUMENT,
     NOT,
-} 
+}
+
 
 interface FunctionCall<T> : Expression<T>
 

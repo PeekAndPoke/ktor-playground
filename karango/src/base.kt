@@ -46,43 +46,36 @@ inline val <reified T> CollectionDefinition<T>._key
 inline val <reified T> CollectionDefinition<T>._rev
     inline get() = PropertyPath.start(this).append<String>("_rev")
 
-data class PropertyPath<T>(private val previous: PropertyPath<*>?, private val current: Expression<T>) : Expression<T> {
+data class PropertyPath<T>(private val previous: PropertyPath<*>?, private val current: Step<T>) : Expression<T>, Aliased {
 
-    class PropStep<T>(private val name: String, private val type: TypeRef<T>) : Expression<T> {
-        
+    interface Step<T> : Expression<T>
+    
+    class PropStep<T>(private val name: String, private val type: TypeRef<T>) : Step<T> {
         override fun getType() = type
-
         override fun printAql(p: AqlPrinter) = p.append(".").name(name)
     }
     
+    class ExprStep<T>(private val expr: Expression<T>) : Step<T> {
+        override fun getType() = expr.getType()
+        override fun printAql(p: AqlPrinter) = p.append(expr)
+    }
+    
     companion object {
-        inline fun <reified T> start(root: Expression<T>) = PropertyPath(null, root)
+        inline fun <reified T> start(root: Expression<T>) = PropertyPath(null, ExprStep(root))
     }
 
     inline fun <reified NT> append(prop: String) = PropertyPath(this, PropStep<NT>(prop, typeRef()))
-    
-    fun <NT> append(expr: Expression<NT>) = PropertyPath(this, expr)
 
     override fun getType() = current.getType()
 
     override fun printAql(p: AqlPrinter) {
 
-        p.append(allExpressions())
+        previous?.apply { p.append(this) }
+        
+        p.append(current)
     }
-    
-    internal fun allExpressions(): List<Expression<*>> {
-        val all = mutableListOf<Expression<*>>()
 
-        var it: PropertyPath<*>? = this
-
-        while (it != null) {
-            all.add(it.current)
-
-            it = it.previous
-        }
-
-        return all.reversed()
-    }
+    override fun getAlias() = AqlPrinter.sandbox { it.append(this) }
 }
 
 inline val <reified T> PropertyPath<List<T>>.`*` inline get() = append<T>("[*]")

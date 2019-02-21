@@ -122,7 +122,9 @@ fun findBaratheons() {
     println("Find all Baratheons using our collection class")
 
     val result = characters.find { c ->
-        FILTER { c.surname EQ "Baratheon" }
+        //        FILTER { c.surname EQ "Baratheon" }
+
+        FILTER(c.surname EQ "Baratheon")
     }
 
     printQueryResult(result, ::printCharacter)
@@ -135,7 +137,7 @@ fun findStarks() {
 
     val result = db.query {
         FOR("x") IN (CharacterCollection) { c ->
-            FILTER { c.surname EQ "Stark" }
+            FILTER(c.surname EQ "Stark")
             RETURN(c)
         }
     }
@@ -146,7 +148,7 @@ fun findStarks() {
 fun findBranStarkV1() {
 
     // to do what we want to do, we need the ID of Bran Stark
-    val bransId = characters.findOne { t -> FILTER { (t.name EQ "Bran") AND (t.surname EQ "Stark") } }!!._id
+    val bransId = characters.findOne { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }!!._id
 
     println("==========================================================================================================================")
     println("Find Bran Stark by ID with an explicit query on the db object")
@@ -163,7 +165,7 @@ fun findBranStarkV1() {
 fun findBranStarkV2() {
 
     // to do what we want to do, we need the ID of Bran Stark
-    val bransId = characters.findOne { t -> FILTER { (t.name EQ "Bran") AND (t.surname EQ "Stark") } }!!._id
+    val bransId = characters.findOne { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }!!._id
 
     println("==========================================================================================================================")
     println("Find Bran Stark by ID using our collection class")
@@ -178,9 +180,9 @@ fun findBranStarkV2() {
 fun findThreeCharactersByIdV1() {
 
     // to do what we want to do, we need the ID of Bran Stark
-    val bransId = characters.findOne { t -> FILTER { (t.name EQ "Bran") AND (t.surname EQ "Stark") } }!!._id
-    val aryasId = characters.findOne { t -> FILTER { (t.name EQ "Arya") AND (t.surname EQ "Stark") } }!!._id
-    val tyrionsId = characters.findOne { t -> FILTER { (t.name EQ "Tyrion") AND (t.surname EQ "Lannister") } }!!._id
+    val bransId = characters.findOne { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }!!._id
+    val aryasId = characters.findOne { t -> FILTER((t.name EQ "Arya") AND (t.surname EQ "Stark")) }!!._id
+    val tyrionsId = characters.findOne { t -> FILTER((t.name EQ "Tyrion") AND (t.surname EQ "Lannister")) }!!._id
 
     println("==========================================================================================================================")
     println("Find Arya, Bran and Tyrion at once by their IDs using our collection class")
@@ -193,9 +195,9 @@ fun findThreeCharactersByIdV1() {
 fun findThreeCharactersByIdV2() {
 
     // to do what we want to do, we need the ID of Bran Stark
-    val bransId = characters.findOne { t -> FILTER { (t.name EQ "Bran") AND (t.surname EQ "Stark") } }!!._id
-    val aryasId = characters.findOne { t -> FILTER { (t.name EQ "Arya") AND (t.surname EQ "Stark") } }!!._id
-    val tyrionsId = characters.findOne { t -> FILTER { (t.name EQ "Tyrion") AND (t.surname EQ "Lannister") } }!!._id
+    val bransId = characters.findOne { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }!!._id
+    val aryasId = characters.findOne { t -> FILTER((t.name EQ "Arya") AND (t.surname EQ "Stark")) }!!._id
+    val tyrionsId = characters.findOne { t -> FILTER((t.name EQ "Tyrion") AND (t.surname EQ "Lannister")) }!!._id
 
     println("==========================================================================================================================")
     println("Find Arya, Bran and Tyrion at once by their IDs using the db object")
@@ -213,7 +215,7 @@ fun findThreeCharactersByIdV2() {
 
 fun updateNedStarksAliveness() {
 
-    val ned = characters.findOne { t -> FILTER { (t.name EQ "Eddard") AND (t.surname EQ "Stark") } }!!
+    val ned = characters.findOne { t -> FILTER((t.name EQ "Eddard") AND (t.surname EQ "Stark")) }!!
 
     println("==========================================================================================================================")
     println("Spoiler Alert! Ned died... So we need to update his aliveness using the collection object")
