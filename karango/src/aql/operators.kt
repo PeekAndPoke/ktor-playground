@@ -2,7 +2,7 @@
 
 package de.peekandpoke.karango.aql
 
-internal enum class Operator(val op: String) {
+enum class Operator(val op: String) {
     EQ("=="),
     NE("!="),
     GT(">"),
@@ -15,20 +15,33 @@ internal enum class Operator(val op: String) {
     REGEX("=~"),
 }
 
-internal enum class ArrayOp(val op: String) {
+enum class ArrayOp(val op: String) {
     ANY("ANY"),
     NONE("NONE"),
     ALL("ALL"),
 }
 
-internal enum class Logic(val op: String) {
+enum class Logic(val op: String) {
     AND("AND"),
     OR("OR"),
 }
 
-infix fun <T> Expression<T>.ANY(partial: PartialBooleanExpression<T>): Expression<Boolean> = FilterArray(this, ArrayOp.ANY, partial)
-infix fun <T> Expression<T>.NONE(partial: PartialBooleanExpression<T>): Expression<Boolean> = FilterArray(this, ArrayOp.NONE, partial)
-infix fun <T> Expression<T>.ALL(partial: PartialBooleanExpression<T>): Expression<Boolean> = FilterArray(this, ArrayOp.ALL, partial)
+typealias PartialBooleanExpression<T> = (Expression<T>) -> Expression<Boolean>
+
+data class ArrayOpExpr<T>(val expr: Expression<List<T>>, val op: ArrayOp, private val type: TypeRef<T>) : Expression<T> {
+    override fun getType() = type
+    override fun printAql(p: AqlPrinter) = p.append(expr).append(" ${op.op}")
+}
+
+inline infix fun <reified T> Expression<List<T>>.ANY(partial: PartialBooleanExpression<T>)
+        : Expression<Boolean> = partial(ArrayOpExpr(this, ArrayOp.ANY, typeRef()))
+
+inline infix fun <reified T> Expression<List<T>>.NONE(partial: PartialBooleanExpression<T>)
+        : Expression<Boolean> = partial(ArrayOpExpr(this, ArrayOp.NONE, typeRef()))
+
+inline infix fun <reified T> Expression<List<T>>.ALL(partial: PartialBooleanExpression<T>)
+        : Expression<Boolean> = partial(ArrayOpExpr(this, ArrayOp.ALL, typeRef()))
+
 
 fun <T> EQ(value: T): PartialBooleanExpression<T> = { x -> x EQ value }
 fun <T> EQ(value: Expression<T>): PartialBooleanExpression<T> = { x -> x EQ value }

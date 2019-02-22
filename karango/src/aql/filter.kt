@@ -27,17 +27,3 @@ internal data class FilterLogic(val left: Expression<Boolean>, val op: Logic, va
 
     override fun printAql(p: AqlPrinter) = p.append("(").append(left).append(" ${op.op} ").append(right).append(")")
 }
-
-typealias PartialBooleanExpression<T> = (Expression<T>) -> Expression<Boolean>
-
-internal data class FilterArray<L>(val left: Expression<L>, val op: ArrayOp, val right: PartialBooleanExpression<L>) : Expression<Boolean> {
-
-    /** Resolve the right side from the partial filter */
-    private val resolved = (right(left) as FilterBy<*, *>)
-
-    override fun getType() = TypeRef.Boolean
-
-    override fun printAql(p: AqlPrinter) =
-        p.append(left).append(" ${op.op} ${resolved.op.op} ").append(resolved.right)
-}
-

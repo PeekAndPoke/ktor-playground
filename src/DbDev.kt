@@ -6,12 +6,7 @@ import com.arangodb.VelocyJack
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.peekandpoke.domain.*
 import de.peekandpoke.karango.Db
-import de.peekandpoke.karango.`**`
-import de.peekandpoke.karango.`*`
-import de.peekandpoke.karango.aql.ALL
-import de.peekandpoke.karango.aql.CONTAINS
-import de.peekandpoke.karango.aql.EQ
-import de.peekandpoke.karango.aql.IN
+import de.peekandpoke.karango.aql.*
 import kotlin.system.measureTimeMillis
 
 @optics
@@ -94,7 +89,7 @@ fun y() {
                     FILTER(person.name CONTAINS str)
 
 //                    FILTER { person.nr EQ num }
-                    FILTER(person.books.`*`.authors.`*`.firstName.`**` ALL IN(names))
+                    FILTER(person.books[`*`].authors[`*`].firstName[`**`] ALL IN(names))
 
                     LIMIT(0, 20)
 

@@ -3,7 +3,6 @@ package de.peekandpoke.karango.aql
 import com.fasterxml.jackson.core.type.TypeReference
 import de.peekandpoke.karango.CollectionDefinition
 import de.peekandpoke.karango.Entity
-import de.peekandpoke.karango.PropertyPath
 
 @DslMarker
 annotation class KarangoDslMarker
