@@ -28,7 +28,9 @@ enum class Logic(val op: String) {
 
 typealias PartialBooleanExpression<T> = (Expression<T>) -> Expression<Boolean>
 
-data class ArrayOpExpr<T>(val expr: Expression<List<T>>, val op: ArrayOp, private val type: TypeRef<T>) : Expression<T> {
+data class ArrayOpExpr<T>(val expr: Expression<List<T>>, val op: ArrayOp, private val type: TypeRef<T>) : Expression<T>, Aliased {
+    
+    override fun getAlias() = if (expr is Aliased) expr.getAlias() + "_${op.op}" else "v"
     override fun getType() = type
     override fun printAql(p: AqlPrinter) = p.append(expr).append(" ${op.op}")
 }

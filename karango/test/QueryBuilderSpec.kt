@@ -77,36 +77,38 @@ class QueryBuilderSpec : StringSpec({
         }
     }
 
-    "Nested query must be rendered correctly" {
+    "Property path must be rendered correctly" {
 
         val query = query {
             FOR("iter") IN (TestPersonCollection) { p ->
-                FILTER(p.addresses.`*`.street EQ "street")
+                FILTER(p.addresses[`*`].street EQ "street")
                 RETURN(p)
             }
         }
 
         query.aql.shouldBe(
             """ |FOR `iter` IN `test-persons`
-                |    FILTER `iter`.`addresses`[*].`street` == @iter_persons__addresses_STAR__street_1
+                |    FILTER `iter`.`addresses`[*].`street` == @iter__addresses_STAR__street_1
                 |    RETURN `iter`
                 |
             """.trimMargin()
         )
     }
 
-    "Array expansion [*] and contraction [**] must be rendered correctly" {
+    "Property path with Array expansion [*] and contraction [**] must be rendered correctly" {
 
         val query = query {
             FOR("iter") IN (TestPersonCollection) { p ->
-                FILTER(p.addresses.`*`.street.`**` EQ "street")
+                FILTER(p.addresses[`*`].street EQ "street")
+                FILTER(p.addresses[`*`].street[`**`] ALL EQ("street"))
                 RETURN(p)
             }
         }
 
         query.aql.shouldBe(
             """ |FOR `iter` IN `test-persons`
-                |    FILTER `iter`.`addresses`[*].`street`[**] == @iter_persons__addresses_STAR__street_STAR2_1
+                |    FILTER `iter`.`addresses`[*].`street` == @iter__addresses_STAR__street_1
+                |    FILTER `iter`.`addresses`[*].`street`[**] ALL == @iter__addresses_STAR__street_STAR2_ALL_2
                 |    RETURN `iter`
                 |
             """.trimMargin()
@@ -116,19 +118,19 @@ class QueryBuilderSpec : StringSpec({
     "Array operators ANY, ALL, NONE must be rendered correctly" {
 
         val query = query {
-            FOR("iter") IN TestPersonCollection { p ->
-                FILTER(p.addresses.`*`.street.`**` ANY { it EQ "street" })
-                FILTER(p.addresses.`*`.street.`**` ALL { it NE "street" })
-                FILTER(p.addresses.`*`.street.`**` NONE { it IN listOf("street") })
+            FOR("iter") IN (TestPersonCollection) { p ->
+                FILTER(p.addresses[`*`].street[`**`] ANY EQ("street"))
+                FILTER(p.addresses[`*`].street[`**`] ALL NE("street"))
+                FILTER(p.addresses[`*`].street[`**`] NONE IN(listOf("street")))
                 RETURN(p)
             }
         }
 
         query.aql.shouldBe(
             """ |FOR `iter` IN `test-persons`
-                |    FILTER `iter`.`addresses`[*].`street`[**] ANY == @iter_persons__addresses_STAR__street_STAR2_ANY_1
-                |    FILTER `iter`.`addresses`[*].`street`[**] ALL != @iter_persons__addresses_STAR__street_STAR2_ALL_2
-                |    FILTER `iter`.`addresses`[*].`street`[**] NONE IN @iter_persons__addresses_STAR__street_STAR2_NONE_3
+                |    FILTER `iter`.`addresses`[*].`street`[**] ANY == @iter__addresses_STAR__street_STAR2_ANY_1
+                |    FILTER `iter`.`addresses`[*].`street`[**] ALL != @iter__addresses_STAR__street_STAR2_ALL_2
+                |    FILTER `iter`.`addresses`[*].`street`[**] NONE IN @iter__addresses_STAR__street_STAR2_NONE_3
                 |    RETURN `iter`
                 |
             """.trimMargin()
