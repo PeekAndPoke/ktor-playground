@@ -47,8 +47,8 @@ interface ArrayContraction
 object `**` : ArrayContraction
 
 @Suppress("UNUSED_PARAMETER")
-inline operator fun <reified T> PropertyPath<List<T>>.get(`*`: `*`) = contract<T>()
+inline operator fun <reified T> PropertyPath<List<T>>.get(`*`: ArrayExpansion) = contract<T>()
 
 @Suppress("UNUSED_PARAMETER")
-inline operator fun <reified T> PropertyPath<T>.get(`**`: `**`) = expand<List<T>>()
+inline operator fun <reified T> PropertyPath<T>.get(`**`: ArrayContraction) = expand<List<T>>()
 

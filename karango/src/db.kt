@@ -6,7 +6,6 @@ import com.arangodb.entity.CursorEntity
 import com.arangodb.model.AqlQueryOptions
 import com.arangodb.model.CollectionCreateOptions
 import com.arangodb.model.DocumentCreateOptions
-import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -59,7 +58,7 @@ class Db(private val database: ArangoDatabase) {
         return DbCollection(this, database.collection(name), def)
     }
 
-    fun <T> query(builder: RootBuilder.() -> Expression<T>): Cursor<T> {
+    fun <T> query(builder: RootBuilder.() -> TerminalExpr<T>): Cursor<T> {
 
         val query = de.peekandpoke.karango.aql.query(builder)
 
@@ -80,7 +79,6 @@ class Db(private val database: ArangoDatabase) {
 interface Cursor<T> : Iterable<T> {
     val query: TypedQuery<T>
     val timeMs: Long
-
     val stats: CursorEntity.Stats
 }
 
@@ -94,9 +92,13 @@ class CursorImpl<T>(
     override val timeMs: Long
 ) : Cursor<T> {
 
-    private val iterator = It(arangoCursor, query.type)
+    private val iterator = It(arangoCursor, query.ret.innerType())
 
-    class It<T>(private val inner: ArangoIterator<*>, private val type: TypeReference<T>) : Iterator<T> {
+    class It<T>(private val inner: ArangoIterator<*>, private val type: TypeRef<T>) : Iterator<T> {
+
+        init {
+            println("Iterator type is $type")
+        }
 
         override fun hasNext(): Boolean = inner.hasNext()
 
@@ -142,14 +144,14 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
                 .overwrite(true)
         ).new
 
-    fun update(entity: T, builder: KeyValueBuilder<T>.(D) -> Unit): Cursor<T> =
+    fun update(entity: T, builder: KeyValueBuilder<T>.(D) -> Unit): Cursor<Any> =
         db.query {
             UPDATE(entity, def, builder)
         }
 
     fun find(builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> Unit): Cursor<T> =
         db.query {
-            FOR ("x") IN (def) { t ->
+            FOR("x") IN (def) { t ->
                 builder(t)
                 RETURN(t)
             }
@@ -157,8 +159,8 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
 
     fun findOne(builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> Unit): T? =
         db.query {
- 
-            FOR ("x") IN (def) { t ->
+
+            FOR("x") IN (def) { t ->
                 builder(t)
                 LIMIT(1)
                 RETURN(t)
@@ -169,9 +171,9 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
         db.query {
 
             val params = keys.filter { it.startsWith(def.getAlias()) }
-            
-            FOR ("x") IN (DOCUMENT(def, params)) {d ->
-                RETURN (d)
+
+            FOR("x") IN (DOCUMENT(def, params)) { d ->
+                RETURN(d)
             }
         }
 

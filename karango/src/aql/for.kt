@@ -7,7 +7,7 @@ interface ForBuilderTrait : BuilderTrait {
 
     class For(private val trait: ForBuilderTrait, private val iteratorName: String) {
 
-        infix fun <T> IN(forIn: In<T>): Expression<T> {
+        infix fun <T> IN(forIn: In<T>): TerminalExpr<T> {
 
             val iterator = IteratorExpr(iteratorName, forIn.iterable)
             val loop = ForLoopBuilder(iterator, forIn.iterable)
@@ -19,9 +19,9 @@ interface ForBuilderTrait : BuilderTrait {
         }
     }
 
-    operator fun <T> IterableExpression<T>.invoke(builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> Expression<T>) = In(this, builder)
+    operator fun <T> IterableExpression<T>.invoke(builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> TerminalExpr<T>) = In(this, builder)
 
-    class In<T>(internal val iterable: IterableExpression<T>, internal val builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> Expression<T>)
+    class In<T>(internal val iterable: IterableExpression<T>, internal val builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> TerminalExpr<T>)
 
     fun FOR(iteratorName: String) = For(this, iteratorName)
 }
@@ -45,11 +45,11 @@ class ForLoopBuilder<T> internal constructor(
 
     fun LIMIT(offset: Int, limit: Int): Unit = run { OffsetAndLimit(offset, limit).add() }
 
-    fun RETURN(ret: Expression<T>): Expression<T> = Return(ret).add()
+    fun RETURN(ret: Expression<T>) = Return(ret).add()
 
     fun INSERT(what: Expression<T>) = InsertPreStage(what)
 
-    infix fun InsertPreStage<T>.INTO(collection: CollectionDefinition<T>): Expression<T> = InsertInto(what, collection).add()
+    infix fun InsertPreStage<T>.INTO(collection: CollectionDefinition<T>)= InsertInto(what, collection).add()
 
     override fun printAql(p: AqlPrinter) {
 

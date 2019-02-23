@@ -225,5 +225,5 @@ fun updateNedStarksAliveness() {
 //        "hair" with "black"
     }
 
-    printQueryResult(result, ::printCharacter)
+    printQueryResult(result) { i, x -> "$i. $x" }
 }

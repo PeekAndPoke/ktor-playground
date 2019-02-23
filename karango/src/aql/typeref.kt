@@ -1,10 +1,37 @@
 package de.peekandpoke.karango.aql
 
 import com.fasterxml.jackson.core.type.TypeReference
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
 
 inline fun <reified T> typeRef() = object : TypeRef<T>() {}
 
-open class TypeRef<T> : TypeReference<T>() {
+inline fun <reified T> T.toTypeRef(): TypeRef<T> = typeRef()
+
+open class TypeRef<T>() : TypeReference<T>() {
+
+    constructor(type: ParameterizedType) : this() {
+        this._customType = type
+    }
+
+    val up: TypeRef<List<T>> by lazy {
+        TypeRef<List<T>>(
+            ParameterizedTypeImpl.make(List::class.java, arrayOf(type), null)
+        )
+    }
+
+    private var _customType: Type? = null
+
+    override fun getType(): Type {
+
+        val t = _customType
+
+        return when {
+            t != null -> t
+            else -> super.getType()
+        }
+    }
 
     override fun toString() = type.toString()
 
@@ -19,4 +46,3 @@ open class TypeRef<T> : TypeReference<T>() {
         val String get() = StringInst
     }
 }
-

@@ -1,57 +1,57 @@
 package de.peekandpoke
 
-import arrow.optics.optics
-import com.arangodb.ArangoDB
-import com.arangodb.VelocyJack
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.peekandpoke.domain.*
 import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.aql.*
 import kotlin.system.measureTimeMillis
 
-@optics
-data class MyClass1(
-    val name: String,
-    val address: Address2
-) {
-    companion object
-}
+val db = Db.default(user = "root", pass = "root", host = "localhost", port = 8529, database = "kotlindev")
 
-@optics
-data class MyClass2(
-    val name: String,
-    val address: Address2
-) {
-    companion object
-}
-
-@optics
-data class Address2(val city: String, val street: String) {
-    companion object
-}
-
+val persons = db.collection(PersonCollection)
 
 fun main() {
+
+    val strList =
+        listOf(
+            listOf(
+                listOf("a")
+            )
+        )
+
+    val type = strList.toTypeRef()
+
+    println("--  TYPE  -----------------------------------------------------------------------------------------")
+    println(type.type)
+//    println("--  UP  -----------------------------------------------------------------------------------------")
+//    println(type.up.type)
+//    println("--  DOWN  -----------------------------------------------------------------------------------------")
+//    println(type.down.type)
+//    println("--  UP DOWN  -----------------------------------------------------------------------------------------")
+//    println(type.up.down.type)
+
+    val result = db.query {
+        val a = LET("a", "text")
+        RETURN(a)
+    }
+
+    println("-------------------------------------------------------------------------------------------")
+    println(result.query.ret.getType())
+    println(result.map { it })
+
+    val result2 = db.query {
+        RETURN(PersonCollection)
+    }
+
+    println("-------------------------------------------------------------------------------------------")
+    println(result2.query.ret.getType())
+    println(result2.map { it })
+
 //    x()
-    y()
+//    y()
 }
 
 fun y() {
 
-    val velocyJack = VelocyJack().apply { configure { mapper -> mapper.registerModule(KotlinModule()) } }
-    val arango = ArangoDB.Builder()
-        .serializer(velocyJack)
-        .user("root").password("root")
-        .host("localhost", 8529)
-        .build()
-
-    arango.databases.forEach {
-        println("collection: $it")
-    }
-
-    val db = Db(arango.db("kotlindev"))
-
-    val persons = db.collection(PersonCollection)
 //    val addresses = db.collection(Address.)
 
 

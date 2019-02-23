@@ -1,22 +1,21 @@
 package de.peekandpoke.karango.aql
 
-import com.fasterxml.jackson.core.type.TypeReference
 import de.peekandpoke.karango.CollectionDefinition
 import de.peekandpoke.karango.Entity
 
 @DslMarker
 annotation class KarangoDslMarker
 
-data class TypedQuery<T>(val aql: String, val vars: Map<String, Any>, val type: TypeReference<T>)
+data class TypedQuery<T>(val ret: TerminalExpr<T>, val aql: String, val vars: Map<String, Any>)
 
-fun <T> query(builder: RootBuilder.() -> Expression<T>): TypedQuery<T> {
+fun <T> query(builder: RootBuilder.() -> TerminalExpr<T>): TypedQuery<T> {
 
     val root = RootBuilder()
-    val returnType = root.builder()
+    val ret = root.builder()
 
     val query = AqlPrinter().append(root).build()
 
-    return TypedQuery(query.query, query.vars, returnType.getType())
+    return TypedQuery(ret, query.query, query.vars)
 }
 
 interface Aliased {
@@ -30,6 +29,10 @@ interface Typed<T> {
 interface Statement : Printable
 
 interface Expression<T> : Typed<T>, Printable
+
+interface TerminalExpr<T> : Expression<List<T>> {
+    fun innerType(): TypeRef<T>
+}
 
 // TODO: replace me with Expression<List<T>> or similar
 interface IterableExpression<T> : Expression<T>
@@ -59,7 +62,7 @@ class RootBuilder internal constructor() : ForBuilderTrait, BuilderTrait, Printa
 
     inline fun <reified T, L : List<T>> LET(name: String, builder: () -> L) = IterableLet(name, builder(), typeRef()).add().toExpression()
 
-    fun <T> RETURN(expr: Expression<T>): Expression<T> = Return(expr).add()
+    fun <T> RETURN(expr: Expression<T>): Return<T> = Return(expr).add()
 
     fun <T : Entity, D : CollectionDefinition<T>> UPDATE(entity: T, col: D, builder: KeyValueBuilder<T>.(D) -> Unit) =
         UpdateDocument(entity, col, KeyValueBuilder<T>().apply { builder(col) }).add()
