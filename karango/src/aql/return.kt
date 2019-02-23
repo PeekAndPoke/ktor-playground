@@ -6,7 +6,7 @@ class Return<T> internal constructor(
 
     override fun innerType() = expr.getType()
 
-    override fun getType() = expr.getType().up
+    override fun getType() = expr.getType().up()
 
     override fun printAql(p: AqlPrinter) = p.append("RETURN ").append(expr).appendLine()
 }

@@ -53,8 +53,10 @@ class RootBuilder internal constructor() : ForBuilderTrait, BuilderTrait, Printa
 
     fun <T> RETURN(expr: Expression<T>): Return<T> = Return(expr).add()
 
-    fun <T : Entity, D : CollectionDefinition<T>> UPDATE(entity: T, col: D, builder: KeyValueBuilder<T>.(D) -> Unit) =
-        UpdateDocument(entity, col, KeyValueBuilder<T>().apply { builder(col) }).add()
+    fun <T : Entity, D : CollectionDefinition<T>> UPDATE(entity: T, col: D, builder: KeyValueBuilder<T>.(Expression<T>) -> Unit) =
+        UpdateDocument(entity, col, KeyValueBuilder<T>()
+            .apply { builder(ExpressionImpl("x", col.getType().down())) })
+            .add()
 
     override fun printAql(p: AqlPrinter) {
         p.append(items)

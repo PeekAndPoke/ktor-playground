@@ -1,6 +1,7 @@
 package de.peekandpoke
 
 import de.peekandpoke.domain.*
+import de.peekandpoke.karango.Cursor
 import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.aql.*
 import kotlin.system.measureTimeMillis
@@ -29,7 +30,7 @@ fun main() {
 //    println("--  UP DOWN  -----------------------------------------------------------------------------------------")
 //    println(type.up.down.type)
 
-    val result = db.query {
+    val result : Cursor<String> = db.query {
         val a = LET("a", "text")
         RETURN(a)
     }

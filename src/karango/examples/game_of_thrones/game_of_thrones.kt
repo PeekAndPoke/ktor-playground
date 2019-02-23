@@ -221,7 +221,7 @@ fun updateNedStarksAliveness() {
     println("Spoiler Alert! Ned died... So we need to update his aliveness using the collection object")
 
     val result = characters.update(ned) { t ->
-//        t.alive with false
+        t.alive with false
 //        "hair" with "black"
     }
 

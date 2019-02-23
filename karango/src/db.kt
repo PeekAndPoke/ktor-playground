@@ -144,7 +144,7 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
                 .overwrite(true)
         ).new
 
-    fun update(entity: T, builder: KeyValueBuilder<T>.(D) -> Unit): Cursor<Any> =
+    fun update(entity: T, builder: KeyValueBuilder<T>.(Expression<T>) -> Unit): Cursor<Any> =
         db.query {
             UPDATE(entity, def, builder)
         }
