@@ -9,8 +9,6 @@ enum class AqlFunc {
 
 interface FunctionCall<T> : Expression<T>
 
-interface IterableFunctionCall<T> : IterableExpression<T>
-
 open class FuncCall<T>(private val type: TypeRef<T>, private val func: AqlFunc, private val args: List<Expression<*>>) : FunctionCall<T> {
     
     override fun getType() = type
@@ -20,9 +18,9 @@ open class FuncCall<T>(private val type: TypeRef<T>, private val func: AqlFunc, 
 
 open class IterableFuncCall<T>(
     private val name_: String, 
-    private val type: TypeRef<T>, 
+    private val type: TypeRef<List<T>>, 
     private val func: AqlFunc, 
-    private val args: List<Expression<*>>) : IterableFunctionCall<T> {
+    private val args: List<Expression<*>>) : Expression<List<T>> {
 
     override fun getType() = type
 

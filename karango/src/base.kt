@@ -4,7 +4,7 @@ package de.peekandpoke.karango
 
 import de.peekandpoke.karango.aql.*
 
-interface CollectionDefinition<T> : IterableExpression<T>, Aliased {
+interface CollectionDefinition<T> : Expression<List<T>>, Aliased {
 
     override fun getAlias(): String
 
@@ -17,7 +17,7 @@ interface EntityCollectionDefinition<T> : CollectionDefinition<T>
 
 interface EdgeCollectionDefinition<T> : CollectionDefinition<T>
 
-abstract class CollectionDefinitionImpl<T>(private val name_: String, private val type: TypeRef<T>) : CollectionDefinition<T> {
+abstract class CollectionDefinitionImpl<T>(private val name_: String, private val type: TypeRef<List<T>>) : CollectionDefinition<T> {
 
     override val configurations = mutableMapOf<PropertyPath<*>, String>()
 
@@ -30,9 +30,11 @@ abstract class CollectionDefinitionImpl<T>(private val name_: String, private va
     override fun addConfiguration(key: PropertyPath<*>, config: String) = run { configurations[key] = config }
 }
 
-abstract class EntityCollectionDefinitionImpl<T>(name: String, type: TypeRef<T>) : CollectionDefinitionImpl<T>(name, type), EntityCollectionDefinition<T>
+abstract class EntityCollectionDefinitionImpl<T>(name: String, type: TypeRef<List<T>>) :
+    CollectionDefinitionImpl<T>(name, type), EntityCollectionDefinition<T>
 
-abstract class EdgeCollectionDefinitionImpl<T>(name: String, type: TypeRef<T>) : CollectionDefinitionImpl<T>(name, type), EdgeCollectionDefinition<T>
+abstract class EdgeCollectionDefinitionImpl<T>(name: String, type: TypeRef<List<T>>) :
+    CollectionDefinitionImpl<T>(name, type), EdgeCollectionDefinition<T>
 
 @Suppress("unused")
 inline val <reified T> CollectionDefinition<T>._id

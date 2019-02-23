@@ -11,7 +11,7 @@ class InsertInto<T> internal constructor(
 
     override fun innerType() = expr.getType()
 
-    override fun getType() = collection.getType().up
+    override fun getType() = collection.getType()
 
     override fun printAql(p: AqlPrinter) =
         p.append("INSERT ").append(expr).append(" INTO ").append(collection).appendLine()

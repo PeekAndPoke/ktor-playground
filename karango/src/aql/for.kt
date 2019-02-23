@@ -19,9 +19,9 @@ interface ForBuilderTrait : BuilderTrait {
         }
     }
 
-    operator fun <T> IterableExpression<T>.invoke(builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> TerminalExpr<T>) = In(this, builder)
+    operator fun <T> Expression<List<T>>.invoke(builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> TerminalExpr<T>) = In(this, builder)
 
-    class In<T>(internal val iterable: IterableExpression<T>, internal val builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> TerminalExpr<T>)
+    class In<T>(internal val iterable: Expression<List<T>>, internal val builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> TerminalExpr<T>)
 
     fun FOR(iteratorName: String) = For(this, iteratorName)
 }
@@ -30,12 +30,10 @@ interface ForBuilderTrait : BuilderTrait {
 @KarangoDslMarker
 class ForLoopBuilder<T> internal constructor(
     private val name: IteratorExpr<T>,
-    private val iterable: IterableExpression<T>
-) : ForBuilderTrait, Expression<T> {
+    private val iterable: Expression<List<T>>
+) : ForBuilderTrait, Printable {
 
     override val items = mutableListOf<Printable>()
-
-    override fun getType() = iterable.getType()
 
     fun FILTER(predicate: Expression<Boolean>): Unit = run { Filter(predicate).add() }
 

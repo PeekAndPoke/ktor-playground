@@ -1,10 +1,10 @@
 package de.peekandpoke.karango.aql
 
-class IterableLet<T>(name: String, private val value: Collection<T>, type: TypeRef<T>) : Statement {
+class IterableLet<T>(name: String, private val value: Collection<T>, type: TypeRef<List<T>>) : Statement {
 
     private val lName = "l_$name"
 
-    private val expr: IterableExpression<T> = IterableExpressionImpl("l_$name", type)
+    private val expr: Expression<List<T>> = ExpressionImpl("l_$name", type)
 
     fun toExpression() = expr
 

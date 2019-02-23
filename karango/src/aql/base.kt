@@ -34,23 +34,12 @@ interface TerminalExpr<T> : Expression<List<T>> {
     fun innerType(): TypeRef<T>
 }
 
-// TODO: replace me with Expression<List<T>> or similar
-interface IterableExpression<T> : Expression<T>
-
 internal class ExpressionImpl<T>(private val name_: String, private val type: TypeRef<T>) : Expression<T> {
 
     override fun getType() = type
 
     override fun printAql(p: AqlPrinter) = p.name(name_)
 }
-
-internal class IterableExpressionImpl<T>(private val name_: String, private val type: TypeRef<T>) : IterableExpression<T> {
-
-    override fun getType() = type
-
-    override fun printAql(p: AqlPrinter) = p.name(name_)
-}
-
 
 @Suppress("FunctionName")
 @KarangoDslMarker
@@ -89,9 +78,10 @@ interface BuilderTrait {
     fun <T : Printable> T.add(): T = apply { items.add(this) }
 }
 
-data class IteratorExpr<T>(private val __name__: String, private val __inner__: IterableExpression<T>) : IterableExpression<T> {
+data class IteratorExpr<T>(private val __name__: String, private val __inner__: Expression<List<T>>) : Expression<T> {
 
-    override fun getType() = __inner__.getType()
+    // TODO: check me ... fix me
+    override fun getType() = __inner__.getType().down<T>()
 
     override fun printAql(p: AqlPrinter) = p.name(__name__)
 }

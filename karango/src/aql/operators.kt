@@ -77,17 +77,17 @@ infix fun <T> Expression<T>.LTE(value: Expression<T>): Expression<Boolean> = Fil
 
 fun <T> IN(value: Array<T>): PartialBooleanExpression<T> = { x -> x IN value }
 fun <T> IN(value: Collection<T>): PartialBooleanExpression<T> = { x -> x IN value }
-fun <T> IN(value: IterableExpression<T>): PartialBooleanExpression<T> = { x -> x IN value }
+fun <T> IN(value: Expression<List<T>>): PartialBooleanExpression<T> = { x -> x IN value }
 infix fun <T> Expression<T>.IN(value: Array<T>): Expression<Boolean> = IN(value.toList())
 infix fun <T> Expression<T>.IN(value: Collection<T>): Expression<Boolean> = FilterBy.value(this, Operator.IN, value)
-infix fun <T> Expression<T>.IN(value: IterableExpression<T>): Expression<Boolean> = FilterBy.expr(this, Operator.IN, value)
+infix fun <T> Expression<T>.IN(value: Expression<List<T>>): Expression<Boolean> = FilterBy.expr(this, Operator.IN, value)
 
 fun <T> NOT_IN(value: Array<T>): PartialBooleanExpression<T> = { x -> x NOT_IN value }
 fun <T> NOT_IN(value: Collection<T>): PartialBooleanExpression<T> = { x -> x NOT_IN value }
-fun <T> NOT_IN(value: IterableExpression<T>): PartialBooleanExpression<T> = { x -> x NOT_IN value }
+fun <T> NOT_IN(value: Expression<List<T>>): PartialBooleanExpression<T> = { x -> x NOT_IN value }
 infix fun <T> Expression<T>.NOT_IN(value: Array<T>): Expression<Boolean> = NOT_IN(value.toList())
 infix fun <T> Expression<T>.NOT_IN(value: Collection<T>): Expression<Boolean> = FilterBy.value(this, Operator.NOT_IN, value)
-infix fun <T> Expression<T>.NOT_IN(value: IterableExpression<T>): Expression<Boolean> = FilterBy.expr(this, Operator.NOT_IN, value)
+infix fun <T> Expression<T>.NOT_IN(value: Expression<List<T>>): Expression<Boolean> = FilterBy.expr(this, Operator.NOT_IN, value)
 
 infix fun <T> Expression<T>.LIKE(value: String): Expression<Boolean> = FilterBy.value(this, Operator.LIKE, value)
 infix fun <T> Expression<T>.LIKE(value: Expression<String>): Expression<Boolean> = FilterBy.expr(this, Operator.LIKE, value)
