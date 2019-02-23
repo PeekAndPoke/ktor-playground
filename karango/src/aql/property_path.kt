@@ -3,7 +3,7 @@ package de.peekandpoke.karango.aql
 data class PropertyPath<T>(private val previous: PropertyPath<*>?, private val current: Step<T>) : Expression<T>, Aliased {
 
     abstract class Step<T>(private val type: TypeRef<T>) : Expression<T> {
-        override fun getType() = type;
+        override fun getType() = type
     }
 
     class PropStep<T>(private val name: String, type: TypeRef<T>) : Step<T>(type) {
@@ -39,11 +39,14 @@ data class PropertyPath<T>(private val previous: PropertyPath<*>?, private val c
     override fun getAlias() = AqlPrinter.sandbox { it.append(this) }
 }
 
-
 interface ArrayExpansion
+
+@Suppress("ClassName")
 object `*` : ArrayExpansion
 
 interface ArrayContraction
+
+@Suppress("ClassName")
 object `**` : ArrayContraction
 
 @Suppress("UNUSED_PARAMETER")

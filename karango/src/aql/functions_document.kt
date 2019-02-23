@@ -14,8 +14,7 @@ inline fun <reified T> DOCUMENT(id: String): Expression<T> =
 inline fun <reified T> DOCUMENT(vararg ids: String): Expression<List<T>> = DOCUMENT(ids.toList())
 
 inline fun <reified T> DOCUMENT(ids: List<String>): Expression<List<T>> =
-    IterableFuncCall(
-        "doc",
+    FuncCall(
         typeRef(),
         AqlFunc.DOCUMENT,
         listOf(
@@ -35,8 +34,7 @@ fun <T> DOCUMENT(collection: CollectionDefinition<T>, vararg keys: String) = DOC
 fun <T> DOCUMENT(collection: CollectionDefinition<T>, keys: List<String>) = DOCUMENT(collection.getType(), collection.getAlias(), keys)
 
 fun <T> DOCUMENT(type: TypeRef<List<T>>, collection: String, keys: List<String>): Expression<List<T>> =
-    IterableFuncCall(
-        "doc",
+    FuncCall(
         type,
         AqlFunc.DOCUMENT,
         listOf(
