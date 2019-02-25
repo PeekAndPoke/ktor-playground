@@ -8,19 +8,18 @@ import java.lang.reflect.WildcardType
 
 inline fun <reified T> typeRef() = object : TypeRef<T>() {}
 
-@Suppress("unused")
-inline fun <reified T> T.toTypeRef(): TypeRef<T> = typeRef()
-
 open class TypeRef<T>(private val explicitType: Type? = null) : TypeReference<T>() {
 
     companion object {
 
         private val AnyInst: TypeRef<Any> = typeRef()
         private val BooleanInst: TypeRef<Boolean> = typeRef()
+        private val NumberInst: TypeRef<Number> = typeRef()
         private val StringInst: TypeRef<String> = typeRef()
 
         val Any get() = AnyInst
         val Boolean get() = BooleanInst
+        val Number get() = NumberInst
         val String get() = StringInst
     }
 
@@ -80,7 +79,7 @@ open class TypeRef<T>(private val explicitType: Type? = null) : TypeReference<T>
     fun <X> down() = TypeRef<X>(
         ParameterizedTypeImpl.make(
             Class.forName(ladder[1].typeName),
-            if (ladder.size > 2) arrayOf(ladder[2]) else arrayOf(),
+            ladder.drop(2).toTypedArray(),  // if (ladder.size > 2) arrayOf(ladder[2]) else arrayOf(),
             null
         )
     )
@@ -113,6 +112,7 @@ open class TypeRef<T>(private val explicitType: Type? = null) : TypeReference<T>
                     result.add(t)
                     // we look a the first type param only
                     t = t.actualTypeArguments[0]
+
                     // when the first type parameter is a wildcard type we continue with the type of its upper bound
                     if (t is WildcardType) {
                         t = t.upperBounds[0]

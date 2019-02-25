@@ -62,7 +62,7 @@ class Db(private val database: ArangoDatabase) {
 
         val query = de.peekandpoke.karango.aql.query(builder)
 
-        println(query)
+//        println(query)
 
         val options = AqlQueryOptions().count(true)
 
@@ -96,18 +96,14 @@ class CursorImpl<T>(
 
     class It<T>(private val inner: ArangoIterator<*>, private val type: TypeRef<T>) : Iterator<T> {
 
-        init {
-            println("Iterator type is $type")
-        }
-
         override fun hasNext(): Boolean = inner.hasNext()
 
         override fun next(): T = cursorMapper.convertValue(inner.next(), type)
     }
 
-    override fun iterator() = iterator
-
     override val stats: CursorEntity.Stats get() = arangoCursor.stats
+
+    override fun iterator() = iterator
 }
 
 @Suppress("PropertyName")

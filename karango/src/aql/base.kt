@@ -47,9 +47,9 @@ class RootBuilder internal constructor() : ForBuilderTrait, BuilderTrait, Printa
 
     override val items = mutableListOf<Printable>()
 
-    inline fun <reified T> LET(name: String, value: T) = ScalarLet(name, value, typeRef()).add().toExpression()
+    inline fun <reified T> LET(name: String, value: T) = Let(name, value, typeRef()).add().toExpression()
 
-    inline fun <reified T, L : List<T>> LET(name: String, builder: () -> L) = IterableLet(name, builder(), typeRef()).add().toExpression()
+    inline fun <reified T> LET(name: String, builder: () -> T) = Let(name, builder(), typeRef()).add().toExpression()
 
     fun <T> RETURN(expr: Expression<T>): Return<T> = Return(expr).add()
 
@@ -88,25 +88,4 @@ data class IteratorExpr<T>(private val __name__: String, private val __inner__: 
     override fun printAql(p: AqlPrinter) = p.name(__name__)
 }
 
-data class Value(private val name: String, private val value: Any) : Expression<Any> {
-
-    override fun getType() = TypeRef.Any
-
-    override fun printAql(p: AqlPrinter): Any = p.value(name, value)
-}
-
-data class ArrayValue(private val name: String, private val value: List<Any>) : Expression<List<Any>> {
-
-    override fun getType() = typeRef<List<Any>>()
-
-    override fun printAql(p: AqlPrinter): Any = p.value(name, value)
-}
-
-data class ValueExpr(private val expr: Expression<*>, private val value: Any) : Expression<Any> {
-
-    override fun getType() = TypeRef.Any
-
-    override fun printAql(p: AqlPrinter): Any =
-        p.value(if (expr is Aliased) expr.getAlias() else "v", value)
-}
 

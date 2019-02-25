@@ -68,7 +68,7 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
         }
 
 
-        val collFuns = if (annotation !== null) {
+        val collFuns = (if (annotation !== null) {
 
             val collectionName = annotation.name
 
@@ -77,30 +77,21 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
             object ${simpleName}Collection : EntityCollectionDefinitionImpl<$simpleName>("$collectionName", typeRef())
             
             """
-            ).plus(
-                element.variables.map {
-
-                    val type = it.asKotlinClass()
-                    val prop = it.simpleName
-
-                    """
-            inline val Expression<$simpleName>.$prop inline get() = PropertyPath.start(this).append<$type>("$prop")
-            """                                                                                     
-                }
             )
 
-        } else listOf()
+        } else listOf()).plus(
+            element.variables.map {
 
+                val type = it.asKotlinClass()
+                val prop = it.simpleName
 
-        val pathFuns = element.variables.map {
-
-            val type = it.asKotlinClass()
-            val prop = it.simpleName
-
-            """
+                """
+            inline val Expression<$simpleName>.$prop inline get() = PropertyPath.start(this).append<$type>("$prop")
+            inline val IteratorExpr<$simpleName>.$prop inline get() = PropertyPath.start(this).append<$type>("$prop")
             inline val PropertyPath<$simpleName>.$prop inline get() = append<$type>("$prop")
             """
-        }
+            }
+        )
 
         val content = """
                     
@@ -110,8 +101,6 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
             import de.peekandpoke.karango.aql.*
             
             ${collFuns.joinToString("")}
-            
-            ${pathFuns.joinToString("")}
             
         """.trimIndent()
 

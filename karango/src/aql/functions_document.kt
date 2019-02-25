@@ -8,7 +8,7 @@ inline fun <reified T> DOCUMENT(id: String): Expression<T> =
     FuncCall(
         typeRef(),
         AqlFunc.DOCUMENT,
-        listOf(Value("id", id))
+        listOf(id.aql("id"))
     )
 
 inline fun <reified T> DOCUMENT(vararg ids: String): Expression<List<T>> = DOCUMENT(ids.toList())
@@ -17,16 +17,14 @@ inline fun <reified T> DOCUMENT(ids: List<String>): Expression<List<T>> =
     FuncCall(
         typeRef(),
         AqlFunc.DOCUMENT,
-        listOf(
-            ArrayValue("ids", ids)
-        )
+        listOf(ids.aql("ids"))
     )
 
 fun <T> DOCUMENT(collection: CollectionDefinition<T>, key: String): Expression<T> =
     FuncCall(
         collection.getType().down(),
         AqlFunc.DOCUMENT,
-        listOf(Value("id", "${collection.getAlias()}/${key.ensureKey}"))
+        listOf("${collection.getAlias()}/${key.ensureKey}".aql("id"))
     )
 
 fun <T> DOCUMENT(collection: CollectionDefinition<T>, vararg keys: String) = DOCUMENT(collection, keys.toList())
@@ -38,6 +36,6 @@ fun <T> DOCUMENT(type: TypeRef<List<T>>, collection: String, keys: List<String>)
         type,
         AqlFunc.DOCUMENT,
         listOf(
-            ArrayValue("ids", keys.map { "$collection/${it.ensureKey}" })
+            keys.map { "$collection/${it.ensureKey}" }.aql("ids")
         )
     )

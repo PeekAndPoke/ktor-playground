@@ -12,25 +12,7 @@ val persons = db.collection(PersonCollection)
 
 fun main() {
 
-    val strList =
-        listOf(
-            listOf(
-                listOf("a")
-            )
-        )
-
-    val type = strList.toTypeRef()
-
-    println("--  TYPE  -----------------------------------------------------------------------------------------")
-    println(type.type)
-//    println("--  UP  -----------------------------------------------------------------------------------------")
-//    println(type.up.type)
-//    println("--  DOWN  -----------------------------------------------------------------------------------------")
-//    println(type.down.type)
-//    println("--  UP DOWN  -----------------------------------------------------------------------------------------")
-//    println(type.up.down.type)
-
-    val result : Cursor<String> = db.query {
+    val result: Cursor<String> = db.query {
         val a = LET("a", "text")
         RETURN(a)
     }
@@ -49,6 +31,8 @@ fun main() {
 
 //    x()
 //    y()
+
+    exampleFilterFromLet()
 }
 
 fun y() {
@@ -190,6 +174,48 @@ fun exampleInsertFromLet(db: Db) {
     }
 
     println("Inserted " + result.stats.writesExecuted)
+
+    println("/////////////////////////////////////////////////////////////////////////////////////////////////////////")
+}
+
+fun exampleFilterFromLet() {
+
+    println("/////////////////////////////////////////////////////////////////////////////////////////////////////////")
+    println("//  EXAMPLE: Inserting objects into a collection that where sent in via LET")
+
+    val personInserts = (1..5).map { i ->
+
+        val lotr = Book("Lotr", 1960, listOf(Author("J.R.R.", "Tolkin"), Author("X.X.X.", "Polkin")))
+        val got = Book("GoT", 1980, listOf(Author("John", "Doe")))
+        val hp = Book("HP", 1990, listOf(Author("Jane", "Doe")))
+
+        val address = when {
+            i % 3 == 0 -> Address("Leipzig")
+            i % 3 == 1 -> Address("Dresden")
+            else -> Address("irgendwo")
+        }
+
+        listOf(
+            Person("Greta", i, address, listOf(lotr, got)),
+            Person("Nadin", i, address, listOf(hp)),
+            Person("Karsten", i, address, listOf(lotr)),
+            Person("Eddi", i, address, listOf(got))
+        )
+    }.flatten()
+
+
+    val result = db.query {
+        val objs = LET("objs") { personInserts }
+
+        FOR("x") IN (objs) { o ->
+            FILTER(o.name EQ "Greta")
+            RETURN(o)
+        }
+    }
+
+    println(result.query.aql)
+    
+    result.forEach { println(it) }
 
     println("/////////////////////////////////////////////////////////////////////////////////////////////////////////")
 }

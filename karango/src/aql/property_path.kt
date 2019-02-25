@@ -2,6 +2,10 @@ package de.peekandpoke.karango.aql
 
 data class PropertyPath<T>(private val previous: PropertyPath<*>?, private val current: Step<T>) : Expression<T>, Aliased {
 
+    companion object {
+        inline fun <reified T> start(root: Expression<T>) = PropertyPath(null, ExprStep(root))
+    }
+
     abstract class Step<T>(private val type: TypeRef<T>) : Expression<T> {
         override fun getType() = type
     }
@@ -18,14 +22,7 @@ data class PropertyPath<T>(private val previous: PropertyPath<*>?, private val c
         override fun printAql(p: AqlPrinter) = p.append(op)
     }
 
-    companion object {
-        inline fun <reified T> start(root: Expression<T>) = PropertyPath(null, ExprStep(root))
-    }
-
-    inline fun <reified NT> append(prop: String) = PropertyPath(this, PropStep<NT>(prop, typeRef()))
-
-    inline fun <reified NT> contract() = PropertyPath<NT>(this, ArrayOpStep("[*]", typeRef()))
-    inline fun <reified NT> expand() = PropertyPath<NT>(this, ArrayOpStep("[**]", typeRef()))
+    override fun getAlias() = AqlPrinter.sandbox { it.append(this) }
 
     override fun getType() = current.getType()
 
@@ -36,7 +33,11 @@ data class PropertyPath<T>(private val previous: PropertyPath<*>?, private val c
         p.append(current)
     }
 
-    override fun getAlias() = AqlPrinter.sandbox { it.append(this) }
+    inline fun <reified NT> append(prop: String) = PropertyPath(this, PropStep<NT>(prop, typeRef()))
+
+    inline fun <reified NT> contract() = PropertyPath<NT>(this, ArrayOpStep("[*]", typeRef()))
+
+    inline fun <reified NT> expand() = PropertyPath<NT>(this, ArrayOpStep("[**]", typeRef()))
 }
 
 interface ArrayExpansion
