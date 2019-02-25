@@ -7,7 +7,7 @@ class UpdateDocument<T : Entity>(
     private val entity: T, 
     private val col: CollectionDefinition<T>, 
     private val kv: KeyValueBuilder<T>
-) : TerminalExpr<Any> {
+) : TerminalExpr<Any> { // TODO: what is the real return value of an update ?
 
     override fun innerType() = typeRef<Any>()
 

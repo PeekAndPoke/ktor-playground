@@ -2,12 +2,17 @@ package de.peekandpoke.karango.aql
 
 import de.peekandpoke.karango.CollectionDefinition
 
+@Suppress("FunctionName")
+interface InsertBuilderTrait : BuilderTrait {
+    
+    fun <T> INSERT(what: Expression<T>) = InsertPreStage(what)
+
+    infix fun <T> InsertPreStage<T>.INTO(collection: CollectionDefinition<T>) = InsertInto(what, collection).add()
+}
+
 class InsertPreStage<T> internal constructor(val what: Expression<T>)
 
-class InsertInto<T> internal constructor(
-    private val expr: Expression<T>,
-    private val collection: CollectionDefinition<T>
-) : TerminalExpr<T> {
+class InsertInto<T> internal constructor(private val expr: Expression<T>, private val collection: CollectionDefinition<T>) : TerminalExpr<T> {
 
     override fun innerType() = expr.getType()
 
@@ -16,4 +21,3 @@ class InsertInto<T> internal constructor(
     override fun printAql(p: AqlPrinter) =
         p.append("INSERT ").append(expr).append(" INTO ").append(collection).appendLine()
 }
-

@@ -6,7 +6,8 @@ import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
-class ArithmeticsE2eSpec : StringSpec({
+@Suppress("ClassName")
+class `E2E-ArithmeticsSpec` : StringSpec({
 
     "Multiple arithmetic operations at once" {
 

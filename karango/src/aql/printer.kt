@@ -37,6 +37,8 @@ class AqlPrinter {
 
     fun name(name: String) = append(name.toName())
 
+    fun value(expr: Expression<*>, value: Any) = value(if (expr is Aliased) expr.getAlias() else "v", value)
+    
     fun value(name: String, value: Any) = apply {
 
         val key = name.toParamName() + "_" + (queryVars.size + 1)

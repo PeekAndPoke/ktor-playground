@@ -1,35 +1,26 @@
 package de.peekandpoke.karango.aql
 
 
-fun Number.aql(name: String = "v"): Expression<Number> = NumberValue(name, this)
-fun String.aql(name: String = "v"): Expression<String> = StringValue(name, this)
-fun <T> List<T>.aql(name: String = "v"): Expression<List<T>> = ArrayValue(name, this, typeRef())
+//fun Number.aql(name: String = "v") = Value.number( this, name)
+//fun String.aql(name: String = "v") = Value.string(this, name)
+//inline fun <reified T> List<T>.aql(name: String = "v") = Value.of(typeRef(), this, name)
+inline fun <reified T> T.aql(name: String = "v") = Value.of(typeRef(), this, name)
 
 internal data class ValueExpression(private val expr: Expression<*>, private val value: Any) : Expression<Any> {
 
     override fun getType() = TypeRef.Any
-
-    override fun printAql(p: AqlPrinter): Any =
-        p.value(if (expr is Aliased) expr.getAlias() else "v", value)
+    override fun printAql(p: AqlPrinter): Any = p.value(expr, value)
 }
 
-internal data class ArrayValue<T>(private val name: String, private val value: List<T>, private val type: TypeRef<List<T>>) : Expression<List<T>> {
-
+data class Value<T>(private val type: TypeRef<T>, private val value: T, private val name: String) : Expression<T> {
     override fun getType() = type
+    override fun printAql(p: AqlPrinter) = p.value(name, value as Any)
 
-    override fun printAql(p: AqlPrinter): Any = p.value(name, value)
-}
+    companion object {
+        fun <X> of(type: TypeRef<X>, value: X, name: String): Expression<X> = Value(type, value, name)
 
-internal data class NumberValue(private val name: String, private val value: Number) : Expression<Number> {
+        fun number(value: Number, name: String = "v") = of(TypeRef.Number, value, name)
 
-    override fun getType() = TypeRef.Number
-
-    override fun printAql(p: AqlPrinter): Any = p.value(name, value)
-}
-
-internal data class StringValue(private val name: String, private val value: String) : Expression<String> {
-
-    override fun getType() = TypeRef.String
-
-    override fun printAql(p: AqlPrinter): Any = p.value(name, value)
+        fun string(value: String, name: String = "v") = of(TypeRef.String, value, name)
+    }
 }

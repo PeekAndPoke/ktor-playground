@@ -12,6 +12,9 @@ val persons = db.collection(PersonCollection)
 
 fun main() {
 
+    println(listOf("s1").aql().getType())
+
+
     val result: Cursor<String> = db.query {
         val a = LET("a", "text")
         RETURN(a)
@@ -29,6 +32,13 @@ fun main() {
     println(result2.query.ret.getType())
     println(result2.map { it })
 
+    
+    db.query { 
+        val p = LET("p", Person("test", 1, Address("Leipzig")))
+        
+        INSERT(p) INTO PersonCollection
+    }
+    
 //    x()
 //    y()
 

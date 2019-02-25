@@ -1,6 +1,10 @@
 package de.peekandpoke.karango.aql
 
-import de.peekandpoke.karango.CollectionDefinition
+data class IteratorExpr<T>(private val __name__: String, private val __inner__: Expression<List<T>>) : Expression<T> {
+
+    override fun getType() = __inner__.getType().down<T>()
+    override fun printAql(p: AqlPrinter) = p.name(__name__)
+}
 
 @Suppress("FunctionName")
 interface ForBuilderTrait : BuilderTrait {
@@ -10,7 +14,7 @@ interface ForBuilderTrait : BuilderTrait {
         infix fun <T> IN(forIn: In<T>): TerminalExpr<T> {
 
             val iterator = IteratorExpr(iteratorName, forIn.iterable)
-            val loop = ForLoopBuilder(iterator, forIn.iterable)
+            val loop = ForLoop(iterator, forIn.iterable)
             val result = loop.(forIn.builder)(iterator)
 
             trait.items.add(loop)
@@ -19,19 +23,17 @@ interface ForBuilderTrait : BuilderTrait {
         }
     }
 
-    operator fun <T> Expression<List<T>>.invoke(builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> TerminalExpr<T>) = In(this, builder)
+    class In<T>(internal val iterable: Expression<List<T>>, internal val builder: ForLoop<T>.(IteratorExpr<T>) -> TerminalExpr<T>)
 
-    class In<T>(internal val iterable: Expression<List<T>>, internal val builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> TerminalExpr<T>)
+    operator fun <T> Expression<List<T>>.invoke(builder: ForLoop<T>.(IteratorExpr<T>) -> TerminalExpr<T>) = In(this, builder)
 
     fun FOR(iteratorName: String) = For(this, iteratorName)
 }
 
 @Suppress("FunctionName")
 @KarangoDslMarker
-class ForLoopBuilder<T> internal constructor(
-    private val name: IteratorExpr<T>,
-    private val iterable: Expression<List<T>>
-) : ForBuilderTrait, Printable {
+class ForLoop<T> internal constructor(private val name: IteratorExpr<T>, private val iterable: Expression<List<T>>) :
+    ForBuilderTrait, InsertBuilderTrait, Statement {
 
     override val items = mutableListOf<Printable>()
 
@@ -43,11 +45,7 @@ class ForLoopBuilder<T> internal constructor(
 
     fun LIMIT(offset: Int, limit: Int): Unit = run { OffsetAndLimit(offset, limit).add() }
 
-    fun RETURN(ret: Expression<T>) = Return(ret).add()
-
-    fun INSERT(what: Expression<T>) = InsertPreStage(what)
-
-    infix fun InsertPreStage<T>.INTO(collection: CollectionDefinition<T>)= InsertInto(what, collection).add()
+    fun RETURN(ret: Expression<T>): TerminalExpr<T> = Return(ret).add()
 
     override fun printAql(p: AqlPrinter) {
 

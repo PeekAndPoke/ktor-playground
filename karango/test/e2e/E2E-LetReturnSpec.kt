@@ -6,7 +6,8 @@ import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
-class LetReturnE2eSpec : StringSpec({
+@Suppress("ClassName")
+class `E2E-LetReturnSpec` : StringSpec({
 
     "Returning a String defined by LET" {
 

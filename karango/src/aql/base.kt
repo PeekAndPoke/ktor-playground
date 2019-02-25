@@ -6,44 +6,65 @@ import de.peekandpoke.karango.Entity
 @DslMarker
 annotation class KarangoDslMarker
 
-data class TypedQuery<T>(val ret: TerminalExpr<T>, val aql: String, val vars: Map<String, Any>)
-
-fun <T> query(builder: RootBuilder.() -> TerminalExpr<T>): TypedQuery<T> {
-
-    val root = RootBuilder()
-    val ret = root.builder()
-
-    val query = AqlPrinter().append(root).build()
-
-    return TypedQuery(ret, query.query, query.vars)
-}
-
+/**
+ * Helper interface for the QueryPrinter.
+ *
+ * When an Expression has this interface QueryPrinter::value() will use the name returned by getAlias()
+ *
+ * @see AqlPrinter.value()
+ */
 interface Aliased {
     fun getAlias(): String
 }
 
-interface Typed<T> {
+/**
+ * Base interface for all Statements.
+ *
+ * Statements return nothing. Statements cannot be nested within Expressions.
+ */
+interface Statement : Printable
+
+/**
+ * Base interface for all Expressions.
+ *
+ * Expression return something of a specific type T. Expressions can be nested within other Expressions.
+ */
+interface Expression<T> : Printable {
+    /**
+     * Returns a reference to the type that the expression represents.
+     *
+     * The type information is needed for un-serializing a query result.
+     */
     fun getType(): TypeRef<T>
 }
 
-interface Statement : Printable
-
-interface Expression<T> : Typed<T>, Printable
-
+/**
+ * Base interface for all terminal Expressions.
+ *
+ * A terminal expression can be used to create a query result cursor.
+ *
+ * A terminal expression ALWAYS is a list type. This is how ArangoDB returns data.
+ * The returned data is always an array.
+ */
 interface TerminalExpr<T> : Expression<List<T>> {
+    /**
+     * The T within the List<T>. This type is finally used for un-serialization..
+     */
     fun innerType(): TypeRef<T>
 }
 
+/**
+ * Expression impl for internal usage
+ */
 internal class ExpressionImpl<T>(private val name_: String, private val type: TypeRef<T>) : Expression<T> {
 
     override fun getType() = type
-
     override fun printAql(p: AqlPrinter) = p.name(name_)
 }
 
 @Suppress("FunctionName")
 @KarangoDslMarker
-class RootBuilder internal constructor() : ForBuilderTrait, BuilderTrait, Printable {
+class AqlBuilder internal constructor() : ForBuilderTrait, InsertBuilderTrait, Printable {
 
     override val items = mutableListOf<Printable>()
 
@@ -51,12 +72,14 @@ class RootBuilder internal constructor() : ForBuilderTrait, BuilderTrait, Printa
 
     inline fun <reified T> LET(name: String, builder: () -> T) = Let(name, builder(), typeRef()).add().toExpression()
 
-    fun <T> RETURN(expr: Expression<T>): Return<T> = Return(expr).add()
-
-    fun <T : Entity, D : CollectionDefinition<T>> UPDATE(entity: T, col: D, builder: KeyValueBuilder<T>.(Expression<T>) -> Unit) =
-        UpdateDocument(entity, col, KeyValueBuilder<T>()
-            .apply { builder(ExpressionImpl("x", col.getType().down())) })
-            .add()
+    fun <T> RETURN(expr: Expression<T>): TerminalExpr<T> = Return(expr).add()
+    
+    fun <T : Entity, D : CollectionDefinition<T>> UPDATE(entity: T, col: D, builder: KeyValueBuilder<T>.(Expression<T>) -> Unit): TerminalExpr<Any> =
+        UpdateDocument(
+            entity,
+            col,
+            KeyValueBuilder<T>().apply { builder(ExpressionImpl(col.getAlias(), col.getType().down())) }
+        ).add()
 
     override fun printAql(p: AqlPrinter) {
         p.append(items)
@@ -79,13 +102,3 @@ interface BuilderTrait {
 
     fun <T : Printable> T.add(): T = apply { items.add(this) }
 }
-
-data class IteratorExpr<T>(private val __name__: String, private val __inner__: Expression<List<T>>) : Expression<T> {
-
-    // TODO: check me ... fix me
-    override fun getType() = __inner__.getType().down<T>()
-
-    override fun printAql(p: AqlPrinter) = p.name(__name__)
-}
-
-

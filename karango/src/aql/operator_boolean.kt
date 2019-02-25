@@ -97,4 +97,5 @@ infix fun <T> Expression<T>.REGEX(value: Expression<String>): Expression<Boolean
 
 infix fun Expression<Boolean>.AND(other: Expression<Boolean>): Expression<Boolean> = FilterLogic(this, LogicOperator.AND, other)
 infix fun Expression<Boolean>.OR(other: Expression<Boolean>): Expression<Boolean> = FilterLogic(this, LogicOperator.OR, other)
-fun Expression<Boolean>.NOT(): Expression<Boolean> = BoolFuncCall(AqlFunc.NOT, listOf(this))
+
+fun Expression<Boolean>.NOT(): Expression<Boolean> = FuncCall.bool(AqlFunc.NOT, listOf(this))

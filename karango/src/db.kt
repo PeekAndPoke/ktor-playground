@@ -58,9 +58,9 @@ class Db(private val database: ArangoDatabase) {
         return DbCollection(this, database.collection(name), def)
     }
 
-    fun <T> query(builder: RootBuilder.() -> TerminalExpr<T>): Cursor<T> {
+    fun <T> query(builder: AqlBuilder.() -> TerminalExpr<T>): Cursor<T> {
 
-        val query = de.peekandpoke.karango.aql.query(builder)
+        val query = de.peekandpoke.karango.query(builder)
 
 //        println(query)
 
@@ -145,7 +145,7 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
             UPDATE(entity, def, builder)
         }
 
-    fun find(builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> Unit): Cursor<T> =
+    fun find(builder: ForLoop<T>.(IteratorExpr<T>) -> Unit): Cursor<T> =
         db.query {
             FOR("x") IN (def) { t ->
                 builder(t)
@@ -153,7 +153,7 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
             }
         }
 
-    fun findOne(builder: ForLoopBuilder<T>.(IteratorExpr<T>) -> Unit): T? =
+    fun findOne(builder: ForLoop<T>.(IteratorExpr<T>) -> Unit): T? =
         db.query {
 
             FOR("x") IN (def) { t ->
