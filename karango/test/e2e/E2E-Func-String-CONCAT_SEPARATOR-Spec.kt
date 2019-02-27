@@ -3,8 +3,6 @@ package de.peekandpoke.karango.e2e
 import de.peekandpoke.karango.aql.CONCAT_SEPARATOR
 import de.peekandpoke.karango.aql.TO_STRING
 import de.peekandpoke.karango.aql.aql
-import io.kotlintest.assertSoftly
-import io.kotlintest.data.forall
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
@@ -13,7 +11,7 @@ import io.kotlintest.tables.row
 @Suppress("ClassName")
 class `E2E-Func-String-CONCAT_SEPARATOR-Spec` : StringSpec({
 
-    val cases = arrayOf(
+    val cases = listOf(
         row(
             "CONCAT_SEPARATOR with empty separator one empty string parameter",
             CONCAT_SEPARATOR("".aql, "".aql),
@@ -41,23 +39,29 @@ class `E2E-Func-String-CONCAT_SEPARATOR-Spec` : StringSpec({
         )
     )
 
-    forall(*cases) { description, expression, expected ->
+    for ((description, expression, expected) in cases) {
 
-        withClue(description) {
+        "$description - direct return" {
 
             val result = db.query {
                 RETURN(expression)
             }
 
-            val result2 = db.query {
+            withClue("|| $expression || $expected ||") {
+                result.toList() shouldBe listOf(expected)
+            }
+        }
+
+        "$description - return from LET" {
+
+            val result = db.query {
                 val l = LET("l", expression)
 
                 RETURN(l)
             }
 
-            assertSoftly {
+            withClue("|| $expression || $expected ||") {
                 result.toList() shouldBe listOf(expected)
-                result2.toList() shouldBe listOf(expected)
             }
         }
     }

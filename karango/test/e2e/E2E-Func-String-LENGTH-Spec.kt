@@ -1,6 +1,6 @@
 package de.peekandpoke.karango.e2e
 
-import de.peekandpoke.karango.aql.CHAR_LENGTH
+import de.peekandpoke.karango.aql.LENGTH
 import de.peekandpoke.karango.aql.aql
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
@@ -8,27 +8,27 @@ import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 
 @Suppress("ClassName")
-class `E2E-Func-String-CHAR_LENGTH-Spec` : StringSpec({
+class `E2E-Func-String-LENGTH-Spec` : StringSpec({
 
     val cases = listOf(
         row(
-            "CHAR_LENGTH on an empty string parameter",
-            CHAR_LENGTH("".aql),
+            "LENGTH on an empty string parameter",
+            LENGTH("".aql),
             0L
         ),
         row(
-            "CHAR_LENGTH on a simple string parameter",
-            CHAR_LENGTH("1".aql),
+            "LENGTH on a simple string parameter",
+            LENGTH("1".aql),
             1L
         ),
         row(
-            "CHAR_LENGTH on another simple string parameter",
-            CHAR_LENGTH("12".aql),
+            "LENGTH on another simple string parameter",
+            LENGTH("12".aql),
             2L
         ),
         row(
-            "CHAR_LENGTH on a string with UTF-8 characters",
-            CHAR_LENGTH("äöüß".aql),
+            "LENGTH on a string with UTF-8 characters",
+            LENGTH("äöüß".aql),
             4L
         )
     )

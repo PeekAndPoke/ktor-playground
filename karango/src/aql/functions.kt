@@ -2,8 +2,8 @@ package de.peekandpoke.karango.aql
 
 enum class AqlFunc {
     // Overloaded functions
-    LENGTH,                // TODO: impl, tests FOR Strings, Collections, Arrays
-    COUNT,                 // TODO: impl, tests FOR Strings, Collections, Arrays
+    LENGTH,                // TODO: impl, tests FOR Collections, Arrays
+    COUNT,                 // TODO: impl, tests FOR Collections, Arrays
     REVERSE,               // TODO: impl, tests FOR Strings, Collections, Arrays
 
     // Array
