@@ -115,7 +115,7 @@ enum class AqlFunc {
     JSON_PARSE,            
     JSON_STRINGIFY,        
     LEFT,                  
-    LEVENSHTEIN_DISTANCE,  // TODO: impl, tests
+    LEVENSHTEIN_DISTANCE,  
     LIKE,                  // TODO: impl, tests
     LOWER,                 
     LTRIM,                 // TODO: impl, tests

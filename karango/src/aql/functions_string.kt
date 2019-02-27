@@ -124,6 +124,14 @@ fun LEFT(expr: Expression<String>, n: Expression<Number>) = AqlFunc.LEFT.stringC
 fun LENGTH(expr: Expression<String>) = AqlFunc.LENGTH.numberCall(expr)
 
 /**
+ * Calculate the Levenshtein distance between two strings.
+ *
+ * https://docs.arangodb.com/current/AQL/Functions/String.html#levenshteindistance
+ */
+fun LEVENSHTEIN_DISTANCE(left: Expression<String>, right: Expression<String>) 
+        = AqlFunc.LEVENSHTEIN_DISTANCE.numberCall(left, right)
+
+/**
  * Convert upper-case letters in value to their lower-case counterparts. All other characters are returned unchanged.
  *
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#lower
