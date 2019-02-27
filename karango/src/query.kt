@@ -5,7 +5,7 @@ import de.peekandpoke.karango.aql.AqlPrinter
 import de.peekandpoke.karango.aql.TerminalExpr
 
 
-data class TypedQuery<T>(val ret: TerminalExpr<T>, val aql: String, val vars: Map<String, Any>)
+data class TypedQuery<T>(val ret: TerminalExpr<T>, val aql: String, val vars: Map<String, Any?>)
 
 fun <T> query(builder: AqlBuilder.() -> TerminalExpr<T>): TypedQuery<T> {
 

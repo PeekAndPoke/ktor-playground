@@ -7,7 +7,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
 @Suppress("ClassName")
-class `E2E-ArithmeticsSpec` : StringSpec({
+class `E2E-Arithmetics-Spec` : StringSpec({
 
     "Multiple arithmetic operations at once" {
 

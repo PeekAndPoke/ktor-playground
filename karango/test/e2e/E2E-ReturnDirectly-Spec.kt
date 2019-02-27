@@ -8,7 +8,7 @@ import io.kotlintest.specs.StringSpec
 
 
 @Suppress("ClassName")
-class `E2E-DirectReturnSpec` : StringSpec({
+class `E2E-ReturnDirectly-Spec` : StringSpec({
 
     "Directly returning a String" {
 

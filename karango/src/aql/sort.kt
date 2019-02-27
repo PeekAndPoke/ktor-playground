@@ -1,6 +1,5 @@
 package de.peekandpoke.karango.aql
 
-
 val <T> Expression<T>.ASC: Sort get() = SortBy(this, Direction.ASC)
 val <T> Expression<T>.DESC: Sort get() = SortBy(this, Direction.DESC)
 

@@ -13,11 +13,13 @@ open class TypeRef<T>(private val explicitType: Type? = null) : TypeReference<T>
     companion object {
 
         private val AnyInst: TypeRef<Any> = typeRef()
+        private val AnyNullInst: TypeRef<Any?> = typeRef()
         private val BooleanInst: TypeRef<Boolean> = typeRef()
         private val NumberInst: TypeRef<Number> = typeRef()
         private val StringInst: TypeRef<String> = typeRef()
 
         val Any get() = AnyInst
+        val AnyNull get() = AnyNullInst
         val Boolean get() = BooleanInst
         val Number get() = NumberInst
         val String get() = StringInst

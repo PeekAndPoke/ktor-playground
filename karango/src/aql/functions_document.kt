@@ -8,45 +8,43 @@ import de.peekandpoke.karango.CollectionDefinition
  * Get a single document by its full id.
  */
 inline fun <reified T> DOCUMENT(id: String): Expression<T> =
-    FuncCall.of(typeRef(), AqlFunc.DOCUMENT, listOf(id.aql("id")))
+    AqlFunc.DOCUMENT.call(typeRef(), id.aql("id"))
 
 /**
  * Get a single document from the given collection by its key.
  */
 fun <T> DOCUMENT(collection: CollectionDefinition<T>, key: String): Expression<T> =
-    FuncCallImpl(
+    AqlFunc.DOCUMENT.call(
         collection.getType().down(),
-        AqlFunc.DOCUMENT,
-        listOf("${collection.getAlias()}/${key.ensureKey}".aql("id"))
+        "${collection.getAlias()}/${key.ensureKey}".aql("id")
     )
 
 /**
- * Get a list of documents by their IDs 
+ * Get a list of documents by their IDs
  */
-inline fun <reified T> DOCUMENT(vararg ids: String): Expression<List<T>> = DOCUMENT(ids.toList())
+inline fun <reified T> DOCUMENT(vararg ids: String): Expression<List<T>> = 
+    DOCUMENT(ids.toList())
 
 /**
  * Get a list of documents by their IDs
  */
 inline fun <reified T> DOCUMENT(ids: List<String>): Expression<List<T>> =
-    FuncCall.of(typeRef(), AqlFunc.DOCUMENT, listOf(ids.aql("ids")))
+    AqlFunc.DOCUMENT.call(typeRef(), ids.aql("ids"))
 
 /**
  * Get a list of documents from the given collection by their keys.
  */
-fun <T> DOCUMENT(collection: CollectionDefinition<T>, vararg keys: String) = DOCUMENT(collection, keys.toList())
+fun <T> DOCUMENT(collection: CollectionDefinition<T>, vararg keys: String) = 
+    DOCUMENT(collection, keys.toList())
 
 /**
  * Get a list of documents from the given collection by their keys.
  */
-fun <T> DOCUMENT(collection: CollectionDefinition<T>, keys: List<String>) = DOCUMENT(collection.getType(), collection.getAlias(), keys)
+fun <T> DOCUMENT(collection: CollectionDefinition<T>, keys: List<String>) = 
+    DOCUMENT(collection.getType(), collection.getAlias(), keys)
 
 /**
  * Get a list of documents of the given type from the given collection by their keys.
  */
 fun <T> DOCUMENT(type: TypeRef<List<T>>, collection: String, keys: List<String>): Expression<List<T>> =
-    FuncCallImpl(
-        type,
-        AqlFunc.DOCUMENT,
-        listOf(keys.map { "$collection/${it.ensureKey}" }.aql("ids"))
-    )
+    AqlFunc.DOCUMENT.call(type, keys.map { "$collection/${it.ensureKey}" }.aql("ids"))

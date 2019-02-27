@@ -6,14 +6,14 @@ interface Printable {
 
 class AqlPrinter {
 
-    data class Result(val query: String, val vars: Map<String, Any>)
+    data class Result(val query: String, val vars: Map<String, Any?>)
 
     companion object {
         fun sandbox(builder: (AqlPrinter) -> Unit): String = AqlPrinter().apply(builder).build().query
     }
 
     private val stringBuilder = StringBuilder()
-    private val queryVars = mutableMapOf<String, Any>()
+    private val queryVars = mutableMapOf<String, Any?>()
 
     private var indent = ""
     private var newLine = true
@@ -39,7 +39,7 @@ class AqlPrinter {
 
     fun value(expr: Expression<*>, value: Any) = value(if (expr is Aliased) expr.getAlias() else "v", value)
     
-    fun value(name: String, value: Any) = apply {
+    fun value(name: String, value: Any?) = apply {
 
         val key = name.toParamName() + "_" + (queryVars.size + 1)
 
@@ -47,7 +47,7 @@ class AqlPrinter {
         queryVars[key] = value
     }
 
-    fun join(args: List<Expression<*>>, delimiter: String = ", ") = apply {
+    fun join(args: Array<out Expression<*>>, delimiter: String = ", ") = apply {
 
         args.forEachIndexed { idx, a ->
 

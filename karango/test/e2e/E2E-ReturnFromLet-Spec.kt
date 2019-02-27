@@ -7,7 +7,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
 @Suppress("ClassName")
-class `E2E-LetReturnSpec` : StringSpec({
+class `E2E-ReturnFromLet-Spec` : StringSpec({
 
     "Returning a String defined by LET" {
 
