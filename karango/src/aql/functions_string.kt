@@ -138,6 +138,20 @@ fun LOWER(expr: Expression<String>) = AqlFunc.LOWER.stringCall(expr)
 fun RIGHT(expr: Expression<String>, n: Expression<Number>) = AqlFunc.RIGHT.stringCall(expr, n)
 
 /**
+ * Calculate the SHA1 checksum for text and returns it in a hexadecimal string representation.
+ *
+ * https://docs.arangodb.com/current/AQL/Functions/String.html#sha1
+ */
+fun SHA1(expr: Expression<String>) = AqlFunc.SHA1.stringCall(expr)
+
+/**
+ * Calculate the SHA512 checksum for text and returns it in a hexadecimal string representation.
+ *
+ * https://docs.arangodb.com/current/AQL/Functions/String.html#sha256
+ */
+fun SHA512(expr: Expression<String>) = AqlFunc.SHA512.stringCall(expr)
+
+/**
  * Convert lower-case letters in value to their upper-case counterparts. All other characters are returned unchanged.
  *
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#upper

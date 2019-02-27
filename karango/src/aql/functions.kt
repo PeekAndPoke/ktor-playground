@@ -127,8 +127,8 @@ enum class AqlFunc {
     REGEX_REPLACE,         // TODO: impl, tests
     RIGHT,                 
     RTRIM,                 // TODO: impl, tests
-    SHA1,                  // TODO: impl, tests
-    SHA512,                // TODO: impl, tests
+    SHA1,                  
+    SHA512,                
     SPLIT,                 // TODO: impl, tests
     SOUNDEX,               // TODO: impl, tests
     SUBSTITUTE,            // TODO: impl, tests
