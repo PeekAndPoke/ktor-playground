@@ -163,6 +163,8 @@ enum class AqlFunc {
 
 fun <T> AqlFunc.call(type: TypeRef<T>, vararg args: Expression<*>) = FuncCall.of(type, this, args)
 
+fun AqlFunc.anyCall(vararg args: Expression<*>) = FuncCall.any(this, args)
+
 fun <T> AqlFunc.arrayCall(type: TypeRef<List<T>>, vararg args: Expression<*>) = FuncCall.array(this, type, args)
 
 fun AqlFunc.boolCall(vararg args: Expression<*>) = FuncCall.bool(this, args)
@@ -176,6 +178,8 @@ interface FuncCall<T> : Expression<T> {
     companion object {
 
         fun <X> of(type: TypeRef<X>, func: AqlFunc, args: Array<out Expression<*>>): Expression<X> = FuncCallImpl(type, func, args)
+
+        fun any(func: AqlFunc, args: Array<out Expression<*>>): Expression<Any> = FuncCallImpl(TypeRef.Any, func, args)
 
         fun <T> array(func: AqlFunc, type: TypeRef<List<T>>, args: Array<out Expression<*>>): FuncCall<List<T>> = FuncCallImpl(type, func, args)
         
