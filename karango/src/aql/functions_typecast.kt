@@ -35,15 +35,30 @@ val <T> Expression<T>.TO_STRING get() = TO_STRING(this)
 
 // TODO: figure out how "TO_ARRAY" really works
 
-///**
-// * https://docs.arangodb.com/current/AQL/Functions/TypeCast.html#tostring
-// */
-//fun TO_ARRAY(expr: Expression<*>) = FuncCall.string(AqlFunc.TO_ARRAY, expr)
-//
-///**
-// * https://docs.arangodb.com/current/AQL/Functions/TypeCast.html#tostring
-// */
-//val <T> Expression<T>.TO_ARRAY get() = TO_ARRAY(this)
+/**
+ * https://docs.arangodb.com/current/AQL/Functions/TypeCast.html#tostring
+ */
+fun <T> TO_ARRAY(expr: Expression<T>) = AqlFunc.TO_ARRAY.arrayCall(expr.getType().up(), expr)
+
+/**
+ * Guard, to NOT wrap a list again
+ * 
+ * https://docs.arangodb.com/current/AQL/Functions/TypeCast.html#tostring
+ */
+fun <T> TO_ARRAY(expr: Expression<List<T>>) = expr
+
+/**
+ * https://docs.arangodb.com/current/AQL/Functions/TypeCast.html#tostring
+ */
+val <T> Expression<T>.TO_ARRAY get() = TO_ARRAY(this)
+
+/**
+ * Guard, to NOT wrap a list again
+ * 
+ * https://docs.arangodb.com/current/AQL/Functions/TypeCast.html#tostring
+ */
+val <T> Expression<List<T>>.TO_ARRAY get() = this
+
 
 // TODO: TO_LIST is an alias of TO_ARRAY
 
