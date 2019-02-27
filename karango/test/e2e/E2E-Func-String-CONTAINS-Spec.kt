@@ -7,7 +7,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
 @Suppress("ClassName")
-class `E2E-Func-String-Contains-Spec` : StringSpec({
+class `E2E-Func-String-CONTAINS-Spec` : StringSpec({
 
     "infix CONTAINS matching an input value" {
         val result = db.query {

@@ -70,7 +70,7 @@ class AqlBuilder internal constructor() : ForBuilderTrait, InsertBuilderTrait, P
 
     fun <T> LET(name: String, value: Expression<T>) = LetExpr(name, value).add().toExpression()
 
-    fun LET(name: String, @Suppress("UNUSED_PARAMETER") value: Nothing?) = LET(name, Value.nil())
+    fun LET(name: String, @Suppress("UNUSED_PARAMETER") value: Nothing?) = LET(name, NullValue())
 
     inline fun <reified T> LET(name: String, value: T) = Let(name, value, typeRef()).add().toExpression()
 
