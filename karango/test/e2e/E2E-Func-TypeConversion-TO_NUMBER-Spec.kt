@@ -130,18 +130,31 @@ class `E2E-Func-TypeConversion-TO_NUMBER-Spec` : StringSpec({
             val result = db.query {
                 val l = LET("l", input.aql())
 
-                RETURN(TO_NUMBER(l))
+                RETURN(
+                    TO_NUMBER(l)
+                )
             }
 
             val result2 = db.query {
                 val l = LET("l", input.aql)
 
-                RETURN(TO_NUMBER(l))
+                RETURN(
+                    TO_NUMBER(l)
+                )
+            }
+
+            val result3 = db.query {
+                val l = LET("l", input.aql)
+
+                RETURN(
+                    l.TO_NUMBER
+                )
             }
 
             withClue(description + " - return from LET Expression - \n\n" + result.query.aql + "\n\n" + result.query.vars + "\n\n") {
                 result.toList() shouldBe listOf(expected)
                 result2.toList() shouldBe listOf(expected)
+                result3.toList() shouldBe listOf(expected)
             }
         }
     }

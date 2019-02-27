@@ -87,7 +87,6 @@ class `E2E-Func-TypeConversion-TO_STRING-Spec` : StringSpec({
             row("TO_STRING([1, 0]) none empty list", listOf(1, listOf(2, 3)), "[1,[2,3]]"),
             row("TO_STRING(['x']) none empty list", listOf("x"), """["x"]"""),
             row("TO_STRING(['x', 'x']) none empty list", listOf("x", "x"), """["x","x"]"""),
-
             row("TO_STRING(object)", X("a", 1), """{"age":1,"name":"a"}"""),
             row(
                 "TO_STRING([object]) list with one objects",
@@ -126,7 +125,9 @@ class `E2E-Func-TypeConversion-TO_STRING-Spec` : StringSpec({
             val result = db.query {
                 val l = LET("l", input)
 
-                RETURN(TO_STRING(l))
+                RETURN(
+                    TO_STRING(l)
+                )
             }
 
             withClue(description + " - return from LET - \n\n" + result.query.aql + "\n\n" + result.query.vars + "\n\n") {
@@ -139,18 +140,31 @@ class `E2E-Func-TypeConversion-TO_STRING-Spec` : StringSpec({
             val result = db.query {
                 val l = LET("l", input.aql())
 
-                RETURN(TO_STRING(l))
+                RETURN(
+                    TO_STRING(l)
+                )
             }
 
             val result2 = db.query {
                 val l = LET("l", input.aql)
 
-                RETURN(TO_STRING(l))
+                RETURN(
+                    TO_STRING(l)
+                )
             }
 
+            val result3 = db.query {
+                val l = LET("l", input.aql)
+
+                RETURN(
+                    l.TO_STRING
+                )
+            }
+            
             withClue(description + " - return from LET Expression - \n\n" + result.query.aql + "\n\n" + result.query.vars + "\n\n") {
                 result.toList() shouldBe listOf(expected)
                 result2.toList() shouldBe listOf(expected)
+                result3.toList() shouldBe listOf(expected)
             }
         }
     }

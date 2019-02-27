@@ -21,7 +21,7 @@ fun TO_NUMBER(expr: Expression<*>) = AqlFunc.TO_NUMBER.numberCall(expr)
 /**
  * https://docs.arangodb.com/current/AQL/Functions/TypeCast.html#tostring
  */
-val <T> Expression<T>.TO_NUMBER get() = TO_STRING(this)
+val <T> Expression<T>.TO_NUMBER get() = TO_NUMBER(this)
 
 /**
  * https://docs.arangodb.com/current/AQL/Functions/TypeCast.html#tostring
