@@ -112,7 +112,7 @@ enum class AqlFunc {
     ENCODE_URI_COMPONENT,  // TODO: impl, tests
     FIND_FIRST,            
     FIND_LAST,             
-    JSON_PARSE,            // TODO: impl, tests
+    JSON_PARSE,            
     JSON_STRINGIFY,        // TODO: impl, tests
     LEFT,                  // TODO: impl, tests
     LEVENSHTEIN_DISTANCE,  // TODO: impl, tests

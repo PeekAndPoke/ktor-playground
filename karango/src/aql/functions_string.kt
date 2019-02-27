@@ -103,6 +103,13 @@ fun FIND_LAST(haystack: Expression<String>, needle: Expression<String>, start: E
 fun JSON_PARSE(expr: Expression<String>) = AqlFunc.JSON_PARSE.anyCall(expr)
 
 /**
+ * Return a JSON string representation of the input value.
+ *
+ * https://docs.arangodb.com/current/AQL/Functions/String.html#jsonstringify
+ */
+fun <T> JSON_STRINGIFY(expr: Expression<T>) = AqlFunc.JSON_STRINGIFY.stringCall(expr)
+
+/**
  * Determine the character length of a string.
  *
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#length

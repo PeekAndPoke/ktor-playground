@@ -27,11 +27,6 @@ open class `E2E-Func-String-JSON_PARSE-Spec` : StringSpec({
             null
         ),
         row(
-            "JSON_PARSE of 'null'",
-            JSON_PARSE("null".aql),
-            null
-        ),
-        row(
             "JSON_PARSE of '1'",
             JSON_PARSE("1".aql),
             1L
@@ -47,13 +42,13 @@ open class `E2E-Func-String-JSON_PARSE-Spec` : StringSpec({
             "string"
         ),
         row(
-            "JSON_PARSE of [1, 'a']",
+            "JSON_PARSE of [1, \"a\"]",
             JSON_PARSE("""[1, "a"]""".aql),
             listOf(1L, "a")
         ),
         row(
             "JSON_PARSE of {a:1, b:[1, 2]}",
-            JSON_PARSE("{a:1, b:[1, 2]}".aql),
+            JSON_PARSE("""{"a":1, "b":[1, 2]}""".aql),
             mapOf("a" to 1L, "b" to listOf(1L, 2L))
         )
     )
