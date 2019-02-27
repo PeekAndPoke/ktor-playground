@@ -117,7 +117,7 @@ enum class AqlFunc {
     LEFT,                  
     LEVENSHTEIN_DISTANCE,  // TODO: impl, tests
     LIKE,                  // TODO: impl, tests
-    LOWER,                 // TODO: impl, tests
+    LOWER,                 
     LTRIM,                 // TODO: impl, tests
     MD5,                   // TODO: impl, tests
     RANDOM_TOKEN,          // TODO: impl, tests
@@ -137,8 +137,8 @@ enum class AqlFunc {
     TO_BASE64,             // TODO: impl, tests
     TO_HEX,                // TODO: impl, tests
     TRIM,                  // TODO: impl, tests
-    UPPER,                 // TODO: impl, tests
-    UUID,                  // TODO: impl, tests
+    UPPER,                 
+    UUID,                  
 
     // Type checks
     IS_NULL,            // TODO: impl, tests

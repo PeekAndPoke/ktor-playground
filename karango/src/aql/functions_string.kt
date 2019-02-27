@@ -124,8 +124,29 @@ fun LEFT(expr: Expression<String>, n: Expression<Number>) = AqlFunc.LEFT.stringC
 fun LENGTH(expr: Expression<String>) = AqlFunc.LENGTH.numberCall(expr)
 
 /**
+ * Convert upper-case letters in value to their lower-case counterparts. All other characters are returned unchanged.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#lower
+ */
+fun LOWER(expr: Expression<String>) = AqlFunc.LOWER.stringCall(expr)
+
+/**
  * Return the n rightmost characters of the string value.
  *
  * https://docs.arangodb.com/current/AQL/Functions/String.html#right
  */
 fun RIGHT(expr: Expression<String>, n: Expression<Number>) = AqlFunc.RIGHT.stringCall(expr, n)
+
+/**
+ * Convert lower-case letters in value to their upper-case counterparts. All other characters are returned unchanged.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#upper
+ */
+fun UPPER(expr: Expression<String>) = AqlFunc.UPPER.stringCall(expr)
+
+/**
+ * Return a universally unique identifier value.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#uuid
+ */
+fun UUID() = AqlFunc.UUID.stringCall()
