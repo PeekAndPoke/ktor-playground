@@ -110,8 +110,22 @@ fun JSON_PARSE(expr: Expression<String>) = AqlFunc.JSON_PARSE.anyCall(expr)
 fun <T> JSON_STRINGIFY(expr: Expression<T>) = AqlFunc.JSON_STRINGIFY.stringCall(expr)
 
 /**
+ * Return the n leftmost characters of the string value.
+ *
+ * https://docs.arangodb.com/current/AQL/Functions/String.html#left
+ */
+fun LEFT(expr: Expression<String>, n: Expression<Number>) = AqlFunc.LEFT.stringCall(expr, n)
+
+/**
  * Determine the character length of a string.
  *
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#length
  */
 fun LENGTH(expr: Expression<String>) = AqlFunc.LENGTH.numberCall(expr)
+
+/**
+ * Return the n rightmost characters of the string value.
+ *
+ * https://docs.arangodb.com/current/AQL/Functions/String.html#right
+ */
+fun RIGHT(expr: Expression<String>, n: Expression<Number>) = AqlFunc.RIGHT.stringCall(expr, n)

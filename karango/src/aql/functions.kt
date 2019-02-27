@@ -113,8 +113,8 @@ enum class AqlFunc {
     FIND_FIRST,            
     FIND_LAST,             
     JSON_PARSE,            
-    JSON_STRINGIFY,        // TODO: impl, tests
-    LEFT,                  // TODO: impl, tests
+    JSON_STRINGIFY,        
+    LEFT,                  
     LEVENSHTEIN_DISTANCE,  // TODO: impl, tests
     LIKE,                  // TODO: impl, tests
     LOWER,                 // TODO: impl, tests
@@ -125,7 +125,7 @@ enum class AqlFunc {
     REGEX_SPLIT,           // TODO: impl, tests
     REGEX_TEST,            // TODO: impl, tests
     REGEX_REPLACE,         // TODO: impl, tests
-    RIGHT,                 // TODO: impl, tests
+    RIGHT,                 
     RTRIM,                 // TODO: impl, tests
     SHA1,                  // TODO: impl, tests
     SHA512,                // TODO: impl, tests
