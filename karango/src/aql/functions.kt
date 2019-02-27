@@ -110,8 +110,8 @@ enum class AqlFunc {
     CONCAT_SEPARATOR,      
     CONTAINS,              
     ENCODE_URI_COMPONENT,  // TODO: impl, tests
-    FIND_FIRST,            // TODO: impl, tests
-    FIND_LAST,             // TODO: impl, tests
+    FIND_FIRST,            
+    FIND_LAST,             
     JSON_PARSE,            // TODO: impl, tests
     JSON_STRINGIFY,        // TODO: impl, tests
     LEFT,                  // TODO: impl, tests

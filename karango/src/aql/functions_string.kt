@@ -72,6 +72,30 @@ fun FIND_FIRST(haystack: Expression<String>, needle: Expression<String>, start: 
     AqlFunc.FIND_FIRST.numberCall(haystack, needle, start, end)
 
 /**
+ * Return the position of the first occurrence of the string search inside the string text. Positions start at 0.
+ *
+ * https://docs.arangodb.com/current/AQL/Functions/String.html#findlast
+ */
+fun FIND_LAST(haystack: Expression<String>, needle: Expression<String>) =
+    AqlFunc.FIND_LAST.numberCall(haystack, needle)
+
+/**
+ * Return the position of the first occurrence of the string search inside the string text. Positions start at 0.
+ *
+ * https://docs.arangodb.com/current/AQL/Functions/String.html#findlast
+ */
+fun FIND_LAST(haystack: Expression<String>, needle: Expression<String>, start: Expression<Number>) =
+    AqlFunc.FIND_LAST.numberCall(haystack, needle, start)
+
+/**
+ * Return the position of the first occurrence of the string search inside the string text. Positions start at 0.
+ *
+ * https://docs.arangodb.com/current/AQL/Functions/String.html#findlast
+ */
+fun FIND_LAST(haystack: Expression<String>, needle: Expression<String>, start: Expression<Number>, end: Expression<Number>) =
+    AqlFunc.FIND_LAST.numberCall(haystack, needle, start, end)
+
+/**
  * Determine the character length of a string.
  *
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#length
