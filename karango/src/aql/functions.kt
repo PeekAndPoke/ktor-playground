@@ -75,25 +75,25 @@ enum class AqlFunc {
     AVERAGE,               
     AVG,                   
     CEIL,                  
-    COS,                   // TODO: impl, tests
-    DEGREES,               // TODO: impl, tests
-    EXP,                   // TODO: impl, tests
-    EXP2,                  // TODO: impl, tests
+    COS,                   
+    DEGREES,               
+    EXP,                   
+    EXP2,                  
     FLOOR,                 
-    LOG,                   // TODO: impl, tests
-    LOG2,                  // TODO: impl, tests
-    LOG10,                 // TODO: impl, tests
-    MAX,                   // TODO: impl, tests
+    LOG,                   
+    LOG2,                  
+    LOG10,                 
+    MAX,                   
     MEDIAN,                
-    MIN,                   // TODO: impl, tests
-    PERCENTILE,            // TODO: impl, tests
-    PI,                    // TODO: impl, tests
-    POW,                   // TODO: impl, tests
-    RADIANS,               // TODO: impl, tests
-    RAND,                  // TODO: impl, tests
-    RANGE,                 // TODO: impl, tests
-    ROUND,                 // TODO: impl, tests
-    SIN,                   // TODO: impl, tests
+    MIN,                   
+    PERCENTILE,            
+    PI,                    
+    POW,                   
+    RADIANS,               
+    RAND,                  
+    RANGE,                 
+    ROUND,                 
+    SIN,                   
     SQRT,                  // TODO: impl, tests
     STDDEV_POPULATION,     // TODO: impl, tests
     STDDEV_SAMPLE,         // TODO: impl, tests
