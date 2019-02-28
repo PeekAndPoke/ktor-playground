@@ -1,34 +1,34 @@
 package de.peekandpoke.karango.e2e
 
-import de.peekandpoke.karango.aql.COUNT
+import de.peekandpoke.karango.aql.SOUNDEX
 import de.peekandpoke.karango.aql.aql
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 
 @Suppress("ClassName")
-class `E2E-Func-String-COUNT-Spec` : StringSpec({
+class `E2E-Func-String-SOUNDEX-Spec` : StringSpec({
 
     val cases = listOf(
         row(
-            "COUNT on an empty string parameter",
-            COUNT("".aql),
-            0L
+            "SOUNDEX( \"example\" )",
+            SOUNDEX("example".aql),
+            "E251"
         ),
         row(
-            "COUNT on a simple string parameter",
-            COUNT("1".aql),
-            1L
+            "SOUNDEX( \"ekzampul\")",
+            SOUNDEX("ekzampul".aql),
+            "E251"
         ),
         row(
-            "COUNT on another simple string parameter",
-            COUNT("12".aql),
-            2L
+            "SOUNDEX( \"soundex\" )",
+            SOUNDEX("soundex".aql),
+            "S532"
         ),
         row(
-            "COUNT on a string with UTF-8 characters",
-            COUNT("äöüß".aql),
-            4L
+            "SOUNDEX( \"sounteks\" )",
+            SOUNDEX("sounteks".aql),
+            "S532"
         )
     )
 
@@ -36,12 +36,14 @@ class `E2E-Func-String-COUNT-Spec` : StringSpec({
 
         "$description - direct return" {
 
-            val result = db.query {
-                RETURN(expression)
-            }
+            repeat(10) {
+                val result = db.query {
+                    RETURN(expression)
+                }
 
-            withClue(expression, expected) {
-                result.toList() shouldBe listOf(expected)
+                withClue(expression, expected) {
+                    result.toList() shouldBe listOf(expected)
+                }
             }
         }
 

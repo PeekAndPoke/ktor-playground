@@ -222,6 +222,13 @@ fun SPLIT(value: Expression<String>, separator: Expression<List<String>>, limit:
         = AqlFunc.SPLIT.arrayCall(typeRef<List<String>>(), value, separator, limit)
 
 /**
+ * Return the soundex fingerprint of value.
+ * 
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#soundex
+ */
+fun SOUNDEX(value: Expression<String>) = AqlFunc.SOUNDEX.stringCall(value)
+
+/**
  * Return the string value with whitespace stripped from start and end
  *
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#trim

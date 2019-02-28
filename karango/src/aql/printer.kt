@@ -1,15 +1,43 @@
 package de.peekandpoke.karango.aql
 
+import com.fasterxml.jackson.databind.ObjectMapper
+
 interface Printable {
     fun printAql(p: AqlPrinter): Any
+
 }
+
+fun Printable.toPrintableString() = AqlPrinter.sandbox(this)
+
+fun Printable.toPrinterResult() = AqlPrinter.sandboxQuery(this)
+
 
 class AqlPrinter {
 
-    data class Result(val query: String, val vars: Map<String, Any?>)
+    data class Result(val query: String, val vars: Map<String, Any?>) {
+
+        /**
+         * Returns the raw text query, by replacing the parameters (like @my_param) with actual values.
+         * 
+         * This is a debugging helper and used in the unit tests.
+         */
+        val raw : String get() {
+            
+            var result = query
+            
+            vars.forEach { key, value -> 
+                result = result.replace("@$key", toJsonMapper.writeValueAsString(value)) 
+            }
+            
+            return result
+        }
+    }
 
     companion object {
-        fun sandbox(builder: (AqlPrinter) -> Unit): String = AqlPrinter().apply(builder).build().query
+        fun sandbox(expr: Printable): String = sandboxQuery(expr).query
+        fun sandboxQuery(expr: Printable): Result = AqlPrinter().append(expr).build()
+
+        private val toJsonMapper = ObjectMapper()
     }
 
     private val stringBuilder = StringBuilder()
@@ -38,7 +66,7 @@ class AqlPrinter {
     fun name(name: String) = append(name.toName())
 
     fun value(expr: Expression<*>, value: Any) = value(if (expr is Aliased) expr.getAlias() else "v", value)
-    
+
     fun value(name: String, value: Any?) = apply {
 
         val key = name.toParamName() + "_" + (queryVars.size + 1)

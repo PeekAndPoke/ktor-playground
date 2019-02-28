@@ -130,7 +130,7 @@ enum class AqlFunc {
     SHA1,                  
     SHA512,                
     SPLIT,                 
-    SOUNDEX,               // TODO: impl, tests
+    SOUNDEX,               
     SUBSTITUTE,            // TODO: impl, tests
     SUBSTRING,             // TODO: impl, tests
     TOKENS,                // TODO: impl, tests

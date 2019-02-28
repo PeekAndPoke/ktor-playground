@@ -22,7 +22,7 @@ data class PropertyPath<T>(private val previous: PropertyPath<*>?, private val c
         override fun printAql(p: AqlPrinter) = p.append(op)
     }
 
-    override fun getAlias() = AqlPrinter.sandbox { it.append(this) }
+    override fun getAlias() = this.toPrintableString()
 
     override fun getType() = current.getType()
 

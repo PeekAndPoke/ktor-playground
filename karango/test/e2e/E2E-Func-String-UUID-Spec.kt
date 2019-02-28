@@ -2,7 +2,6 @@ package de.peekandpoke.karango.e2e
 
 import de.peekandpoke.karango.aql.UUID
 import io.kotlintest.matchers.string.shouldMatch
-import io.kotlintest.matchers.withClue
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 
@@ -26,7 +25,7 @@ class `E2E-Func-String-UUID-Spec` : StringSpec({
                     RETURN(expression)
                 }
 
-                withClue("|| $expression || $expected ||") {
+                withClue(expression, expected) {
                     result.first() shouldMatch expected
                 }
             }
@@ -40,7 +39,7 @@ class `E2E-Func-String-UUID-Spec` : StringSpec({
                 RETURN(l)
             }
 
-            withClue("|| $expression || $expected ||") {
+            withClue(expression, expected) {
                 result.first() shouldMatch expected
             }
         }

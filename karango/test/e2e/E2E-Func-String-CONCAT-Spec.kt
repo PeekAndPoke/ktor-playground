@@ -3,7 +3,6 @@ package de.peekandpoke.karango.e2e
 import de.peekandpoke.karango.aql.CONCAT
 import de.peekandpoke.karango.aql.TO_STRING
 import de.peekandpoke.karango.aql.aql
-import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
@@ -42,7 +41,7 @@ class `E2E-Func-String-CONCAT-Spec` : StringSpec({
                 RETURN(expression)
             }
 
-            withClue("|| $expression || $expected ||") {
+            withClue(expression, expected) {
                 result.toList() shouldBe listOf(expected)
             }
         }
@@ -55,7 +54,7 @@ class `E2E-Func-String-CONCAT-Spec` : StringSpec({
                 RETURN(l)
             }
 
-            withClue("|| $expression || $expected ||") {
+            withClue(expression, expected) {
                 result.toList() shouldBe listOf(expected)
             }
         }
