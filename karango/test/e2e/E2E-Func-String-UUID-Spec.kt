@@ -21,7 +21,7 @@ class `E2E-Func-String-UUID-Spec` : StringSpec({
 
         "$description - direct return" {
 
-            repeat(100) {
+            repeat(10) {
                 val result = db.query {
                     RETURN(expression)
                 }
@@ -34,16 +34,14 @@ class `E2E-Func-String-UUID-Spec` : StringSpec({
 
         "$description - return from LET" {
 
-            repeat(100) {
-                val result = db.query {
-                    val l = LET("l", expression)
+            val result = db.query {
+                val l = LET("l", expression)
 
-                    RETURN(l)
-                }
+                RETURN(l)
+            }
 
-                withClue("|| $expression || $expected ||") {
-                    result.first() shouldMatch expected
-                }
+            withClue("|| $expression || $expected ||") {
+                result.first() shouldMatch expected
             }
         }
     }

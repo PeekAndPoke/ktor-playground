@@ -118,7 +118,7 @@ enum class AqlFunc {
     LEVENSHTEIN_DISTANCE,  
     LIKE,                  // TODO: impl, tests
     LOWER,                 
-    LTRIM,                 // TODO: impl, tests
+    LTRIM,                 
     MD5,                   // TODO: impl, tests
     RANDOM_TOKEN,          // TODO: impl, tests
     REGEX_MATCHES,         // TODO: impl, tests
@@ -126,7 +126,7 @@ enum class AqlFunc {
     REGEX_TEST,            // TODO: impl, tests
     REGEX_REPLACE,         // TODO: impl, tests
     RIGHT,                 
-    RTRIM,                 // TODO: impl, tests
+    RTRIM,                 
     SHA1,                  
     SHA512,                
     SPLIT,                 // TODO: impl, tests
@@ -136,7 +136,7 @@ enum class AqlFunc {
     TOKENS,                // TODO: impl, tests
     TO_BASE64,             // TODO: impl, tests
     TO_HEX,                // TODO: impl, tests
-    TRIM,                  // TODO: impl, tests
+    TRIM,                  
     UPPER,                 
     UUID,                  
 

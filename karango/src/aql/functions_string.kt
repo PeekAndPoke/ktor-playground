@@ -139,11 +139,39 @@ fun LEVENSHTEIN_DISTANCE(left: Expression<String>, right: Expression<String>)
 fun LOWER(expr: Expression<String>) = AqlFunc.LOWER.stringCall(expr)
 
 /**
+ * Return the string value with whitespace stripped from the start only.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#ltrim
+ */
+fun LTRIM(subject: Expression<String>) = AqlFunc.LTRIM.stringCall(subject)
+
+/**
+ * Return the string value with whitespace stripped from the start only.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#ltrim
+ */
+fun LTRIM(subject: Expression<String>, chars: Expression<String>) = AqlFunc.LTRIM.stringCall(subject, chars)
+
+/**
  * Return the n rightmost characters of the string value.
  *
  * https://docs.arangodb.com/current/AQL/Functions/String.html#right
  */
 fun RIGHT(expr: Expression<String>, n: Expression<Number>) = AqlFunc.RIGHT.stringCall(expr, n)
+
+/**
+ * Return the string value with whitespace stripped at the start only.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#rtrim
+ */
+fun RTRIM(subject: Expression<String>) = AqlFunc.RTRIM.stringCall(subject)
+
+/**
+ * Return the string value with whitespace stripped at the start only.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#rtrim
+ */
+fun RTRIM(subject: Expression<String>, chars: Expression<String>) = AqlFunc.RTRIM.stringCall(subject, chars)
 
 /**
  * Calculate the SHA1 checksum for text and returns it in a hexadecimal string representation.
@@ -158,6 +186,20 @@ fun SHA1(expr: Expression<String>) = AqlFunc.SHA1.stringCall(expr)
  * https://docs.arangodb.com/current/AQL/Functions/String.html#sha256
  */
 fun SHA512(expr: Expression<String>) = AqlFunc.SHA512.stringCall(expr)
+
+/**
+ * Return the string value with whitespace stripped from start and end
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#trim
+ */
+fun TRIM(subject: Expression<String>) = AqlFunc.TRIM.stringCall(subject)
+
+/**
+ * Return the string value with whitespace stripped from start and end
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#trim
+ */
+fun TRIM(subject: Expression<String>, chars: Expression<String>) = AqlFunc.TRIM.stringCall(subject, chars)
 
 /**
  * Convert lower-case letters in value to their upper-case counterparts. All other characters are returned unchanged.
