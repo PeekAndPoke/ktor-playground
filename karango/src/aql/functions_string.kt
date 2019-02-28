@@ -135,10 +135,25 @@ fun LENGTH(expr: Expression<String>) = AqlFunc.LENGTH.numberCall(expr)
 /**
  * Calculate the Levenshtein distance between two strings.
  *
- * https://docs.arangodb.com/current/AQL/Functions/String.html#levenshteindistance
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#levenshteindistance
  */
-fun LEVENSHTEIN_DISTANCE(left: Expression<String>, right: Expression<String>) 
-        = AqlFunc.LEVENSHTEIN_DISTANCE.numberCall(left, right)
+fun LEVENSHTEIN_DISTANCE(left: Expression<String>, right: Expression<String>) = 
+    AqlFunc.LEVENSHTEIN_DISTANCE.numberCall(left, right)
+
+/**
+ * Check whether the pattern search is contained in the string text, using wildcard matching.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#like
+ */
+fun LIKE(text: Expression<String>, search: Expression<String>) = AqlFunc.LIKE.boolCall(text, search)
+
+/**
+ * Check whether the pattern search is contained in the string text, using wildcard matching.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#like
+ */
+fun LIKE(text: Expression<String>, search: Expression<String>, caseInsensitive: Expression<Boolean>) = 
+    AqlFunc.LIKE.boolCall(text, search, caseInsensitive)
 
 /**
  * Convert upper-case letters in value to their lower-case counterparts. All other characters are returned unchanged.
@@ -174,6 +189,22 @@ fun MD5(value: Expression<String>) = AqlFunc.MD5.stringCall(value)
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#randomtoken
  */
 fun RANDOM_TOKEN(length: Expression<Number>) = AqlFunc.RANDOM_TOKEN.stringCall(length)
+
+/**
+ * Return the matches in the given string text, using the regex.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#regexmatches
+ */
+fun REGEX_MATCHES(text: Expression<String>, regex: Expression<String>) = 
+    AqlFunc.REGEX_MATCHES.arrayCall(typeRef<List<String>>(), text, regex)
+
+/**
+ * Return the matches in the given string text, using the regex.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#regexmatches
+ */
+fun REGEX_MATCHES(text: Expression<String>, regex: Expression<String>, caseInsensitive: Expression<Boolean>) =
+    AqlFunc.REGEX_MATCHES.arrayCall(typeRef<List<String>>(), text, regex, caseInsensitive)
 
 /**
  * Return the n rightmost characters of the string value.
@@ -250,6 +281,21 @@ fun SPLIT(value: Expression<String>, separator: Expression<List<String>>, limit:
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#soundex
  */
 fun SOUNDEX(value: Expression<String>) = AqlFunc.SOUNDEX.stringCall(value)
+
+/**
+ * Return a substring of value.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#substring
+ */
+fun SUBSTRING(value: Expression<String>, offset: Expression<Number>) = AqlFunc.SUBSTRING.stringCall(value, offset)
+
+/**
+ * Return a substring of value.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#substring
+ */
+fun SUBSTRING(value: Expression<String>, offset: Expression<Number>, length: Expression<Number>) = 
+    AqlFunc.SUBSTRING.stringCall(value, offset, length)
 
 /**
  * Return the string value with whitespace stripped from start and end

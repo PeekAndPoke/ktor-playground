@@ -109,19 +109,19 @@ enum class AqlFunc {
     CONCAT,                
     CONCAT_SEPARATOR,      
     CONTAINS,              
-    ENCODE_URI_COMPONENT,  // TODO: impl, tests
+    ENCODE_URI_COMPONENT,  
     FIND_FIRST,            
     FIND_LAST,             
     JSON_PARSE,            
     JSON_STRINGIFY,        
     LEFT,                  
     LEVENSHTEIN_DISTANCE,  
-    LIKE,                  // TODO: impl, tests
+    LIKE,                  
     LOWER,                 
     LTRIM,                 
     MD5,                   
     RANDOM_TOKEN,          
-    REGEX_MATCHES,         // TODO: impl, tests
+    REGEX_MATCHES,         
     REGEX_SPLIT,           // TODO: impl, tests
     REGEX_TEST,            // TODO: impl, tests
     REGEX_REPLACE,         // TODO: impl, tests
@@ -132,7 +132,7 @@ enum class AqlFunc {
     SPLIT,                 
     SOUNDEX,               
     SUBSTITUTE,            // TODO: impl, tests
-    SUBSTRING,             // TODO: impl, tests
+    SUBSTRING,             
     TOKENS,                // TODO: impl, tests
     TO_BASE64,             
     TO_HEX,                
