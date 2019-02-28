@@ -2,7 +2,6 @@
 
 package de.peekandpoke.karango.aql
 
-
 /**
  * Return the number of characters in value (not byte length).
  * 

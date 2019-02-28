@@ -67,9 +67,9 @@ enum class AqlFunc {
     NOT_NULL,              // TODO: impl, tests
     
     // Numeric
-    ABS,                   // TODO: impl, tests
-    ACOS,                  // TODO: impl, tests
-    ASIN,                  // TODO: impl, tests
+    ABS,                   
+    ACOS,                  
+    ASIN,                  
     ATAN,                  // TODO: impl, tests
     ATAN2,                 // TODO: impl, tests
     AVERAGE,               // TODO: impl, tests
@@ -171,6 +171,8 @@ fun AqlFunc.boolCall(vararg args: Expression<*>) = FuncCall.bool(this, args)
 
 fun AqlFunc.numberCall(vararg args: Expression<*>) = FuncCall.number(this, args)
 
+fun AqlFunc.nullableNumberCall(vararg args: Expression<*>) = FuncCall.nullableNumber(this, args)
+
 fun AqlFunc.stringCall(vararg args: Expression<*>) = FuncCall.string(this, args)
 
 interface FuncCall<T> : Expression<T> {
@@ -186,6 +188,7 @@ interface FuncCall<T> : Expression<T> {
         fun bool(func: AqlFunc, args: Array<out Expression<*>>): Expression<Boolean> = FuncCallImpl(TypeRef.Boolean, func, args)
         
         fun number(func: AqlFunc, args: Array<out Expression<*>>): Expression<Number> = FuncCallImpl(TypeRef.Number, func, args)
+        fun nullableNumber(func: AqlFunc, args: Array<out Expression<*>>): Expression<Number?> = FuncCallImpl(TypeRef.NumberNull, func, args)
         
         fun string(func: AqlFunc, args: Array<out Expression<*>>): Expression<String> = FuncCallImpl(TypeRef.String, func, args)
     }
