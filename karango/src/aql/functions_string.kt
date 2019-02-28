@@ -157,7 +157,7 @@ fun LTRIM(subject: Expression<String>, chars: Expression<String>) = AqlFunc.LTRI
  *
  * https://docs.arangodb.com/current/AQL/Functions/String.html#right
  */
-fun RIGHT(expr: Expression<String>, n: Expression<Number>) = AqlFunc.RIGHT.stringCall(expr, n)
+fun RIGHT(value: Expression<String>, n: Expression<Number>) = AqlFunc.RIGHT.stringCall(value, n)
 
 /**
  * Return the string value with whitespace stripped at the start only.
@@ -186,6 +186,40 @@ fun SHA1(expr: Expression<String>) = AqlFunc.SHA1.stringCall(expr)
  * https://docs.arangodb.com/current/AQL/Functions/String.html#sha256
  */
 fun SHA512(expr: Expression<String>) = AqlFunc.SHA512.stringCall(expr)
+
+/**
+ * Split the given string value into a list of strings, using the separator.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#split  
+ */
+fun SPLIT(value: Expression<String>, separator: Expression<String>)  
+        = AqlFunc.SPLIT.arrayCall(typeRef<List<String>>(), value, separator)
+
+/**
+ * Split the given string value into a list of strings, using the separator.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#split
+ */
+@JvmName("SPLIT2")
+fun SPLIT(value: Expression<String>, separator: Expression<List<String>>)
+        = AqlFunc.SPLIT.arrayCall(typeRef<List<String>>(), value, separator)
+
+/**
+ * Split the given string value into a list of strings, using the separator.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#split
+ */
+fun SPLIT(value: Expression<String>, separator: Expression<String>, limit: Expression<Number>)
+        = AqlFunc.SPLIT.arrayCall(typeRef<List<String>>(), value, separator, limit)
+
+/**
+ * Split the given string value into a list of strings, using the separator.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#split
+ */
+@JvmName("SPLIT2")
+fun SPLIT(value: Expression<String>, separator: Expression<List<String>>, limit: Expression<Number>)
+        = AqlFunc.SPLIT.arrayCall(typeRef<List<String>>(), value, separator, limit)
 
 /**
  * Return the string value with whitespace stripped from start and end

@@ -129,7 +129,7 @@ enum class AqlFunc {
     RTRIM,                 
     SHA1,                  
     SHA512,                
-    SPLIT,                 // TODO: impl, tests
+    SPLIT,                 
     SOUNDEX,               // TODO: impl, tests
     SUBSTITUTE,            // TODO: impl, tests
     SUBSTRING,             // TODO: impl, tests

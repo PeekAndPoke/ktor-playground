@@ -111,12 +111,12 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.innerType().toString() shouldBe "class java.lang.Double"
+                result.query.ret.innerType().toString() shouldBe "class java.lang.Number"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.getType().toString() shouldBe "java.util.List<java.lang.Double>"
+                result.query.ret.getType().toString() shouldBe "java.util.List<java.lang.Number>"
             }
         }
     }
@@ -143,17 +143,17 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
             }
 
             withClue("Query-result") {
-                result.toList() shouldBe listOf(1234)
+                result.toList() shouldBe listOf(1234L)
             }
 
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.innerType().toString() shouldBe "class java.lang.Integer"
+                result.query.ret.innerType().toString() shouldBe "class java.lang.Number"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.getType().toString() shouldBe "java.util.List<java.lang.Integer>"
+                result.query.ret.getType().toString() shouldBe "java.util.List<java.lang.Number>"
             }
         }
     }
@@ -185,12 +185,12 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.innerType().toString() shouldBe "class java.lang.Long"
+                result.query.ret.innerType().toString() shouldBe "class java.lang.Number"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.getType().toString() shouldBe "java.util.List<java.lang.Long>"
+                result.query.ret.getType().toString() shouldBe "java.util.List<java.lang.Number>"
             }
         }
     }

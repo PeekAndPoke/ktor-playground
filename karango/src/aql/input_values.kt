@@ -23,7 +23,7 @@ val <T> Expression<T>.aql: Nothing get() {
  *
  * Usage:
  *
- * 1.aql()
+ * 1.aql("name-in-query")
  * "string".aql()
  * true.aql()
  * Obj().aql()
@@ -37,6 +37,18 @@ inline fun <reified T> T.aql(name: String = "v") : Expression<T> = when {
 }
 
 /**
+ * Shorthand for converting numerical values into AQL expression
+ *
+ * (This is a workaround for the Kotlin compiler, as it sometimes 1.aql or similar correctly)
+ *
+ * Usage:
+ *
+ * 1.aql()
+ * 1.1.aql("name-in-query")
+ */
+fun Number.aql(name: String = "v") : Expression<Number> = aql<Number>(name)
+
+/**
  * Shorthand for converting any object into an AQL expression without specifying a name
  * 
  * Usage:
@@ -47,6 +59,18 @@ inline fun <reified T> T.aql(name: String = "v") : Expression<T> = when {
  * Obj().aql
  */
 inline val <reified T> T.aql : Expression<T> get() = this.aql()
+
+/**
+ * Shorthand for converting numerical values into AQL expression
+ *
+ * (This is a workaround for the Kotlin compiler, as it sometimes 1.aql or similar correctly)
+ *
+ * Usage:
+ *
+ * 1.aql
+ * 1.1.aql
+ */
+inline val Number.aql : Expression<Number> get() = this.aql()
 
 /**
  * Helper to make a "null" AQL expression
