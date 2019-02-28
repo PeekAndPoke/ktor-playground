@@ -27,18 +27,27 @@ fun CONCAT_SEPARATOR(separator: Expression<String>, first: Expression<String>, v
 
 /**
  * Check whether the string search is contained in the string text. The string matching performed by CONTAINS is case-sensitive.
- * 
+ *
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#contains
  */
-@JvmName("CONTAINS_")
 fun CONTAINS(haystack: Expression<String>, needle: Expression<String>) = AqlFunc.CONTAINS.boolCall(haystack, needle)
 
 /**
  * Check whether the string search is contained in the string text. The string matching performed by CONTAINS is case-sensitive.
  * 
  * Infix version
+ * 
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#contains
  */
+@JvmName("CONTAINS_infix")
 infix fun Expression<String>.CONTAINS(needle: Expression<String>) = CONTAINS(this, needle)
+
+/**
+ * Return the encoded uri component of value.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#encodeuricomponent
+ */
+fun ENCODE_URI_COMPONENT(value: Expression<String>) = AqlFunc.ENCODE_URI_COMPONENT.stringCall(value)
 
 /**
  * Determine the character length of a string.
@@ -158,6 +167,13 @@ fun LTRIM(subject: Expression<String>, chars: Expression<String>) = AqlFunc.LTRI
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#md5
  */
 fun MD5(value: Expression<String>) = AqlFunc.MD5.stringCall(value)
+
+/**
+ * Generate a pseudo-random token string with the specified length. The algorithm for token generation should be treated as opaque.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#randomtoken
+ */
+fun RANDOM_TOKEN(length: Expression<Number>) = AqlFunc.RANDOM_TOKEN.stringCall(length)
 
 /**
  * Return the n rightmost characters of the string value.

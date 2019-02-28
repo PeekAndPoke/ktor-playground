@@ -1,18 +1,25 @@
 package de.peekandpoke.karango.e2e
 
-import de.peekandpoke.karango.aql.UUID
+import de.peekandpoke.karango.aql.RANDOM_TOKEN
+import de.peekandpoke.karango.aql.aql
 import io.kotlintest.matchers.string.shouldMatch
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 
 @Suppress("ClassName")
-class `E2E-Func-String-UUID-Spec` : StringSpec({
+class `E2E-Func-String-RANDOM_TOKEN-Spec` : StringSpec({
 
     val cases = listOf(
         row(
-            "UUID()",
-            UUID(),
-            "[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}"
+            "RANDOM_TOKEN( 5 )",
+            RANDOM_TOKEN(5.aql),
+            5
+        ),
+        row(
+            "RANDOM_TOKEN( 100 )",
+            RANDOM_TOKEN(100.aql),
+            100
         )
     )
 
@@ -25,8 +32,11 @@ class `E2E-Func-String-UUID-Spec` : StringSpec({
                     RETURN(expression)
                 }
 
+                val first = result.first()
+                
                 withClue(expression, expected) {
-                    result.first() shouldMatch expected
+                    first.length shouldBe expected
+                    first shouldMatch "[a-zA-Z0-9]{$expected}"
                 }
             }
         }
@@ -40,7 +50,7 @@ class `E2E-Func-String-UUID-Spec` : StringSpec({
             }
 
             withClue(expression, expected) {
-                result.first() shouldMatch expected
+                result.first().length shouldBe expected
             }
         }
     }

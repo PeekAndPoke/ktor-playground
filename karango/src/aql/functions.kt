@@ -119,8 +119,8 @@ enum class AqlFunc {
     LIKE,                  // TODO: impl, tests
     LOWER,                 
     LTRIM,                 
-    MD5,                   // TODO: impl, tests
-    RANDOM_TOKEN,          // TODO: impl, tests
+    MD5,                   
+    RANDOM_TOKEN,          
     REGEX_MATCHES,         // TODO: impl, tests
     REGEX_SPLIT,           // TODO: impl, tests
     REGEX_TEST,            // TODO: impl, tests
