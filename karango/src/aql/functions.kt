@@ -70,21 +70,21 @@ enum class AqlFunc {
     ABS,                   
     ACOS,                  
     ASIN,                  
-    ATAN,                  // TODO: impl, tests
-    ATAN2,                 // TODO: impl, tests
-    AVERAGE,               // TODO: impl, tests
-    AVG,                   // TODO: impl, tests
-    CEIL,                  // TODO: impl, tests
+    ATAN,                  
+    ATAN2,                 
+    AVERAGE,               
+    AVG,                   
+    CEIL,                  
     COS,                   // TODO: impl, tests
     DEGREES,               // TODO: impl, tests
     EXP,                   // TODO: impl, tests
     EXP2,                  // TODO: impl, tests
-    FLOOR,                 // TODO: impl, tests
+    FLOOR,                 
     LOG,                   // TODO: impl, tests
     LOG2,                  // TODO: impl, tests
     LOG10,                 // TODO: impl, tests
     MAX,                   // TODO: impl, tests
-    MEDIAN,                // TODO: impl, tests
+    MEDIAN,                
     MIN,                   // TODO: impl, tests
     PERCENTILE,            // TODO: impl, tests
     PI,                    // TODO: impl, tests
@@ -166,11 +166,11 @@ fun <T> AqlFunc.call(type: TypeRef<T>, vararg args: Expression<*>) = FuncCall.of
 fun AqlFunc.anyCall(vararg args: Expression<*>) = FuncCall.any(this, args)
 
 fun <T> AqlFunc.arrayCall(type: TypeRef<List<T>>, vararg args: Expression<*>) = FuncCall.array(this, type, args)
+fun <T> AqlFunc.nullableArrayCall(type: TypeRef<List<T>?>, vararg args: Expression<*>) = FuncCall.nullableArray(this, type, args)
 
 fun AqlFunc.boolCall(vararg args: Expression<*>) = FuncCall.bool(this, args)
 
 fun AqlFunc.numberCall(vararg args: Expression<*>) = FuncCall.number(this, args)
-
 fun AqlFunc.nullableNumberCall(vararg args: Expression<*>) = FuncCall.nullableNumber(this, args)
 
 fun AqlFunc.stringCall(vararg args: Expression<*>) = FuncCall.string(this, args)
@@ -184,6 +184,7 @@ interface FuncCall<T> : Expression<T> {
         fun any(func: AqlFunc, args: Array<out Expression<*>>): Expression<Any> = FuncCallImpl(TypeRef.Any, func, args)
 
         fun <T> array(func: AqlFunc, type: TypeRef<List<T>>, args: Array<out Expression<*>>): FuncCall<List<T>> = FuncCallImpl(type, func, args)
+        fun <T> nullableArray(func: AqlFunc, type: TypeRef<List<T>?>, args: Array<out Expression<*>>): FuncCall<List<T>?> = FuncCallImpl(type, func, args)
         
         fun bool(func: AqlFunc, args: Array<out Expression<*>>): Expression<Boolean> = FuncCallImpl(TypeRef.Boolean, func, args)
         

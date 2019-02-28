@@ -195,7 +195,7 @@ fun RANDOM_TOKEN(length: Expression<Number>) = AqlFunc.RANDOM_TOKEN.stringCall(l
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#regexmatches
  */
 fun REGEX_MATCHES(text: Expression<String>, regex: Expression<String>) = 
-    AqlFunc.REGEX_MATCHES.arrayCall(typeRef<List<String>>(), text, regex)
+    AqlFunc.REGEX_MATCHES.nullableArrayCall(typeRef<List<String>?>(), text, regex)
 
 /**
  * Return the matches in the given string text, using the regex.
@@ -203,7 +203,7 @@ fun REGEX_MATCHES(text: Expression<String>, regex: Expression<String>) =
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#regexmatches
  */
 fun REGEX_MATCHES(text: Expression<String>, regex: Expression<String>, caseInsensitive: Expression<Boolean>) =
-    AqlFunc.REGEX_MATCHES.arrayCall(typeRef<List<String>>(), text, regex, caseInsensitive)
+    AqlFunc.REGEX_MATCHES.nullableArrayCall(typeRef<List<String>?>(), text, regex, caseInsensitive)
 
 /**
  * Return the n rightmost characters of the string value.
