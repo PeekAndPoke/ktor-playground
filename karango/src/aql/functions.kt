@@ -134,8 +134,8 @@ enum class AqlFunc {
     SUBSTITUTE,            // TODO: impl, tests
     SUBSTRING,             // TODO: impl, tests
     TOKENS,                // TODO: impl, tests
-    TO_BASE64,             // TODO: impl, tests
-    TO_HEX,                // TODO: impl, tests
+    TO_BASE64,             
+    TO_HEX,                
     TRIM,                  
     UPPER,                 
     UUID,                  

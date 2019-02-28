@@ -153,6 +153,13 @@ fun LTRIM(subject: Expression<String>) = AqlFunc.LTRIM.stringCall(subject)
 fun LTRIM(subject: Expression<String>, chars: Expression<String>) = AqlFunc.LTRIM.stringCall(subject, chars)
 
 /**
+ * Calculate the MD5 checksum for text and return it in a hexadecimal string representation.
+ * 
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#md5
+ */
+fun MD5(value: Expression<String>) = AqlFunc.MD5.stringCall(value)
+
+/**
  * Return the n rightmost characters of the string value.
  *
  * https://docs.arangodb.com/current/AQL/Functions/String.html#right
@@ -241,6 +248,20 @@ fun TRIM(subject: Expression<String>) = AqlFunc.TRIM.stringCall(subject)
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#trim
  */
 fun TRIM(subject: Expression<String>, chars: Expression<String>) = AqlFunc.TRIM.stringCall(subject, chars)
+
+/**
+ * Return the base64 representation of value.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#tobase64
+ */
+fun TO_BASE64(value: Expression<String>) = AqlFunc.TO_BASE64.stringCall(value)
+
+/**
+ * Return the hex representation of value.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#tobase64
+ */
+fun TO_HEX(value: Expression<String>) = AqlFunc.TO_HEX.stringCall(value)
 
 /**
  * Convert lower-case letters in value to their upper-case counterparts. All other characters are returned unchanged.
