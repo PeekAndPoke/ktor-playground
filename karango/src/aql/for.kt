@@ -1,58 +1,77 @@
+@file:Suppress("FunctionName")
+
 package de.peekandpoke.karango.aql
 
-data class IteratorExpr<T>(private val __name__: String, private val __inner__: Expression<List<T>>) : Expression<T> {
+@KarangoDslMarker
+fun FOR(iteratorName: String) = ForLoop.For(iteratorName)
+
+@KarangoDslMarker
+operator fun <T, R> Expression<List<T>>.invoke(builder: ForLoop.(Iter<T>) -> TerminalExpr<R>) = ForLoop.In(this, builder)
+
+@KarangoDslMarker
+data class Iter<T>(private val __name__: String, private val __inner__: Expression<List<T>>) : Expression<T> {
 
     override fun getType() = __inner__.getType().down<T>()
     override fun printAql(p: AqlPrinter) = p.name(__name__)
 }
 
-@Suppress("FunctionName")
-interface ForBuilderTrait : BuilderTrait {
+@KarangoDslMarker
+class ForLoop internal constructor() : StatementBuilder {
 
-    class For(private val trait: ForBuilderTrait, private val iteratorName: String) {
+    @KarangoDslMarker
+    class For(private val iteratorName: String) {
 
-        infix fun <T> IN(forIn: In<T>): TerminalExpr<T> {
+        @KarangoDslMarker
+        infix fun <T, R> IN(forIn: In<T, R>): TerminalExpr<R> {
 
-            val iterator = IteratorExpr(iteratorName, forIn.iterable)
-            val loop = ForLoop(iterator, forIn.iterable)
-            val result = loop.(forIn.builder)(iterator)
+            val loop = ForLoop()
+            val iterator = Iter(iteratorName, forIn.iterable)
+            val returns = forIn.builder(loop, iterator)
 
-            trait.items.add(loop)
-
-            return result
+            return ForLoopExpr(iterator, forIn.iterable, loop.stmts, returns)
         }
     }
 
-    class In<T>(internal val iterable: Expression<List<T>>, internal val builder: ForLoop<T>.(IteratorExpr<T>) -> TerminalExpr<T>)
+    @KarangoDslMarker
+    class In<T, R>(internal val iterable: Expression<List<T>>, internal val builder: ForLoop.(Iter<T>) -> TerminalExpr<R>)
 
-    operator fun <T> Expression<List<T>>.invoke(builder: ForLoop<T>.(IteratorExpr<T>) -> TerminalExpr<T>) = In(this, builder)
+    override val stmts = mutableListOf<Statement>()
 
-    fun FOR(iteratorName: String) = For(this, iteratorName)
+    @KarangoDslMarker
+    fun FILTER(predicate: Expression<Boolean>): Unit = run { Filter(predicate).addStmt() }
+
+    @KarangoDslMarker
+    fun SORT(sort: Sort): Unit = run { sort.addStmt() }
+
+    @KarangoDslMarker
+    fun LIMIT(limit: Int): Unit = run { OffsetAndLimit(0, limit).addStmt() }
+
+    @KarangoDslMarker
+    fun LIMIT(offset: Int, limit: Int): Unit = run { OffsetAndLimit(offset, limit).addStmt() }
+
+    @KarangoDslMarker
+    fun <R> RETURN(ret: Expression<R>): TerminalExpr<R> = Return(ret)
 }
 
-@Suppress("FunctionName")
-@KarangoDslMarker
-class ForLoop<T> internal constructor(private val name: IteratorExpr<T>, private val iterable: Expression<List<T>>) :
-    ForBuilderTrait, InsertBuilderTrait, Statement {
+internal class ForLoopExpr<T, R>(
+    private val iterator: Iter<T>,
+    private val iterable: Expression<List<T>>,
+    private val stmts: List<Statement>,
+    private val ret: TerminalExpr<R>
+) : TerminalExpr<R> {
 
-    override val items = mutableListOf<Printable>()
+    override fun getType() = ret.getType()
 
-    fun FILTER(predicate: Expression<Boolean>): Unit = run { Filter(predicate).add() }
+    override fun innerType() = ret.innerType()
 
-    fun SORT(sort: Sort): Unit = run { sort.add() }
+    override fun printAql(p: AqlPrinter) = with(p) {
 
-    fun LIMIT(limit: Int): Unit = run { OffsetAndLimit(0, limit).add() }
+        append("FOR ").append(iterator).append(" IN ").append(iterable).appendLine()
 
-    fun LIMIT(offset: Int, limit: Int): Unit = run { OffsetAndLimit(offset, limit).add() }
+        indent {
+            append(stmts)
 
-    fun RETURN(ret: Expression<T>): TerminalExpr<T> = Return(ret).add()
-
-    override fun printAql(p: AqlPrinter) {
-
-        p.append("FOR ").append(name).append(" IN ").append(iterable).appendLine()
-
-        p.indent {
-            append(items)
+            append(ret)
         }
     }
 }

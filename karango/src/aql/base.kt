@@ -6,6 +6,12 @@ import de.peekandpoke.karango.Entity
 @DslMarker
 annotation class KarangoDslMarker
 
+@DslMarker
+annotation class KarangoFuncMarker
+
+@DslMarker
+annotation class KarangoInputMarker
+
 /**
  * Helper interface for the QueryPrinter.
  *
@@ -62,32 +68,51 @@ internal class ExpressionImpl<T>(private val name_: String, private val type: Ty
     override fun printAql(p: AqlPrinter) = p.name(name_)
 }
 
+internal class RootExpression<B: StatementBuilder, T>(private val stmts: List<Statement>, private val ret: TerminalExpr<T>) : TerminalExpr<T> {
+    
+    override fun getType() = ret.getType()
+
+    override fun innerType() = ret.innerType()
+
+    override fun printAql(p: AqlPrinter) = p.append(stmts).append(ret)
+
+    companion object {
+        fun <B: StatementBuilder, T> from(builder: B, builderFun: B.() -> TerminalExpr<T>) : RootExpression<B, T> {
+            
+            val result : TerminalExpr<T> = builderFun(builder)
+            
+            return RootExpression(builder.stmts, result)
+        } 
+    }
+}
+
 @Suppress("FunctionName")
 @KarangoDslMarker
-class AqlBuilder internal constructor() : ForBuilderTrait, InsertBuilderTrait, Printable {
+class AqlBuilder internal constructor() : StatementBuilder {
 
-    override val items = mutableListOf<Printable>()
+    override val stmts = mutableListOf<Statement>()
 
-    fun <T> LET(name: String, value: Expression<T>) = LetExpr(name, value).add().toExpression()
+    @KarangoDslMarker
+    fun <T> LET(name: String, value: Expression<T>) = LetExpr(name, value).addStmt().toExpression()
 
+    @KarangoDslMarker
     fun LET(name: String, @Suppress("UNUSED_PARAMETER") value: Nothing?) = LET(name, NullValue())
 
-    inline fun <reified T> LET(name: String, value: T) = Let(name, value, typeRef()).add().toExpression()
+    @KarangoDslMarker
+    inline fun <reified T> LET(name: String, value: T) = Let(name, value, typeRef()).addStmt().toExpression()
 
-    inline fun <reified T> LET(name: String, builder: () -> T) = Let(name, builder(), typeRef()).add().toExpression()
+    @KarangoDslMarker
+    inline fun <reified T> LET(name: String, builder: () -> T) = Let(name, builder(), typeRef()).addStmt().toExpression()
 
-    fun <T> RETURN(expr: Expression<T>): TerminalExpr<T> = Return(expr).add()
+    @KarangoDslMarker
+    fun <T> RETURN(expr: Expression<T>): TerminalExpr<T> = Return(expr)
     
     fun <T : Entity, D : CollectionDefinition<T>> UPDATE(entity: T, col: D, builder: KeyValueBuilder<T>.(Expression<T>) -> Unit): TerminalExpr<Any> =
         UpdateDocument(
             entity,
             col,
             KeyValueBuilder<T>().apply { builder(ExpressionImpl(col.getAlias(), col.getType().down())) }
-        ).add()
-
-    override fun printAql(p: AqlPrinter) {
-        p.append(items)
-    }
+        )
 }
 
 
@@ -100,9 +125,9 @@ class KeyValueBuilder<T : Entity> {
     infix fun <X> PropertyPath<X>.with(value: X) = apply { pairs.add(Pair(this, value as Any)) }
 }
 
-interface BuilderTrait {
+interface StatementBuilder {
 
-    val items: MutableList<Printable>
+    val stmts: MutableList<Statement>
 
-    fun <T : Printable> T.add(): T = apply { items.add(this) }
+    fun <T : Statement> T.addStmt(): T = apply { stmts.add(this) }
 }

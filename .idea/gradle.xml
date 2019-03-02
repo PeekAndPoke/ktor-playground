@@ -10,6 +10,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/karango" />
+            <option value="$PROJECT_DIR$/karango_dev" />
           </set>
         </option>
         <option name="useAutoImport" value="true" />

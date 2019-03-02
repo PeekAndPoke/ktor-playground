@@ -85,15 +85,15 @@ class `E2E-Func-TypeConversion-TO_STRING-Spec` : StringSpec({
         row("TO_STRING(['x']) none empty list", listOf("x"), """["x"]"""),
         row("TO_STRING(['x', 'x']) none empty list", listOf("x", "x"), """["x","x"]"""),
 
-        row("TO_STRING(object)", X("a", 1), """{"age":1,"name":"a"}"""),
+        row("TO_STRING(object)", Person("a", 1), """{"age":1,"name":"a"}"""),
         row(
             "TO_STRING([object]) list with one objects",
-            listOf(X("a", 1)),
+            listOf(Person("a", 1)),
             """[{"age":1,"name":"a"}]"""
         ),
         row(
             "TO_STRING([object, object]) list with two objects",
-            listOf(X("a", 1), X("b", 2)),
+            listOf(Person("a", 1), Person("b", 2)),
             """[{"age":1,"name":"a"},{"age":2,"name":"b"}]"""
         )
     )

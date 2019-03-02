@@ -2,6 +2,7 @@ package de.peekandpoke.karango
 
 import de.peekandpoke.karango.aql.AqlBuilder
 import de.peekandpoke.karango.aql.AqlPrinter
+import de.peekandpoke.karango.aql.RootExpression
 import de.peekandpoke.karango.aql.TerminalExpr
 
 
@@ -9,10 +10,9 @@ data class TypedQuery<T>(val ret: TerminalExpr<T>, val aql: String, val vars: Ma
 
 fun <T> query(builder: AqlBuilder.() -> TerminalExpr<T>): TypedQuery<T> {
 
-    val root = AqlBuilder()
-    val ret = root.builder()
-
+    val root = RootExpression.from(AqlBuilder(), builder)
+    
     val query = AqlPrinter().append(root).build()
 
-    return TypedQuery(ret, query.query, query.vars)
+    return TypedQuery(root, query.query, query.vars)
 }

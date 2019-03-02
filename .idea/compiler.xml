@@ -7,6 +7,8 @@
     <bytecodeTargetLevel>
       <module name="ktor-playground.karango.main" target="1.8" />
       <module name="ktor-playground.karango.test" target="1.8" />
+      <module name="ktor-playground.karango_dev.main" target="1.8" />
+      <module name="ktor-playground.karango_dev.test" target="1.8" />
       <module name="ktor-playground.ktor-playground.main" target="1.8" />
       <module name="ktor-playground.ktor-playground.test" target="1.8" />
     </bytecodeTargetLevel>

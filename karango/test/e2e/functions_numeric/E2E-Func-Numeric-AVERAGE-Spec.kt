@@ -1,8 +1,8 @@
 package de.peekandpoke.karango.e2e.functions_numeric
 
-import de.peekandpoke.karango.aql.AVERAGE
-import de.peekandpoke.karango.aql.AVG
-import de.peekandpoke.karango.aql.aql
+import de.peekandpoke.karango.aql.*
+import de.peekandpoke.karango.e2e.Person
+import de.peekandpoke.karango.e2e.age
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue
 import io.kotlintest.shouldBe
@@ -11,6 +11,46 @@ import io.kotlintest.tables.row
 
 @Suppress("ClassName")
 class `E2E-Func-Numeric-AVERAGE-Spec` : StringSpec({
+
+    "AVERAGE from multiple LETs" {
+
+        val result = db.query {
+            val a = LET("a", 10.aql)
+            val b = LET("b", 20.aql)
+
+            RETURN(
+                AVERAGE(
+                    ARRAY(a, b, 30.aql)
+                )
+            )
+        }
+
+        result.first() shouldBe 20.0
+    }
+
+    "AVERAGE from multiple objects" {
+
+        val result = db.query {
+            val persons = LET("persons") {
+                listOf(
+                    Person("a", 10),
+                    Person("b", 20),
+                    Person("c", 30)
+                )
+            }
+
+            RETURN(
+                AVERAGE(
+                    FOR("p") IN (persons) { p ->
+                        FILTER(p.age GT 10)
+                        RETURN(p.age)
+                    }
+                )
+            )
+        }
+
+        result.first() shouldBe 25.0
+    }
 
     val cases = listOf(
         row(
@@ -25,7 +65,7 @@ class `E2E-Func-Numeric-AVERAGE-Spec` : StringSpec({
         ),
         row(
             "AVG( [ 999, 80, 4, 4, 4, 3, 3, 3 ] )",
-            AVG(listOf(999, 80, 4, 4, 4, 3, 3, 3).aql),
+            AVERAGE(ARRAY(999.aql, 80.aql, 4.aql, 4.aql, 4.aql, 3.aql, 3.aql, 3.aql)),
             137.5
         )
     )

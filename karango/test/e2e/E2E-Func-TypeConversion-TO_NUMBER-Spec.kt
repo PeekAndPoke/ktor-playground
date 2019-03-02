@@ -85,9 +85,9 @@ class `E2E-Func-TypeConversion-TO_NUMBER-Spec` : StringSpec({
         row("TO_NUMBER(['x']) none empty list", listOf("x"), 0L),
         row("TO_NUMBER(['x', 'x']) none empty list", listOf("x", "x"), 0L),
 
-        row("TO_NUMBER(object)", X("a", 1), 0L),
-        row("TO_NUMBER([object]) list with one objects", listOf(X("a", 1)), 0L),
-        row("TO_NUMBER([object, object]) list with two objects", listOf(X("a", 1), X("b", 2)), 0L)
+        row("TO_NUMBER(object)", Person("a", 1), 0L),
+        row("TO_NUMBER([object]) list with one objects", listOf(Person("a", 1)), 0L),
+        row("TO_NUMBER([object, object]) list with two objects", listOf(Person("a", 1), Person("b", 2)), 0L)
     )
 
     for ((description, expression, expected) in cases) {

@@ -94,10 +94,10 @@ enum class AqlFunc {
     RANGE,                 
     ROUND,                 
     SIN,                   
-    SQRT,                  // TODO: impl, tests
-    STDDEV_POPULATION,     // TODO: impl, tests
-    STDDEV_SAMPLE,         // TODO: impl, tests
-    STDDEV,                // TODO: impl, tests
+    SQRT,                  
+    STDDEV_POPULATION,     
+    STDDEV_SAMPLE,         
+    STDDEV,                
     SUM,                   // TODO: impl, tests
     TAN,                   // TODO: impl, tests
     VARIANCE_POPULATION,   // TODO: impl, tests

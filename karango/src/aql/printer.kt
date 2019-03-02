@@ -75,6 +75,8 @@ class AqlPrinter {
         queryVars[key] = value
     }
 
+    fun join(args: List<Expression<*>>, delimiter: String = ", ") = join(args.toTypedArray(), delimiter)
+
     fun join(args: Array<out Expression<*>>, delimiter: String = ", ") = apply {
 
         args.forEachIndexed { idx, a ->

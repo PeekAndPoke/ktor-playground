@@ -85,15 +85,15 @@ class `E2E-Func-TypeConversion-TO_LIST-Spec` : StringSpec({
         row("TO_LIST(['x']) none empty list", listOf("x"), listOf("x")),
         row("TO_LIST(['x', 'x']) none empty list", listOf("x", "x"), listOf("x", "x")),
 
-        row("TO_LIST(object)", X("a", 1), listOf(1L, "a")),
+        row("TO_LIST(object)", Person("a", 1), listOf(1L, "a")),
         row(
             "TO_LIST([object]) list with one objects",
-            listOf(X("a", 1)),
+            listOf(Person("a", 1)),
             listOf(mapOf("name" to "a", "age" to 1L))
         ),
         row(
             "TO_LIST([object, object]) list with two objects",
-            listOf(X("a", 1), X("b", 2)),
+            listOf(Person("a", 1), Person("b", 2)),
             listOf(mapOf("name" to "a", "age" to 1L), mapOf("name" to "b", "age" to 2L))
         )
     )

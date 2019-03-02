@@ -1,5 +1,6 @@
 package de.peekandpoke.karango.e2e.functions_string
 
+import de.peekandpoke.karango.aql.ARRAY
 import de.peekandpoke.karango.aql.SPLIT
 import de.peekandpoke.karango.aql.aql
 import de.peekandpoke.karango.e2e.db
@@ -23,13 +24,23 @@ class `E2E-Func-String-SPLIT-Spec` : StringSpec({
             listOf("foo", "bar")
         ),
         row(
-            "SPLIT( \"foo, bar & baz\", [ \", \", \" & \" ] )",
+            "SPLIT( \"foo, bar & baz\", [ \", \", \" & \" ] ) - listOf",
             SPLIT("foo, bar & baz".aql, listOf(", ", " & ").aql),
             listOf("foo", "bar", "baz")
         ),
         row(
-            "SPLIT( \"foo, bar & baz & buzz\", [ \", \", \" & \" ], 1 )",
+            "SPLIT( \"foo, bar & baz\", [ \", \", \" & \" ] ) - ARRAY",
+            SPLIT("foo, bar & baz".aql, ARRAY(", ".aql, " & ".aql)),
+            listOf("foo", "bar", "baz")
+        ),
+        row(
+            "SPLIT( \"foo, bar & baz & buzz\", [ \", \", \" & \" ], 1 ) - listOf",
             SPLIT("foo, bar & baz & buzz".aql, listOf(", ", " & ").aql, 3.aql),
+            listOf("foo", "bar", "baz")
+        ),
+        row(
+            "SPLIT( \"foo, bar & baz & buzz\", [ \", \", \" & \" ], 1 ) - ARRAY",
+            SPLIT("foo, bar & baz & buzz".aql, ARRAY(", ".aql, " & ".aql), 3.aql),
             listOf("foo", "bar", "baz")
         )
     )

@@ -85,9 +85,9 @@ class `E2E-Func-TypeConversion-TO_BOOL-Spec` : StringSpec({
         row("TO_BOOL(['x']) none empty list", listOf("x"), true),
         row("TO_BOOL(['x', 'x']) none empty list", listOf("x", "x"), true),
 
-        row("TO_BOOL(object)", X("a", 1), true),
-        row("TO_BOOL([object]) list with one objects", listOf(X("a", 1)), true),
-        row("TO_BOOL([object, object]) list with two objects", listOf(X("a", 1), X("b", 2)), true)
+        row("TO_BOOL(object)", Person("a", 1), true),
+        row("TO_BOOL([object]) list with one objects", listOf(Person("a", 1)), true),
+        row("TO_BOOL([object, object]) list with two objects", listOf(Person("a", 1), Person("b", 2)), true)
     )
 
     for ((description, expression, expected) in cases) {

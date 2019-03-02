@@ -1,9 +1,7 @@
 package de.peekandpoke.karango.examples.game_of_thrones
 
 import de.peekandpoke.karango.Db
-import de.peekandpoke.karango.aql.AND
-import de.peekandpoke.karango.aql.DOCUMENT
-import de.peekandpoke.karango.aql.EQ
+import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.examples.printDivider
 import de.peekandpoke.karango.examples.printQueryResult
 import de.peekandpoke.karango.examples.runDemo
@@ -108,7 +106,7 @@ fun installData() {
             )
         }
 
-        FOR("x") IN data { d ->
+        FOR("x") IN (data) { d ->
             INSERT(d) INTO (CharacterCollection)
         }
     }

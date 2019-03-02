@@ -14,33 +14,13 @@ class `E2E-Func-String-CONTAINS-Spec` : StringSpec({
 
     val cases = listOf(
         row(
-            "infix CONTAINS matching an input value",
-            "abc".aql() CONTAINS "b".aql(),
-            true
-        ),
-        row(
             "prefix CONTAINS matching an input value",
             CONTAINS("abc".aql(), "b".aql()),
             true
         ),
         row(
-            "infix CONTAINS not matching an input value",
-            "abc".aql() CONTAINS "X".aql(),
-            false
-        ),
-        row(
             "prefix CONTAINS not matching on input value expression",
             CONTAINS("abc".aql(), "X".aql()),
-            false
-        ),
-        row(
-            "infix CONTAINS matching two expressions",
-            CONCAT("abc".aql(), "def".aql()) CONTAINS CONCAT("c".aql(), "d".aql()),
-            true
-        ),
-        row(
-            "infix CONTAINS not matching two expressions",
-            CONCAT("abc".aql(), "def".aql()) CONTAINS CONCAT("X".aql(), "Y".aql()),
             false
         ),
         row(

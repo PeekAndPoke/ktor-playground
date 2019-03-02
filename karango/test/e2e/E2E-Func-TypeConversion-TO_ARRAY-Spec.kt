@@ -86,15 +86,15 @@ class `E2E-Func-TypeConversion-TO_ARRAY-Spec` : StringSpec({
         row("TO_ARRAY(['x']) none empty list", listOf("x"), listOf("x")),
         row("TO_ARRAY(['x', 'x']) none empty list", listOf("x", "x"), listOf("x", "x")),
 
-        row("TO_ARRAY(object)", X("a", 1), listOf(1L, "a")),
+        row("TO_ARRAY(object)", Person("a", 1), listOf(1L, "a")),
         row(
             "TO_ARRAY([object]) list with one objects",
-            listOf(X("a", 1)),
+            listOf(Person("a", 1)),
             listOf(mapOf("name" to "a", "age" to 1L))
         ),
         row(
             "TO_ARRAY([object, object]) list with two objects",
-            listOf(X("a", 1), X("b", 2)),
+            listOf(Person("a", 1), Person("b", 2)),
             listOf(mapOf("name" to "a", "age" to 1L), mapOf("name" to "b", "age" to 2L))
         )
     )

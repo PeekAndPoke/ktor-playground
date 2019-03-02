@@ -1,6 +1,6 @@
 package de.peekandpoke.karango.e2e.functions_numeric
 
-import de.peekandpoke.karango.aql.CEIL
+import de.peekandpoke.karango.aql.SQRT
 import de.peekandpoke.karango.aql.aql
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue
@@ -9,33 +9,28 @@ import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 
 @Suppress("ClassName")
-class `E2E-Func-Numeric-CEIL-Spec` : StringSpec({
+class `E2E-Func-Numeric-SQRT-Spec` : StringSpec({
 
     val cases = listOf(
         row(
-            "CEIL(2)",
-            CEIL(2.aql),
-            2.0
-        ),
-        row(
-            "CEIL(2.49)",
-            CEIL(2.49.aql),
+            "SQRT(9)",
+            SQRT(9.aql),
             3.0
         ),
         row(
-            "CEIL(2.50)",
-            CEIL(2.50.aql),
-            3.0
+            "SQRT(2)",
+            SQRT(2.aql),
+            1.4142135623730951
         ),
         row(
-            "CEIL(-2.50)",
-            CEIL((-2.50).aql),
-            -2.0
+            "SQRT(0)",
+            SQRT(0.aql),
+            0.0
         ),
         row(
-            "CEIL(-2.51)",
-            CEIL((-2.51).aql),
-            -2.0
+            "SQRT(-1)",
+            SQRT((-1).aql),
+            null
         )
     )
 

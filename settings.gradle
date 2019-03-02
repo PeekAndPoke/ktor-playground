@@ -1,3 +1,4 @@
 rootProject.name = "ktor-playground"
 
 include ":karango"
+include ":karango_dev"

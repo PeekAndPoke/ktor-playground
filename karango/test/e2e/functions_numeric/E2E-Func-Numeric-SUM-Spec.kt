@@ -10,38 +10,37 @@ import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 
 @Suppress("ClassName")
-class `E2E-Func-Numeric-MEDIAN-Spec` : StringSpec({
+class `E2E-Func-Numeric-SUM-Spec` : StringSpec({
 
-    "MEDIAN from multiple LETs" {
+    "SUM from multiple LETs" {
 
         val result = db.query {
             val a = LET("a", 10.aql)
             val b = LET("b", 20.aql)
 
             RETURN(
-                MEDIAN(
+                SUM(
                     ARRAY(a, b, 30.aql)
                 )
             )
         }
 
-        result.first() shouldBe 20.0
+        result.first() shouldBe 60.0
     }
 
-    "MEDIAN from multiple objects" {
+    "SUM from multiple objects" {
 
         val result = db.query {
             val persons = LET("persons") {
                 listOf(
                     Person("a", 10),
                     Person("b", 20),
-                    Person("c", 30),
-                    Person("d", 100)
+                    Person("c", 30)
                 )
             }
 
             RETURN(
-                MEDIAN(
+                SUM(
                     FOR("p") IN (persons) { p ->
                         FILTER(p.age GT 10)
                         RETURN(p.age)
@@ -50,35 +49,37 @@ class `E2E-Func-Numeric-MEDIAN-Spec` : StringSpec({
             )
         }
 
-        result.first() shouldBe 30.0
+        result.first() shouldBe 50.0
     }
-
 
     val cases = listOf(
         row(
-            "MEDIAN( [1, 2, 3] ) - listOf",
-            MEDIAN(listOf(1, 2, 3).aql),
-            2.0
+            "SUM( [1, 2, 3, 4] ) - listOf",
+            SUM(
+                listOf<Number>(1.5, 2, 3, 4).aql
+            ),
+            10.5
         ),
         row(
-            "MEDIAN( [1, 2, 3] ) - ARRAY",
-            MEDIAN(ARRAY(1.aql, 2.aql, 3.aql)),
-            2.0
+            "SUM( [1, 2, 3, 4] ) - ARRAY",
+            SUM(
+                ARRAY(1.aql, 2.aql, 3.aql, 4.aql)
+            ),
+            10.0
         ),
         row(
-            "MEDIAN( [ 1, 2, 3, 4 ] )",
-            MEDIAN(listOf(1, 2, 3, 4).aql),
-            2.5
+            "SUM( [null, -5, 6] )",
+            SUM(
+                ARRAY(null.aql.TO_NUMBER, (-5).aql, 6.aql)
+            ),
+            1.0
         ),
         row(
-            "MEDIAN( [ 4, 2, 3, 1 ] )",
-            MEDIAN(listOf(4, 2, 3, 1).aql),
-            2.5
-        ),
-        row(
-            "MEDIAN( [ 999, 80, 4, 4, 4, 3, 3, 3 ] )",
-            MEDIAN(listOf(999, 80, 4, 4, 4, 3, 3, 3).aql),
-            4.0
+            "SUM( [ ] )",
+            SUM(
+                ARRAY()
+            ),
+            0.0
         )
     )
 

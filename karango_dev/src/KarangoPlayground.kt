@@ -1,9 +1,8 @@
-package de.peekandpoke
+package de.peekandpoke.karango_dev
 
-import de.peekandpoke.domain.*
-import de.peekandpoke.karango.Cursor
 import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.aql.*
+import de.peekandpoke.karango_dev.domain.*
 import kotlin.system.measureTimeMillis
 
 val db = Db.default(user = "root", pass = "root", host = "localhost", port = 8529, database = "kotlindev")
@@ -14,35 +13,29 @@ fun main() {
 
     println(listOf("s1").aql().getType())
 
+    val result = db.query {
+        val persons = LET("persons") {
+            listOf(
+                Person("a", 10),
+                Person("b", 20),
+                Person("c", 30)
+            )
+        }
 
-    val result: Cursor<String> = db.query {
-        val a = LET("a", "text")
-        RETURN(a)
+        RETURN(
+            SUM(
+                FOR("p") IN (persons) { p ->
+                    FILTER (p.age GT 10)
+                    RETURN(p.age)
+                }
+            )
+        )
     }
 
-    println("-------------------------------------------------------------------------------------------")
-    println(result.query.ret.getType())
-    println(result.map { it })
-
-    val result2 = db.query {
-        RETURN(PersonCollection)
-    }
-
-    println("-------------------------------------------------------------------------------------------")
-    println(result2.query.ret.getType())
-    println(result2.map { it })
-
+    println(result.query.aql)
+    result.forEach { println(it) }
     
-    db.query { 
-        val p = LET("p", Person("test", 1, Address("Leipzig")))
-        
-        INSERT(p) INTO PersonCollection
-    }
-    
-//    x()
-//    y()
-
-    exampleFilterFromLet()
+    y()
 }
 
 fun y() {
@@ -58,7 +51,7 @@ fun y() {
     persons.removeAll()
 
     val insertTime = measureTimeMillis {
-        exampleInsertFromLet(db)
+        exampleInsertFromLet()
     }
 
     println("Insertion took $insertTime ms")
@@ -81,7 +74,7 @@ fun y() {
                 FOR("x") IN (PersonCollection) { person ->
 
                     FILTER(person.name EQ str)
-                    FILTER(person.name CONTAINS str)
+                    FILTER(CONTAINS(person.name, str))
 
 //                    FILTER { person.nr EQ num }
                     FILTER(person.books[`*`].authors[`*`].firstName[`**`] ALL IN(names))
@@ -149,7 +142,7 @@ fun exampleReturningFromIterableLet(db: Db) {
     println()
 }
 
-fun exampleInsertFromLet(db: Db) {
+fun exampleInsertFromLet() {
 
     println("/////////////////////////////////////////////////////////////////////////////////////////////////////////")
     println("//  EXAMPLE: Inserting objects into a collection that where sent in via LET")
@@ -224,7 +217,7 @@ fun exampleFilterFromLet() {
     }
 
     println(result.query.aql)
-    
+
     result.forEach { println(it) }
 
     println("/////////////////////////////////////////////////////////////////////////////////////////////////////////")

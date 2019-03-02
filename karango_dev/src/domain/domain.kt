@@ -1,15 +1,13 @@
-package de.peekandpoke.domain
+package de.peekandpoke.karango_dev.domain
 
-import arrow.optics.optics
 import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.meta.EntityCollection
 
-@optics
 @EntityCollection("persons")
 data class Person(
     val name: String,
-    val nr: Int,
-    val address: Address,
+    val age: Int,
+    val address: Address = Address("n/a"),
     val books: List<Book> = listOf(),
     val favouriteBook: Book? = null,
     override val _id: String = ""
@@ -20,16 +18,15 @@ data class Person(
 data class Book(
     val title: String,
     val year: Int,
-    val authors : List<Author>
+    val authors: List<Author>
 )
 
 @EntityCollection("authors")
-data class Author (
+data class Author(
     val firstName: String,
     val lastName: String
 )
 
-@optics
 @EntityCollection("addresses")
 data class Address(
     val city: String,

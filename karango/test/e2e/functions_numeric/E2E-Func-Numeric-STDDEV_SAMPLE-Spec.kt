@@ -10,38 +10,37 @@ import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 
 @Suppress("ClassName")
-class `E2E-Func-Numeric-MEDIAN-Spec` : StringSpec({
+class `E2E-Func-Numeric-STDDEV_SAMPLE-Spec` : StringSpec({
 
-    "MEDIAN from multiple LETs" {
+    "STDDEV_SAMPLE from multiple LETs" {
 
         val result = db.query {
             val a = LET("a", 10.aql)
             val b = LET("b", 20.aql)
 
             RETURN(
-                MEDIAN(
+                STDDEV_SAMPLE(
                     ARRAY(a, b, 30.aql)
                 )
             )
         }
 
-        result.first() shouldBe 20.0
+        result.first() shouldBe 10.0
     }
 
-    "MEDIAN from multiple objects" {
+    "STDDEV_SAMPLE from multiple objects" {
 
         val result = db.query {
             val persons = LET("persons") {
                 listOf(
                     Person("a", 10),
                     Person("b", 20),
-                    Person("c", 30),
-                    Person("d", 100)
+                    Person("c", 30)
                 )
             }
 
             RETURN(
-                MEDIAN(
+                STDDEV_SAMPLE(
                     FOR("p") IN (persons) { p ->
                         FILTER(p.age GT 10)
                         RETURN(p.age)
@@ -50,35 +49,34 @@ class `E2E-Func-Numeric-MEDIAN-Spec` : StringSpec({
             )
         }
 
-        result.first() shouldBe 30.0
+        result.first() shouldBe 7.0710678118654755
     }
-
 
     val cases = listOf(
         row(
-            "MEDIAN( [1, 2, 3] ) - listOf",
-            MEDIAN(listOf(1, 2, 3).aql),
-            2.0
+            "STDDEV_SAMPLE( [] ) - ARRAY",
+            STDDEV_SAMPLE(ARRAY()),
+            null
         ),
         row(
-            "MEDIAN( [1, 2, 3] ) - ARRAY",
-            MEDIAN(ARRAY(1.aql, 2.aql, 3.aql)),
-            2.0
+            "STDDEV_SAMPLE( [1] ) - ARRAY",
+            STDDEV_SAMPLE(ARRAY(1.aql)),
+            null
         ),
         row(
-            "MEDIAN( [ 1, 2, 3, 4 ] )",
-            MEDIAN(listOf(1, 2, 3, 4).aql),
-            2.5
+            "STDDEV_SAMPLE( [1, 1] ) - ARRAY",
+            STDDEV_SAMPLE(ARRAY(1.aql, 1.aql)),
+            0.0
         ),
         row(
-            "MEDIAN( [ 4, 2, 3, 1 ] )",
-            MEDIAN(listOf(4, 2, 3, 1).aql),
-            2.5
+            "STDDEV_SAMPLE( [ 1, 3, 6, 5, 2 ] ) - ARRAY",
+            STDDEV_SAMPLE(ARRAY(1.aql, 3.aql, 6.aql, 5.aql, 2.aql)),
+            2.0736441353327724
         ),
         row(
-            "MEDIAN( [ 999, 80, 4, 4, 4, 3, 3, 3 ] )",
-            MEDIAN(listOf(999, 80, 4, 4, 4, 3, 3, 3).aql),
-            4.0
+            "STDDEV_SAMPLE( [ 1, 3, 6, 5, 2 ] ) - listOf",
+            STDDEV_SAMPLE(listOf(1, 3, 6, 5, 2).aql),
+            2.0736441353327724
         )
     )
 

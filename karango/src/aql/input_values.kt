@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package de.peekandpoke.karango.aql
 
 /**
@@ -5,6 +7,7 @@ package de.peekandpoke.karango.aql
  */
 @Suppress("unused")
 @Deprecated("Cannot use .aql() on existing Expressions", level = DeprecationLevel.ERROR)
+@KarangoInputMarker
 fun <T> Expression<T>.aql(): Nothing {
     throw Exception("Cannot call .aql() on already existing Expression")
 }
@@ -14,6 +17,7 @@ fun <T> Expression<T>.aql(): Nothing {
  */
 @Suppress("unused")
 @Deprecated("Cannot use .aql() on existing Expressions", level = DeprecationLevel.ERROR)
+@KarangoInputMarker
 val <T> Expression<T>.aql: Nothing get() {
     throw Exception("Cannot call .aql() on already existing Expression")
 }
@@ -29,6 +33,7 @@ val <T> Expression<T>.aql: Nothing get() {
  * Obj().aql()
  */
 @Suppress("UNCHECKED_CAST")
+@KarangoInputMarker
 inline fun <reified T> T.aql(name: String = "v") : Expression<T> = when {
     // guard, so we do not wrap an Expression again
     this is Expression<*> -> this as Expression<T>
@@ -46,6 +51,7 @@ inline fun <reified T> T.aql(name: String = "v") : Expression<T> = when {
  * 1.aql()
  * 1.1.aql("name-in-query")
  */
+@KarangoInputMarker 
 fun Number.aql(name: String = "v") : Expression<Number> = aql<Number>(name)
 
 /**
@@ -58,6 +64,7 @@ fun Number.aql(name: String = "v") : Expression<Number> = aql<Number>(name)
  * true.aql
  * Obj().aql
  */
+@KarangoInputMarker 
 inline val <reified T> T.aql : Expression<T> get() = this.aql()
 
 /**
@@ -70,6 +77,7 @@ inline val <reified T> T.aql : Expression<T> get() = this.aql()
  * 1.aql
  * 1.1.aql
  */
+@KarangoInputMarker 
 inline val Number.aql : Expression<Number> get() = this.aql()
 
 /**
@@ -79,7 +87,9 @@ inline val Number.aql : Expression<Number> get() = this.aql()
  *
  * null.aql()
  */
-@Suppress("unused") fun Nothing?.aql(name: String = "v") : Expression<Any?> = NullValue(name)
+@Suppress("unused")
+@KarangoInputMarker
+fun Nothing?.aql(name: String = "v") : Expression<Any?> = NullValue(name)
 
 /**
  * Shorthand for converting a "null" into an AQL expression without specifying a name
@@ -88,12 +98,23 @@ inline val Number.aql : Expression<Number> get() = this.aql()
  *
  * null.aql
  */
-@Suppress("unused") val Nothing?.aql : Expression<Any?> get() = this.aql()
+@Suppress("unused")
+@KarangoInputMarker
+val Nothing?.aql : Expression<Any?> get() = this.aql()
+
+@KarangoInputMarker
+inline fun <reified T> ARRAY(vararg args: Expression<T>) : Expression<List<T>> = ArrayValue(typeRef(), args.toList())
 
 data class Value<T>(private val type: TypeRef<T>, private val value: T, private val name: String) : Expression<T> {
 
     override fun getType() = type
     override fun printAql(p: AqlPrinter) = p.value(name, value as Any)
+}
+
+data class ArrayValue<T>(private val type: TypeRef<List<T>>, private val expressions: List<Expression<T>>) : Expression<List<T>> {
+    
+    override fun getType() = type
+    override fun printAql(p: AqlPrinter) = p.append("[").join(expressions).append("]")
 }
 
 internal class NullValue(val name: String = "v") : Expression<Any?> {
