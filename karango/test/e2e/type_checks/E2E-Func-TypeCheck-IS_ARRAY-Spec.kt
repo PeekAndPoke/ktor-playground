@@ -1,7 +1,7 @@
 package de.peekandpoke.karango.e2e.type_checks
 
 import de.peekandpoke.karango.aql.ARRAY
-import de.peekandpoke.karango.aql.IS_NUMBER
+import de.peekandpoke.karango.aql.IS_ARRAY
 import de.peekandpoke.karango.aql.aql
 import de.peekandpoke.karango.e2e.Person
 import de.peekandpoke.karango.e2e.db
@@ -11,62 +11,57 @@ import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 
 @Suppress("ClassName")
-class `E2E-Func-TypeCheck-IS_NUMBER-Spec` : StringSpec({
+class `E2E-Func-TypeCheck-IS_ARRAY-Spec` : StringSpec({
 
     val cases = listOf(
         row(
-            "IS_NUMBER(true)",
-            IS_NUMBER(true.aql),
+            "IS_ARRAY(true)",
+            IS_ARRAY(true.aql),
             false
         ),
         row(
-            "IS_NUMBER(false)",
-            IS_NUMBER(true.aql),
+            "IS_ARRAY(false)",
+            IS_ARRAY(true.aql),
             false
         ),
         row(
-            "IS_NUMBER(null)",
-            IS_NUMBER(null.aql),
+            "IS_ARRAY(null)",
+            IS_ARRAY(null.aql),
             false
         ),
         row(
-            "IS_NUMBER(0)",
-            IS_NUMBER(0.aql),
+            "IS_ARRAY(0)",
+            IS_ARRAY(0.aql),
+            false
+        ),
+        row(
+            "IS_ARRAY(1)",
+            IS_ARRAY(1.aql),
+            false
+        ),
+        row(
+            "IS_ARRAY(\"a\")",
+            IS_ARRAY("a".aql),
+            false
+        ),
+        row(
+            "IS_ARRAY(\"\")",
+            IS_ARRAY("".aql),
+            false
+        ),
+        row(
+            "IS_ARRAY([0]) - ARRAY",
+            IS_ARRAY(ARRAY(0.aql)),
             true
         ),
         row(
-            "IS_NUMBER(1)",
-            IS_NUMBER(1.aql),
+            "IS_ARRAY([0]) - listOf",
+            IS_ARRAY(listOf(0).aql),
             true
         ),
         row(
-            "IS_NUMBER(-1.5)",
-            IS_NUMBER((-1.5).aql),
-            true
-        ),
-        row(
-            "IS_NUMBER(\"1\")",
-            IS_NUMBER("1".aql),
-            false
-        ),
-        row(
-            "IS_NUMBER(\"a\")",
-            IS_NUMBER("a".aql),
-            false
-        ),
-        row(
-            "IS_NUMBER(\"\")",
-            IS_NUMBER("".aql),
-            false
-        ),
-        row(
-            "IS_NUMBER([0])",
-            IS_NUMBER(ARRAY(0.aql)),
-            false
-        ),
-        row(
-            "IS_NUMBER(object)",
-            IS_NUMBER(Person("name", 10).aql),
+            "IS_ARRAY(object)",
+            IS_ARRAY(Person("name", 10).aql),
             false
         )
     )

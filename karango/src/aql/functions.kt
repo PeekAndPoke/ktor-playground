@@ -140,17 +140,17 @@ enum class AqlFunc {
     UUID,
 
     // Type checks
-    IS_NULL,            
-    IS_BOOL,            
-    IS_NUMBER,          
-    IS_STRING,          
-    IS_ARRAY,           // TODO: impl, tests
-    IS_LIST,            // TODO: impl, tests
-    IS_OBJECT,          // TODO: impl, tests
-    IS_DOCUMENT,        // TODO: impl, tests
-    IS_DATESTRING,      // TODO: impl, tests
-    IS_KEY,             // TODO: impl, tests
-    TYPENAME,           // TODO: impl, tests
+    IS_NULL,
+    IS_BOOL,
+    IS_NUMBER,
+    IS_STRING,
+    IS_ARRAY,
+    IS_LIST,
+    IS_OBJECT,
+    IS_DOCUMENT,
+    IS_DATESTRING,
+    IS_KEY,
+    TYPENAME,
 
     // Type Conversion
     TO_BOOL,

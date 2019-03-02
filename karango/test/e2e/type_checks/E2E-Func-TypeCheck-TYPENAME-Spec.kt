@@ -1,7 +1,7 @@
 package de.peekandpoke.karango.e2e.type_checks
 
 import de.peekandpoke.karango.aql.ARRAY
-import de.peekandpoke.karango.aql.IS_NUMBER
+import de.peekandpoke.karango.aql.TYPENAME
 import de.peekandpoke.karango.aql.aql
 import de.peekandpoke.karango.e2e.Person
 import de.peekandpoke.karango.e2e.db
@@ -11,63 +11,63 @@ import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 
 @Suppress("ClassName")
-class `E2E-Func-TypeCheck-IS_NUMBER-Spec` : StringSpec({
+class `E2E-Func-TypeCheck-TYPENAME-Spec` : StringSpec({
 
     val cases = listOf(
         row(
-            "IS_NUMBER(true)",
-            IS_NUMBER(true.aql),
-            false
+            "TYPENAME(true)",
+            TYPENAME(true.aql),
+            "bool"
         ),
         row(
-            "IS_NUMBER(false)",
-            IS_NUMBER(true.aql),
-            false
+            "TYPENAME(false)",
+            TYPENAME(true.aql),
+            "bool"
         ),
         row(
-            "IS_NUMBER(null)",
-            IS_NUMBER(null.aql),
-            false
+            "TYPENAME(null)",
+            TYPENAME(null.aql),
+            "null"
         ),
         row(
-            "IS_NUMBER(0)",
-            IS_NUMBER(0.aql),
-            true
+            "TYPENAME(0)",
+            TYPENAME(0.aql),
+            "number"
         ),
         row(
-            "IS_NUMBER(1)",
-            IS_NUMBER(1.aql),
-            true
+            "TYPENAME(1.1)",
+            TYPENAME(1.1.aql),
+            "number"
         ),
         row(
-            "IS_NUMBER(-1.5)",
-            IS_NUMBER((-1.5).aql),
-            true
+            "TYPENAME(\"a\")",
+            TYPENAME("a".aql),
+            "string"
         ),
         row(
-            "IS_NUMBER(\"1\")",
-            IS_NUMBER("1".aql),
-            false
+            "TYPENAME(\"\")",
+            TYPENAME("".aql),
+            "string"
         ),
         row(
-            "IS_NUMBER(\"a\")",
-            IS_NUMBER("a".aql),
-            false
+            "TYPENAME(\"1\")",
+            TYPENAME("1".aql),
+            "string"
         ),
         row(
-            "IS_NUMBER(\"\")",
-            IS_NUMBER("".aql),
-            false
+            "TYPENAME([])",
+            TYPENAME(ARRAY<Any>()),
+            "array"
         ),
         row(
-            "IS_NUMBER([0])",
-            IS_NUMBER(ARRAY(0.aql)),
-            false
+            "TYPENAME([0])",
+            TYPENAME(ARRAY(0.aql)),
+            "array"
         ),
         row(
-            "IS_NUMBER(object)",
-            IS_NUMBER(Person("name", 10).aql),
-            false
+            "TYPENAME(object)",
+            TYPENAME(Person("name", 10).aql),
+            "object"
         )
     )
 

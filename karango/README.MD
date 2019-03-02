@@ -1,3 +1,10 @@
+#ENV
+
+Running ArangoDB in docker container (root-password:root)
+
+> docker run -e ARANGO_ROOT_PASSWORD=root -p 8529:8529 -d arangodb
+
+
 TODO
 ====
 

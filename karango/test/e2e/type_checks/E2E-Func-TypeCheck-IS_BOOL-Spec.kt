@@ -45,6 +45,11 @@ class `E2E-Func-TypeCheck-IS_BOOL-Spec` : StringSpec({
             false
         ),
         row(
+            "IS_BOOL(\"\")",
+            IS_BOOL("".aql),
+            false
+        ),
+        row(
             "IS_BOOL([0])",
             IS_BOOL(ARRAY(0.aql)),
             false

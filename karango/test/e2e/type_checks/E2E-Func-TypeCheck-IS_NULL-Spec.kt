@@ -45,6 +45,11 @@ class `E2E-Func-TypeCheck-IS_NULL-Spec` : StringSpec({
             false
         ),
         row(
+            "IS_NULL(\"\")",
+            IS_NULL("".aql),
+            false
+        ),
+        row(
             "IS_NULL([0])",
             IS_NULL(ARRAY(0.aql)),
             false

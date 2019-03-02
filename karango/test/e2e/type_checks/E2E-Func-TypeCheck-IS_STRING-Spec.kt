@@ -46,7 +46,7 @@ class `E2E-Func-TypeCheck-IS_STRING-Spec` : StringSpec({
         ),
         row(
             "IS_STRING(\"\")",
-            IS_STRING("a".aql),
+            IS_STRING("".aql),
             true
         ),
         row(
