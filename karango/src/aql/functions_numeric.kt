@@ -288,3 +288,37 @@ fun <T : Number, L: List<T>> STDDEV(value: Expression<L>) = AqlFunc.STDDEV.nulla
 @KarangoFuncMarker
 fun <T : Number, L : List<T>> SUM(numArray: Expression<L>) = AqlFunc.SUM.numberCall(numArray)
 
+
+/**
+ * Return the tangent of value.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#tan
+ */
+@KarangoFuncMarker
+fun <T: Number> TAN(value: Expression<T>) = AqlFunc.TAN.numberCall(value)
+
+/**
+ * Return the population variance of the values in array.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#variancepopulation
+ */
+@KarangoFuncMarker
+fun <T : Number, L: List<T>> VARIANCE_POPULATION(value: Expression<L>) = AqlFunc.VARIANCE_POPULATION.nullableNumberCall(value)
+
+/**
+ * Return the sample variance of the values in array.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#variancesample
+ */
+@KarangoFuncMarker
+fun <T : Number, L: List<T>> VARIANCE_SAMPLE(value: Expression<L>) = AqlFunc.VARIANCE_SAMPLE.nullableNumberCall(value)
+
+/**
+ * Return the population variance of the values in array.
+ *
+ * Alias for VARIANCE_POPULATION
+ * 
+ * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#variance
+ */
+@KarangoFuncMarker
+fun <T : Number, L: List<T>> VARIANCE(value: Expression<L>) = AqlFunc.VARIANCE.nullableNumberCall(value)

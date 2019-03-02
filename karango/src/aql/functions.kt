@@ -98,11 +98,11 @@ enum class AqlFunc {
     STDDEV_POPULATION,     
     STDDEV_SAMPLE,         
     STDDEV,                
-    SUM,                   // TODO: impl, tests
-    TAN,                   // TODO: impl, tests
-    VARIANCE_POPULATION,   // TODO: impl, tests
-    VARIANCE_SAMPLE,       // TODO: impl, tests
-    VARIANCE,              // TODO: impl, tests       
+    SUM,                   
+    TAN,                   
+    VARIANCE_POPULATION,   
+    VARIANCE_SAMPLE,       
+    VARIANCE,              
     
     // Strings
     CHAR_LENGTH,           
