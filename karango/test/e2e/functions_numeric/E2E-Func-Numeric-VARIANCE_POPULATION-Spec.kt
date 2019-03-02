@@ -71,7 +71,7 @@ class `E2E-Func-Numeric-VARIANCE_POPULATION-Spec` : StringSpec({
         ),
         row(
             "VARIANCE_POPULATION( [ 1, 3, 6, 5, 2 ] ) - ARRAY",
-            VARIANCE_POPULATION(listOf(1, 3, 6, 5, 2).aql),
+            VARIANCE_POPULATION(ARRAY(1.aql, 3.aql, 6.aql, 5.aql, 2.0.aql)),
             3.4400000000000004
         ),
         row(
@@ -80,13 +80,18 @@ class `E2E-Func-Numeric-VARIANCE_POPULATION-Spec` : StringSpec({
             3.4400000000000004
         ),
         row(
-            "STDDEV( [ 1, 3, 6, 5, 2 ] ) - ARRAY",
-            VARIANCE(ARRAY(1.aql, 3.aql, 6.aql, 5.aql, 2.aql)),
+            "VARIANCE_POPULATION( [ 1.0, 3, 6, 5, 2 ] ) - listOf",
+            VARIANCE_POPULATION(listOf<Number>(1.0, 3, 6, 5, 2).aql),
             3.4400000000000004
         ),
         row(
-            "STDDEV( [ 1, 3, 6, 5, 2 ] ) - listOf",
-            VARIANCE(listOf(1, 3, 6, 5, 2).aql),
+            "STDDEV( [ 1, 3, 6, 5, 2.0 ] ) - ARRAY",
+            VARIANCE(ARRAY(1.aql, 3.aql, 6.aql, 5.aql, 2.0.aql)),
+            3.4400000000000004
+        ),
+        row(
+            "STDDEV( [ 1, 3, 6, 5, 2.0 ] ) - listOf",
+            VARIANCE(listOf<Number>(1, 3, 6, 5, 2.0).aql),
             3.4400000000000004
         )
     )

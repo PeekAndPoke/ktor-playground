@@ -62,7 +62,8 @@ class Db(private val database: ArangoDatabase) {
 
         val query = de.peekandpoke.karango.query(builder)
 
-//        println(query)
+        println(query)
+        println(query.ret.innerType())
 
         val options = AqlQueryOptions().count(true)
 

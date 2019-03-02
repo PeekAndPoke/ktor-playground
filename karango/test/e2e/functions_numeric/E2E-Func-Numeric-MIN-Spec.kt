@@ -16,26 +16,11 @@ class `E2E-Func-Numeric-MIN-Spec` : StringSpec({
             "MIN( [] )",
             MIN(listOf<Number>().aql),
             null
-        ),        
+        ),
         row(
             "MIN( [5, 9, -2, 1] )",
             MIN(listOf(5, 9, -2, 1).aql),
             -2L
-        ),
-        row(
-            "MIN( [5, 9, -2, null, 1] )",
-            MIN(listOf(5, 9, -2, null, 1).aql),
-            -2L
-        ),
-        row(
-            "MIN( [1, null] )",
-            MIN(listOf(1, null).aql),
-            1L
-        ),
-        row(
-            "MIN( [null, null] )",
-            MIN(listOf(null, null).aql),
-            null
         )
     )
 

@@ -55,7 +55,7 @@ fun <T1: Number, T2: Number> ATAN2(x: Expression<T1>, y: Expression<T2>) = AqlFu
  * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#average
  */
 @KarangoFuncMarker
-fun <T : Number, L : List<T>> AVERAGE(numArray: Expression<L>) = AqlFunc.AVERAGE.numberCall(numArray)
+fun <T : Number> AVERAGE(numArray: Expression<List<T>>) = AqlFunc.AVERAGE.numberCall(numArray)
 
 /**
  * Return the average (arithmetic mean) of the values in array.
@@ -65,7 +65,7 @@ fun <T : Number, L : List<T>> AVERAGE(numArray: Expression<L>) = AqlFunc.AVERAGE
  * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#avg
  */
 @KarangoFuncMarker
-fun <T : Number, L : List<T>> AVG(numArray: Expression<L>) = AqlFunc.AVG.numberCall(numArray)
+fun <T : Number> AVG(numArray: Expression<List<T>>) = AqlFunc.AVG.numberCall(numArray)
 
 /**
  * Return the integer closest but not less than value.
@@ -145,7 +145,7 @@ fun <T: Number> LOG10(value: Expression<T>) = AqlFunc.LOG10.nullableNumberCall(v
  * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#min
  */
 @KarangoFuncMarker
-fun <T> MAX(numArray: Expression<List<T>>) = AqlFunc.MAX.nullableNumberCall(numArray)
+fun <T: Number> MAX(numArray: Expression<List<T>>) = AqlFunc.MAX.nullableNumberCall(numArray)
 
 /**
  * Return the median value of the values in array.
@@ -153,7 +153,7 @@ fun <T> MAX(numArray: Expression<List<T>>) = AqlFunc.MAX.nullableNumberCall(numA
  * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#median
  */
 @KarangoFuncMarker
-fun <T : Number, L: List<T>> MEDIAN(numArray: Expression<L>) = AqlFunc.MEDIAN.numberCall(numArray)
+fun <T: Number> MEDIAN(numArray: Expression<List<T>>) = AqlFunc.MEDIAN.numberCall(numArray)
 
 /**
  * Return the smallest element of anyArray. The array is not limited to numbers. Also see type and value order.
@@ -161,7 +161,7 @@ fun <T : Number, L: List<T>> MEDIAN(numArray: Expression<L>) = AqlFunc.MEDIAN.nu
  * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#min
  */
 @KarangoFuncMarker
-fun <T> MIN(numArray: Expression<List<T>>) = AqlFunc.MIN.nullableNumberCall(numArray)
+fun <T: Number> MIN(numArray: Expression<List<T>>) = AqlFunc.MIN.nullableNumberCall(numArray)
 
 /**
  * Return the nth percentile of the values in numArray.
@@ -169,7 +169,7 @@ fun <T> MIN(numArray: Expression<List<T>>) = AqlFunc.MIN.nullableNumberCall(numA
  * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#percentile
  */
 @KarangoFuncMarker
-fun <T1: Number?, L1: List<T1>, T2: Number> PERCENTILE(numArray: Expression<L1>, n: Expression<T2>) = 
+fun <T1: Number, T2: Number> PERCENTILE(numArray: Expression<List<T1>>, n: Expression<T2>) = 
     AqlFunc.PERCENTILE.numberCall(numArray, n)
 
 /**
@@ -178,7 +178,7 @@ fun <T1: Number?, L1: List<T1>, T2: Number> PERCENTILE(numArray: Expression<L1>,
  * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#percentile
  */
 @KarangoFuncMarker
-fun <T1: Number?, L1: List<T1>, T2: Number> PERCENTILE(numArray: Expression<L1>, n: Expression<T2>, method: PercentileMethod) =
+fun <T1: Number?, T2: Number> PERCENTILE(numArray: Expression<List<T1>>, n: Expression<T2>, method: PercentileMethod) =
     AqlFunc.PERCENTILE.numberCall(numArray, n, method.method.aql)
 
 /**
@@ -219,7 +219,8 @@ fun RAND() = AqlFunc.RAND.numberCall()
  * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#range
  */
 @KarangoFuncMarker
-fun <T1: Number, T2: Number> RANGE(start: Expression<T1>, stop: Expression<T2>) = AqlFunc.RANGE.arrayCall(typeRef<List<Number>>(), start, stop)
+fun <T1: Number, T2: Number> RANGE(start: Expression<T1>, stop: Expression<T2>) = 
+    AqlFunc.RANGE.arrayCall(typeRef<List<Number>>(), start, stop)
 
 /**
  * Return an array of numbers in the specified range, optionally with increments other than 1.
@@ -260,7 +261,7 @@ fun <T: Number> SQRT(value: Expression<T>) = AqlFunc.SQRT.nullableNumberCall(val
  * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#stddevpopulation
  */
 @KarangoFuncMarker
-fun <T : Number, L: List<T>> STDDEV_POPULATION(value: Expression<L>) = AqlFunc.STDDEV_POPULATION.nullableNumberCall(value)
+fun <T : Number> STDDEV_POPULATION(value: Expression<List<T>>) = AqlFunc.STDDEV_POPULATION.nullableNumberCall(value)
 
 /**
  * Return the sample standard deviation of the values in array.
@@ -268,7 +269,7 @@ fun <T : Number, L: List<T>> STDDEV_POPULATION(value: Expression<L>) = AqlFunc.S
  * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#stddevsample
  */
 @KarangoFuncMarker
-fun <T : Number, L: List<T>> STDDEV_SAMPLE(value: Expression<L>) = AqlFunc.STDDEV_SAMPLE.nullableNumberCall(value)
+fun <T : Number> STDDEV_SAMPLE(value: Expression<List<T>>) = AqlFunc.STDDEV_SAMPLE.nullableNumberCall(value)
 
 /**
  * Return the population standard deviation of the values in array.
@@ -278,7 +279,7 @@ fun <T : Number, L: List<T>> STDDEV_SAMPLE(value: Expression<L>) = AqlFunc.STDDE
  * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#stddev
  */
 @KarangoFuncMarker
-fun <T : Number, L: List<T>> STDDEV(value: Expression<L>) = AqlFunc.STDDEV.nullableNumberCall(value)
+fun <T : Number> STDDEV(value: Expression<List<T>>) = AqlFunc.STDDEV.nullableNumberCall(value)
 
 /**
  * Return the sum of the values in array.
@@ -286,7 +287,7 @@ fun <T : Number, L: List<T>> STDDEV(value: Expression<L>) = AqlFunc.STDDEV.nulla
  * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#stddevsample
  */
 @KarangoFuncMarker
-fun <T : Number, L : List<T>> SUM(numArray: Expression<L>) = AqlFunc.SUM.numberCall(numArray)
+fun <T : Number> SUM(numArray: Expression<List<T>>) = AqlFunc.SUM.numberCall(numArray)
 
 
 /**
@@ -303,7 +304,7 @@ fun <T: Number> TAN(value: Expression<T>) = AqlFunc.TAN.numberCall(value)
  * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#variancepopulation
  */
 @KarangoFuncMarker
-fun <T : Number, L: List<T>> VARIANCE_POPULATION(value: Expression<L>) = AqlFunc.VARIANCE_POPULATION.nullableNumberCall(value)
+fun <T : Number> VARIANCE_POPULATION(value: Expression<List<T>>) = AqlFunc.VARIANCE_POPULATION.nullableNumberCall(value)
 
 /**
  * Return the sample variance of the values in array.
@@ -311,7 +312,7 @@ fun <T : Number, L: List<T>> VARIANCE_POPULATION(value: Expression<L>) = AqlFunc
  * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#variancesample
  */
 @KarangoFuncMarker
-fun <T : Number, L: List<T>> VARIANCE_SAMPLE(value: Expression<L>) = AqlFunc.VARIANCE_SAMPLE.nullableNumberCall(value)
+fun <T : Number> VARIANCE_SAMPLE(value: Expression<List<T>>) = AqlFunc.VARIANCE_SAMPLE.nullableNumberCall(value)
 
 /**
  * Return the population variance of the values in array.
@@ -321,4 +322,4 @@ fun <T : Number, L: List<T>> VARIANCE_SAMPLE(value: Expression<L>) = AqlFunc.VAR
  * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#variance
  */
 @KarangoFuncMarker
-fun <T : Number, L: List<T>> VARIANCE(value: Expression<L>) = AqlFunc.VARIANCE.nullableNumberCall(value)
+fun <T : Number> VARIANCE(value: Expression<List<T>>) = AqlFunc.VARIANCE.nullableNumberCall(value)

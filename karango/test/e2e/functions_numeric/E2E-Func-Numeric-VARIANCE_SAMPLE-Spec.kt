@@ -70,13 +70,18 @@ class `E2E-Func-Numeric-VARIANCE_SAMPLE-Spec` : StringSpec({
             0.0
         ),
         row(
-            "VARIANCE_SAMPLE( [ 1, 3, 6, 5, 2 ] ) - ARRAY",
-            VARIANCE_SAMPLE(listOf(1, 3, 6, 5, 2).aql),
+            "VARIANCE_SAMPLE( [ 1, 3, 6, 5, 2.0 ] ) - ARRAY",
+            VARIANCE_SAMPLE(ARRAY(1.aql, 3.aql, 6.aql, 5.aql, 2.0.aql)),
             4.300000000000001
         ),
         row(
             "VARIANCE_SAMPLE( [ 1, 3, 6, 5, 2 ] ) - listOf",
-            VARIANCE_SAMPLE(listOf(1, 3, 6, 5, 2).aql),
+            VARIANCE_SAMPLE(listOf<Number>(1, 3, 6, 5, 2).aql),
+            4.300000000000001
+        ),
+        row(
+            "VARIANCE_SAMPLE( [ 1.0, 3, 6, 5, 2 ] ) - listOf",
+            VARIANCE_SAMPLE(listOf<Number>(1.0, 3, 6, 5, 2).aql),
             4.300000000000001
         )
     )

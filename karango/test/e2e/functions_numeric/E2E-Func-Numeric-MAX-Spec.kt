@@ -21,16 +21,6 @@ class `E2E-Func-Numeric-MAX-Spec` : StringSpec({
             "MAX( [5, 9, -2, 1] )",
             MAX(listOf(5, 9, -2, 1).aql),
             9L
-        ),
-        row(
-            "MAX( [5, 9, -2, null, 1] )",
-            MAX(listOf(5, 9, -2, null, 1).aql),
-            9L
-        ),
-        row(
-            "MAX( [null, null] )",
-            MAX(listOf(null, null).aql),
-            null
         )
     )
 
