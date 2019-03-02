@@ -35,6 +35,7 @@ class `E2E-Func-TypeConversion-TO_LIST-Spec` : StringSpec({
 
         val result = db.query {
             val l = LET("l", null)
+            
             RETURN(
                 TO_LIST(l)
             )
@@ -44,6 +45,7 @@ class `E2E-Func-TypeConversion-TO_LIST-Spec` : StringSpec({
 
         val result2 = db.query {
             val l = LET("l", null.aql())
+            
             RETURN(
                 TO_LIST(l)
             )
@@ -53,6 +55,7 @@ class `E2E-Func-TypeConversion-TO_LIST-Spec` : StringSpec({
 
         val result3 = db.query {
             val l = LET("l", null.aql)
+            
             RETURN(
                 TO_LIST(l)
             )

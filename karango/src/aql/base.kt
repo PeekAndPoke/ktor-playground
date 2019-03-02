@@ -12,6 +12,9 @@ annotation class KarangoFuncMarker
 @DslMarker
 annotation class KarangoInputMarker
 
+@DslMarker
+annotation class KarangoTypeConversionMarker
+
 /**
  * Helper interface for the QueryPrinter.
  *

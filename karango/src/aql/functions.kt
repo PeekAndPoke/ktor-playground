@@ -32,10 +32,10 @@ enum class AqlFunc {
     UNION_DISTINCT,        // TODO: impl, tests
     UNIQUE,                // TODO: impl, tests
     UNSHIFT,               // TODO: impl, tests
-    
+
     // Date TODO
-    
-    
+
+
     // Database functions
     COLLECTION_COUNT,      // TODO: impl, tests
     COLLECTIONS,           // TODO: impl, tests
@@ -55,96 +55,95 @@ enum class AqlFunc {
     // Document / Object TODO
 
     // Fulltext TODO
-    
+
     // Geo // TODO
-    
-    
+
 
     // Miscellaneous
     FIRST_LIST,            // TODO: impl, tests
     FIRST_DOCUMENT,        // TODO: impl, tests
     NOT,                   // TODO: tests
     NOT_NULL,              // TODO: impl, tests
-    
+
     // Numeric
-    ABS,                   
-    ACOS,                  
-    ASIN,                  
-    ATAN,                  
-    ATAN2,                 
-    AVERAGE,               
-    AVG,                   
-    CEIL,                  
-    COS,                   
-    DEGREES,               
-    EXP,                   
-    EXP2,                  
-    FLOOR,                 
-    LOG,                   
-    LOG2,                  
-    LOG10,                 
-    MAX,                   
-    MEDIAN,                
-    MIN,                   
-    PERCENTILE,            
-    PI,                    
-    POW,                   
-    RADIANS,               
-    RAND,                  
-    RANGE,                 
-    ROUND,                 
-    SIN,                   
-    SQRT,                  
-    STDDEV_POPULATION,     
-    STDDEV_SAMPLE,         
-    STDDEV,                
-    SUM,                   
-    TAN,                   
-    VARIANCE_POPULATION,   
-    VARIANCE_SAMPLE,       
-    VARIANCE,              
-    
+    ABS,
+    ACOS,
+    ASIN,
+    ATAN,
+    ATAN2,
+    AVERAGE,
+    AVG,
+    CEIL,
+    COS,
+    DEGREES,
+    EXP,
+    EXP2,
+    FLOOR,
+    LOG,
+    LOG2,
+    LOG10,
+    MAX,
+    MEDIAN,
+    MIN,
+    PERCENTILE,
+    PI,
+    POW,
+    RADIANS,
+    RAND,
+    RANGE,
+    ROUND,
+    SIN,
+    SQRT,
+    STDDEV_POPULATION,
+    STDDEV_SAMPLE,
+    STDDEV,
+    SUM,
+    TAN,
+    VARIANCE_POPULATION,
+    VARIANCE_SAMPLE,
+    VARIANCE,
+
     // Strings
-    CHAR_LENGTH,           
-    CONCAT,                
-    CONCAT_SEPARATOR,      
-    CONTAINS,              
-    ENCODE_URI_COMPONENT,  
-    FIND_FIRST,            
-    FIND_LAST,             
-    JSON_PARSE,            
-    JSON_STRINGIFY,        
-    LEFT,                  
-    LEVENSHTEIN_DISTANCE,  
-    LIKE,                  
-    LOWER,                 
-    LTRIM,                 
-    MD5,                   
-    RANDOM_TOKEN,          
-    REGEX_MATCHES,         
+    CHAR_LENGTH,
+    CONCAT,
+    CONCAT_SEPARATOR,
+    CONTAINS,
+    ENCODE_URI_COMPONENT,
+    FIND_FIRST,
+    FIND_LAST,
+    JSON_PARSE,
+    JSON_STRINGIFY,
+    LEFT,
+    LEVENSHTEIN_DISTANCE,
+    LIKE,
+    LOWER,
+    LTRIM,
+    MD5,
+    RANDOM_TOKEN,
+    REGEX_MATCHES,
     REGEX_SPLIT,           // TODO: impl, tests
     REGEX_TEST,            // TODO: impl, tests
     REGEX_REPLACE,         // TODO: impl, tests
-    RIGHT,                 
-    RTRIM,                 
-    SHA1,                  
-    SHA512,                
-    SPLIT,                 
-    SOUNDEX,               
+    RIGHT,
+    RTRIM,
+    SHA1,
+    SHA512,
+    SPLIT,
+    SOUNDEX,
     SUBSTITUTE,            // TODO: impl, tests
-    SUBSTRING,             
+    SUBSTRING,
     TOKENS,                // TODO: impl, tests
-    TO_BASE64,             
-    TO_HEX,                
-    TRIM,                  
-    UPPER,                 
-    UUID,                  
+    TO_BASE64,
+    TO_HEX,
+    TRIM,
+    UPPER,
+    UUID,
 
     // Type checks
-    IS_NULL,            // TODO: impl, tests
-    IS_BOOL,            // TODO: impl, tests
-    IS_NUMBER,          // TODO: impl, tests
-    IS_STRING,          // TODO: impl, tests
+    IS_NULL,            
+    IS_BOOL,            
+    IS_NUMBER,          
+    IS_STRING,          
     IS_ARRAY,           // TODO: impl, tests
     IS_LIST,            // TODO: impl, tests
     IS_OBJECT,          // TODO: impl, tests
@@ -152,7 +151,7 @@ enum class AqlFunc {
     IS_DATESTRING,      // TODO: impl, tests
     IS_KEY,             // TODO: impl, tests
     TYPENAME,           // TODO: impl, tests
-    
+
     // Type Conversion
     TO_BOOL,
     TO_NUMBER,
@@ -185,12 +184,12 @@ interface FuncCall<T> : Expression<T> {
 
         fun <T> array(func: AqlFunc, type: TypeRef<List<T>>, args: Array<out Expression<*>>): FuncCall<List<T>> = FuncCallImpl(type, func, args)
         fun <T> nullableArray(func: AqlFunc, type: TypeRef<List<T>?>, args: Array<out Expression<*>>): FuncCall<List<T>?> = FuncCallImpl(type, func, args)
-        
+
         fun bool(func: AqlFunc, args: Array<out Expression<*>>): Expression<Boolean> = FuncCallImpl(TypeRef.Boolean, func, args)
-        
+
         fun number(func: AqlFunc, args: Array<out Expression<*>>): Expression<Number> = FuncCallImpl(TypeRef.Number, func, args)
         fun nullableNumber(func: AqlFunc, args: Array<out Expression<*>>): Expression<Number?> = FuncCallImpl(TypeRef.NumberNull, func, args)
-        
+
         fun string(func: AqlFunc, args: Array<out Expression<*>>): Expression<String> = FuncCallImpl(TypeRef.String, func, args)
     }
 }
