@@ -1,93 +1,95 @@
-package de.peekandpoke.karango.e2e
+package de.peekandpoke.karango.e2e.type_conversion
 
-import de.peekandpoke.karango.aql.TO_BOOL
+import de.peekandpoke.karango.aql.TO_NUMBER
 import de.peekandpoke.karango.aql.aql
+import de.peekandpoke.karango.e2e.Person
+import de.peekandpoke.karango.e2e.db
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 
 @Suppress("ClassName")
-class `E2E-Func-TypeConversion-TO_BOOL-Spec` : StringSpec({
+class `E2E-Func-TypeConversion-TO_NUMBER-Spec` : StringSpec({
 
-    "TO_BOOL conversion of 'null' directly" {
+    "TO_NUMBER conversion of 'null' directly" {
 
         val result = db.query {
             RETURN(
-                TO_BOOL(null.aql())
+                TO_NUMBER(null.aql())
             )
         }
 
-        result.toList() shouldBe listOf(false)
+        result.toList() shouldBe listOf(0.0)
 
         val result2 = db.query {
             RETURN(
-                TO_BOOL(null.aql)
+                TO_NUMBER(null.aql)
             )
         }
 
-        result2.toList() shouldBe listOf(false)
+        result2.toList() shouldBe listOf(0.0)
     }
 
-    "TO_BOOL conversion of 'null' from LET" {
+    "TO_NUMBER conversion of 'null' from LET" {
 
         val result = db.query {
             val l = LET("l", null)
-
             RETURN(
-                TO_BOOL(l)
+                TO_NUMBER(l)
             )
         }
 
-        result.toList() shouldBe listOf(false)
+        result.toList() shouldBe listOf(0.0)
 
         val result2 = db.query {
             val l = LET("l", null.aql())
-
             RETURN(
-                TO_BOOL(l)
+                TO_NUMBER(l)
             )
         }
 
-        result2.toList() shouldBe listOf(false)
+        result2.toList() shouldBe listOf(0.0)
 
         val result3 = db.query {
             val l = LET("l", null.aql)
-
             RETURN(
-                TO_BOOL(l)
+                TO_NUMBER(l)
             )
         }
 
-        result3.toList() shouldBe listOf(false)
+        result3.toList() shouldBe listOf(0.0)
     }
 
     val cases = listOf(
-        row("TO_BOOL(false)", false, c = false),
-        row("TO_BOOL(true)", true, c = true),
+        row("TO_NUMBER(false)", false, 0.0),
+        row("TO_NUMBER(true)", true, 1.0),
 
-        row("TO_BOOL(0)", 0, false),
-        row("TO_BOOL(1)", 1, true),
-        row("TO_BOOL(-1)", -1, true),
+        row("TO_NUMBER(0)", 0, 0.0),
+        row("TO_NUMBER(1)", 1, 1.0),
+        row("TO_NUMBER(-1)", -1, -1.0),
 
-        row("TO_BOOL(0.0)", 0.0, false),
-        row("TO_BOOL(0.1)", 0.1, true),
-        row("TO_BOOL(-0.1)", -0.1, true),
+        row("TO_NUMBER(0.0)", 0.0, 0.0),
+        row("TO_NUMBER(0.1)", 0.1, 0.1),
+        row("TO_NUMBER(-0.1)", -0.1, -0.1),
 
-        row("TO_BOOL(\"\") empty string", "", false),
-        row("TO_BOOL(\"a\") none empty string", "a", true),
+        row("TO_NUMBER(\"\") empty string", "", 0.0),
+        row("TO_NUMBER(\"a\") none empty string", "a", 0L),
 
-        row("TO_BOOL([]) empty list", listOf<Int>(), true),
-        row("TO_BOOL([0]) none empty list", listOf(0), true),
-        row("TO_BOOL([1]) none empty list", listOf(1), true),
-        row("TO_BOOL([0, 0]) none empty list", listOf(0, 0), true),
-        row("TO_BOOL([1, 1]) none empty list", listOf(1, 1), true),
-        row("TO_BOOL(['x']) none empty list", listOf("x"), true),
-        row("TO_BOOL(['x', 'x']) none empty list", listOf("x", "x"), true),
+        row("TO_NUMBER([]) empty list", listOf<Int>(), 0.0),
+        row("TO_NUMBER([0]) none empty list", listOf(0), 0.0),
+        row("TO_NUMBER([1]) none empty list", listOf(1), 1.0),
+        row("TO_NUMBER([0, 0]) none empty list", listOf(0, 0), 0L),
+        row("TO_NUMBER([0, 1]) none empty list", listOf(0, 1), 0L),
+        row("TO_NUMBER([1, 1]) none empty list", listOf(1, 1), 0L),
+        row("TO_NUMBER([1, 0]) none empty list", listOf(1, 0), 0L),
+        row("TO_NUMBER([1, [2, 3]]) none empty list", listOf(1, listOf(2, 3)), 0L),
+        row("TO_NUMBER(['x']) none empty list", listOf("x"), 0L),
+        row("TO_NUMBER(['x', 'x']) none empty list", listOf("x", "x"), 0L),
 
-        row("TO_BOOL(object)", Person("a", 1), true),
-        row("TO_BOOL([object]) list with one objects", listOf(Person("a", 1)), true),
-        row("TO_BOOL([object, object]) list with two objects", listOf(Person("a", 1), Person("b", 2)), true)
+        row("TO_NUMBER(object)", Person("a", 1), 0L),
+        row("TO_NUMBER([object]) list with one objects", listOf(Person("a", 1)), 0L),
+        row("TO_NUMBER([object, object]) list with two objects", listOf(Person("a", 1), Person("b", 2)), 0L)
     )
 
     for ((description, expression, expected) in cases) {
@@ -96,13 +98,13 @@ class `E2E-Func-TypeConversion-TO_BOOL-Spec` : StringSpec({
 
             val result = db.query {
                 RETURN(
-                    TO_BOOL(expression.aql())
+                    TO_NUMBER(expression.aql())
                 )
             }
 
             val result2 = db.query {
                 RETURN(
-                    TO_BOOL(expression.aql)
+                    TO_NUMBER(expression.aql)
                 )
             }
 
@@ -120,7 +122,7 @@ class `E2E-Func-TypeConversion-TO_BOOL-Spec` : StringSpec({
             val result = db.query {
                 val l = LET("l", expression)
 
-                RETURN(TO_BOOL(l))
+                RETURN(TO_NUMBER(l))
             }
 
             withClue(result.query.aql + "\n\n" + result.query.vars + "\n\n") {
@@ -137,7 +139,7 @@ class `E2E-Func-TypeConversion-TO_BOOL-Spec` : StringSpec({
                 val l = LET("l", expression.aql())
 
                 RETURN(
-                    TO_BOOL(l)
+                    TO_NUMBER(l)
                 )
             }
 
@@ -145,7 +147,7 @@ class `E2E-Func-TypeConversion-TO_BOOL-Spec` : StringSpec({
                 val l = LET("l", expression.aql)
 
                 RETURN(
-                    TO_BOOL(l)
+                    TO_NUMBER(l)
                 )
             }
 
@@ -153,7 +155,7 @@ class `E2E-Func-TypeConversion-TO_BOOL-Spec` : StringSpec({
                 val l = LET("l", expression.aql)
 
                 RETURN(
-                    l.TO_BOOL
+                    l.TO_NUMBER
                 )
             }
 

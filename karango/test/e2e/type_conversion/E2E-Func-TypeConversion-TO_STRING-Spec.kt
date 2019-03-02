@@ -1,100 +1,102 @@
-package de.peekandpoke.karango.e2e
+package de.peekandpoke.karango.e2e.type_conversion
 
-import de.peekandpoke.karango.aql.TO_LIST
+import de.peekandpoke.karango.aql.TO_STRING
 import de.peekandpoke.karango.aql.aql
+import de.peekandpoke.karango.e2e.Person
+import de.peekandpoke.karango.e2e.db
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 
 @Suppress("ClassName")
-class `E2E-Func-TypeConversion-TO_LIST-Spec` : StringSpec({
+class `E2E-Func-TypeConversion-TO_STRING-Spec` : StringSpec({
 
-    "TO_LIST conversion of 'null' directly" {
+    "TO_STRING conversion of 'null' directly" {
 
         val result = db.query {
             RETURN(
-                TO_LIST(null.aql())
+                TO_STRING(null.aql())
             )
         }
 
-        result.toList() shouldBe listOf(listOf<Any>())
+        result.toList() shouldBe listOf("")
 
         val result2 = db.query {
             RETURN(
-                TO_LIST(null.aql)
+                TO_STRING(null.aql)
             )
         }
 
-        result2.toList() shouldBe listOf(listOf<Any>())
+        result2.toList() shouldBe listOf("")
     }
 
-    "TO_LIST conversion of 'null' from LET" {
+    "TO_STRING conversion of 'null' from LET" {
 
         val result = db.query {
             val l = LET("l", null)
             RETURN(
-                TO_LIST(l)
+                TO_STRING(l)
             )
         }
 
-        result.toList() shouldBe listOf(listOf<Any>())
+        result.toList() shouldBe listOf("")
 
         val result2 = db.query {
             val l = LET("l", null.aql())
             RETURN(
-                TO_LIST(l)
+                TO_STRING(l)
             )
         }
 
-        result2.toList() shouldBe listOf(listOf<Any>())
+        result2.toList() shouldBe listOf("")
 
         val result3 = db.query {
             val l = LET("l", null.aql)
             RETURN(
-                TO_LIST(l)
+                TO_STRING(l)
             )
         }
 
-        result3.toList() shouldBe listOf(listOf<Any>())
+        result3.toList() shouldBe listOf("")
     }
 
     val cases = listOf(
-        row("TO_LIST(false)", false, listOf(false)),
-        row("TO_LIST(true)", true, listOf(true)),
+        row("TO_STRING(false)", false, "false"),
+        row("TO_STRING(true)", true, "true"),
 
-        row("TO_LIST(0)", 0, listOf(0L)),
-        row("TO_LIST(1)", 1, listOf(1L)),
-        row("TO_LIST(-1)", -1, listOf(-1L)),
+        row("TO_STRING(0)", 0, "0"),
+        row("TO_STRING(1)", 1, "1"),
+        row("TO_STRING(-1)", -1, "-1"),
 
-        row("TO_LIST(0.0)", 0.0, listOf(0.0)),
-        row("TO_LIST(0.1)", 0.1, listOf(0.1)),
-        row("TO_LIST(-0.1)", -0.1, listOf(-0.1)),
+        row("TO_STRING(0.0)", 0.0, "0"),
+        row("TO_STRING(0.1)", 0.1, "0.1"),
+        row("TO_STRING(-0.1)", -0.1, "-0.1"),
 
-        row("TO_LIST(\"\") empty string", "", listOf("")),
-        row("TO_LIST(\"a\") none empty string", "a", listOf("a")),
+        row("TO_STRING(\"\") empty string", "", ""),
+        row("TO_STRING(\"a\") none empty string", "a", "a"),
 
-        row("TO_LIST([]) empty list", listOf<Int>(), listOf<Int>()),
-        row("TO_LIST([0]) none empty list", listOf(0), listOf(0L)),
-        row("TO_LIST([1]) none empty list", listOf(1), listOf(1L)),
-        row("TO_LIST([0, 0]) none empty list", listOf(0, 0), listOf(0L, 0L)),
-        row("TO_LIST([0, 1]) none empty list", listOf(0, 1), listOf(0L, 1L)),
-        row("TO_LIST([1, 1]) none empty list", listOf(1, 1), listOf(1L, 1L)),
-        row("TO_LIST([1, 0]) none empty list", listOf(1, 0), listOf(1L, 0L)),
-        row("TO_LIST([1, [2, 3]]) none empty list", listOf(1, listOf(2, 3)), listOf(1L, listOf(2L, 3L))),
-        row("TO_LIST(['x']) none empty list", listOf("x"), listOf("x")),
-        row("TO_LIST(['x', 'x']) none empty list", listOf("x", "x"), listOf("x", "x")),
+        row("TO_STRING([]) empty list", listOf<Int>(), "[]"),
+        row("TO_STRING([0]) none empty list", listOf(0), "[0]"),
+        row("TO_STRING([1]) none empty list", listOf(1), "[1]"),
+        row("TO_STRING([0, 0]) none empty list", listOf(0, 0), "[0,0]"),
+        row("TO_STRING([0, 1]) none empty list", listOf(0, 1), "[0,1]"),
+        row("TO_STRING([1, 1]) none empty list", listOf(1, 1), "[1,1]"),
+        row("TO_STRING([1, 0]) none empty list", listOf(1, 0), "[1,0]"),
+        row("TO_STRING([1, [2, 3]]) none empty list", listOf(1, listOf(2, 3)), "[1,[2,3]]"),
+        row("TO_STRING(['x']) none empty list", listOf("x"), """["x"]"""),
+        row("TO_STRING(['x', 'x']) none empty list", listOf("x", "x"), """["x","x"]"""),
 
-        row("TO_LIST(object)", Person("a", 1), listOf(1L, "a")),
+        row("TO_STRING(object)", Person("a", 1), """{"age":1,"name":"a"}"""),
         row(
-            "TO_LIST([object]) list with one objects",
+            "TO_STRING([object]) list with one objects",
             listOf(Person("a", 1)),
-            listOf(mapOf("name" to "a", "age" to 1L))
+            """[{"age":1,"name":"a"}]"""
         ),
         row(
-            "TO_LIST([object, object]) list with two objects",
+            "TO_STRING([object, object]) list with two objects",
             listOf(Person("a", 1), Person("b", 2)),
-            listOf(mapOf("name" to "a", "age" to 1L), mapOf("name" to "b", "age" to 2L))
+            """[{"age":1,"name":"a"},{"age":2,"name":"b"}]"""
         )
     )
 
@@ -104,13 +106,13 @@ class `E2E-Func-TypeConversion-TO_LIST-Spec` : StringSpec({
 
             val result = db.query {
                 RETURN(
-                    TO_LIST(expression.aql())
+                    TO_STRING(expression.aql())
                 )
             }
 
             val result2 = db.query {
                 RETURN(
-                    TO_LIST(expression.aql)
+                    TO_STRING(expression.aql)
                 )
             }
 
@@ -129,7 +131,7 @@ class `E2E-Func-TypeConversion-TO_LIST-Spec` : StringSpec({
                 val l = LET("l", expression)
 
                 RETURN(
-                    TO_LIST(l)
+                    TO_STRING(l)
                 )
             }
 
@@ -147,7 +149,7 @@ class `E2E-Func-TypeConversion-TO_LIST-Spec` : StringSpec({
                 val l = LET("l", expression.aql())
 
                 RETURN(
-                    TO_LIST(l)
+                    TO_STRING(l)
                 )
             }
 
@@ -155,7 +157,7 @@ class `E2E-Func-TypeConversion-TO_LIST-Spec` : StringSpec({
                 val l = LET("l", expression.aql)
 
                 RETURN(
-                    TO_LIST(l)
+                    TO_STRING(l)
                 )
             }
 
@@ -163,7 +165,7 @@ class `E2E-Func-TypeConversion-TO_LIST-Spec` : StringSpec({
                 val l = LET("l", expression.aql)
 
                 RETURN(
-                    l.TO_LIST
+                    l.TO_STRING
                 )
             }
 

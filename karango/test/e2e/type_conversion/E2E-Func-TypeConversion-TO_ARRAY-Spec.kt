@@ -1,7 +1,9 @@
-package de.peekandpoke.karango.e2e
+package de.peekandpoke.karango.e2e.type_conversion
 
 import de.peekandpoke.karango.aql.TO_ARRAY
 import de.peekandpoke.karango.aql.aql
+import de.peekandpoke.karango.e2e.Person
+import de.peekandpoke.karango.e2e.db
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
