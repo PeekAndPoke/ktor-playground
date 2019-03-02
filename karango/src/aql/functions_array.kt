@@ -3,15 +3,28 @@
 package de.peekandpoke.karango.aql
 
 /**
- * Return the population variance of the values in array.
+ * Add all elements of an array to another array. All values are added at the end of the array (right side).
  *
- * Alias for VARIANCE_POPULATION
- *
- * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#variance
+ * See https://docs.arangodb.com/current/AQL/Functions/Array.html#append
  */
 @KarangoFuncMarker
 inline fun <reified T> APPEND(anyArray: Expression<List<T>>, values: Expression<List<T>>) = 
-    AqlFunc.APPEND.arrayCall(typeRef<List<T>>(), anyArray, values)
+    AqlFunc.APPEND.arrayCall(type<List<T>>(), anyArray, values)
+
+/**
+ * Add all elements of an array to another array. All values are added at the end of the array (right side).
+ *
+ * Special function if the user wants to mix types:
+ * 
+ * Example:
+ * 
+ * APPEND(type<Any>(), ARRAY(1.aql), ARRAY("a".aql))
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/Array.html#append
+ */
+@KarangoFuncMarker
+fun <R, T1, T2> APPEND(type: TypeRef<R>, anyArray: Expression<List<T1>>, values: Expression<List<T2>>) =
+    AqlFunc.APPEND.arrayCall(type.up(), anyArray, values)
 
 
 /**
@@ -19,9 +32,24 @@ inline fun <reified T> APPEND(anyArray: Expression<List<T>>, values: Expression<
  *
  * Alias for VARIANCE_POPULATION
  *
- * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#variance
+ * https://docs.arangodb.com/current/AQL/Functions/Array.html#append
  */
 @KarangoFuncMarker
 inline fun <reified T> APPEND(anyArray: Expression<List<T>>, values: Expression<List<T>>, unique: Expression<Boolean>) =
-    AqlFunc.APPEND.arrayCall(typeRef<List<T>>(), anyArray, values, unique)
+    AqlFunc.APPEND.arrayCall(type<List<T>>(), anyArray, values, unique)
+
+/**
+ * Add all elements of an array to another array. All values are added at the end of the array (right side).
+ *
+ * Special function if the user wants to mix types:
+ *
+ * Example:
+ *
+ * APPEND(type<Any>(), ARRAY(1.aql), ARRAY("a".aql), true)
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/Array.html#append
+ */
+@KarangoFuncMarker
+fun <R, T1, T2> APPEND(type: TypeRef<R>, anyArray: Expression<List<T1>>, values: Expression<List<T2>>, unique: Expression<Boolean>) =
+    AqlFunc.APPEND.arrayCall(type.up(), anyArray, values, unique)
 

@@ -38,7 +38,7 @@ inline fun <reified T> T.aql(name: String = "v") : Expression<T> = when {
     // guard, so we do not wrap an Expression again
     this is Expression<*> -> this as Expression<T>
     // otherwise we create a value expression
-    else -> Value(typeRef(), this, name)
+    else -> Value(type(), this, name)
 }
 
 /**
@@ -103,7 +103,7 @@ fun Nothing?.aql(name: String = "v") : Expression<Any?> = NullValue(name)
 val Nothing?.aql : Expression<Any?> get() = this.aql()
 
 @KarangoInputMarker
-inline fun <reified T> ARRAY(vararg args: Expression<T>) : Expression<List<T>> = ArrayValue(typeRef(), args.toList())
+inline fun <reified T> ARRAY(vararg args: Expression<T>) : Expression<List<T>> = ArrayValue(type(), args.toList())
 
 data class Value<T>(private val type: TypeRef<T>, private val value: T, private val name: String) : Expression<T> {
 

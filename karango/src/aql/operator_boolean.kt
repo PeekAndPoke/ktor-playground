@@ -36,13 +36,13 @@ data class ArrayOpExpr<T>(val expr: Expression<List<T>>, val op: ArrayOperator, 
 }
 
 inline infix fun <reified T> Expression<List<T>>.ANY(partial: PartialBooleanExpression<T>)
-        : Expression<Boolean> = partial(ArrayOpExpr(this, ArrayOperator.ANY, typeRef()))
+        : Expression<Boolean> = partial(ArrayOpExpr(this, ArrayOperator.ANY, type()))
 
 inline infix fun <reified T> Expression<List<T>>.NONE(partial: PartialBooleanExpression<T>)
-        : Expression<Boolean> = partial(ArrayOpExpr(this, ArrayOperator.NONE, typeRef()))
+        : Expression<Boolean> = partial(ArrayOpExpr(this, ArrayOperator.NONE, type()))
 
 inline infix fun <reified T> Expression<List<T>>.ALL(partial: PartialBooleanExpression<T>)
-        : Expression<Boolean> = partial(ArrayOpExpr(this, ArrayOperator.ALL, typeRef()))
+        : Expression<Boolean> = partial(ArrayOpExpr(this, ArrayOperator.ALL, type()))
 
 
 fun <T> EQ(value: T): PartialBooleanExpression<T> = { x -> x EQ value }

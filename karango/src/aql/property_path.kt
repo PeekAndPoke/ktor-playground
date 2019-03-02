@@ -33,11 +33,11 @@ data class PropertyPath<T>(private val previous: PropertyPath<*>?, private val c
         p.append(current)
     }
 
-    inline fun <reified NT> append(prop: String) = PropertyPath(this, PropStep<NT>(prop, typeRef()))
+    inline fun <reified NT> append(prop: String) = PropertyPath(this, PropStep<NT>(prop, type()))
 
-    inline fun <reified NT> contract() = PropertyPath<NT>(this, ArrayOpStep("[*]", typeRef()))
+    inline fun <reified NT> contract() = PropertyPath<NT>(this, ArrayOpStep("[*]", type()))
 
-    inline fun <reified NT> expand() = PropertyPath<NT>(this, ArrayOpStep("[**]", typeRef()))
+    inline fun <reified NT> expand() = PropertyPath<NT>(this, ArrayOpStep("[**]", type()))
 }
 
 interface ArrayExpansion

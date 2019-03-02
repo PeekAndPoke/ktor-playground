@@ -207,7 +207,7 @@ fun <T: Number> RANDOM_TOKEN(length: Expression<T>) = AqlFunc.RANDOM_TOKEN.strin
  */
 @KarangoInputMarker
 fun REGEX_MATCHES(text: Expression<String>, regex: Expression<String>) = 
-    AqlFunc.REGEX_MATCHES.nullableArrayCall(typeRef<List<String>?>(), text, regex)
+    AqlFunc.REGEX_MATCHES.nullableArrayCall(type<List<String>?>(), text, regex)
 
 /**
  * Return the matches in the given string text, using the regex.
@@ -216,7 +216,7 @@ fun REGEX_MATCHES(text: Expression<String>, regex: Expression<String>) =
  */
 @KarangoInputMarker
 fun REGEX_MATCHES(text: Expression<String>, regex: Expression<String>, caseInsensitive: Expression<Boolean>) =
-    AqlFunc.REGEX_MATCHES.nullableArrayCall(typeRef<List<String>?>(), text, regex, caseInsensitive)
+    AqlFunc.REGEX_MATCHES.nullableArrayCall(type<List<String>?>(), text, regex, caseInsensitive)
 
 /**
  * Return the n rightmost characters of the string value.
@@ -265,7 +265,7 @@ fun SHA512(expr: Expression<String>) = AqlFunc.SHA512.stringCall(expr)
  */
 @KarangoInputMarker
 fun SPLIT(value: Expression<String>, separator: Expression<String>)  
-        = AqlFunc.SPLIT.arrayCall(typeRef<List<String>>(), value, separator)
+        = AqlFunc.SPLIT.arrayCall(type<List<String>>(), value, separator)
 
 /**
  * Split the given string value into a list of strings, using the separator.
@@ -275,7 +275,7 @@ fun SPLIT(value: Expression<String>, separator: Expression<String>)
 @JvmName("SPLIT2")
 @KarangoInputMarker
 fun SPLIT(value: Expression<String>, separator: Expression<List<String>>)
-        = AqlFunc.SPLIT.arrayCall(typeRef<List<String>>(), value, separator)
+        = AqlFunc.SPLIT.arrayCall(type<List<String>>(), value, separator)
 
 /**
  * Split the given string value into a list of strings, using the separator.
@@ -284,7 +284,7 @@ fun SPLIT(value: Expression<String>, separator: Expression<List<String>>)
  */
 @KarangoInputMarker
 fun <T: Number> SPLIT(value: Expression<String>, separator: Expression<String>, limit: Expression<T>)
-        = AqlFunc.SPLIT.arrayCall(typeRef<List<String>>(), value, separator, limit)
+        = AqlFunc.SPLIT.arrayCall(type<List<String>>(), value, separator, limit)
 
 /**
  * Split the given string value into a list of strings, using the separator.
@@ -294,7 +294,7 @@ fun <T: Number> SPLIT(value: Expression<String>, separator: Expression<String>, 
 @JvmName("SPLIT2")
 @KarangoInputMarker
 fun <T: Number> SPLIT(value: Expression<String>, separator: Expression<List<String>>, limit: Expression<T>)
-        = AqlFunc.SPLIT.arrayCall(typeRef<List<String>>(), value, separator, limit)
+        = AqlFunc.SPLIT.arrayCall(type<List<String>>(), value, separator, limit)
 
 /**
  * Return the soundex fingerprint of value.

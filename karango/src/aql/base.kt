@@ -102,10 +102,10 @@ class AqlBuilder internal constructor() : StatementBuilder {
     fun LET(name: String, @Suppress("UNUSED_PARAMETER") value: Nothing?) = LET(name, NullValue())
 
     @KarangoDslMarker
-    inline fun <reified T> LET(name: String, value: T) = Let(name, value, typeRef()).addStmt().toExpression()
+    inline fun <reified T> LET(name: String, value: T) = Let(name, value, type()).addStmt().toExpression()
 
     @KarangoDslMarker
-    inline fun <reified T> LET(name: String, builder: () -> T) = Let(name, builder(), typeRef()).addStmt().toExpression()
+    inline fun <reified T> LET(name: String, builder: () -> T) = Let(name, builder(), type()).addStmt().toExpression()
 
     @KarangoDslMarker
     fun <T> RETURN(expr: Expression<T>): TerminalExpr<T> = Return(expr)

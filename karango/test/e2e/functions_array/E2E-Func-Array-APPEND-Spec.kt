@@ -1,9 +1,6 @@
 package de.peekandpoke.karango.e2e.functions_array
 
-import de.peekandpoke.karango.aql.APPEND
-import de.peekandpoke.karango.aql.ARRAY
-import de.peekandpoke.karango.aql.TerminalExpr
-import de.peekandpoke.karango.aql.aql
+import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue
 import io.kotlintest.assertSoftly
@@ -46,6 +43,38 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
         }
     }
 
+    "APPEND must return the correct typeref for incompatible arrays" {
+
+        val result = db.query {
+            RETURN(
+                APPEND(type<Any>(), ARRAY(1.aql), ARRAY("a".aql))
+            )
+        }
+
+        assertSoftly {
+
+            result.first() shouldBe listOf(1L, "a")
+
+            result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Object>"
+        }
+    }
+
+    "APPEND must return the correct typeref for incompatible arrays, with unique parameter given" {
+
+        val result = db.query {
+            RETURN(
+                APPEND(type<Any>(), ARRAY(1.aql, 1.aql), ARRAY("a".aql, "a".aql), true.aql)
+            )
+        }
+
+        assertSoftly {
+
+            result.first() shouldBe listOf(1L, "a")
+
+            result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Object>"
+        }
+    }
+
     val cases = listOf(
         row(
             "APPEND ([], [])",
@@ -74,7 +103,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
         ),
         row(
             "APPEND ([1, 1, 2, 3], [3, 4, 5, 5], true)",
-            APPEND<Number>(ARRAY(1.aql, 1.aql, 2.aql, 3.aql), listOf(3, 4, 5, 5).aql, true.aql),
+            APPEND(ARRAY(1.aql, 1.aql, 2.aql, 3.aql), ARRAY(3.aql, 4.aql, 5.aql, 5.aql), true.aql),
             listOf(1L, 2L, 3L, 4L, 5L)
         ),
         row(

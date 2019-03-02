@@ -220,7 +220,7 @@ fun RAND() = AqlFunc.RAND.numberCall()
  */
 @KarangoFuncMarker
 fun <T1: Number, T2: Number> RANGE(start: Expression<T1>, stop: Expression<T2>) = 
-    AqlFunc.RANGE.arrayCall(typeRef<List<Number>>(), start, stop)
+    AqlFunc.RANGE.arrayCall(type<List<Number>>(), start, stop)
 
 /**
  * Return an array of numbers in the specified range, optionally with increments other than 1.
@@ -229,7 +229,7 @@ fun <T1: Number, T2: Number> RANGE(start: Expression<T1>, stop: Expression<T2>) 
  */
 @KarangoFuncMarker
 fun <T1: Number, T2: Number, T3: Number> RANGE(start: Expression<T1>, stop: Expression<T2>, step: Expression<T3>) =
-    AqlFunc.RANGE.nullableArrayCall(typeRef<List<Number>?>(), start, stop, step)
+    AqlFunc.RANGE.nullableArrayCall(type<List<Number>?>(), start, stop, step)
 
 /**
  * Return the integer closest to value.

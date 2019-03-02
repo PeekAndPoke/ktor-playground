@@ -8,7 +8,7 @@ import de.peekandpoke.karango.CollectionDefinition
  * Get a single document by its full id.
  */
 inline fun <reified T> DOCUMENT(id: String): Expression<T> =
-    AqlFunc.DOCUMENT.call(typeRef(), id.aql("id"))
+    AqlFunc.DOCUMENT.call(type(), id.aql("id"))
 
 /**
  * Get a single document from the given collection by its key.
@@ -29,7 +29,7 @@ inline fun <reified T> DOCUMENT(vararg ids: String): Expression<List<T>> =
  * Get a list of documents by their IDs
  */
 inline fun <reified T> DOCUMENT(ids: List<String>): Expression<List<T>> =
-    AqlFunc.DOCUMENT.call(typeRef(), ids.aql("ids"))
+    AqlFunc.DOCUMENT.call(type(), ids.aql("ids"))
 
 /**
  * Get a list of documents from the given collection by their keys.

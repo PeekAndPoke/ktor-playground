@@ -6,22 +6,25 @@ import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
 
-inline fun <reified T> typeRef() = object : TypeRef<T>() {}
+inline fun <reified T> type() = object : TypeRef<T>() {}
+
+@Suppress("unused")
+inline fun <reified T> Class<T>.asTypeRef() : TypeRef<T> = type()
 
 open class TypeRef<T>(private val explicitType: Type? = null) : TypeReference<T>() {
 
     companion object {
 
-        private val AnyInst: TypeRef<Any> = typeRef()
+        private val AnyInst: TypeRef<Any> = type()
         
-        private val AnyNullInst: TypeRef<Any?> = typeRef()
+        private val AnyNullInst: TypeRef<Any?> = type()
         
-        private val BooleanInst: TypeRef<Boolean> = typeRef()
+        private val BooleanInst: TypeRef<Boolean> = type()
         
-        private val NumberInst: TypeRef<Number> = typeRef()
-        private val NumberNullInst: TypeRef<Number?> = typeRef()
+        private val NumberInst: TypeRef<Number> = type()
+        private val NumberNullInst: TypeRef<Number?> = type()
         
-        private val StringInst: TypeRef<String> = typeRef()
+        private val StringInst: TypeRef<String> = type()
 
         val Any get() = AnyInst
         val AnyNull get() = AnyNullInst
