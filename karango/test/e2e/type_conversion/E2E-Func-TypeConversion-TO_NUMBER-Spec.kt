@@ -2,7 +2,7 @@ package de.peekandpoke.karango.e2e.type_conversion
 
 import de.peekandpoke.karango.aql.TO_NUMBER
 import de.peekandpoke.karango.aql.aql
-import de.peekandpoke.karango.e2e.Person
+import de.peekandpoke.karango.e2e.E2ePerson
 import de.peekandpoke.karango.e2e.db
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
@@ -87,9 +87,9 @@ class `E2E-Func-TypeConversion-TO_NUMBER-Spec` : StringSpec({
         row("TO_NUMBER(['x']) none empty list", listOf("x"), 0L),
         row("TO_NUMBER(['x', 'x']) none empty list", listOf("x", "x"), 0L),
 
-        row("TO_NUMBER(object)", Person("a", 1), 0L),
-        row("TO_NUMBER([object]) list with one objects", listOf(Person("a", 1)), 0L),
-        row("TO_NUMBER([object, object]) list with two objects", listOf(Person("a", 1), Person("b", 2)), 0L)
+        row("TO_NUMBER(object)", E2ePerson("a", 1), 0L),
+        row("TO_NUMBER([object]) list with one objects", listOf(E2ePerson("a", 1)), 0L),
+        row("TO_NUMBER([object, object]) list with two objects", listOf(E2ePerson("a", 1), E2ePerson("b", 2)), 0L)
     )
 
     for ((description, expression, expected) in cases) {

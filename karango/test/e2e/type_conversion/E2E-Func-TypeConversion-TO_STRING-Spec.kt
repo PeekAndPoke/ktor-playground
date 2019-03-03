@@ -2,7 +2,7 @@ package de.peekandpoke.karango.e2e.type_conversion
 
 import de.peekandpoke.karango.aql.TO_STRING
 import de.peekandpoke.karango.aql.aql
-import de.peekandpoke.karango.e2e.Person
+import de.peekandpoke.karango.e2e.E2ePerson
 import de.peekandpoke.karango.e2e.db
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
@@ -87,15 +87,15 @@ class `E2E-Func-TypeConversion-TO_STRING-Spec` : StringSpec({
         row("TO_STRING(['x']) none empty list", listOf("x"), """["x"]"""),
         row("TO_STRING(['x', 'x']) none empty list", listOf("x", "x"), """["x","x"]"""),
 
-        row("TO_STRING(object)", Person("a", 1), """{"age":1,"name":"a"}"""),
+        row("TO_STRING(object)", E2ePerson("a", 1), """{"age":1,"name":"a"}"""),
         row(
             "TO_STRING([object]) list with one objects",
-            listOf(Person("a", 1)),
+            listOf(E2ePerson("a", 1)),
             """[{"age":1,"name":"a"}]"""
         ),
         row(
             "TO_STRING([object, object]) list with two objects",
-            listOf(Person("a", 1), Person("b", 2)),
+            listOf(E2ePerson("a", 1), E2ePerson("b", 2)),
             """[{"age":1,"name":"a"},{"age":2,"name":"b"}]"""
         )
     )

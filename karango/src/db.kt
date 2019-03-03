@@ -62,8 +62,8 @@ class Db(private val database: ArangoDatabase) {
 
         val query = de.peekandpoke.karango.query(builder)
 
-        println(query)
-        println(query.ret.innerType())
+//        println(query)
+//        println(query.ret.innerType())
 
         val options = AqlQueryOptions().count(true)
 
@@ -148,7 +148,7 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
 
     fun find(builder: ForLoop.(Iter<T>) -> Unit): Cursor<T> =
         db.query {
-            FOR("x") IN (def) { t ->
+            FOR(def) { t ->
                 builder(t)
                 RETURN(t)
             }
@@ -157,7 +157,7 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
     fun findOne(builder: ForLoop.(Iter<T>) -> Unit): T? =
         db.query {
 
-            FOR("x") IN (def) { t ->
+            FOR(def) { t ->
                 builder(t)
                 LIMIT(1)
                 RETURN(t)
@@ -169,7 +169,7 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
 
             val params = keys.filter { it.startsWith(def.getAlias()) }
 
-            FOR("x") IN (DOCUMENT(def, params)) { d ->
+            FOR(DOCUMENT(def, params)) { d ->
                 RETURN(d)
             }
         }

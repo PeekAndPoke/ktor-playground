@@ -1,7 +1,7 @@
 package de.peekandpoke.karango.e2e.functions_numeric
 
 import de.peekandpoke.karango.aql.*
-import de.peekandpoke.karango.e2e.Person
+import de.peekandpoke.karango.e2e.E2ePerson
 import de.peekandpoke.karango.e2e.age
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue
@@ -33,15 +33,15 @@ class `E2E-Func-Numeric-AVERAGE-Spec` : StringSpec({
         val result = db.query {
             val persons = LET("persons") {
                 listOf(
-                    Person("a", 10),
-                    Person("b", 20),
-                    Person("c", 30)
+                    E2ePerson("a", 10),
+                    E2ePerson("b", 20),
+                    E2ePerson("c", 30)
                 )
             }
 
             RETURN(
                 AVERAGE(
-                    FOR("p") IN (persons) { p ->
+                    FOR(persons) { p ->
                         FILTER(p.age GT 10)
                         RETURN(p.age)
                     }

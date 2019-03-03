@@ -2,7 +2,7 @@ package de.peekandpoke.karango.e2e.type_conversion
 
 import de.peekandpoke.karango.aql.TO_LIST
 import de.peekandpoke.karango.aql.aql
-import de.peekandpoke.karango.e2e.Person
+import de.peekandpoke.karango.e2e.E2ePerson
 import de.peekandpoke.karango.e2e.db
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
@@ -90,15 +90,15 @@ class `E2E-Func-TypeConversion-TO_LIST-Spec` : StringSpec({
         row("TO_LIST(['x']) none empty list", listOf("x"), listOf("x")),
         row("TO_LIST(['x', 'x']) none empty list", listOf("x", "x"), listOf("x", "x")),
 
-        row("TO_LIST(object)", Person("a", 1), listOf(1L, "a")),
+        row("TO_LIST(object)", E2ePerson("a", 1), listOf(1L, "a")),
         row(
             "TO_LIST([object]) list with one objects",
-            listOf(Person("a", 1)),
+            listOf(E2ePerson("a", 1)),
             listOf(mapOf("name" to "a", "age" to 1L))
         ),
         row(
             "TO_LIST([object, object]) list with two objects",
-            listOf(Person("a", 1), Person("b", 2)),
+            listOf(E2ePerson("a", 1), E2ePerson("b", 2)),
             listOf(mapOf("name" to "a", "age" to 1L), mapOf("name" to "b", "age" to 2L))
         )
     )

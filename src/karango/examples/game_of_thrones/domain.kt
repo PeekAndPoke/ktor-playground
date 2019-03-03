@@ -3,7 +3,7 @@ package de.peekandpoke.karango.examples.game_of_thrones
 import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.meta.EntityCollection
 
-@EntityCollection("got_characters")
+@EntityCollection("got_characters", "Characters")
 data class Character(
     val name: String, 
     val surname: String? = null,

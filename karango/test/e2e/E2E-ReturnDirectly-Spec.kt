@@ -308,7 +308,7 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
     "Directly returning a domain object" {
 
-        val data = Person("Eddard", 42) 
+        val data = E2ePerson("Eddard", 42) 
         
         val result = db.query {
             RETURN(
@@ -335,12 +335,12 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.innerType().toString() shouldBe "class ${Person::class.qualifiedName}"
+                result.query.ret.innerType().toString() shouldBe "class ${E2ePerson::class.qualifiedName}"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.getType().toString() shouldBe "java.util.List<${Person::class.qualifiedName}>"
+                result.query.ret.getType().toString() shouldBe "java.util.List<${E2ePerson::class.qualifiedName}>"
             }
         }
     }
@@ -348,8 +348,8 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
     "Directly returning a list of domain objects" {
 
         val data = listOf(
-            Person("Eddard", 42),
-            Person("John", 22)
+            E2ePerson("Eddard", 42),
+            E2ePerson("John", 22)
         )
 
         val result = db.query {
@@ -377,12 +377,12 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.innerType().toString() shouldBe "java.util.List<? extends ${Person::class.qualifiedName}>"
+                result.query.ret.innerType().toString() shouldBe "java.util.List<? extends ${E2ePerson::class.qualifiedName}>"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.List<? extends ${Person::class.qualifiedName}>>"
+                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.List<? extends ${E2ePerson::class.qualifiedName}>>"
             }
         }
     }
@@ -390,8 +390,8 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
     "Directly returning a map of strings to domain objects" {
 
         val data = mapOf(
-            "a" to Person("Eddard", 42),
-            "b" to Person("John", 22)
+            "a" to E2ePerson("Eddard", 42),
+            "b" to E2ePerson("John", 22)
         )
 
         val result = db.query {
@@ -420,13 +420,13 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
                 result.query.ret.innerType().toString() shouldBe 
-                        "java.util.Map<java.lang.String, ? extends ${Person::class.qualifiedName}>"
+                        "java.util.Map<java.lang.String, ? extends ${E2ePerson::class.qualifiedName}>"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
                 result.query.ret.getType().toString() shouldBe 
-                        "java.util.List<java.util.Map<java.lang.String, ? extends ${Person::class.qualifiedName}>>"
+                        "java.util.List<java.util.Map<java.lang.String, ? extends ${E2ePerson::class.qualifiedName}>>"
             }
         }
     }
@@ -434,7 +434,7 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
     "Directly returning a map of strings to lists of domain objects" {
 
         val data = mapOf(
-            "a" to listOf(Person("Eddard", 42), Person("John", 22)),
+            "a" to listOf(E2ePerson("Eddard", 42), E2ePerson("John", 22)),
             "b" to listOf() 
         )
 
@@ -464,13 +464,13 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
                 result.query.ret.innerType().toString() shouldBe
-                        "java.util.Map<java.lang.String, ? extends java.util.List<? extends ${Person::class.qualifiedName}>>"
+                        "java.util.Map<java.lang.String, ? extends java.util.List<? extends ${E2ePerson::class.qualifiedName}>>"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
                 result.query.ret.getType().toString() shouldBe
-                        "java.util.List<java.util.Map<java.lang.String, ? extends java.util.List<? extends ${Person::class.qualifiedName}>>>"
+                        "java.util.List<java.util.Map<java.lang.String, ? extends java.util.List<? extends ${E2ePerson::class.qualifiedName}>>>"
             }
         }
     }

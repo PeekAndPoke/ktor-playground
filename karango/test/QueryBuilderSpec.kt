@@ -13,24 +13,24 @@ class QueryBuilderSpec : StringSpec({
     "Filter operators must be applied correctly" {
 
         val query = query {
-            FOR("iter") IN TestDataCollection { t ->
-                FILTER(t.name EQ "V_EQ")
-                FILTER(t.name NE "V_NE")
-                FILTER(t.name GT "V_GT")
-                FILTER(t.name GTE "V_GTE")
-                FILTER(t.name LT "V_LT")
-                FILTER(t.name LTE "V_LTE")
-                FILTER(t.name IN listOf("V_IN"))
-                FILTER(t.name NOT_IN listOf("V_NOT_IN"))
-                FILTER(t.name LIKE "V_LIKE")
-                FILTER(t.name REGEX "V_REGEX")
-                RETURN(t)
+            FOR(TestNames) { iter ->
+                FILTER(iter.name EQ "V_EQ")
+                FILTER(iter.name NE "V_NE")
+                FILTER(iter.name GT "V_GT")
+                FILTER(iter.name GTE "V_GTE")
+                FILTER(iter.name LT "V_LT")
+                FILTER(iter.name LTE "V_LTE")
+                FILTER(iter.name IN listOf("V_IN"))
+                FILTER(iter.name NOT_IN listOf("V_NOT_IN"))
+                FILTER(iter.name LIKE "V_LIKE")
+                FILTER(iter.name REGEX "V_REGEX")
+                RETURN(iter)
             }
         }
 
         assertSoftly {
 
-            query.aql.shouldContain("FOR `iter` IN `test`")
+            query.aql.shouldContain("FOR `iter` IN `test-names`")
             query.aql.shouldContain("FILTER `iter`.`name` == @iter__name_1")
             query.aql.shouldContain("FILTER `iter`.`name` != @iter__name_2")
             query.aql.shouldContain("FILTER `iter`.`name` > @iter__name_3")
@@ -44,7 +44,7 @@ class QueryBuilderSpec : StringSpec({
             query.aql.shouldContain("RETURN `iter`")
 
             query.aql.shouldBe(
-                """ |FOR `iter` IN `test`
+                """ |FOR `iter` IN `test-names`
                     |    FILTER `iter`.`name` == @iter__name_1
                     |    FILTER `iter`.`name` != @iter__name_2
                     |    FILTER `iter`.`name` > @iter__name_3
@@ -80,8 +80,8 @@ class QueryBuilderSpec : StringSpec({
     "Iterator name must be taken from parameter name of FOR loop" {
 
         val query = query {
-            FOR(TestPersonCollection) { iterator ->
-                FILTER(iterator.addresses[`*`].street ALL EQ ("street"))
+            FOR(TestPersons) { iterator ->
+                FILTER(iterator.addresses[`*`].street ALL EQ("street"))
                 RETURN(iterator)
             }
         }
@@ -98,8 +98,8 @@ class QueryBuilderSpec : StringSpec({
     "Property path must be rendered correctly" {
 
         val query = query {
-            FOR(TestPersonCollection) { p ->
-                FILTER(p.addresses[`*`].street ALL EQ ("street"))
+            FOR(TestPersons) { p ->
+                FILTER(p.addresses[`*`].street ALL EQ("street"))
                 RETURN(p)
             }
         }
@@ -113,35 +113,32 @@ class QueryBuilderSpec : StringSpec({
         )
     }
 
-    // TODO: we need a new test for array contraction (we also need data classes that have the structure for this. addresses need some array in it)
-    
-//    "Property path with Array expansion [*] and contraction [**] must be rendered correctly" {
-//
-//        val query = query {
-//            FOR("iter") IN (TestPersonCollection) { p ->
-//                
-//                FILTER(p.addresses[`*`].street ALL EQ("street"))
-//                RETURN(p)
-//            }
-//        }
-//
-//        query.aql.shouldBe(
-//            """ |FOR `iter` IN `test-persons`
-//                |    FILTER `iter`.`addresses`[*].`street` ALL == @iter__addresses_STAR__street_STAR2_ALL_2
-//                |    RETURN `iter`
-//                |
-//            """.trimMargin()
-//        )
-//    }
+    "Property path with Array expansion [*] and contraction [**] must be rendered correctly" {
+
+        val query = query {
+            FOR(TestPersons) { person ->
+                FILTER(person.books[`*`].authors[`*`].firstName[`**`] ALL EQ("street"))
+                RETURN(person)
+            }
+        }
+
+        query.aql.shouldBe(
+            """ |FOR `person` IN `test-persons`
+                |    FILTER `person`.`books`[*].`authors`[*].`firstName`[**] ALL == @person__books_STAR__authors_STAR__firstName_STAR2_ALL_1
+                |    RETURN `person`
+                |
+            """.trimMargin()
+        )
+    }
 
     "Array operators ANY, ALL, NONE must be rendered correctly" {
 
         val query = query {
-            FOR("iter") IN (TestPersonCollection) { p ->
-                FILTER(p.addresses[`*`].street ANY EQ("street"))
-                FILTER(p.addresses[`*`].street ALL NE("street"))
-                FILTER(p.addresses[`*`].street NONE IN(listOf("street")))
-                RETURN(p)
+            FOR(TestPersons) { iter ->
+                FILTER(iter.addresses[`*`].street ANY EQ("street"))
+                FILTER(iter.addresses[`*`].street ALL NE("street"))
+                FILTER(iter.addresses[`*`].street NONE IN(listOf("street")))
+                RETURN(iter)
             }
         }
 

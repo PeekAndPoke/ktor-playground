@@ -3,7 +3,7 @@ package de.peekandpoke.karango.e2e.type_checks
 import de.peekandpoke.karango.aql.ARRAY
 import de.peekandpoke.karango.aql.IS_DOCUMENT
 import de.peekandpoke.karango.aql.aql
-import de.peekandpoke.karango.e2e.Person
+import de.peekandpoke.karango.e2e.E2ePerson
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue
 import io.kotlintest.shouldBe
@@ -21,7 +21,7 @@ class `E2E-Func-TypeCheck-IS_DOCUMENT-Spec` : StringSpec({
         ),
         row(
             "IS_DOCUMENT(object) - objects seem to be documents",
-            IS_DOCUMENT(Person("name", 10).aql),
+            IS_DOCUMENT(E2ePerson("name", 10).aql),
             true
         ),
         row(
@@ -71,7 +71,7 @@ class `E2E-Func-TypeCheck-IS_DOCUMENT-Spec` : StringSpec({
         ),
         row(
             "IS_DOCUMENT([object])",
-            IS_DOCUMENT(ARRAY(Person("name", 10).aql)),
+            IS_DOCUMENT(ARRAY(E2ePerson("name", 10).aql)),
             false
         )
     )

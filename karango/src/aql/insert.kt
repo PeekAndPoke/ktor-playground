@@ -1,9 +1,13 @@
+@file:Suppress("FunctionName")
+
 package de.peekandpoke.karango.aql
 
 import de.peekandpoke.karango.CollectionDefinition
 
+@KarangoFuncMarker
 fun <T> INSERT(what: Expression<T>) = InsertPreStage(what)
 
+@KarangoFuncMarker
 infix fun <T> InsertPreStage<T>.INTO(collection: CollectionDefinition<T>) = InsertInto(what, collection)
 
 class InsertPreStage<T> internal constructor(val what: Expression<T>)

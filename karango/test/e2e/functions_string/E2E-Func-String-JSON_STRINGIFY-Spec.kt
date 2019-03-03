@@ -2,7 +2,7 @@ package de.peekandpoke.karango.e2e.functions_string
 
 import de.peekandpoke.karango.aql.JSON_STRINGIFY
 import de.peekandpoke.karango.aql.aql
-import de.peekandpoke.karango.e2e.Person
+import de.peekandpoke.karango.e2e.E2ePerson
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue
 import io.kotlintest.shouldBe
@@ -35,7 +35,7 @@ open class `E2E-Func-String-JSON_STRINGIFY-Spec` : StringSpec({
         ),
         row(
             "JSON_STRINGIFY of object",
-            JSON_STRINGIFY(Person("a", 1).aql),
+            JSON_STRINGIFY(E2ePerson("a", 1).aql),
             """{"age":1,"name":"a"}"""
         )
     )

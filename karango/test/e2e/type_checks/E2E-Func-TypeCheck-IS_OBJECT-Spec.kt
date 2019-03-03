@@ -3,7 +3,7 @@ package de.peekandpoke.karango.e2e.type_checks
 import de.peekandpoke.karango.aql.ARRAY
 import de.peekandpoke.karango.aql.IS_OBJECT
 import de.peekandpoke.karango.aql.aql
-import de.peekandpoke.karango.e2e.Person
+import de.peekandpoke.karango.e2e.E2ePerson
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue
 import io.kotlintest.shouldBe
@@ -21,7 +21,7 @@ class `E2E-Func-TypeCheck-IS_OBJECT-Spec` : StringSpec({
         ),
         row(
             "IS_OBJECT(object) - object with properties",
-            IS_OBJECT(Person("name", 10).aql),
+            IS_OBJECT(E2ePerson("name", 10).aql),
             true
         ),
         row(
@@ -71,7 +71,7 @@ class `E2E-Func-TypeCheck-IS_OBJECT-Spec` : StringSpec({
         ),
         row(
             "IS_OBJECT([object])",
-            IS_OBJECT(ARRAY(Person("name", 10).aql)),
+            IS_OBJECT(ARRAY(E2ePerson("name", 10).aql)),
             false
         )
     )

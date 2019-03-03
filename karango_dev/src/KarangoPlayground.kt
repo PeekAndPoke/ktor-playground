@@ -7,7 +7,7 @@ import kotlin.system.measureTimeMillis
 
 val db = Db.default(user = "root", pass = "root", host = "localhost", port = 8529, database = "kotlindev")
 
-val persons = db.collection(PersonCollection)
+val persons = db.collection(Persons)
 
 fun main() {
 
@@ -24,8 +24,8 @@ fun main() {
 
         RETURN(
             SUM(
-                FOR("p") IN (persons) { p ->
-                    FILTER (p.age GT 10)
+                FOR(persons) { p ->
+                    FILTER(p.age GT 10)
                     RETURN(p.age)
                 }
             )
@@ -36,18 +36,18 @@ fun main() {
     result.forEach { println(it) }
 
     exampleInsertFromLet()
-    
-    
-    val res2 = db.query { 
-        FOR ("x") IN (PersonCollection) {x ->
-            RETURN (x.books[`*`].authors[`*`].firstName[`**`])
+
+    val res2 = db.query {
+
+        FOR(Persons) { x ->
+            RETURN(x.books[`*`].authors[`*`].firstName[`**`])
         }
     }
-    
+
     println("--------------------------------------------------------------------")
     println(res2.toList())
     println("--------------------------------------------------------------------")
-    
+
 //    y()
 }
 
@@ -81,22 +81,22 @@ fun y() {
                     listOf("J.R.R.", "X.X.X.")
                 }
 
-                
-                FOR("x") IN (PersonCollection) { person ->
+
+                FOR(Persons) { person ->
 
                     FILTER(person.name EQ str)
                     FILTER(CONTAINS(person.name, str))
 
-                    val x1 = person
-                    val x2 = person.books
-                    val x3 = person.books[`*`]
-                    val x4 = person.books[`*`].authors
-                    val x5 = person.books[`*`].authors[`*`]
-                    val x6 = person.books[`*`].authors[`*`].firstName
-                    val x7 = person.books[`*`].authors[`*`].firstName[`**`]
-                    
-                    val y1 = person.books[`*`].title
-                    
+//                    val x1 = person
+//                    val x2 = person.books
+//                    val x3 = person.books[`*`]
+//                    val x4 = person.books[`*`].authors
+//                    val x5 = person.books[`*`].authors[`*`]
+//                    val x6 = person.books[`*`].authors[`*`].firstName
+//                    val x7 = person.books[`*`].authors[`*`].firstName[`**`]
+//
+//                    val y1 = person.books[`*`].title
+
 //                    FILTER { person.nr EQ num }
                     FILTER(person.books[`*`].title ALL IN(names))
                     FILTER(person.books[`*`].authors[`*`].firstName[`**`] ALL IN(names))
@@ -193,8 +193,8 @@ fun exampleInsertFromLet() {
     val result = db.query {
         val objs = LET("objs") { personInserts }
 
-        FOR("x") IN (objs) { o ->
-            INSERT(o) INTO PersonCollection
+        FOR(objs) { o ->
+            INSERT(o) INTO Persons
         }
     }
 
@@ -232,7 +232,7 @@ fun exampleFilterFromLet() {
     val result = db.query {
         val objs = LET("objs") { personInserts }
 
-        FOR("x") IN (objs) { o ->
+        FOR(objs) { o ->
             FILTER(o.name EQ "Greta")
             RETURN(o)
         }

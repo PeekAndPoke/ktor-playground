@@ -8,7 +8,7 @@ import de.peekandpoke.karango.examples.runDemo
 
 val db = Db.default(user = "root", pass = "root", host = "localhost", port = 8529, database = "kotlindev")
 
-val characters = db.collection(CharacterCollection)
+val characters = db.collection(Characters)
 
 fun main() {
 
@@ -106,8 +106,8 @@ fun installData() {
             )
         }
 
-        FOR("x") IN (data) { d ->
-            INSERT(d) INTO (CharacterCollection)
+        FOR(data) { d ->
+            INSERT(d) INTO (Characters)
         }
     }
 }
@@ -134,7 +134,7 @@ fun findStarks() {
     println("Find all Starks with an explicit query on the db object")
 
     val result = db.query {
-        FOR("x") IN (CharacterCollection) { c ->
+        FOR(Characters) { c ->
             FILTER(c.surname EQ "Stark")
             RETURN(c)
         }
@@ -202,7 +202,7 @@ fun findThreeCharactersByIdV2() {
 
     val result = db.query {
 
-        FOR("x") IN (DOCUMENT<Character>(aryasId, bransId, tyrionsId)) { c ->
+        FOR(DOCUMENT<Character>(aryasId, bransId, tyrionsId)) { c ->
             RETURN(c)
         }
     }
@@ -219,7 +219,7 @@ fun updateNedStarksAliveness() {
     println("Spoiler Alert! Ned died... So we need to update his aliveness using the collection object")
 
     val result = characters.update(ned) { t ->
-//        t.alive with false
+        //        t.alive with false
 //        "hair" with "black"
     }
 

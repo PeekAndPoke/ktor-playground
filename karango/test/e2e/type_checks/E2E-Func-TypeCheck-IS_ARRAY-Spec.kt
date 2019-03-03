@@ -3,7 +3,7 @@ package de.peekandpoke.karango.e2e.type_checks
 import de.peekandpoke.karango.aql.ARRAY
 import de.peekandpoke.karango.aql.IS_ARRAY
 import de.peekandpoke.karango.aql.aql
-import de.peekandpoke.karango.e2e.Person
+import de.peekandpoke.karango.e2e.E2ePerson
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue
 import io.kotlintest.shouldBe
@@ -61,7 +61,7 @@ class `E2E-Func-TypeCheck-IS_ARRAY-Spec` : StringSpec({
         ),
         row(
             "IS_ARRAY(object)",
-            IS_ARRAY(Person("name", 10).aql),
+            IS_ARRAY(E2ePerson("name", 10).aql),
             false
         )
     )

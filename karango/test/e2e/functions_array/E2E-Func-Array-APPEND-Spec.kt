@@ -77,26 +77,24 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
     "APPEND two compatible arrays extracted from objects" {
 
         val result = db.query {
-            
+
             val a = LET("a") {
                 listOf(
-                    Person("a", 10),
-                    Person("b", 15)
+                    E2ePerson("a", 10),
+                    E2ePerson("b", 15)
                 )
             }
 
             val b = LET("b") {
                 listOf(
-                    Person("c", 15),
-                    Person("d", 20)
+                    E2ePerson("c", 15),
+                    E2ePerson("d", 20)
                 )
             }
 
             RETURN(
                 APPEND(
-                    FOR ("a") IN (a) {  RETURN (it.age)},
-                    FOR ("a") IN (b) { RETURN (it.age)},
-                    true.aql
+                    FOR(a) { RETURN(it.age) }, FOR(b) { RETURN(it.age) }, true.aql
                 )
             )
         }
@@ -115,24 +113,21 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
             val a = LET("a") {
                 listOf(
-                    Person("a", 10),
-                    Person("b", 15)
+                    E2ePerson("a", 10),
+                    E2ePerson("b", 15)
                 )
             }
 
             val b = LET("b") {
                 listOf(
-                    Person("c", 15),
-                    Person("d", 20)
+                    E2ePerson("c", 15),
+                    E2ePerson("d", 20)
                 )
             }
 
             RETURN(
                 APPEND(
-                    type<Any>(),
-                    FOR ("a") IN (a) {  RETURN (it.age)},
-                    FOR ("a") IN (b) { RETURN (it.name)},
-                    true.aql
+                    type<Any>(), FOR(a) { RETURN(it.age) }, FOR(b) { RETURN(it.name) }, true.aql
                 )
             )
         }
@@ -151,25 +146,20 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
             val a = LET("a") {
                 listOf(
-                    Person("a", 10),
-                    Person("b", 15)
+                    E2ePerson("a", 10),
+                    E2ePerson("b", 15)
                 )
             }
 
             val b = LET("b") {
                 listOf(
-                    Person("c", 15),
-                    Person("d", 20)
+                    E2ePerson("c", 15),
+                    E2ePerson("d", 20)
                 )
             }
 
             RETURN(
-                APPEND(
-                    type<Any>(),
-                    a[`*`].age,
-                    b[`*`].name,
-                    true.aql
-                )
+                APPEND(type<Any>(), a[`*`].age, b[`*`].name, true.aql)
             )
         }
 

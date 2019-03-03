@@ -2,7 +2,7 @@ package de.peekandpoke.karango.e2e.type_conversion
 
 import de.peekandpoke.karango.aql.TO_BOOL
 import de.peekandpoke.karango.aql.aql
-import de.peekandpoke.karango.e2e.Person
+import de.peekandpoke.karango.e2e.E2ePerson
 import de.peekandpoke.karango.e2e.db
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
@@ -87,9 +87,9 @@ class `E2E-Func-TypeConversion-TO_BOOL-Spec` : StringSpec({
         row("TO_BOOL(['x']) none empty list", listOf("x"), true),
         row("TO_BOOL(['x', 'x']) none empty list", listOf("x", "x"), true),
 
-        row("TO_BOOL(object)", Person("a", 1), true),
-        row("TO_BOOL([object]) list with one objects", listOf(Person("a", 1)), true),
-        row("TO_BOOL([object, object]) list with two objects", listOf(Person("a", 1), Person("b", 2)), true)
+        row("TO_BOOL(object)", E2ePerson("a", 1), true),
+        row("TO_BOOL([object]) list with one objects", listOf(E2ePerson("a", 1)), true),
+        row("TO_BOOL([object, object]) list with two objects", listOf(E2ePerson("a", 1), E2ePerson("b", 2)), true)
     )
 
     for ((description, expression, expected) in cases) {

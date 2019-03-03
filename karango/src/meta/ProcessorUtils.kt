@@ -8,68 +8,114 @@ import javax.lang.model.element.VariableElement
 import javax.lang.model.type.DeclaredType
 import javax.lang.model.type.TypeMirror
 import javax.tools.Diagnostic
-import kotlin.reflect.KClass
 
+@Suppress("unused")
 interface ProcessorUtils : KotlinProcessingEnvironment {
 
     val logPrefix: String
 
-    fun logNote(str: String) =
-        messager.printMessage(Diagnostic.Kind.NOTE, "$logPrefix $str")
+    fun logNote(str: String) = messager.printMessage(Diagnostic.Kind.NOTE, "$logPrefix $str")
 
-    fun logWarning(str: String) =
-        messager.printMessage(Diagnostic.Kind.WARNING, "$logPrefix $str")
+    fun logWarning(str: String) = messager.printMessage(Diagnostic.Kind.WARNING, "$logPrefix $str")
 
-    fun logError(str: String) =
-        messager.printMessage(Diagnostic.Kind.ERROR, "$logPrefix $str")
+    fun logError(str: String) = messager.printMessage(Diagnostic.Kind.ERROR, "$logPrefix $str")
 
-    fun logMandatoryWarning(str: String) =
-        messager.printMessage(Diagnostic.Kind.MANDATORY_WARNING, "$logPrefix $str")
+    fun logMandatoryWarning(str: String) = messager.printMessage(Diagnostic.Kind.MANDATORY_WARNING, "$logPrefix $str")
 
-    fun logOther(str: String) =
-        messager.printMessage(Diagnostic.Kind.OTHER, "$logPrefix $str")
+    fun logOther(str: String) = messager.printMessage(Diagnostic.Kind.OTHER, "$logPrefix $str")
 
     ////  REFLECTION  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    val <T : Any> KClass<T>.fqn: String get() = java.canonicalName
+//    val <T : Any> KClass<T>.fqn: String get() = java.canonicalName
 
     val TypeMirror.fqn get() = asTypeName().toString()
 
     val Element.fqn get() = asType().fqn
 
     /**
-     * Check if an element is a collection type
+     * Get all variables of a type element
      */
-    fun Element?.isCollection() = this is TypeElement &&
-            interfaces.any { itf -> itf.fqn.startsWith(java.util.Collection::class.fqn) }
-
     val TypeElement.variables
         get() = enclosedElements
             .filterIsInstance<VariableElement>()
             .filter { !it.simpleName.contentEquals("Companion") }
 
-    val TypeElement.referencedTypes
-        get() : List<TypeMirror> = variables
-            .map { v -> listOf(v.asType()).plus(v.referencedTypes) }
-            .flatten()
-            .distinct()
-
     /**
-     * Check if a variable element is a collection type
+     * Get all types, that are directly or recursively used within the given Element
      */
-    val VariableElement.isCollection get () = typeUtils.asElement(asType()).isCollection()
+    fun Element.getReferencedTypesRecursive(): Set<TypeMirror> {
 
-    val DeclaredType?.referencedTypes
-        get (): List<TypeMirror> {
+        var last = mutableSetOf<TypeMirror>()
+        var current = mutableSetOf(this.asType())
 
-            if (this is DeclaredType) {
-                return this.typeArguments.toList()
-            }
+        while (current.size > last.size) {
 
-            return listOf()
+            last = current
+
+            current = last
+                .map { it.getReferencedTypes() }
+                .flatten()
+                .distinct()
+                .toMutableSet()
         }
 
-    val VariableElement.referencedTypes get () : List<TypeMirror> = (this.asType() as? DeclaredType).referencedTypes
+        return current
+    }
+
+    /**
+     * Get all types that are directly referenced by the given type
+     */
+    fun TypeMirror.getReferencedTypes(): Set<TypeMirror> {
+
+        val result = mutableSetOf<TypeMirror>()
+
+        if (this is DeclaredType) {
+
+            logNote("DeclaredType $this")
+
+            // add the type it-self
+            result.add(this)
+            // add all generic type parameters
+            result.addAll(this.typeArguments)
+
+            // Next lets have a look at all the variables that the type defines
+            val element = typeUtils.asElement(this)
+
+            if (element is TypeElement) {
+
+                logNote("  .. TypeElement ${this}")
+
+                val nested = element.variables
+                    .asSequence()
+                    .filter { !it.asType().kind.isPrimitive }
+                    .map { v: VariableElement ->
+
+                        mutableListOf<TypeMirror>().apply {
+
+                            val elType: TypeMirror = v.asType()
+
+                            if (elType is DeclaredType) {
+                                // add the type it self
+                                add(elType)
+                                logNote("  .. ${v.simpleName} .. DeclaredType $elType")
+
+                                // add all generic type arguments of the type that are declared types
+                                addAll(elType.typeArguments.mapNotNull { (it as? DeclaredType) })
+                            }
+                        }
+                    }
+                    .flatten()
+                    // Black-list of packages that we will not create code for
+                    .filter { !it.fqn.startsWith("java.") }
+                    .filter { !it.fqn.startsWith("javax.") }
+                    .filter { !it.fqn.startsWith("kotlin.") }
+
+                result.addAll(nested)
+            }
+        }
+
+        return result
+    }
 
     ////  KOTLIN COMPAT  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -96,5 +142,4 @@ interface ProcessorUtils : KotlinProcessingEnvironment {
             .replace("Integer", "Int")
             .replace("java.lang.Int", "kotlin.Int")
             .replace("java.lang.String", "kotlin.String")
-
 }

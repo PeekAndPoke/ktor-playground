@@ -12,10 +12,10 @@ fun main() {
 
     val db = Db.default(user = "root", pass = "root", host = "localhost", port = 8529, database = "kotlindev")
 
-    val movies = db.collection(MovieCollection)
+    val movies = db.collection(Movies)
     movies.removeAll()
 
-    val actors = db.collection(ActorCollection)
+    val actors = db.collection(Actors)
     actors.removeAll()
 
     val actsIn = db.edgeCollection(ActsIn.Collection)

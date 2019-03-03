@@ -3,7 +3,7 @@ package de.peekandpoke.karango.e2e.type_checks
 import de.peekandpoke.karango.aql.ARRAY
 import de.peekandpoke.karango.aql.IS_NUMBER
 import de.peekandpoke.karango.aql.aql
-import de.peekandpoke.karango.e2e.Person
+import de.peekandpoke.karango.e2e.E2ePerson
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue
 import io.kotlintest.shouldBe
@@ -66,7 +66,7 @@ class `E2E-Func-TypeCheck-IS_NUMBER-Spec` : StringSpec({
         ),
         row(
             "IS_NUMBER(object)",
-            IS_NUMBER(Person("name", 10).aql),
+            IS_NUMBER(E2ePerson("name", 10).aql),
             false
         )
     )
