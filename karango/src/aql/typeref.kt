@@ -92,11 +92,19 @@ open class TypeRef<T>(private val explicitType: Type? = null) : TypeReference<T>
      */
     fun <X> down() = TypeRef<X>(
         ParameterizedTypeImpl.make(
-            Class.forName(ladder[1].typeName),
-            ladder.drop(2).toTypedArray(),  // if (ladder.size > 2) arrayOf(ladder[2]) else arrayOf(),
+            ladder[1].toClass(),
+            ladder.drop(2).toTypedArray(),
             null
         )
     )
+
+    /**
+     * Create a class object from the a type
+     */
+    private fun Type.toClass() = when (this) {
+        is ParameterizedType -> Class.forName(this.rawType.typeName)
+        else -> Class.forName(ladder[1].typeName)
+    }
 
     /**
      * Returns a list of Types that are useful for down()

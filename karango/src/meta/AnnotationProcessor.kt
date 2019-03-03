@@ -74,7 +74,7 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
 
             listOf(
                 """
-            object ${simpleName}Collection : EntityCollectionDefinitionImpl<$simpleName>("$collectionName", typeRef())
+            object ${simpleName}Collection : EntityCollectionDefinitionImpl<$simpleName>("$collectionName", type())
             
             """
             )
@@ -86,9 +86,14 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
                 val prop = it.simpleName
 
                 """
-            inline val Expression<$simpleName>.$prop inline get() = PropertyPath.start(this).append<$type>("$prop")
-            inline val Iter<$simpleName>.$prop inline get() = PropertyPath.start(this).append<$type>("$prop")
-            inline val PropertyPath<$simpleName>.$prop inline get() = append<$type>("$prop")
+            inline val Expression<$simpleName>.$prop inline get() = PropertyPath.start(this).append<$type, $type>("$prop")
+            inline val Iter<$simpleName>.$prop inline get() = PropertyPath.start(this).append<$type, $type>("$prop")
+            inline val PropertyPath<$simpleName, $simpleName>.$prop inline @JvmName("${prop}_0") get() = append<$type, $type>("$prop")
+            inline val PropertyPath<$simpleName, L1<$simpleName>>.$prop inline @JvmName("${prop}_1") get() = append<$type, L1<$type>>("$prop")
+            inline val PropertyPath<$simpleName, L2<$simpleName>>.$prop inline @JvmName("${prop}_2") get() = append<$type, L2<$type>>("$prop")
+            inline val PropertyPath<$simpleName, L3<$simpleName>>.$prop inline @JvmName("${prop}_3") get() = append<$type, L3<$type>>("$prop")
+            inline val PropertyPath<$simpleName, L4<$simpleName>>.$prop inline @JvmName("${prop}_4") get() = append<$type, L4<$type>>("$prop")
+            inline val PropertyPath<$simpleName, L5<$simpleName>>.$prop inline @JvmName("${prop}_5") get() = append<$type, L5<$type>>("$prop")
             """
             }
         )

@@ -34,16 +34,26 @@ fun main() {
 
     println(result.query.aql)
     result.forEach { println(it) }
+
+    exampleInsertFromLet()
     
-    y()
+    
+    val res2 = db.query { 
+        FOR ("x") IN (PersonCollection) {x ->
+            RETURN (x.books[`*`].authors[`*`].firstName[`**`])
+        }
+    }
+    
+    println("--------------------------------------------------------------------")
+    println(res2.toList())
+    println("--------------------------------------------------------------------")
+    
+//    y()
 }
 
 fun y() {
 
 //    val addresses = db.collection(Address.)
-
-
-    println(PersonCollection.configurations)
 
     exampleReturningFromScalarLet(db)
 //    exampleReturningFromIterableLet(db)
@@ -71,12 +81,24 @@ fun y() {
                     listOf("J.R.R.", "X.X.X.")
                 }
 
+                
                 FOR("x") IN (PersonCollection) { person ->
 
                     FILTER(person.name EQ str)
                     FILTER(CONTAINS(person.name, str))
 
+                    val x1 = person
+                    val x2 = person.books
+                    val x3 = person.books[`*`]
+                    val x4 = person.books[`*`].authors
+                    val x5 = person.books[`*`].authors[`*`]
+                    val x6 = person.books[`*`].authors[`*`].firstName
+                    val x7 = person.books[`*`].authors[`*`].firstName[`**`]
+                    
+                    val y1 = person.books[`*`].title
+                    
 //                    FILTER { person.nr EQ num }
+                    FILTER(person.books[`*`].title ALL IN(names))
                     FILTER(person.books[`*`].authors[`*`].firstName[`**`] ALL IN(names))
 
                     LIMIT(0, 20)

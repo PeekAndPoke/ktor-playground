@@ -18,16 +18,16 @@ class UpdateDocument<T : Entity>(
         with(p) {
             append("UPDATE \"").append(entity._id.ensureKey).append("\" WITH {").appendLine()
             indent {
-                val pairs = kv.pairs.toMap()
-                pairs.keys.forEachIndexed { idx, key ->
-                    // TODO: FIX the update
-//                    append(key.allExpressions().drop(1)).append(" : ").value("kv", pairs.getValue(key))
-//
-//                    if (idx < pairs.size - 1) {
-//                        append(",")
-//                    }
-                    appendLine()
-                }
+//                val pairs = kv.pairs.toMap()
+//                pairs.keys.forEachIndexed { idx, key ->
+//                    // TODO: FIX the update
+////                    append(key.allExpressions().drop(1)).append(" : ").value("kv", pairs.getValue(key))
+////
+////                    if (idx < pairs.size - 1) {
+////                        append(",")
+////                    }
+//                    appendLine()
+//                }
             }
 
             append("} IN ").name(col.getAlias()).appendLine()

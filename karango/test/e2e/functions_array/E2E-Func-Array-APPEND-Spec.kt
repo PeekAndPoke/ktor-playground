@@ -1,8 +1,7 @@
 package de.peekandpoke.karango.e2e.functions_array
 
 import de.peekandpoke.karango.aql.*
-import de.peekandpoke.karango.e2e.db
-import de.peekandpoke.karango.e2e.withClue
+import de.peekandpoke.karango.e2e.*
 import io.kotlintest.assertSoftly
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
@@ -74,6 +73,114 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
             result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Object>"
         }
     }
+
+    "APPEND two compatible arrays extracted from objects" {
+
+        val result = db.query {
+            
+            val a = LET("a") {
+                listOf(
+                    Person("a", 10),
+                    Person("b", 15)
+                )
+            }
+
+            val b = LET("b") {
+                listOf(
+                    Person("c", 15),
+                    Person("d", 20)
+                )
+            }
+
+            RETURN(
+                APPEND(
+                    FOR ("a") IN (a) {  RETURN (it.age)},
+                    FOR ("a") IN (b) { RETURN (it.age)},
+                    true.aql
+                )
+            )
+        }
+
+        assertSoftly {
+
+            result.first() shouldBe listOf(10, 15, 20)
+
+            result.query.ret.innerType().toString() shouldBe "java.util.List<? extends java.lang.Integer>"
+        }
+    }
+
+    "APPEND two in-compatible arrays extracted from objects" {
+
+        val result = db.query {
+
+            val a = LET("a") {
+                listOf(
+                    Person("a", 10),
+                    Person("b", 15)
+                )
+            }
+
+            val b = LET("b") {
+                listOf(
+                    Person("c", 15),
+                    Person("d", 20)
+                )
+            }
+
+            RETURN(
+                APPEND(
+                    type<Any>(),
+                    FOR ("a") IN (a) {  RETURN (it.age)},
+                    FOR ("a") IN (b) { RETURN (it.name)},
+                    true.aql
+                )
+            )
+        }
+
+        assertSoftly {
+
+            result.first() shouldBe listOf(10L, 15L, "c", "d")
+
+            result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Object>"
+        }
+    }
+
+    "APPEND two in-compatible arrays extracted from objects ... array contraction" {
+
+        val result = db.query {
+
+            val a = LET("a") {
+                listOf(
+                    Person("a", 10),
+                    Person("b", 15)
+                )
+            }
+
+            val b = LET("b") {
+                listOf(
+                    Person("c", 15),
+                    Person("d", 20)
+                )
+            }
+
+            RETURN(
+                APPEND(
+                    type<Any>(),
+                    a[`*`].age,
+                    b[`*`].name,
+                    true.aql
+                )
+            )
+        }
+
+        assertSoftly {
+
+            result.first() shouldBe listOf(10L, 15L, "c", "d")
+
+            result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Object>"
+        }
+    }
+
 
     val cases = listOf(
         row(

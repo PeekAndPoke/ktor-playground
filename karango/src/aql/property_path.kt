@@ -1,9 +1,17 @@
 package de.peekandpoke.karango.aql
 
-data class PropertyPath<T>(private val previous: PropertyPath<*>?, private val current: Step<T>) : Expression<T>, Aliased {
+import de.peekandpoke.karango.aql.PropertyPath.Companion.start
+
+typealias L1<T> = List<T>
+typealias L2<T> = List<List<T>>
+typealias L3<T> = List<List<List<T>>>
+typealias L4<T> = List<List<List<List<T>>>>
+typealias L5<T> = List<List<List<List<List<T>>>>>
+
+data class PropertyPath<P, T>(private val previous: PropertyPath<*, *>?, private val current: Step<T>) : Expression<T>, Aliased {
 
     companion object {
-        inline fun <reified T> start(root: Expression<T>) = PropertyPath(null, ExprStep(root))
+        inline fun <reified T> start(root: Expression<T>) = PropertyPath<T, T>(null, ExprStep(root))
     }
 
     abstract class Step<T>(private val type: TypeRef<T>) : Expression<T> {
@@ -33,11 +41,11 @@ data class PropertyPath<T>(private val previous: PropertyPath<*>?, private val c
         p.append(current)
     }
 
-    inline fun <reified NT> append(prop: String) = PropertyPath(this, PropStep<NT>(prop, type()))
+    inline fun <NF, reified NT> append(prop: String) = PropertyPath<NF, NT>(this, PropStep(prop, type()))
 
-    inline fun <reified NT> contract() = PropertyPath<NT>(this, ArrayOpStep("[*]", type()))
+    fun <NP> expand() = PropertyPath<NP, T>(this, ArrayOpStep("[*]", current.getType()))
 
-    inline fun <reified NT> expand() = PropertyPath<NT>(this, ArrayOpStep("[**]", type()))
+    fun <NT> contract() = PropertyPath<P, NT>(this, ArrayOpStep("[**]", current.getType().down()))
 }
 
 interface ArrayExpansion
@@ -51,8 +59,12 @@ interface ArrayContraction
 object `**` : ArrayContraction
 
 @Suppress("UNUSED_PARAMETER")
-inline operator fun <reified T> PropertyPath<List<T>>.get(`*`: ArrayExpansion) = contract<T>()
+operator fun <F, L: List<F>, T> PropertyPath<L, List<T>>.get(`*`: ArrayExpansion) = expand<F>()
 
 @Suppress("UNUSED_PARAMETER")
-inline operator fun <reified T> PropertyPath<T>.get(`**`: ArrayContraction) = expand<List<T>>()
+operator fun <F, T> PropertyPath<F, L2<T>>.get(`**`: ArrayContraction) = contract<L1<T>>()
 
+
+@Suppress("UNUSED_PARAMETER")
+// TODO: we need examples for this and Tests
+inline operator fun <reified T> Expression<List<T>>.get(`*`: ArrayExpansion) = start(this).expand<T>()

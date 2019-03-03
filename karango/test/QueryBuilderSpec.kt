@@ -77,60 +77,79 @@ class QueryBuilderSpec : StringSpec({
         }
     }
 
+    "Iterator name must be taken from parameter name of FOR loop" {
+
+        val query = query {
+            FOR(TestPersonCollection) { iterator ->
+                FILTER(iterator.addresses[`*`].street ALL EQ ("street"))
+                RETURN(iterator)
+            }
+        }
+
+        query.aql.shouldBe(
+            """ |FOR `iterator` IN `test-persons`
+                |    FILTER `iterator`.`addresses`[*].`street` ALL == @iterator__addresses_STAR__street_ALL_1
+                |    RETURN `iterator`
+                |
+            """.trimMargin()
+        )
+    }
+
     "Property path must be rendered correctly" {
 
         val query = query {
-            FOR("iter") IN (TestPersonCollection) { p ->
-                FILTER(p.addresses[`*`].street EQ "street")
+            FOR(TestPersonCollection) { p ->
+                FILTER(p.addresses[`*`].street ALL EQ ("street"))
                 RETURN(p)
             }
         }
 
         query.aql.shouldBe(
-            """ |FOR `iter` IN `test-persons`
-                |    FILTER `iter`.`addresses`[*].`street` == @iter__addresses_STAR__street_1
-                |    RETURN `iter`
+            """ |FOR `p` IN `test-persons`
+                |    FILTER `p`.`addresses`[*].`street` ALL == @p__addresses_STAR__street_ALL_1
+                |    RETURN `p`
                 |
             """.trimMargin()
         )
     }
 
-    "Property path with Array expansion [*] and contraction [**] must be rendered correctly" {
-
-        val query = query {
-            FOR("iter") IN (TestPersonCollection) { p ->
-                FILTER(p.addresses[`*`].street EQ "street")
-                FILTER(p.addresses[`*`].street[`**`] ALL EQ("street"))
-                RETURN(p)
-            }
-        }
-
-        query.aql.shouldBe(
-            """ |FOR `iter` IN `test-persons`
-                |    FILTER `iter`.`addresses`[*].`street` == @iter__addresses_STAR__street_1
-                |    FILTER `iter`.`addresses`[*].`street`[**] ALL == @iter__addresses_STAR__street_STAR2_ALL_2
-                |    RETURN `iter`
-                |
-            """.trimMargin()
-        )
-    }
+    // TODO: we need a new test for array contraction (we also need data classes that have the structure for this. addresses need some array in it)
+    
+//    "Property path with Array expansion [*] and contraction [**] must be rendered correctly" {
+//
+//        val query = query {
+//            FOR("iter") IN (TestPersonCollection) { p ->
+//                
+//                FILTER(p.addresses[`*`].street ALL EQ("street"))
+//                RETURN(p)
+//            }
+//        }
+//
+//        query.aql.shouldBe(
+//            """ |FOR `iter` IN `test-persons`
+//                |    FILTER `iter`.`addresses`[*].`street` ALL == @iter__addresses_STAR__street_STAR2_ALL_2
+//                |    RETURN `iter`
+//                |
+//            """.trimMargin()
+//        )
+//    }
 
     "Array operators ANY, ALL, NONE must be rendered correctly" {
 
         val query = query {
             FOR("iter") IN (TestPersonCollection) { p ->
-                FILTER(p.addresses[`*`].street[`**`] ANY EQ("street"))
-                FILTER(p.addresses[`*`].street[`**`] ALL NE("street"))
-                FILTER(p.addresses[`*`].street[`**`] NONE IN(listOf("street")))
+                FILTER(p.addresses[`*`].street ANY EQ("street"))
+                FILTER(p.addresses[`*`].street ALL NE("street"))
+                FILTER(p.addresses[`*`].street NONE IN(listOf("street")))
                 RETURN(p)
             }
         }
 
         query.aql.shouldBe(
             """ |FOR `iter` IN `test-persons`
-                |    FILTER `iter`.`addresses`[*].`street`[**] ANY == @iter__addresses_STAR__street_STAR2_ANY_1
-                |    FILTER `iter`.`addresses`[*].`street`[**] ALL != @iter__addresses_STAR__street_STAR2_ALL_2
-                |    FILTER `iter`.`addresses`[*].`street`[**] NONE IN @iter__addresses_STAR__street_STAR2_NONE_3
+                |    FILTER `iter`.`addresses`[*].`street` ANY == @iter__addresses_STAR__street_ANY_1
+                |    FILTER `iter`.`addresses`[*].`street` ALL != @iter__addresses_STAR__street_ALL_2
+                |    FILTER `iter`.`addresses`[*].`street` NONE IN @iter__addresses_STAR__street_NONE_3
                 |    RETURN `iter`
                 |
             """.trimMargin()

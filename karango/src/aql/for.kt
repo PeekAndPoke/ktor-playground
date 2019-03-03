@@ -6,6 +6,12 @@ package de.peekandpoke.karango.aql
 fun FOR(iteratorName: String) = ForLoop.For(iteratorName)
 
 @KarangoDslMarker
+fun <T, R> FOR(iterable: Expression<List<T>>, builder: ForLoop.(Iter<T>) -> TerminalExpr<R>): TerminalExpr<R> {
+
+    return FOR(builder.nthParamName(1)) IN (iterable.invoke(builder))
+}
+
+@KarangoDslMarker
 operator fun <T, R> Expression<List<T>>.invoke(builder: ForLoop.(Iter<T>) -> TerminalExpr<R>) = ForLoop.In(this, builder)
 
 @KarangoDslMarker

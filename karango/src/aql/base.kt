@@ -123,9 +123,9 @@ class AqlBuilder internal constructor() : StatementBuilder {
 @KarangoDslMarker
 class KeyValueBuilder<T : Entity> {
 
-    val pairs = mutableListOf<Pair<PropertyPath<*>, Any>>()
-
-    infix fun <X> PropertyPath<X>.with(value: X) = apply { pairs.add(Pair(this, value as Any)) }
+//    val pairs = mutableListOf<Pair<PropertyPath<*>, Any>>()
+//
+//    infix fun <X> PropertyPath<X>.with(value: X) = apply { pairs.add(Pair(this, value as Any)) }
 }
 
 interface StatementBuilder {
