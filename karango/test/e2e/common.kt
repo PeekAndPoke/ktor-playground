@@ -16,11 +16,15 @@ data class E2ePerson(val name: String, val age: Int)
 @Suppress("unused")
 fun <T> TestContext.withClue(expr: Expression<T>, expected: Any?, thunk: () -> Any) {
 
+    val printerResult = expr.toPrinterResult() 
+    
     return withClue(
         listOf(
-            "Type:       $expr", 
-            "Expression: ${expr.toPrinterResult().raw}",
-            "Expected:   $expected"
+            "Type:     $expr", 
+            "AQL:      ${printerResult.query}",
+            "Vars:     ${printerResult.vars}",
+            "Readable: ${printerResult.raw}",
+            "Expected: $expected"
         ).joinToString("\n").surround("\n"),
         thunk
     )

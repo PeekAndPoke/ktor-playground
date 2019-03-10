@@ -2,24 +2,24 @@ package de.peekandpoke.karango.aql
 
 enum class AqlFunc {
     // Overloaded functions
-    LENGTH,                // TODO: impl, tests FOR Collections, Arrays
-    COUNT,                 // TODO: impl, tests FOR Collections, Arrays
-    REVERSE,               // TODO: impl, tests FOR Strings, Collections, Arrays
+    LENGTH,                // TODO: impl, tests FOR Collections
+    COUNT,                 // TODO: impl, tests FOR Collections
+    REVERSE,               // TODO: impl, tests FOR Collections
 
     // Array
-    APPEND,                // TODO: impl, tests
-    CONTAINS_ARRAY,        // TODO: impl, tests
-    COUNT_DISTINCT,        // TODO: impl, tests
-    COUNT_UNIQUE,          // TODO: impl, tests
-    FIRST,                 // TODO: impl, tests
-    FLATTEN,               // TODO: impl, tests
+    APPEND,                
+    CONTAINS_ARRAY,        
+    COUNT_DISTINCT,        
+    COUNT_UNIQUE,          
+    FIRST,                 
+    FLATTEN,               
     INTERSECTION,          // TODO: impl, tests
     LAST,                  // TODO: impl, tests
     MINUS,                 // TODO: impl, tests
     NTH,                   // TODO: impl, tests
     OUTERSECTION,          // TODO: impl, tests
     POP,                   // TODO: impl, tests
-    POSITION,              // TODO: impl, tests
+    POSITION,              
     PUSH,                  // TODO: impl, tests
     REMOVE_NTH,            // TODO: impl, tests
     REMOVE_VALUE,          // TODO: impl, tests
@@ -161,6 +161,7 @@ enum class AqlFunc {
 }
 
 fun <T> AqlFunc.call(type: TypeRef<T>, vararg args: Expression<*>) = FuncCall.of(type, this, args)
+fun <T> AqlFunc.nullableCall(type: TypeRef<T?>, vararg args: Expression<*>) = FuncCall.of(type, this, args)
 
 fun AqlFunc.anyCall(vararg args: Expression<*>) = FuncCall.any(this, args)
 

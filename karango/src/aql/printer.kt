@@ -4,13 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 
 interface Printable {
     fun printAql(p: AqlPrinter): Any
-
 }
 
 fun Printable.toPrintableString() = AqlPrinter.sandbox(this)
 
 fun Printable.toPrinterResult() = AqlPrinter.sandboxQuery(this)
-
 
 class AqlPrinter {
 

@@ -219,6 +219,14 @@ fun REGEX_MATCHES(text: Expression<String>, regex: Expression<String>, caseInsen
     AqlFunc.REGEX_MATCHES.nullableArrayCall(type<List<String>?>(), text, regex, caseInsensitive)
 
 /**
+ * Return the reverse of the string value.
+ * 
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#reverse
+ */
+@KarangoInputMarker
+fun REVERSE(value: Expression<String>) = AqlFunc.REVERSE.stringCall(value)
+
+/**
  * Return the n rightmost characters of the string value.
  *
  * https://docs.arangodb.com/current/AQL/Functions/String.html#right

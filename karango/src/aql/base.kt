@@ -15,9 +15,6 @@ annotation class KarangoInputMarker
 @DslMarker
 annotation class KarangoTypeConversionMarker
 
-@DslMarker
-annotation class KarangoPropPathMarker
-
 /**
  * Helper interface for the QueryPrinter.
  *
@@ -50,6 +47,8 @@ interface Expression<T> : Printable {
     fun getType(): TypeRef<T>
 }
 
+typealias E<T> = Expression<T>
+
 /**
  * Base interface for all terminal Expressions.
  *
@@ -68,13 +67,19 @@ interface TerminalExpr<T> : Expression<List<T>> {
 /**
  * Expression impl for internal usage
  */
-internal class ExpressionImpl<T>(private val name_: String, private val type: TypeRef<T>) : Expression<T> {
-
+internal class ExpressionImpl<T>(private val name: String, private val type: TypeRef<T>) : Expression<T> {
+    /**
+     * The type that is represented by the expression
+     */
     override fun getType() = type
-    override fun printAql(p: AqlPrinter) = p.name(name_)
+    
+    override fun printAql(p: AqlPrinter) = p.name(name)
 }
 
-internal class RootExpression<B: StatementBuilder, T>(private val stmts: List<Statement>, private val ret: TerminalExpr<T>) : TerminalExpr<T> {
+/**
+ * Internal expression impl holding the entire query
+ */
+internal class RootExpression<T>(private val stmts: List<Statement>, private val ret: TerminalExpr<T>) : TerminalExpr<T> {
     
     override fun getType() = ret.getType()
 
@@ -83,7 +88,7 @@ internal class RootExpression<B: StatementBuilder, T>(private val stmts: List<St
     override fun printAql(p: AqlPrinter) = p.append(stmts).append(ret)
 
     companion object {
-        fun <B: StatementBuilder, T> from(builder: B, builderFun: B.() -> TerminalExpr<T>) : RootExpression<B, T> {
+        fun <T> from(builder: AqlBuilder, builderFun: AqlBuilder.() -> TerminalExpr<T>) : RootExpression<T> {
             
             val result : TerminalExpr<T> = builderFun(builder)
             
@@ -113,6 +118,12 @@ class AqlBuilder internal constructor() : StatementBuilder {
     @KarangoDslMarker
     fun <T> RETURN(expr: Expression<T>): TerminalExpr<T> = Return(expr)
     
+    // TODO: INSERT 
+    
+    // TODO: UPDATE
+    
+    // TODO: UPSERT
+    
     fun <T : Entity, D : CollectionDefinition<T>> UPDATE(entity: T, col: D, builder: KeyValueBuilder<T>.(Expression<T>) -> Unit): TerminalExpr<Any> =
         UpdateDocument(
             entity,
@@ -120,7 +131,6 @@ class AqlBuilder internal constructor() : StatementBuilder {
             KeyValueBuilder<T>().apply { builder(ExpressionImpl(col.getAlias(), col.getType().down())) }
         )
 }
-
 
 @Suppress("FunctionName")
 @KarangoDslMarker
