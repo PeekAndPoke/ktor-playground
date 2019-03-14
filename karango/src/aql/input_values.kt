@@ -107,39 +107,7 @@ val Nothing?.aql: Expression<Any?>
     get() = this.aql()
 
 @KarangoInputMarker
-inline fun <reified T> ARRAY(vararg args: Expression<T>): Expression<List<T>> = ArrayValue(type(), args.toList())
-
-@KarangoInputMarker
-fun <T1, T2> ARRAY(a1: E<T1>, a2: E<T2>): Expression<List<Any>> = ArrayValue(type(), listOf(a1, a2))
-
-@KarangoInputMarker
-fun <T1, T2, T3> ARRAY(a1: E<T1>, a2: E<T2>, a3: E<T3>): Expression<List<Any>> = ArrayValue(type(), listOf(a1, a2, a3))
-
-@KarangoInputMarker
-fun <T1, T2, T3, T4> ARRAY(a1: E<T1>, a2: E<T2>, a3: E<T3>, a4: E<T4>): Expression<List<Any>> = ArrayValue(type(), listOf(a1, a2, a3, a4))
-
-@KarangoInputMarker
-fun <T1, T2, T3, T4, T5> ARRAY(a1: E<T1>, a2: E<T2>, a3: E<T3>, a4: E<T4>, a5: E<T5>): Expression<List<Any>> = ArrayValue(type(), listOf(a1, a2, a3, a4, a5))
-
-@KarangoInputMarker
-fun <T1, T2, T3, T4, T5, T6> ARRAY(a1: E<T1>, a2: E<T2>, a3: E<T3>, a4: E<T4>, a5: E<T5>, a6: E<T6>): Expression<List<Any>> =
-    ArrayValue(type(), listOf(a1, a2, a3, a4, a5, a6))
-
-@KarangoInputMarker
-fun <T1, T2, T3, T4, T5, T6, T7> ARRAY(a1: E<T1>, a2: E<T2>, a3: E<T3>, a4: E<T4>, a5: E<T5>, a6: E<T6>, a7: E<T7>): Expression<List<Any>> =
-    ArrayValue(type(), listOf(a1, a2, a3, a4, a5, a6, a7))
-
-@KarangoInputMarker
-fun <T1, T2, T3, T4, T5, T6, T7, T8> ARRAY(a1: E<T1>, a2: E<T2>, a3: E<T3>, a4: E<T4>, a5: E<T5>, a6: E<T6>, a7: E<T7>, a8: E<T8>): Expression<List<Any>> =
-    ArrayValue(type(), listOf(a1, a2, a3, a4, a5, a6, a7, a8))
-
-@KarangoInputMarker
-fun <T1, T2, T3, T4, T5, T6, T7, T8, T9> ARRAY(a1: E<T1>, a2: E<T2>, a3: E<T3>, a4: E<T4>, a5: E<T5>, a6: E<T6>, a7: E<T7>, a8: E<T8>, a9: E<T9>): Expression<List<Any>> =
-    ArrayValue(type(), listOf(a1, a2, a3, a4, a5, a6, a7, a8, a9))
-
-@KarangoInputMarker
-fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> ARRAY(a1: E<T1>, a2: E<T2>, a3: E<T3>, a4: E<T4>, a5: E<T5>, a6: E<T6>, a7: E<T7>, a8: E<T8>, a9: E<T9>, a10: E<T10>): Expression<List<Any>> =
-    ArrayValue(type(), listOf(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10))
+inline fun <reified T> ARRAY(vararg args: Expression<out T>): Expression<List<T>> = ArrayValue(type(), args.toList())
 
 data class Value<T>(private val type: TypeRef<T>, private val value: T, private val name: String) : Expression<T> {
 

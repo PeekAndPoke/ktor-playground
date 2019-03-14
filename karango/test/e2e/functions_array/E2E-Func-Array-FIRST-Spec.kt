@@ -23,12 +23,12 @@ class `E2E-Func-Array-FIRST-Spec` : StringSpec({
         ),
         row(
             "FIRST  (['a'])",
-            FIRST (ARRAY("a".aql)),
+            FIRST(ARRAY("a".aql)),
             "a"
         ),
         row(
             "FIRST  (['a', 'b'])",
-            FIRST (ARRAY("a".aql, "b".aql)),
+            FIRST(ARRAY("a".aql, "b".aql)),
             "a"
         )
     )

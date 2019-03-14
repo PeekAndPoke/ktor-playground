@@ -2,6 +2,7 @@ package de.peekandpoke.karango.aql
 
 import com.fasterxml.jackson.core.type.TypeReference
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl
+import java.io.Serializable
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
@@ -9,31 +10,31 @@ import java.lang.reflect.WildcardType
 inline fun <reified T> type() = object : TypeRef<T>() {}
 
 @Suppress("unused")
-inline fun <reified T> Class<T>.asTypeRef() : TypeRef<T> = type()
+inline fun <reified T> Class<T>.asTypeRef(): TypeRef<T> = type()
 
-open class TypeRef<T>(private val explicitType: Type? = null) : TypeReference<T>() {
+open class TypeRef<T> protected constructor(private val explicitType: Type? = null) : TypeReference<T>() {
 
     companion object {
 
         private val AnyInst: TypeRef<Any> = type()
-        
+
         private val AnyNullInst: TypeRef<Any?> = type()
-        
+
         private val BooleanInst: TypeRef<Boolean> = type()
-        
+
         private val NumberInst: TypeRef<Number> = type()
         private val NumberNullInst: TypeRef<Number?> = type()
-        
+
         private val StringInst: TypeRef<String> = type()
 
         val Any get() = AnyInst
         val AnyNull get() = AnyNullInst
-        
+
         val Boolean get() = BooleanInst
-        
+
         val Number get() = NumberInst
         val NumberNull get() = NumberNullInst
-        
+
         val String get() = StringInst
     }
 
@@ -42,18 +43,48 @@ open class TypeRef<T>(private val explicitType: Type? = null) : TypeReference<T>
      */
     private val ladder: List<Type> by lazy { buildLadder() }
 
+    private val resultingType: Type by lazy {
+
+        if (ladder.last().typeName == Serializable::class.qualifiedName) {
+
+            if (ladder.size == 1) {
+                return@lazy ParameterizedTypeImpl.make(kotlin.Any::class.java, arrayOf(), null)
+            }
+
+            if (ladder.size == 2) {
+
+                val params = arrayOf(kotlin.Any::class.java) 
+
+                return@lazy ParameterizedTypeImpl.make(ladder[0].toClass(), params, null)
+            }
+
+            if (ladder.size == 3) {
+
+                val params = arrayOf(
+                    ParameterizedTypeImpl.make(ladder[1].toClass(), arrayOf(kotlin.Any::class.java), null)
+                )
+
+                return@lazy ParameterizedTypeImpl.make(ladder[0].toClass(), params, null)
+            }
+            
+            // TODO: make this general for all nesting levels and all kinds of generics
+        }
+
+        if (explicitType != null) {
+            @Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
+            return@lazy explicitType!!
+        }
+
+        return@lazy super.getType()
+    }
+
     /**
      * Get the type.
      *
      * When have the type set explicitly through the constructor, we will return this one.
      * Otherwise we delegate to the parent class.
      */
-    override fun getType(): Type = explicitType.let {
-        when {
-            it != null -> it
-            else -> super.getType()
-        }
-    }
+    override fun getType(): Type = resultingType
 
     /**
      * Prints the string representation of the type.
@@ -114,7 +145,7 @@ open class TypeRef<T>(private val explicitType: Type? = null) : TypeReference<T>
     private fun buildLadder(): List<Type> {
 
         val result = mutableListOf<Type>()
-        var t: Type? = type
+        var t: Type? = explicitType ?: super.getType()
 
         while (t != null) {
 
@@ -133,7 +164,7 @@ open class TypeRef<T>(private val explicitType: Type? = null) : TypeReference<T>
                     // we add it
                     result.add(t)
                     // we look a the first type param only
-                    t = t.actualTypeArguments[0]
+                    t = t.actualTypeArguments.getOrNull(0)
 
                     // when the first type parameter is a wildcard type we continue with the type of its upper bound
                     if (t is WildcardType) {

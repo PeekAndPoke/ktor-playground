@@ -132,6 +132,13 @@ fun <T> FLATTEN(anyArray: Expression<List<T>>) = AqlFunc.FLATTEN.arrayCall(type<
 fun <T> FLATTEN(anyArray: Expression<List<T>>, depth: Expression<Number>) = AqlFunc.FLATTEN.arrayCall(type<List<Any>>(), anyArray, depth)
 
 /**
+ * Return the intersection of all arrays specified. The result is an array of values that occur in all arguments.
+ */
+@KarangoFuncMarker
+inline fun <reified T : Any> INTERSECTION(array1: Expression<out List<T>>, array2: Expression<out List<T>>, vararg arrayN: Expression<out List<T>>)
+        = AqlFunc.INTERSECTION.arrayCall(type<List<T>>(), array1, array2, *arrayN)
+
+/**
  * Determine the number of elements in an array.
  *
  * See https://docs.arangodb.com/current/AQL/Functions/Array.html#length
