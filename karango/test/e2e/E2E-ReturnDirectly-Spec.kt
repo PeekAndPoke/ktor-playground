@@ -74,12 +74,12 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.innerType().toString() shouldBe "java.util.List<? extends java.lang.String>"
+                result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.String>"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.List<? extends java.lang.String>>"
+                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.List<java.lang.String>>"
             }
         }
     }
@@ -222,12 +222,12 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.innerType().toString() shouldBe "java.util.List<? extends java.lang.Double>"
+                result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Double>"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.List<? extends java.lang.Double>>"
+                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.List<java.lang.Double>>"
             }
         }
     }
@@ -259,12 +259,12 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.innerType().toString() shouldBe "java.util.List<?>"
+                result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Object>"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.List<?>>"
+                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.List<java.lang.Object>>"
             }
         }
     }
@@ -296,12 +296,12 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.innerType().toString() shouldBe "java.util.List<? extends java.lang.Number>"
+                result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Number>"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.List<? extends java.lang.Number>>"
+                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.List<java.lang.Number>>"
             }
         }
     }
@@ -377,12 +377,12 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.innerType().toString() shouldBe "java.util.List<? extends ${E2ePerson::class.qualifiedName}>"
+                result.query.ret.innerType().toString() shouldBe "java.util.List<${E2ePerson::class.qualifiedName}>"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.List<? extends ${E2ePerson::class.qualifiedName}>>"
+                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.List<${E2ePerson::class.qualifiedName}>>"
             }
         }
     }
@@ -420,13 +420,13 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
                 result.query.ret.innerType().toString() shouldBe 
-                        "java.util.Map<java.lang.String, ? extends ${E2ePerson::class.qualifiedName}>"
+                        "java.util.Map<java.lang.String, ${E2ePerson::class.qualifiedName}>"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
                 result.query.ret.getType().toString() shouldBe 
-                        "java.util.List<java.util.Map<java.lang.String, ? extends ${E2ePerson::class.qualifiedName}>>"
+                        "java.util.List<java.util.Map<java.lang.String, ${E2ePerson::class.qualifiedName}>>"
             }
         }
     }
@@ -464,13 +464,13 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
                 result.query.ret.innerType().toString() shouldBe
-                        "java.util.Map<java.lang.String, ? extends java.util.List<? extends ${E2ePerson::class.qualifiedName}>>"
+                        "java.util.Map<java.lang.String, java.util.List<${E2ePerson::class.qualifiedName}>>"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
                 result.query.ret.getType().toString() shouldBe
-                        "java.util.List<java.util.Map<java.lang.String, ? extends java.util.List<? extends ${E2ePerson::class.qualifiedName}>>>"
+                        "java.util.List<java.util.Map<java.lang.String, java.util.List<${E2ePerson::class.qualifiedName}>>>"
             }
         }
     }

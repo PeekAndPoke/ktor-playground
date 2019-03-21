@@ -1,6 +1,7 @@
 package de.peekandpoke.karango.aql
 
 import com.fasterxml.jackson.core.type.TypeReference
+import de.peekandpoke.karango.KarangoException
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl
 import java.io.Serializable
 import java.lang.reflect.ParameterizedType
@@ -39,44 +40,14 @@ open class TypeRef<T> protected constructor(private val explicitType: Type? = nu
     }
 
     /**
-     * The type ladder
+     * Lazy val for the type tree
      */
-    private val ladder: List<Type> by lazy { buildLadder() }
+    private val tree: TypeNode by lazy { buildTree(explicitType ?: super.getType()) }
 
-    private val resultingType: Type by lazy {
-
-        if (ladder.last().typeName == Serializable::class.qualifiedName) {
-
-            if (ladder.size == 1) {
-                return@lazy ParameterizedTypeImpl.make(kotlin.Any::class.java, arrayOf(), null)
-            }
-
-            if (ladder.size == 2) {
-
-                val params = arrayOf(kotlin.Any::class.java) 
-
-                return@lazy ParameterizedTypeImpl.make(ladder[0].toClass(), params, null)
-            }
-
-            if (ladder.size == 3) {
-
-                val params = arrayOf(
-                    ParameterizedTypeImpl.make(ladder[1].toClass(), arrayOf(kotlin.Any::class.java), null)
-                )
-
-                return@lazy ParameterizedTypeImpl.make(ladder[0].toClass(), params, null)
-            }
-            
-            // TODO: make this general for all nesting levels and all kinds of generics
-        }
-
-        if (explicitType != null) {
-            @Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
-            return@lazy explicitType!!
-        }
-
-        return@lazy super.getType()
-    }
+    /**
+     * Lazy val for the type
+     */
+    private val resultingType: Type by lazy { tree.type }
 
     /**
      * Get the type.
@@ -104,11 +75,11 @@ open class TypeRef<T> protected constructor(private val explicitType: Type? = nu
      * and so on.
      */
     fun up(): TypeRef<List<T>> = TypeRef(
-        ParameterizedTypeImpl.make(List::class.java, arrayOf(type), null)
+        ParameterizedTypeImpl.make(List::class.java, arrayOf(tree.type), null)
     )
 
     /**
-     * Go down the "List-ladder"
+     * Go down the Type tree
      *
      * This will remove the outer List<...> layer.
      *
@@ -121,62 +92,68 @@ open class TypeRef<T> protected constructor(private val explicitType: Type? = nu
      *
      * String             -> will cause an ERROR ... so the caller must know if it is feasible to do this
      */
-    fun <X> down() = TypeRef<X>(
-        ParameterizedTypeImpl.make(
-            ladder[1].toClass(),
-            ladder.drop(2).toTypedArray(),
-            null
+    fun <X> down(): TypeRef<X> {
+
+        if (tree.children.isEmpty()) {
+            throw KarangoException("Cannot go down the tree, as the root has no children: \n$tree")
+        }
+
+        if (tree.children.size > 1) {
+            throw KarangoException("Cannot go down the tree, as the root has more than one child: \n$tree")
+        }
+
+        return TypeRef<X>(
+            ParameterizedTypeImpl.make(
+                tree.children[0].type.toClass(),
+                tree.children[0].children.map { it.type }.toTypedArray(),
+                null
+            )
         )
-    )
+    }
 
     /**
      * Create a class object from the a type
      */
     private fun Type.toClass() = when (this) {
         is ParameterizedType -> Class.forName(this.rawType.typeName)
-        else -> Class.forName(ladder[1].typeName)
+        else -> Class.forName(this.typeName)
     }
 
     /**
-     * Returns a list of Types that are useful for down()
+     * Build a tree of types
      *
-     * @see down()
+     * @see type
      */
-    private fun buildLadder(): List<Type> {
+    private fun buildTree(t: Type): TypeNode {
 
-        val result = mutableListOf<Type>()
-        var t: Type? = explicitType ?: super.getType()
-
-        while (t != null) {
-
-            when (t) {
-
-                // We can have a class... this means we have arrived at the innermost type
-                is Class<*> -> {
-                    // we add it
-                    result.add(t)
-                    // we terminate
-                    t = null
+        val children: List<TypeNode> = when (t) {
+            is ParameterizedType -> t.actualTypeArguments.map {
+                if (it !is WildcardType) {
+                    it
+                } else {
+                    it.upperBounds[0]
                 }
-
-                // We can have a parameterized type... this means we still have a List and did NOT yet arrive at the innermost type
-                is ParameterizedType -> {
-                    // we add it
-                    result.add(t)
-                    // we look a the first type param only
-                    t = t.actualTypeArguments.getOrNull(0)
-
-                    // when the first type parameter is a wildcard type we continue with the type of its upper bound
-                    if (t is WildcardType) {
-                        t = t.upperBounds[0]
-                    }
-                }
-
-                // in all other cases we terminate
-                else -> t = null
             }
+
+            else -> listOf()
+            
+        }.map { buildTree(it) }
+
+        val fixedType = when {
+            
+            t.typeName == Serializable::class.qualifiedName -> kotlin.Any::class.java
+
+            t is ParameterizedType -> ParameterizedTypeImpl.make(
+                t.toClass(),
+                children.map { it.type} .toTypedArray(),
+                null
+            )
+            
+            else -> t
         }
 
-        return result
+        return TypeNode(fixedType, children)
     }
 }
+
+internal class TypeNode(val type: Type, val children: List<TypeNode>)

@@ -22,7 +22,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
             result.first() shouldBe listOf(1L, 2L, 3L, 4L, 5L, 6L)
 
-            result.query.ret.innerType().toString() shouldBe "java.util.List<? extends java.lang.Number>"
+            result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Number>"
         }
     }
 
@@ -38,7 +38,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
             result.first() shouldBe listOf(1L, 2L, 3L, 4.5, 5.5, 6.5)
 
-            result.query.ret.innerType().toString() shouldBe "java.util.List<? extends java.lang.Number>"
+            result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Number>"
         }
     }
 
@@ -103,7 +103,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
             result.first() shouldBe listOf(10, 15, 20)
 
-            result.query.ret.innerType().toString() shouldBe "java.util.List<? extends java.lang.Integer>"
+            result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Integer>"
         }
     }
 

@@ -73,12 +73,12 @@ class `E2E-ReturnFromLet-Spec` : StringSpec({
 
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.innerType().toString() shouldBe "java.util.List<? extends java.lang.String>"
+                result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.String>"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.List<? extends java.lang.String>>"
+                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.List<java.lang.String>>"
             }
         }
     }
@@ -111,13 +111,13 @@ class `E2E-ReturnFromLet-Spec` : StringSpec({
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
                 result.query.ret.innerType().toString() shouldBe
-                        "java.util.Map<java.lang.String, ? extends java.lang.String>"
+                        "java.util.Map<java.lang.String, java.lang.String>"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
                 result.query.ret.getType().toString() shouldBe
-                        "java.util.List<java.util.Map<java.lang.String, ? extends java.lang.String>>"
+                        "java.util.List<java.util.Map<java.lang.String, java.lang.String>>"
             }
         }
     }
@@ -155,13 +155,13 @@ class `E2E-ReturnFromLet-Spec` : StringSpec({
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
                 result.query.ret.innerType().toString() shouldBe
-                        "java.util.List<? extends java.util.Map<java.lang.String, ? extends java.lang.Integer>>"
+                        "java.util.List<java.util.Map<java.lang.String, java.lang.Integer>>"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
                 result.query.ret.getType().toString() shouldBe
-                        "java.util.List<java.util.List<? extends java.util.Map<java.lang.String, ? extends java.lang.Integer>>>"
+                        "java.util.List<java.util.List<java.util.Map<java.lang.String, java.lang.Integer>>>"
             }
         }
     }
