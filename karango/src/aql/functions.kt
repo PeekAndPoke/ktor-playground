@@ -23,11 +23,11 @@ enum class AqlFunc {
     PUSH,                  
     REMOVE_NTH,            
     REMOVE_VALUE,          
-    REMOVE_VALUES,         // TODO: impl, tests
-    SHIFT,                 // TODO: impl, tests
-    SLICE,                 // TODO: impl, tests
-    SORTED,                // TODO: impl, tests
-    SORTED_UNIQUE,         // TODO: impl, tests
+    REMOVE_VALUES,         
+    SHIFT,                 
+    SLICE,                 
+    SORTED,                
+    SORTED_UNIQUE,         
     UNION,                 // TODO: impl, tests
     UNION_DISTINCT,        // TODO: impl, tests
     UNIQUE,                // TODO: impl, tests

@@ -227,7 +227,7 @@ fun <T> REMOVE_VALUE(anyArray: Expression<List<T>>, value: Expression<T>, limit:
  * See https://docs.arangodb.com/current/AQL/Functions/Array.html#remove_values
  */
 @KarangoFuncMarker
-inline fun <reified T> REMOVE_VALUES(anyArray: Expression<out List<T>>, values: Expression<out List<T>>) = 
+inline fun <reified T> REMOVE_VALUES(anyArray: Expression<out List<T>>, values: Expression<out List<T>>) =
     AqlFunc.REMOVE_VALUES.arrayCall(type<List<T>>(), anyArray, values)
 
 /**
@@ -237,3 +237,46 @@ inline fun <reified T> REMOVE_VALUES(anyArray: Expression<out List<T>>, values: 
  */
 @KarangoFuncMarker
 fun <T> REVERSE(anyArray: Expression<List<T>>) = AqlFunc.REVERSE.arrayCall(anyArray.getType(), anyArray)
+
+/**
+ * Remove the first element of array.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/Array.html#shift
+ */
+@KarangoFuncMarker
+fun <T> SHIFT(anyArray: Expression<List<T>>) = AqlFunc.SHIFT.arrayCall(anyArray.getType(), anyArray)
+
+/**
+ * Extract a slice of anyArray.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/Array.html#slice
+ */
+@KarangoFuncMarker
+fun <T> SLICE(anyArray: Expression<List<T>>, start: Expression<Number>) =
+    AqlFunc.SLICE.arrayCall(anyArray.getType(), anyArray, start)
+
+/**
+ * Extract a slice of anyArray.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/Array.html#slice
+ */
+@KarangoFuncMarker
+fun <T> SLICE(anyArray: Expression<List<T>>, start: Expression<Number>, length: Expression<Number>) =
+    AqlFunc.SLICE.arrayCall(anyArray.getType(), anyArray, start, length)
+
+/**
+ * Sort all elements in anyArray. The function will use the default comparison order for AQL value types.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/Array.html#sorted
+ */
+@KarangoFuncMarker
+fun <T> SORTED(anyArray: Expression<List<T>>) = AqlFunc.SORTED.arrayCall(anyArray.getType(), anyArray)
+
+/**
+ * Sort all elements in anyArray. The function will use the default comparison order for AQL value types. 
+ * Additionally, the values in the result array will be made unique.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/Array.html#sorted
+ */
+@KarangoFuncMarker
+fun <T> SORTED_UNIQUE(anyArray: Expression<List<T>>) = AqlFunc.SORTED_UNIQUE.arrayCall(anyArray.getType(), anyArray)
