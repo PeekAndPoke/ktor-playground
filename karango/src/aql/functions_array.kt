@@ -180,9 +180,9 @@ fun <T> POSITION(anyArray: Expression<List<T>>, search: Expression<T>) = AqlFunc
 fun <T> POSITION_IDX(anyArray: Expression<List<T>>, search: Expression<T>) = AqlFunc.POSITION.numberCall(anyArray, search, true.aql)
 
 /**
- * Remove the last element of array.
+ * Append value to anyArray (right side).
  *
- * See https://docs.arangodb.com/current/AQL/Functions/Array.html#pop
+ * See https://docs.arangodb.com/current/AQL/Functions/Array.html#push
  */
 @KarangoFuncMarker
 inline fun <reified T> PUSH(anyArray: Expression<out List<T>>, value: Expression<out T>) = AqlFunc.PUSH.arrayCall(type<List<T>>(), anyArray, value)
@@ -280,3 +280,46 @@ fun <T> SORTED(anyArray: Expression<List<T>>) = AqlFunc.SORTED.arrayCall(anyArra
  */
 @KarangoFuncMarker
 fun <T> SORTED_UNIQUE(anyArray: Expression<List<T>>) = AqlFunc.SORTED_UNIQUE.arrayCall(anyArray.getType(), anyArray)
+
+/**
+ * Return the union of all arrays specified.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/Array.html#union
+ */
+@KarangoFuncMarker
+inline fun <reified T : Any> UNION(array1: Expression<out List<T>>, array2: Expression<out List<T>>, vararg arrayN: Expression<out List<T>>) =
+    AqlFunc.UNION.arrayCall(type<List<T>>(), array1, array2, *arrayN)
+
+/**
+ * Return the union of distinct values of all arrays specified.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/Array.html#union_destinct
+ */
+@KarangoFuncMarker
+inline fun <reified T : Any> UNION_DISTINCT(array1: Expression<out List<T>>, array2: Expression<out List<T>>, vararg arrayN: Expression<out List<T>>) =
+    AqlFunc.UNION_DISTINCT.arrayCall(type<List<T>>(), array1, array2, *arrayN)
+
+/**
+ * Return all unique elements in anyArray. To determine uniqueness, the function will use the comparison order.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/Array.html#unique
+ */
+@KarangoFuncMarker
+fun <T> UNIQUE(anyArray: Expression<List<T>>) = AqlFunc.UNIQUE.arrayCall(anyArray.getType(), anyArray)
+
+/**
+ * Prepend value to anyArray (left side).
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/Array.html#unshift
+ */
+@KarangoFuncMarker
+inline fun <reified T> UNSHIFT(anyArray: Expression<out List<T>>, value: Expression<out T>) = AqlFunc.UNSHIFT.arrayCall(type<List<T>>(), anyArray, value)
+
+/**
+ * Prepend value to anyArray (left side).
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/Array.html#unshift
+ */
+@KarangoFuncMarker
+inline fun <reified T> UNSHIFT(anyArray: Expression<out List<T>>, value: Expression<out T>, unique: Expression<Boolean>) = 
+    AqlFunc.UNSHIFT.arrayCall(type<List<T>>(), anyArray, value, unique)

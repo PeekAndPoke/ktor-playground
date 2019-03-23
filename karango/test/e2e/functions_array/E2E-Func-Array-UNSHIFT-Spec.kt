@@ -1,8 +1,8 @@
 package de.peekandpoke.karango.e2e.functions_array
 
 import de.peekandpoke.karango.aql.ARRAY
-import de.peekandpoke.karango.aql.PUSH
 import de.peekandpoke.karango.aql.TerminalExpr
+import de.peekandpoke.karango.aql.UNSHIFT
 import de.peekandpoke.karango.aql.aql
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue
@@ -11,27 +11,37 @@ import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 
 @Suppress("ClassName")
-class `E2E-Func-Array-PUSH-Spec` : StringSpec({
+class `E2E-Func-Array-UNSHIFT-Spec` : StringSpec({
 
     val cases = listOf(
         row(
-            "PUSH ([], 0)",
-            PUSH(ARRAY(), 1.aql),
+            "UNSHIFT ([], 0)",
+            UNSHIFT(ARRAY(), 1.aql),
             listOf(1L)
         ),
         row(
-            "PUSH ([1], 'a')",
-            PUSH(ARRAY(1.aql), "a".aql),
-            listOf(1L, "a")
+            "UNSHIFT ([1], 'a')",
+            UNSHIFT(ARRAY(1.aql), "a".aql),
+            listOf("a", 1L)
         ),
         row(
-            "PUSH ([1], 1, true)",
-            PUSH(ARRAY(1.aql), 1.aql, true.aql),
+            "UNSHIFT ([1], 1, true)",
+            UNSHIFT(ARRAY(1.aql), 1.aql, true.aql),
             listOf(1L)
         ),
         row(
-            "PUSH ([1, 1], 2, true)",
-            PUSH(ARRAY(1.aql, 1.aql), 2.aql, true.aql),
+            "UNSHIFT ([1], 2, true)",
+            UNSHIFT(ARRAY(1.aql), 2.aql, true.aql),
+            listOf(2L, 1L)
+        ),
+        row(
+            "UNSHIFT ([1, 1], 2, true)",
+            UNSHIFT(ARRAY(1.aql, 1.aql), 2.aql, true.aql),
+            listOf(2L, 1L, 1L)
+        ),
+        row(
+            "UNSHIFT ([1, 1, 2], 2, true)",
+            UNSHIFT(ARRAY(1.aql, 1.aql, 2.aql), 2.aql, true.aql),
             listOf(1L, 1L, 2L)
         )
     )

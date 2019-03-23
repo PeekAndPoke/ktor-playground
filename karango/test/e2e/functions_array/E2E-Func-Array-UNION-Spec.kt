@@ -1,8 +1,8 @@
 package de.peekandpoke.karango.e2e.functions_array
 
 import de.peekandpoke.karango.aql.ARRAY
-import de.peekandpoke.karango.aql.PUSH
 import de.peekandpoke.karango.aql.TerminalExpr
+import de.peekandpoke.karango.aql.UNION
 import de.peekandpoke.karango.aql.aql
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue
@@ -11,28 +11,33 @@ import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 
 @Suppress("ClassName")
-class `E2E-Func-Array-PUSH-Spec` : StringSpec({
+class `E2E-Func-Array-UNION-Spec` : StringSpec({
 
     val cases = listOf(
         row(
-            "PUSH ([], 0)",
-            PUSH(ARRAY(), 1.aql),
+            "UNION ([], [])",
+            UNION(ARRAY(), ARRAY()),
+            listOf()
+        ),
+        row(
+            "UNION ([1], [])",
+            UNION(ARRAY(1.aql), ARRAY()),
             listOf(1L)
         ),
         row(
-            "PUSH ([1], 'a')",
-            PUSH(ARRAY(1.aql), "a".aql),
-            listOf(1L, "a")
+            "UNION ([1, 2], [2, 3])",
+            UNION(ARRAY(1.aql, 2.aql), ARRAY(2.aql, 3.aql)),
+            listOf(1L, 2L, 2L, 3L)
         ),
         row(
-            "PUSH ([1], 1, true)",
-            PUSH(ARRAY(1.aql), 1.aql, true.aql),
-            listOf(1L)
+            "UNION ([1, 2], ['a', 'b'])",
+            UNION(ARRAY(1.aql, 2.aql), ARRAY("a".aql, "b".aql)),
+            listOf(1L, 2L, "a", "b")
         ),
         row(
-            "PUSH ([1, 1], 2, true)",
-            PUSH(ARRAY(1.aql, 1.aql), 2.aql, true.aql),
-            listOf(1L, 1L, 2L)
+            "UNION ([1, 2], ['a', 'b'], ['c'])",
+            UNION(ARRAY(1.aql, 2.aql), ARRAY("a".aql, "b".aql), ARRAY("c".aql)),
+            listOf(1L, 2L, "a", "b", "c")
         )
     )
     

@@ -28,9 +28,9 @@ enum class AqlFunc {
     SLICE,                 
     SORTED,                
     SORTED_UNIQUE,         
-    UNION,                 // TODO: impl, tests
-    UNION_DISTINCT,        // TODO: impl, tests
-    UNIQUE,                // TODO: impl, tests
+    UNION,                 
+    UNION_DISTINCT,        
+    UNIQUE,                
     UNSHIFT,               // TODO: impl, tests
 
     // Date TODO
