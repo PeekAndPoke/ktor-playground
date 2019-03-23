@@ -197,6 +197,31 @@ inline fun <reified T> PUSH(anyArray: Expression<out List<T>>, value: Expression
     AqlFunc.PUSH.arrayCall(type<List<T>>(), anyArray, value, unique)
 
 /**
+ * Remove the element at position from the anyArray.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/Array.html#remove_nth
+ */
+@KarangoFuncMarker
+fun <T> REMOVE_NTH(anyArray: Expression<List<T>>, position: Expression<Number>) = AqlFunc.REMOVE_NTH.arrayCall(anyArray.getType(), anyArray, position)
+
+/**
+ * Remove the element at value from the anyArray.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/Array.html#remove_value
+ */
+@KarangoFuncMarker
+fun <T> REMOVE_VALUE(anyArray: Expression<List<T>>, value: Expression<T>) = AqlFunc.REMOVE_VALUE.arrayCall(anyArray.getType(), anyArray, value)
+
+/**
+ * Remove the element at value from the anyArray.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/Array.html#remove_value
+ */
+@KarangoFuncMarker
+fun <T> REMOVE_VALUE(anyArray: Expression<List<T>>, value: Expression<T>, limit: Expression<Number>) =
+    AqlFunc.REMOVE_VALUE.arrayCall(anyArray.getType(), anyArray, value, limit)
+
+/**
  * Return an array with its elements reversed.
  *
  * See https://docs.arangodb.com/current/AQL/Functions/Array.html#reverse

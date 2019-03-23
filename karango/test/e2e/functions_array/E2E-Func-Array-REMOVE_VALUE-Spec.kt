@@ -1,7 +1,7 @@
 package de.peekandpoke.karango.e2e.functions_array
 
 import de.peekandpoke.karango.aql.ARRAY
-import de.peekandpoke.karango.aql.POP
+import de.peekandpoke.karango.aql.REMOVE_VALUE
 import de.peekandpoke.karango.aql.aql
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue
@@ -10,31 +10,46 @@ import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 
 @Suppress("ClassName")
-class `E2E-Func-Array-POP-Spec` : StringSpec({
+class `E2E-Func-Array-REMOVE_VALUE-Spec` : StringSpec({
 
     val cases = listOf(
         row(
-            "POP ([])",
-            POP(ARRAY()),
+            "REMOVE_VALUE ([], 0)",
+            REMOVE_VALUE(ARRAY(), 0.aql),
             listOf()
         ),
         row(
-            "POP ([1])",
-            POP(ARRAY(1.aql)),
+            "REMOVE_VALUE ([1], 1)",
+            REMOVE_VALUE(ARRAY(1.aql), 1.aql),
             listOf()
         ),
         row(
-            "POP ([1, 2])",
-            POP(ARRAY(1.aql, 2.aql)),
+            "REMOVE_VALUE ([1], 0)",
+            REMOVE_VALUE(ARRAY(1.aql), 0.aql),
             listOf(1L)
         ),
         row(
-            "POP ([1, 2, 3])",
-            POP(ARRAY(1.aql, 2.aql, 3.aql)),
+            "REMOVE_VALUE ([1, 2], 1)",
+            REMOVE_VALUE(ARRAY(1.aql, 2.aql), 1.aql),
+            listOf(2L)
+        ),
+        row(
+            "REMOVE_VALUE ([1, 2], 2)",
+            REMOVE_VALUE(ARRAY(1.aql, 2.aql), 2.aql),
+            listOf(1L)
+        ),
+        row(
+            "REMOVE_VALUE ([1, 1, 2], 1, 1)",
+            REMOVE_VALUE(ARRAY(1.aql, 1.aql, 2.aql), 1.aql, 1.aql),
             listOf(1L, 2L)
+        ),
+        row(
+            "REMOVE_VALUE ([1, 1, 2], 1, 2)",
+            REMOVE_VALUE(ARRAY(1.aql, 1.aql, 2.aql), 1.aql, 2.aql),
+            listOf(2L)
         )
     )
-    
+
     for ((description, expression, expected) in cases) {
 
         "$description - direct return" {

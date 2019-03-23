@@ -2,7 +2,6 @@ package de.peekandpoke.karango.e2e.functions_array
 
 import de.peekandpoke.karango.aql.ARRAY
 import de.peekandpoke.karango.aql.LENGTH
-import de.peekandpoke.karango.aql.TerminalExpr
 import de.peekandpoke.karango.aql.aql
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue
@@ -31,8 +30,7 @@ class `E2E-Func-Array-LENGTH-Spec` : StringSpec({
         "$description - direct return" {
 
             val result = db.query {
-                @Suppress("UNCHECKED_CAST")
-                RETURN(expression) as TerminalExpr<Any>
+                RETURN(expression)
             }
 
             withClue(expression, expected) {
@@ -45,8 +43,7 @@ class `E2E-Func-Array-LENGTH-Spec` : StringSpec({
             val result = db.query {
                 val l = LET("l", expression)
 
-                @Suppress("UNCHECKED_CAST")
-                RETURN(l) as TerminalExpr<Any>
+                RETURN(l)
             }
 
             withClue(expression, expected) {

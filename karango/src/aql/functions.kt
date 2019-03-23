@@ -21,8 +21,8 @@ enum class AqlFunc {
     POP,                   
     POSITION,              
     PUSH,                  
-    REMOVE_NTH,            // TODO: impl, tests
-    REMOVE_VALUE,          // TODO: impl, tests
+    REMOVE_NTH,            
+    REMOVE_VALUE,          
     REMOVE_VALUES,         // TODO: impl, tests
     SHIFT,                 // TODO: impl, tests
     SLICE,                 // TODO: impl, tests
