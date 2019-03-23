@@ -222,6 +222,15 @@ fun <T> REMOVE_VALUE(anyArray: Expression<List<T>>, value: Expression<T>, limit:
     AqlFunc.REMOVE_VALUE.arrayCall(anyArray.getType(), anyArray, value, limit)
 
 /**
+ * Remove all occurrences of any of the values from anyArray.
+ *
+ * See https://docs.arangodb.com/current/AQL/Functions/Array.html#remove_values
+ */
+@KarangoFuncMarker
+inline fun <reified T> REMOVE_VALUES(anyArray: Expression<out List<T>>, values: Expression<out List<T>>) = 
+    AqlFunc.REMOVE_VALUES.arrayCall(type<List<T>>(), anyArray, values)
+
+/**
  * Return an array with its elements reversed.
  *
  * See https://docs.arangodb.com/current/AQL/Functions/Array.html#reverse
