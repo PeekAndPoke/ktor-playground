@@ -1,7 +1,8 @@
 package de.peekandpoke.karango.e2e.functions_array
 
 import de.peekandpoke.karango.aql.ARRAY
-import de.peekandpoke.karango.aql.CONTAINS_ARRAY
+import de.peekandpoke.karango.aql.PUSH
+import de.peekandpoke.karango.aql.TerminalExpr
 import de.peekandpoke.karango.aql.aql
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue
@@ -10,37 +11,38 @@ import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 
 @Suppress("ClassName")
-class `E2E-Func-Array-CONTAINS_ARRAY-Spec` : StringSpec({
+class `E2E-Func-Array-PUSH-Spec` : StringSpec({
 
     val cases = listOf(
         row(
-            "CONTAINS_ARRAY ([], 0)",
-            CONTAINS_ARRAY(ARRAY<Number>(), 0.aql),
-            false
+            "PUSH ([], 0)",
+            PUSH(ARRAY(), 1.aql),
+            listOf(1L)
         ),
         row(
-            "CONTAINS_ARRAY ([1], 1)",
-            CONTAINS_ARRAY(ARRAY(1.aql), 1.aql),
-            true
+            "PUSH ([1], 'a')",
+            PUSH(ARRAY(1.aql), "a".aql),
+            listOf(1L, "a")
         ),
         row(
-            "CONTAINS_ARRAY ([1, 2, 3], 3)",
-            CONTAINS_ARRAY(ARRAY(1.aql, 2.aql, 3.aql), 3.aql),
-            true
+            "PUSH ([1], 1, true)",
+            PUSH(ARRAY(1.aql), 1.aql, true.aql),
+            listOf(1L)
         ),
         row(
-            "CONTAINS_ARRAY ([1, 2, 3], 4)",
-            CONTAINS_ARRAY(ARRAY(1.aql, 2.aql, 3.aql), 4.aql),
-            false
+            "PUSH ([1], 2, true)",
+            PUSH(ARRAY(1.aql), 2.aql, true.aql),
+            listOf(1L, 2L)
         )
     )
-
+    
     for ((description, expression, expected) in cases) {
 
         "$description - direct return" {
 
             val result = db.query {
-                RETURN(expression)
+                @Suppress("UNCHECKED_CAST")
+                RETURN(expression) as TerminalExpr<Any>
             }
 
             withClue(expression, expected) {
@@ -52,7 +54,9 @@ class `E2E-Func-Array-CONTAINS_ARRAY-Spec` : StringSpec({
 
             val result = db.query {
                 val l = LET("l", expression)
-                RETURN(l)
+
+                @Suppress("UNCHECKED_CAST")
+                RETURN(l) as TerminalExpr<Any>
             }
 
             withClue(expression, expected) {

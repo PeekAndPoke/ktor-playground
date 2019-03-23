@@ -13,14 +13,14 @@ enum class AqlFunc {
     COUNT_UNIQUE,          
     FIRST,                 
     FLATTEN,               
-    INTERSECTION,          // TODO: impl, tests
-    LAST,                  // TODO: impl, tests
-    MINUS,                 // TODO: impl, tests
-    NTH,                   // TODO: impl, tests
-    OUTERSECTION,          // TODO: impl, tests
-    POP,                   // TODO: impl, tests
+    INTERSECTION,          
+    LAST,                  
+    MINUS,                 
+    NTH,                   
+    OUTERSECTION,          
+    POP,                   
     POSITION,              
-    PUSH,                  // TODO: impl, tests
+    PUSH,                  
     REMOVE_NTH,            // TODO: impl, tests
     REMOVE_VALUE,          // TODO: impl, tests
     REMOVE_VALUES,         // TODO: impl, tests

@@ -47,8 +47,6 @@ interface Expression<T> : Printable {
     fun getType(): TypeRef<T>
 }
 
-typealias E<T> = Expression<T>
-
 /**
  * Base interface for all terminal Expressions.
  *

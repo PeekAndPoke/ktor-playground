@@ -20,7 +20,7 @@ class `E2E-Func-Array-COUNT-Spec` : StringSpec({
         ),
         row(
             "COUNT (['a'])",
-            COUNT(ARRAY<Any>("a".aql)),
+            COUNT(ARRAY("a".aql)),
             1L
         )
     )

@@ -1,5 +1,6 @@
 package de.peekandpoke.karango.e2e.functions_array
 
+import de.peekandpoke.karango.Cursor
 import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.e2e.*
 import io.kotlintest.assertSoftly
@@ -30,7 +31,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
         val result = db.query {
             RETURN(
-                APPEND<Number>(ARRAY(1.aql, 2.aql, 3.aql), listOf(4.5, 5.5, 6.5).aql)
+                APPEND(ARRAY(1.aql, 2.aql, 3.aql), listOf(4.5, 5.5, 6.5).aql)
             )
         }
 
@@ -44,9 +45,9 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
     "APPEND must return the correct typeref for incompatible arrays" {
 
-        val result = db.query {
+        val result: Cursor<List<Any>> = db.query {
             RETURN(
-                APPEND(type<Any>(), ARRAY(1.aql), ARRAY("a".aql))
+                APPEND<Any>(ARRAY(1.aql), ARRAY("a".aql))
             )
         }
 
@@ -62,7 +63,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
         val result = db.query {
             RETURN(
-                APPEND(type<Any>(), ARRAY(1.aql, 1.aql), ARRAY("a".aql, "a".aql), true.aql)
+                APPEND<Any>(ARRAY(1.aql, 1.aql), ARRAY("a".aql, "a".aql), true.aql)
             )
         }
 
@@ -127,7 +128,8 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
             RETURN(
                 APPEND(
-                    type<Any>(), FOR(a) { RETURN(it.age) }, FOR(b) { RETURN(it.name) }, true.aql
+                    FOR(a) { RETURN(it.age) },
+                    FOR(b) { RETURN(it.name) }
                 )
             )
         }
@@ -159,7 +161,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
             }
 
             RETURN(
-                APPEND(type<Any>(), a[`*`].age, b[`*`].name, true.aql)
+                APPEND(a[`*`].age, b[`*`].name, true.aql)
             )
         }
 
@@ -175,7 +177,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
     val cases = listOf(
         row(
             "APPEND ([], [])",
-            APPEND<Number>(ARRAY(), ARRAY()),
+            APPEND(ARRAY(), ARRAY()),
             listOf()
         ),
         row(
@@ -190,7 +192,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
         ),
         row(
             "APPEND ([1,2,3], [4,5,6])",
-            APPEND<Number>(ARRAY(1.aql, 2.aql, 3.aql), listOf(4, 5, 6).aql),
+            APPEND(ARRAY(1.aql, 2.aql, 3.aql), listOf(4, 5, 6).aql),
             listOf(1L, 2L, 3L, 4L, 5L, 6L)
         ),
         row(
