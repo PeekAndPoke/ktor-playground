@@ -2,7 +2,12 @@
 
 Running ArangoDB in docker container (root-password:root)
 
-> docker run -e ARANGO_ROOT_PASSWORD=root -p 8529:8529 -d arangodb
+```bash
+docker run --name "karango" -e ARANGO_ROOT_PASSWORD= -p 8529:8529 -d arangodb 
+sleep 30
+docker exec -t karango arangosh --server.username=root --server.password= --javascript.execute-string="db._createDatabase('kotlindev')"
+
+```
 
 
 TODO

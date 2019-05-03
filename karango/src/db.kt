@@ -6,11 +6,16 @@ import com.arangodb.entity.CursorEntity
 import com.arangodb.model.AqlQueryOptions
 import com.arangodb.model.CollectionCreateOptions
 import com.arangodb.model.DocumentCreateOptions
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.InjectableValues
+import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.convertValue
 import de.peekandpoke.karango.aql.*
 import kotlin.system.measureTimeMillis
+
 
 class Db(private val database: ArangoDatabase) {
 
@@ -21,6 +26,7 @@ class Db(private val database: ArangoDatabase) {
                 configure { mapper ->
                     mapper.registerModule(KotlinModule())
                     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                    mapper.configure(MapperFeature.USE_ANNOTATIONS, true)
                 }
             }
 
@@ -69,11 +75,21 @@ class Db(private val database: ArangoDatabase) {
 
         lateinit var result: ArangoCursor<*>
 
+        val mapper = ObjectMapper();
+        val mapped = mapper.convertValue<Map<String, Any>>(query.vars)
+        
         val time = measureTimeMillis {
-            result = database.query(query.aql, query.vars, options, Object::class.java)
+            result = database.query(query.aql, mapped, options, Object::class.java)
         }
 
-        return CursorImpl(result, query, time)
+        val deserializationMapper = ObjectMapper()
+            .registerModule(KotlinModule())
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .setInjectableValues(
+                InjectableValues.Std().addValue("__db", this)
+            )
+
+        return CursorImpl(result, query, time, deserializationMapper)
     }
 }
 
@@ -83,23 +99,21 @@ interface Cursor<T> : Iterable<T> {
     val stats: CursorEntity.Stats
 }
 
-private val cursorMapper = ObjectMapper()
-    .registerModule(KotlinModule())
-    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
 class CursorImpl<T>(
     private val arangoCursor: ArangoCursor<*>,
     override val query: TypedQuery<T>,
-    override val timeMs: Long
+    override val timeMs: Long,
+    mapper: ObjectMapper
 ) : Cursor<T> {
 
-    private val iterator = It(arangoCursor, query.ret.innerType())
+    private val iterator = It(arangoCursor, query.ret.innerType(), mapper)
 
-    class It<T>(private val inner: ArangoIterator<*>, private val type: TypeRef<T>) : Iterator<T> {
+    class It<T>(private val inner: ArangoIterator<*>, private val type: TypeRef<T>, private val mapper: ObjectMapper) : Iterator<T> {
 
         override fun hasNext(): Boolean = inner.hasNext()
 
-        override fun next(): T = cursorMapper.convertValue(inner.next(), type)
+        override fun next(): T = mapper.convertValue(inner.next(), type)
     }
 
     override val stats: CursorEntity.Stats get() = arangoCursor.stats
@@ -107,9 +121,26 @@ class CursorImpl<T>(
     override fun iterator() = iterator
 }
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 @Suppress("PropertyName")
 interface Entity {
-    val _id: String
+    val _id: String?
+}
+
+val Entity?.id : String get() = when {
+    this === null -> ""
+    this._id === null -> ""
+    else -> this._id!!
+}
+
+@Suppress("PropertyName")
+interface WithKey {
+    val _key: String?
+}
+
+@Suppress("PropertyName")
+interface WithRev {
+    val _rev: String
 }
 
 @Suppress("PropertyName")
@@ -118,15 +149,6 @@ interface Edge : Entity {
     val _to: String
 }
 
-@Suppress("PropertyName")
-interface WithKey {
-    val _key: String
-}
-
-@Suppress("PropertyName")
-interface WithRev {
-    val _rev: String
-}
 
 class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor(
     private val db: Db,

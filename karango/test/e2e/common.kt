@@ -8,7 +8,7 @@ import de.peekandpoke.karango.meta.EntityCollection
 import io.kotlintest.TestContext
 import io.kotlintest.matchers.withClue
 
-val db = Db.default(user = "root", pass = "root", host = "localhost", port = 8529, database = "kotlindev")
+val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev")
 
 @EntityCollection("e2e-persons", "E2ePersons")
 data class E2ePerson(val name: String, val age: Int)

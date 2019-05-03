@@ -31,7 +31,7 @@ enum class AqlFunc {
     UNION,                 
     UNION_DISTINCT,        
     UNIQUE,                
-    UNSHIFT,               // TODO: impl, tests
+    UNSHIFT,               
 
     // Date TODO
 

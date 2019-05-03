@@ -10,6 +10,9 @@ import de.peekandpoke.karango.CollectionDefinition
 inline fun <reified T> DOCUMENT(id: String): Expression<T> =
     AqlFunc.DOCUMENT.call(type(), id.aql("id"))
 
+fun <T> DOCUMENT(cls: Class<T>, id: String) : Expression<T> =
+        AqlFunc.DOCUMENT.call(cls.asTypeRef(), id.aql("id"))
+
 /**
  * Get a single document from the given collection by its key.
  */

@@ -5,10 +5,12 @@ import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.examples.printDivider
 import de.peekandpoke.karango.examples.printQueryResult
 import de.peekandpoke.karango.examples.runDemo
+import de.peekandpoke.karango.id
 
-val db = Db.default(user = "root", pass = "root", host = "localhost", port = 8529, database = "kotlindev")
+val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev")
 
 val characters = db.collection(Characters)
+val actors = db.collection(Actors)
 
 fun main() {
 
@@ -50,19 +52,28 @@ fun clearData() {
     println("Clear all existing characters")
 
     characters.removeAll()
+
+    println("Clear all existing actors")
+
+    actors.removeAll()
 }
 
 fun installData() {
     println("==========================================================================================================================")
     println("Inserting all characters using a LET statement")
 
+    val markAddy = actors.save(Actor("Mark", "Addy"))
+    val seanBean = actors.save(Actor("Sean", "Bean"))
+
+    println(seanBean)
+
     db.query {
 
         val data = LET("data") {
             listOf(
-                Character(name = "Robert", surname = "Baratheon", alive = false, traits = listOf("A", "H", "C")),
+                Character(name = "Robert", surname = "Baratheon", alive = false, traits = listOf("A", "H", "C"), actor = markAddy),
                 Character(name = "Jaime", surname = "Lannister", alive = true, age = 36, traits = listOf("A", "F", "B")),
-                Character(name = "Eddard", surname = "Stark", alive = true, age = 47, traits = listOf("D", "H", "C")),
+                Character(name = "Eddard", surname = "Stark", alive = true, age = 47, traits = listOf("D", "H", "C"), actor = seanBean),
                 Character(name = "Catelyn", surname = "Stark", alive = true, age = 40, traits = listOf("D", "H", "C")),
                 Character(name = "Cersei", surname = "Lannister", alive = true, age = 36, traits = listOf("H", "E", "F")),
                 Character(name = "Daenerys", surname = "Targaryen", alive = true, age = 16, traits = listOf("D", "H", "C")),
@@ -113,7 +124,7 @@ fun installData() {
 }
 
 private fun printCharacter(idx: Int, it: Character) =
-    "  ${idx + 1}. ${it.name} ${it.surname} - age ${it.age} - ${if (it.alive) "alive" else "gone"}"
+    "  ${idx + 1}. ${it.name} ${it.surname} - age ${it.age} - ${if (it.alive) "alive" else "gone"} - actor: ${it.actor}"
 
 fun findBaratheons() {
     println("==========================================================================================================================")
@@ -146,7 +157,7 @@ fun findStarks() {
 fun findBranStarkV1() {
 
     // to do what we want to do, we need the ID of Bran Stark
-    val bransId = characters.findOne { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }!!._id
+    val bransId = characters.findOne { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }.id
 
     println("==========================================================================================================================")
     println("Find Bran Stark by ID with an explicit query on the db object")
@@ -163,7 +174,7 @@ fun findBranStarkV1() {
 fun findBranStarkV2() {
 
     // to do what we want to do, we need the ID of Bran Stark
-    val bransId = characters.findOne { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }!!._id
+    val bransId = characters.findOne { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }.id
 
     println("==========================================================================================================================")
     println("Find Bran Stark by ID using our collection class")
@@ -178,9 +189,9 @@ fun findBranStarkV2() {
 fun findThreeCharactersByIdV1() {
 
     // to do what we want to do, we need the ID of Bran Stark
-    val bransId = characters.findOne { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }!!._id
-    val aryasId = characters.findOne { t -> FILTER((t.name EQ "Arya") AND (t.surname EQ "Stark")) }!!._id
-    val tyrionsId = characters.findOne { t -> FILTER((t.name EQ "Tyrion") AND (t.surname EQ "Lannister")) }!!._id
+    val bransId = characters.findOne { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }.id
+    val aryasId = characters.findOne { t -> FILTER((t.name EQ "Arya") AND (t.surname EQ "Stark")) }.id
+    val tyrionsId = characters.findOne { t -> FILTER((t.name EQ "Tyrion") AND (t.surname EQ "Lannister")) }.id
 
     println("==========================================================================================================================")
     println("Find Arya, Bran and Tyrion at once by their IDs using our collection class")
@@ -193,9 +204,9 @@ fun findThreeCharactersByIdV1() {
 fun findThreeCharactersByIdV2() {
 
     // to do what we want to do, we need the ID of Bran Stark
-    val bransId = characters.findOne { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }!!._id
-    val aryasId = characters.findOne { t -> FILTER((t.name EQ "Arya") AND (t.surname EQ "Stark")) }!!._id
-    val tyrionsId = characters.findOne { t -> FILTER((t.name EQ "Tyrion") AND (t.surname EQ "Lannister")) }!!._id
+    val bransId = characters.findOne { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }.id
+    val aryasId = characters.findOne { t -> FILTER((t.name EQ "Arya") AND (t.surname EQ "Stark")) }.id
+    val tyrionsId = characters.findOne { t -> FILTER((t.name EQ "Tyrion") AND (t.surname EQ "Lannister")) }.id
 
     println("==========================================================================================================================")
     println("Find Arya, Bran and Tyrion at once by their IDs using the db object")

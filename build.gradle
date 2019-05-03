@@ -13,6 +13,12 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'application'
 apply plugin: 'idea'
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
 group 'ktor-playground'
 version '0.0.1'
 mainClassName = "io.ktor.server.netty.EngineMain"
@@ -52,6 +58,12 @@ dependencies {
 
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
+    // logging
+    compile "net.logstash.logback:logstash-logback-encoder:5.3"
+
+    // reading configuration files to objects 
+    compile 'com.uchuhimo:konf:0.13.2'
+    
     // Annotation processing
     compile project(":karango")
     kapt project(":karango")

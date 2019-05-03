@@ -1,10 +1,13 @@
 package de.peekandpoke
 
 import com.fasterxml.jackson.databind.SerializationFeature
-import io.ktor.application.Application
-import io.ktor.application.ApplicationCall
-import io.ktor.application.call
-import io.ktor.application.install
+import de.peekandpoke.common.logger
+import de.peekandpoke.karango.Db
+import de.peekandpoke.karango.examples.game_of_thrones.Character
+import de.peekandpoke.karango.examples.game_of_thrones.Characters
+import de.peekandpoke.karango_ktor.add
+import de.peekandpoke.module.got.gameOfThrones
+import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.features.*
 import io.ktor.html.respondHtml
@@ -19,21 +22,29 @@ import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Location
 import io.ktor.locations.Locations
 import io.ktor.locations.get
+import io.ktor.request.header
+import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.get
+import io.ktor.routing.host
+import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.sessions.*
 import io.ktor.util.KtorExperimentalAPI
+import io.ktor.util.hex
 import io.ktor.webjars.Webjars
 import io.ktor.websocket.webSocket
 import kotlinx.css.*
 import kotlinx.html.*
 import java.time.Duration
 import java.time.ZoneId
+import java.util.*
 import kotlin.collections.set
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+
+private val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev")
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
@@ -47,6 +58,15 @@ fun Application.module(testing: Boolean = false) {
     install(Sessions) {
         cookie<MySession>("MY_SESSION") {
             cookie.extensions["SameSite"] = "lax"
+            cookie.path = "/"
+            transform(SessionTransportTransformerMessageAuthentication(hex("abcdefg")))
+        }
+    }
+
+    val authFeature = install(Authentication) {
+        basic("myBasicAuth") {
+            realm = "Ktor Server"
+            validate { if (it.name == "test" && it.password == "password") UserIdPrincipal(it.name) else null }
         }
     }
 
@@ -73,7 +93,9 @@ fun Application.module(testing: Boolean = false) {
         anyHost() // @TODO: Don't do this in production if possible. Try to LIMIT it.
     }
 
-    install(DataConversion)
+    install(DataConversion) {
+        add(db, Characters, Character::class)
+    }
 
     install(DefaultHeaders) {
         header("X-Engine", "Ktor") // will send this header with each response
@@ -101,12 +123,12 @@ fun Application.module(testing: Boolean = false) {
         maxRangeCount = 10
     }
 
-    install(Authentication) {
-        basic("myBasicAuth") {
-            realm = "Ktor Server"
-            validate { if (it.name == "test" && it.password == "password") UserIdPrincipal(it.name) else null }
-        }
-    }
+//    install(Authentication) {
+//        basic("myBasicAuth") {
+//            realm = "Ktor Server"
+//            validate { if (it.name == "test" && it.password == "password") UserIdPrincipal(it.name) else null }
+//        }
+//    }
 
     install(ContentNegotiation) {
         jackson {
@@ -114,9 +136,80 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
+    install(StatusPages) {
+
+        exception<Throwable> { cause ->
+            call.respond(HttpStatusCode.InternalServerError, "Internal Server Error")
+        }
+
+        exception<AuthenticationException> { cause ->
+            call.respond(HttpStatusCode.Unauthorized)
+        }
+
+        exception<AuthorizationException> { cause ->
+            call.respond(HttpStatusCode.Forbidden)
+        }
+
+        exception<BadRequestException> { cause ->
+            call.respond(HttpStatusCode.InternalServerError, "Bad Request ...")
+        }
+
+        exception<ParameterConversionException> { cause ->
+
+            call.respondHtml(HttpStatusCode.NotFound) {
+                body {
+                    div {
+                        +"Not found"
+                    }
+                    div {
+                        +cause.toString()
+                    }
+                }
+            }
+        }
+
+        status(HttpStatusCode.NotFound) { cause ->
+
+            call.respondHtml(HttpStatusCode.NotFound) {
+                body {
+                    div {
+                        +"Not found"
+                    }
+                    div {
+                        +cause.toString()
+                    }
+                }
+            }
+        }
+    }
+
+    intercept(ApplicationCallPipeline.Features) {
+        val requestId = UUID.randomUUID()
+        logger.attach("req.Id", requestId.toString()) {
+            logger.info("Interceptor[start]")
+            proceed()
+            logger.info("Interceptor[end]")
+        }
+    }
+
     routing {
+
+        // We have a single user for testing in the user table: user=root, password=root
+        // So for the login you have to use those credentials since you cannot register new users in this sample.
+        val users = UserHashedTableAuth(
+            table = mapOf(
+                "root" to UserHashedTableAuth(table = emptyMap()).digester("root"),
+                "rudi" to UserHashedTableAuth(table = emptyMap()).digester("rudi")
+            )
+        )
+
+        login(authFeature, users)
+
         get("/") {
-            call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
+
+            val name = call.sessions.get<MySession>()?.userId ?: "Stranger"
+
+            call.respondText("HELLO $name!", contentType = ContentType.Text.Plain)
         }
 
         get("/html-dsl") {
@@ -157,21 +250,6 @@ fun Application.module(testing: Boolean = false) {
             call.respondText("Inside $it")
         }
 
-        get("/session/increment") {
-            val session = call.sessions.get<MySession>() ?: MySession()
-            call.sessions.set(session.copy(count = session.count + 1))
-            call.respondText("Counter is ${session.count}. Refresh to increment.")
-        }
-
-        install(StatusPages) {
-            exception<AuthenticationException> { cause ->
-                call.respond(HttpStatusCode.Unauthorized)
-            }
-            exception<AuthorizationException> { cause ->
-                call.respond(HttpStatusCode.Forbidden)
-            }
-
-        }
 
         get("/webjars") {
             call.respondText("<script src='/webjars/jquery/jquery.js'></script>", ContentType.Text.Html)
@@ -197,8 +275,76 @@ fun Application.module(testing: Boolean = false) {
         get("/json/jackson") {
             call.respond(mapOf("hello" to "world"))
         }
+
+        val gameOfThrones = gameOfThrones(db)
+
+
+        host("admin.*".toRegex()) {
+            get("/admin") {
+                call.respondHtml {
+                    body {
+                        div {
+                            +"Admin area"
+                        }
+                    }
+                }
+            }
+        }
+
+        authenticate("myFormAuthentication") {
+
+            get("/session/increment") {
+                val session = call.sessions.get<MySession>()!!
+                call.sessions.set(session.copy(count = session.count + 1))
+                call.respondText("Counter is ${session.count}. Refresh to increment.")
+            }
+
+            get("/private/show") {
+
+                logger.info("Private[start]")
+
+                call.respondHtml {
+                    body {
+                        div { +("Private show " + call.sessions.get<MySession>()!!.userId) }
+                        div {
+                            a(href = "/logout") { +"Logout" }
+                        }
+                        div {
+                            attributes["data-stuff"] = "stuff"
+                            a(href = gameOfThrones.linkTo.getCharacters()) { +"GoT" }
+                        }
+                        div {
+                            +(call.request.header(HttpHeaders.Host) ?: "n/a")
+                        }
+                        form(method = FormMethod.post) {
+                            div {
+                                label { +"Name" }
+                                textInput { name = "input[name]" }
+                            }
+                            div {
+                                label { +"Age" }
+                                numberInput { name = "input[age]" }
+                            }
+                            div {
+                                submitInput { +"submit" }
+                            }
+                        }
+                    }
+                }
+
+                logger.info("Private[end]")
+            }
+
+            post("/private/show") {
+                logger.info("Private[post]")
+                call.respondText {
+                    call.receive()
+                }
+            }
+        }
     }
 }
+
 
 @KtorExperimentalLocationsAPI
 @Location("/location/{name}")
@@ -214,7 +360,7 @@ data class Type(val name: String) {
     data class List(val type: Type, val page: Int)
 }
 
-data class MySession(val count: Int = 0)
+data class MySession(val userId: String? = null, val count: Int = 0)
 
 class AuthenticationException : RuntimeException()
 class AuthorizationException : RuntimeException()

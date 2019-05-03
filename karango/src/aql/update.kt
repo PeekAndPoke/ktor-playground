@@ -16,7 +16,7 @@ class UpdateDocument<T : Entity>(
     override fun printAql(p: AqlPrinter) {
 
         with(p) {
-            append("UPDATE \"").append(entity._id.ensureKey).append("\" WITH {").appendLine()
+            append("UPDATE \"").append(entity._id!!.ensureKey).append("\" WITH {").appendLine()
             indent {
 //                val pairs = kv.pairs.toMap()
 //                pairs.keys.forEachIndexed { idx, key ->

@@ -11,9 +11,9 @@ import java.lang.reflect.WildcardType
 inline fun <reified T> type() = object : TypeRef<T>() {}
 
 @Suppress("unused")
-inline fun <reified T> Class<T>.asTypeRef(): TypeRef<T> = type()
+fun <T> Class<T>.asTypeRef(): TypeRef<T> = TypeRef(this)
 
-open class TypeRef<T> protected constructor(private val explicitType: Type? = null) : TypeReference<T>() {
+open class TypeRef<T> constructor(private val explicitType: Type? = null) : TypeReference<T>() {
 
     companion object {
 
@@ -102,7 +102,7 @@ open class TypeRef<T> protected constructor(private val explicitType: Type? = nu
             throw KarangoException("Cannot go down the tree, as the root has more than one child: \n$tree")
         }
 
-        return TypeRef<X>(
+        return TypeRef(
             ParameterizedTypeImpl.make(
                 tree.children[0].type.toClass(),
                 tree.children[0].children.map { it.type }.toTypedArray(),
