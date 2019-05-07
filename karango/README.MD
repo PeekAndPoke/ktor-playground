@@ -1,4 +1,4 @@
-#ENV
+# ENV
 
 Running ArangoDB in docker container
 
@@ -10,8 +10,7 @@ docker exec -t karango arangosh --server.username=root --server.password= --java
 ```
 
 
-TODO
-====
+# TODO
 
 ( ) Collection property configuration like indexed etc.
 
@@ -19,8 +18,7 @@ TODO
 
 
 
-DONE
-====
+# DONE
 
 (X) Statement have NO type parameter as they return nothing
 
