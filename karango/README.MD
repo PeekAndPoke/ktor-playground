@@ -1,6 +1,6 @@
 #ENV
 
-Running ArangoDB in docker container (root-password:root)
+Running ArangoDB in docker container
 
 ```bash
 docker run --name "karango" -e ARANGO_ROOT_PASSWORD= -p 8529:8529 -d arangodb 
