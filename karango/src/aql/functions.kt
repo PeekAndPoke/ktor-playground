@@ -7,31 +7,31 @@ enum class AqlFunc {
     REVERSE,               // TODO: impl, tests FOR Collections
 
     // Array
-    APPEND,                
-    CONTAINS_ARRAY,        
-    COUNT_DISTINCT,        
-    COUNT_UNIQUE,          
-    FIRST,                 
-    FLATTEN,               
-    INTERSECTION,          
-    LAST,                  
-    MINUS,                 
-    NTH,                   
-    OUTERSECTION,          
-    POP,                   
-    POSITION,              
-    PUSH,                  
-    REMOVE_NTH,            
-    REMOVE_VALUE,          
-    REMOVE_VALUES,         
-    SHIFT,                 
-    SLICE,                 
-    SORTED,                
-    SORTED_UNIQUE,         
-    UNION,                 
-    UNION_DISTINCT,        
-    UNIQUE,                
-    UNSHIFT,               
+    APPEND,
+    CONTAINS_ARRAY,
+    COUNT_DISTINCT,
+    COUNT_UNIQUE,
+    FIRST,
+    FLATTEN,
+    INTERSECTION,
+    LAST,
+    MINUS,
+    NTH,
+    OUTERSECTION,
+    POP,
+    POSITION,
+    PUSH,
+    REMOVE_NTH,
+    REMOVE_VALUE,
+    REMOVE_VALUES,
+    SHIFT,
+    SLICE,
+    SORTED,
+    SORTED_UNIQUE,
+    UNION,
+    UNION_DISTINCT,
+    UNIQUE,
+    UNSHIFT,
 
     // Date TODO
 
@@ -53,6 +53,8 @@ enum class AqlFunc {
     VERSION,               // TODO: impl, tests
 
     // Document / Object TODO
+
+    MERGE,                 // TODO: tests
 
     // Fulltext TODO
 

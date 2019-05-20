@@ -3,13 +3,14 @@ package de.peekandpoke.karango_dev.domain
 import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.meta.EntityCollection
 
+
 @EntityCollection("persons")
 data class Person(
     val name: String,
     val age: Int,
-    val address: Address = Address("n/a"),
-    val books: List<Book> = listOf(),
-    val favouriteBook: Book? = null,
+//    val address: Address = Address("n/a"),
+//    val books: List<Book> = listOf(),
+//    val favouriteBook: Book? = null,
     override val _id: String = ""
 ) : Entity {
     companion object

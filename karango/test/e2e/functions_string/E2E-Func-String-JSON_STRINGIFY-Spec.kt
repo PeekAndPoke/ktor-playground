@@ -36,7 +36,7 @@ open class `E2E-Func-String-JSON_STRINGIFY-Spec` : StringSpec({
         row(
             "JSON_STRINGIFY of object",
             JSON_STRINGIFY(E2ePerson("a", 1).aql),
-            """{"age":1,"name":"a"}"""
+            """{"name":"a","age":1}"""
         )
     )
 

@@ -47,6 +47,8 @@ interface Expression<T> : Printable {
     fun getType(): TypeRef<T>
 }
 
+inline fun <reified R : Any> Expression<*>.AS() : Expression<R> = TypeCastExpression(type(), this)
+
 /**
  * Base interface for all terminal Expressions.
  *
@@ -70,7 +72,7 @@ internal class ExpressionImpl<T>(private val name: String, private val type: Typ
      * The type that is represented by the expression
      */
     override fun getType() = type
-    
+
     override fun printAql(p: AqlPrinter) = p.name(name)
 }
 
@@ -78,7 +80,7 @@ internal class ExpressionImpl<T>(private val name: String, private val type: Typ
  * Internal expression impl holding the entire query
  */
 internal class RootExpression<T>(private val stmts: List<Statement>, private val ret: TerminalExpr<T>) : TerminalExpr<T> {
-    
+
     override fun getType() = ret.getType()
 
     override fun innerType() = ret.innerType()
@@ -87,12 +89,18 @@ internal class RootExpression<T>(private val stmts: List<Statement>, private val
 
     companion object {
         fun <T> from(builder: AqlBuilder, builderFun: AqlBuilder.() -> TerminalExpr<T>) : RootExpression<T> {
-            
+
             val result : TerminalExpr<T> = builderFun(builder)
-            
+
             return RootExpression(builder.stmts, result)
-        } 
+        }
     }
+}
+
+class TypeCastExpression<T>(private val type: TypeRef<T>, private val wrapped: Expression<*>) : Expression<T> {
+    override fun getType() = type
+
+    override fun printAql(p: AqlPrinter) = wrapped.printAql(p)
 }
 
 @Suppress("FunctionName")
@@ -115,13 +123,13 @@ class AqlBuilder internal constructor() : StatementBuilder {
 
     @KarangoDslMarker
     fun <T> RETURN(expr: Expression<T>): TerminalExpr<T> = Return(expr)
-    
-    // TODO: INSERT 
-    
+
+    // TODO: INSERT
+
     // TODO: UPDATE
-    
+
     // TODO: UPSERT
-    
+
     fun <T : Entity, D : CollectionDefinition<T>> UPDATE(entity: T, col: D, builder: KeyValueBuilder<T>.(Expression<T>) -> Unit): TerminalExpr<Any> =
         UpdateDocument(
             entity,

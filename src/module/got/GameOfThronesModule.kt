@@ -5,7 +5,7 @@ import com.uchuhimo.konf.ConfigSpec
 import de.peekandpoke.common.LinkGenerator
 import de.peekandpoke.common.logger
 import de.peekandpoke.karango.Db
-import de.peekandpoke.karango.aql.FOR
+import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.examples.game_of_thrones.Character
 import de.peekandpoke.karango.examples.game_of_thrones.Characters
 import io.ktor.application.Application
@@ -76,14 +76,16 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
                     FOR(Characters) { c ->
 //                        SORT(c.name.ASC)
                         LIMIT((p.page - 1) * p.epp, p.epp)
-                        RETURN(c)
+                        RETURN(
+                            MERGE(c, OBJECT("name".aql to "bla".aql)).AS<Character>()
+                        )
                     }
                 }
 
                 logger.info("${result.timeMs} vs ${result.stats.executionTime}")
-                
+
                 val list = result.toList()
-                
+
                 call.respondHtml {
                     body {
                         h4 { +"Characters" }
@@ -101,7 +103,7 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
             get<GetCharacter> {
 
                 //                val result = CharacterCollection.findByKey(it.key);
-//                
+//
 //                if (result != null) {
 //                    call.respond(result)
 //                } else {

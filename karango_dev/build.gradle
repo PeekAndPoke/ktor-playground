@@ -32,6 +32,8 @@ dependencies {
 
     compile "ch.qos.logback:logback-classic:$logback_version"
 
+    compile 'org.javassist:javassist:3.25.0-GA'
+    
     compile project(":karango")
     kapt project(":karango")
 }

@@ -10,7 +10,6 @@ import java.lang.reflect.WildcardType
 
 inline fun <reified T> type() = object : TypeRef<T>() {}
 
-@Suppress("unused")
 fun <T> Class<T>.asTypeRef(): TypeRef<T> = TypeRef(this)
 
 open class TypeRef<T> constructor(private val explicitType: Type? = null) : TypeReference<T>() {
@@ -136,19 +135,19 @@ open class TypeRef<T> constructor(private val explicitType: Type? = null) : Type
             }
 
             else -> listOf()
-            
+
         }.map { buildTree(it) }
 
         val fixedType = when {
-            
+
             t.typeName == Serializable::class.qualifiedName -> kotlin.Any::class.java
 
             t is ParameterizedType -> ParameterizedTypeImpl.make(
                 t.toClass(),
-                children.map { it.type} .toTypedArray(),
+                children.map { it.type }.toTypedArray(),
                 null
             )
-            
+
             else -> t
         }
 

@@ -1,5 +1,7 @@
 package de.peekandpoke.karango.e2e
 
+import de.peekandpoke.karango.aql.ARRAY
+import de.peekandpoke.karango.aql.OBJECT
 import de.peekandpoke.karango.aql.aql
 import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.withClue
@@ -80,6 +82,76 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
                 result.query.ret.getType().toString() shouldBe "java.util.List<java.util.List<java.lang.String>>"
+            }
+        }
+    }
+
+    "Directly returning a List<Integer> created with ARRAY()" {
+
+        val result = db.query {
+            RETURN(
+                ARRAY(1.aql, 2.aql)
+            )
+        }
+
+        assertSoftly {
+
+            withClue("AQL-Query") {
+                result.query.aql shouldBe """
+                    |RETURN [@v_1, @v_2]
+                    |
+                """.trimMargin()
+            }
+
+            withClue("AQL-vars") {
+                result.query.vars shouldBe mapOf("v_1" to 1, "v_2" to 2)
+            }
+
+            withClue("Query-result") {
+                result.toList() shouldBe listOf(listOf(1L, 2L))
+            }
+
+            withClue("TypeRef for deserialization") {
+                result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Number>"
+            }
+
+            withClue("TypeRef of TerminalExpr") {
+                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.List<java.lang.Number>>"
+            }
+        }
+    }
+
+    "Directly returning a Map<String, Integer> created with OBJECT()" {
+
+        val result = db.query {
+            RETURN(
+                OBJECT("a".aql to 1.aql, "b".aql to 2.aql)
+            )
+        }
+
+        assertSoftly {
+
+            withClue("AQL-Query") {
+                result.query.aql shouldBe """
+                    |RETURN {@v_1: @v_2, @v_3: @v_4}
+                    |
+                """.trimMargin()
+            }
+
+            withClue("AQL-vars") {
+                result.query.vars shouldBe mapOf("v_1" to "a", "v_2" to 1, "v_3" to "b", "v_4" to 2)
+            }
+
+            withClue("Query-result") {
+                result.toList() shouldBe listOf(mapOf("a" to 1L, "b" to 2L))
+            }
+
+            withClue("TypeRef for deserialization") {
+                result.query.ret.innerType().toString() shouldBe "java.util.Map<java.lang.String, java.lang.Number>"
+            }
+
+            withClue("TypeRef of TerminalExpr") {
+                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.Map<java.lang.String, java.lang.Number>>"
             }
         }
     }
@@ -308,8 +380,8 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
     "Directly returning a domain object" {
 
-        val data = E2ePerson("Eddard", 42) 
-        
+        val data = E2ePerson("Eddard", 42)
+
         val result = db.query {
             RETURN(
                 data.aql()
@@ -419,13 +491,13 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.innerType().toString() shouldBe 
+                result.query.ret.innerType().toString() shouldBe
                         "java.util.Map<java.lang.String, ${E2ePerson::class.qualifiedName}>"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.getType().toString() shouldBe 
+                result.query.ret.getType().toString() shouldBe
                         "java.util.List<java.util.Map<java.lang.String, ${E2ePerson::class.qualifiedName}>>"
             }
         }
@@ -435,7 +507,7 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
         val data = mapOf(
             "a" to listOf(E2ePerson("Eddard", 42), E2ePerson("John", 22)),
-            "b" to listOf() 
+            "b" to listOf()
         )
 
         val result = db.query {

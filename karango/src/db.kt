@@ -68,7 +68,7 @@ class Db(private val database: ArangoDatabase) {
 
         val query = de.peekandpoke.karango.query(builder)
 
-//        println(query)
+        println(query)
 //        println(query.ret.innerType())
 
         val options = AqlQueryOptions().count(true)
@@ -77,7 +77,7 @@ class Db(private val database: ArangoDatabase) {
 
         val mapper = ObjectMapper();
         val mapped = mapper.convertValue<Map<String, Any>>(query.vars)
-        
+
         val time = measureTimeMillis {
             result = database.query(query.aql, mapped, options, Object::class.java)
         }

@@ -109,6 +109,9 @@ val Nothing?.aql: Expression<Any?>
 @KarangoInputMarker
 inline fun <reified T> ARRAY(vararg args: Expression<out T>): Expression<List<T>> = ArrayValue(type(), args.toList())
 
+@KarangoInputMarker
+inline fun <reified T> OBJECT(vararg pairs: Pair<Expression<String>, Expression<out T>>) = ObjectValue(type(), pairs.toList())
+
 data class Value<T>(private val type: TypeRef<T>, private val value: T, private val name: String) : Expression<T> {
 
     override fun getType() = type
@@ -125,4 +128,28 @@ internal class NullValue(val name: String = "v") : Expression<Any?> {
 
     override fun getType() = TypeRef.AnyNull
     override fun printAql(p: AqlPrinter) = p.value(name, null)
+}
+
+class ObjectValue<T>(private val type: TypeRef<Map<String, T>>, private val pairs: List<Pair<Expression<String>, Expression<out T>>>) :
+    Expression<Map<String, T>> {
+
+    override fun getType() = type
+
+    override fun printAql(p: AqlPrinter) = with(p) {
+
+        append("{")
+
+        indent {
+            pairs.forEachIndexed { idx, p ->
+
+                append(p.first).append(": ").append(p.second)
+
+                if (idx < pairs.size - 1) {
+                    append(", ")
+                }
+            }
+        }
+
+        append("}")
+    }
 }

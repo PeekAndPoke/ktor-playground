@@ -88,7 +88,7 @@ class `E2E-Func-TypeConversion-TO_ARRAY-Spec` : StringSpec({
         row("TO_ARRAY(['x']) none empty list", listOf("x"), listOf("x")),
         row("TO_ARRAY(['x', 'x']) none empty list", listOf("x", "x"), listOf("x", "x")),
 
-        row("TO_ARRAY(object)", E2ePerson("a", 1), listOf(1L, "a")),
+        row("TO_ARRAY(object)", E2ePerson("a", 1), listOf("a", 1L)),
         row(
             "TO_ARRAY([object]) list with one objects",
             listOf(E2ePerson("a", 1)),
