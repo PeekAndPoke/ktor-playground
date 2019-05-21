@@ -40,6 +40,15 @@ class Db(private val database: ArangoDatabase) {
         }
     }
 
+    private val serializer = ObjectMapper()
+
+    private val deserializer = ObjectMapper().apply {
+        registerModule(KotlinModule())
+        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+
+        injectableValues = InjectableValues.Std().addValue("__db", this@Db)
+    }
+
     fun <T : Entity, D : EntityCollectionDefinition<T>> collection(def: D): DbCollection<T, D> {
 
         val name = def.getAlias()
@@ -68,28 +77,20 @@ class Db(private val database: ArangoDatabase) {
 
         val query = de.peekandpoke.karango.query(builder)
 
-        println(query)
+//        println(query)
 //        println(query.ret.innerType())
 
         val options = AqlQueryOptions().count(true)
 
         lateinit var result: ArangoCursor<*>
 
-        val mapper = ObjectMapper();
-        val mapped = mapper.convertValue<Map<String, Any>>(query.vars)
+        val mapped = serializer.convertValue<Map<String, Any>>(query.vars)
 
         val time = measureTimeMillis {
             result = database.query(query.aql, mapped, options, Object::class.java)
         }
 
-        val deserializationMapper = ObjectMapper()
-            .registerModule(KotlinModule())
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .setInjectableValues(
-                InjectableValues.Std().addValue("__db", this)
-            )
-
-        return CursorImpl(result, query, time, deserializationMapper)
+        return CursorImpl(result, query, time, deserializer)
     }
 }
 

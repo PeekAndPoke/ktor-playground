@@ -41,6 +41,7 @@ import java.time.Duration
 import java.time.ZoneId
 import java.util.*
 import kotlin.collections.set
+import kotlin.system.measureNanoTime
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -139,6 +140,7 @@ fun Application.module(testing: Boolean = false) {
     install(StatusPages) {
 
         exception<Throwable> { cause ->
+            cause.printStackTrace()
             call.respond(HttpStatusCode.InternalServerError, "Internal Server Error")
         }
 
@@ -187,8 +189,12 @@ fun Application.module(testing: Boolean = false) {
         val requestId = UUID.randomUUID()
         logger.attach("req.Id", requestId.toString()) {
             logger.info("Interceptor[start]")
-            proceed()
-            logger.info("Interceptor[end]")
+
+            val ns = measureNanoTime {
+                proceed()
+            }
+
+            logger.info("Interceptor[end] ${ns / 1_000_000.0} ms")
         }
     }
 

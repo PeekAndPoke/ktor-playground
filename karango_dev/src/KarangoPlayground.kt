@@ -1,9 +1,14 @@
 package de.peekandpoke.karango_dev
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.generated.EntityClassRegistry
-import de.peekandpoke.karango_dev.domain.*
+import de.peekandpoke.karango_dev.domain.Author
+import de.peekandpoke.karango_dev.domain.Person
+import de.peekandpoke.karango_dev.domain.Persons
+import de.peekandpoke.karango_dev.domain.name
 import javassist.ClassPool
 import javassist.CtNewConstructor
 import javassist.util.proxy.ProxyFactory
@@ -15,12 +20,6 @@ val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, d
 
 val persons = db.collection(Persons)
 
-
-interface Iface {
-    val name: String
-}
-
-interface I
 
 fun manipulateClass(className: String): Class<*> {
 
@@ -58,7 +57,19 @@ fun manipulateAllClasses() {
     }
 }
 
+data class X(var x: String)
+
+
+
 fun main() {
+
+    val mapper = ObjectMapper().registerModule(KotlinModule())
+
+    val mapped = mapper.readValue("{\"x\": \"abc\"}", X::class.java)
+
+    println(mapped)
+
+    println("----------------------------------------------------")
 
     manipulateAllClasses()
 
@@ -227,8 +238,8 @@ fun y() {
 //                    val y1 = person.books[`*`].title
 
 //                    FILTER { person.nr EQ num }
-                    FILTER(person.books[`*`].title ALL IN(names))
-                    FILTER(person.books[`*`].authors[`*`].firstName[`**`] ALL IN(names))
+//                    FILTER(person.books[`*`].title ALL IN(names))
+//                    FILTER(person.books[`*`].authors[`*`].firstName[`**`] ALL IN(names))
 
                     LIMIT(0, 20)
 

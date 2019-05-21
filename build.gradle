@@ -19,6 +19,9 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     }
 }
 
+tasks.distZip.enabled = false
+tasks.distTar.enabled = false
+
 group 'ktor-playground'
 version '0.0.1'
 mainClassName = "io.ktor.server.netty.EngineMain"
@@ -61,9 +64,9 @@ dependencies {
     // logging
     compile "net.logstash.logback:logstash-logback-encoder:5.3"
 
-    // reading configuration files to objects 
+    // reading configuration files to objects
     compile 'com.uchuhimo:konf:0.13.2'
-    
+
     // Annotation processing
     compile project(":karango")
     kapt project(":karango")
@@ -77,7 +80,7 @@ dependencies {
     compile "io.arrow-kt:arrow-instances-data:$arrow_version"
     kapt    "io.arrow-kt:arrow-annotations-processor:$arrow_version"
     compile "io.arrow-kt:arrow-optics:$arrow_version" //optional
-    
+
     testCompile "io.ktor:ktor-server-tests:$ktor_version"
     testCompile project(":karango")
 //    kaptTest project(":karango")

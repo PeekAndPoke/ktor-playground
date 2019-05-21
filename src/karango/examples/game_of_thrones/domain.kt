@@ -22,6 +22,7 @@ class Character(
 data class Actor(
     val name: String,
     val surname: String,
+    val age: Int = 0,
     override val _id: String? = null,
     override val _key: String? = null
 ) :  Entity, WithKey

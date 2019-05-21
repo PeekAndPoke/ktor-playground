@@ -5,15 +5,20 @@ import com.uchuhimo.konf.ConfigSpec
 import de.peekandpoke.common.LinkGenerator
 import de.peekandpoke.common.logger
 import de.peekandpoke.karango.Db
-import de.peekandpoke.karango.aql.*
+import de.peekandpoke.karango.aql.ASC
+import de.peekandpoke.karango.aql.FOR
 import de.peekandpoke.karango.examples.game_of_thrones.Character
 import de.peekandpoke.karango.examples.game_of_thrones.Characters
+import de.peekandpoke.karango.examples.game_of_thrones.name
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.html.respondHtml
+import io.ktor.http.Parameters
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Location
 import io.ktor.locations.get
+import io.ktor.locations.post
+import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.route
@@ -55,10 +60,13 @@ fun Application.gameOfThrones(db: Db): GameOfThronesModule {
 class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig, db: Db) {
 
     @Location("/characters")
-    internal class GetCharacters(val page: Int = 1, val epp: Int = 10)
+    internal class GetCharacters(val page: Int = 1, val epp: Int = 100)
 
     @Location("/characters/{character}")
     internal class GetCharacter(val character: Character)
+
+    @Location("/forms")
+    internal class FormTest()
 
     inner class LinkTo : LinkGenerator(mountPoint) {
         fun getCharacters() = linkTo(GetCharacters())
@@ -70,15 +78,42 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
     init {
         with(mountPoint) {
 
+            get<FormTest> {
+
+                call.respondHtml {
+                    body {
+                        form(method = FormMethod.post) {
+                            label {
+                                +"Name"
+                                input(name = "name")
+                            }
+                            label {
+                                +"Name again"
+                                input(name = "name")
+                            }
+
+                            button(type = ButtonType.submit) {
+                                +"Submit"
+                            }
+                        }
+                    }
+                }
+            }
+
+            post<FormTest> {
+
+                val posted = call.receive<Parameters>()
+
+                call.respond(posted.entries())
+            }
+
             get<GetCharacters> { p ->
 
                 val result = db.query {
                     FOR(Characters) { c ->
-//                        SORT(c.name.ASC)
+                        SORT(c.name.ASC)
                         LIMIT((p.page - 1) * p.epp, p.epp)
-                        RETURN(
-                            MERGE(c, OBJECT("name".aql to "bla".aql)).AS<Character>()
-                        )
+                        RETURN(c)
                     }
                 }
 
@@ -93,6 +128,10 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
                             list.forEach {
                                 li {
                                     a(href = linkTo.getCharacterByKey(it)) { +"${it.name} ${it.surname}" }
+
+                                    it.actor?.let {
+                                        span { +"(Actor: ${it.name} ${it.surname})" }
+                                    }
                                 }
                             }
                         }
@@ -101,15 +140,6 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
             }
 
             get<GetCharacter> {
-
-                //                val result = CharacterCollection.findByKey(it.key);
-//
-//                if (result != null) {
-//                    call.respond(result)
-//                } else {
-//                    call.respond(HttpStatusCode.NotFound, mapOf<Any, Any>())
-//                }
-
                 call.respond(it.character)
             }
         }

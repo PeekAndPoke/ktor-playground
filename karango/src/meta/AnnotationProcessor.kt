@@ -47,23 +47,17 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
 
             val allClassesStr = all.joinToString(",\n        ") { "\"${it.fqn}\"" }
 
-            logWarning(allClassesStr)
-
             val content = """
                 package de.peekandpoke.karango.generated
 
                 class EntityClassRegistry {
 
                     val entries = arrayOf<String>(
-                        ##MARKER##
+                        $allClassesStr
                     )
                 }
 
-            """.trimIndent().replace("##MARKER##", allClassesStr)
-
-            logWarning(content)
-            logWarning("over " + roundEnv.processingOver())
-
+            """.trimIndent()
 
             file.writeText(content)
         }

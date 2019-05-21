@@ -169,7 +169,7 @@ fun <T: Number> MIN(numArray: Expression<List<T>>) = AqlFunc.MIN.nullableNumberC
  * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#percentile
  */
 @KarangoFuncMarker
-fun <T1: Number, T2: Number> PERCENTILE(numArray: Expression<List<T1>>, n: Expression<T2>) = 
+fun <T1: Number, T2: Number> PERCENTILE(numArray: Expression<List<T1>>, n: Expression<T2>) =
     AqlFunc.PERCENTILE.numberCall(numArray, n)
 
 /**
@@ -219,7 +219,7 @@ fun RAND() = AqlFunc.RAND.numberCall()
  * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#range
  */
 @KarangoFuncMarker
-fun <T1: Number, T2: Number> RANGE(start: Expression<T1>, stop: Expression<T2>) = 
+fun <T1: Number, T2: Number> RANGE(start: Expression<T1>, stop: Expression<T2>) =
     AqlFunc.RANGE.arrayCall(type<List<Number>>(), start, stop)
 
 /**
@@ -318,7 +318,7 @@ fun <T : Number> VARIANCE_SAMPLE(value: Expression<List<T>>) = AqlFunc.VARIANCE_
  * Return the population variance of the values in array.
  *
  * Alias for VARIANCE_POPULATION
- * 
+ *
  * See https://docs.arangodb.com/current/AQL/Functions/Numeric.html#variance
  */
 @KarangoFuncMarker
