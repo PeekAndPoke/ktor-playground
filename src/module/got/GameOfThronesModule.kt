@@ -124,6 +124,7 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
                 call.respondHtml {
                     body {
                         h4 { +"Characters" }
+
                         ul {
                             list.forEach {
                                 li {

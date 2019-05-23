@@ -42,21 +42,19 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
 
         // build registry with all the classes
         if (!roundEnv.processingOver()) {
-            val dir = File("$generatedDir/de/peekandpoke/karango/generated").also { it.mkdirs() }
+            val dir = File("$generatedDir/de/peekandpoke/frozen/generated").also { it.mkdirs() }
             val file = File(dir, "class_registry.kt")
 
-            val allClassesStr = all.joinToString(",\n        ") { "\"${it.fqn}\"" }
+            val allClassesStr = all.joinToString(",\n                        ") { "\"${it.fqn}\"" }
 
             val content = """
-                package de.peekandpoke.karango.generated
+                package de.peekandpoke.frozen.generated
 
-                class EntityClassRegistry {
-
-                    val entries = arrayOf<String>(
+                class Karango_MakeProxiable : de.peekandpoke.frozen.MakeClassesProxiable {
+                    override fun get() = listOf<String>(
                         $allClassesStr
                     )
                 }
-
             """.trimIndent()
 
             file.writeText(content)
@@ -82,24 +80,28 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
 
         val codeBlocks = mutableListOf<String>()
 
-        codeBlocks.add("""
+        codeBlocks.add(
+            """
             package $packageName
 
             import de.peekandpoke.karango.*
             import de.peekandpoke.karango.aql.*
 
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         if (annotation != null) {
 
             // TODO: make sure that we get a valid property name here ... split non Alphanum-chars and join camel-case
             val defName = if (annotation.defName.isNotEmpty()) annotation.defName else annotation.collection.ucFirst()
 
-            codeBlocks.add("""
+            codeBlocks.add(
+                """
                 val $defName : EntityCollectionDefinition<$simpleName> =
                     object : EntityCollectionDefinitionImpl<$simpleName>("${annotation.collection}", type()) {}
 
-            """.trimIndent())
+            """.trimIndent()
+            )
         }
 
         element.variables.forEach {
@@ -109,7 +111,8 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
 
             codeBlocks.add("//// $prop ".padEnd(160, '/'))
 
-            codeBlocks.add("""
+            codeBlocks.add(
+                """
 
                 inline val Iter<$simpleName>.$prop inline get() = PropertyPath.start(this).append<$type, $type>("$prop")
                 inline val Expression<$simpleName>.$prop inline get() = PropertyPath.start(this).append<$type, $type>("$prop")
@@ -121,7 +124,8 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
                 inline val PropertyPath<$simpleName, L4<$simpleName>>.$prop inline @JvmName("${prop}_4") get() = append<$type, L4<$type>>("$prop")
                 inline val PropertyPath<$simpleName, L5<$simpleName>>.$prop inline @JvmName("${prop}_5") get() = append<$type, L5<$type>>("$prop")
 
-            """.trimIndent())
+            """.trimIndent()
+            )
         }
 
         val content = codeBlocks.joinToString(System.lineSeparator())

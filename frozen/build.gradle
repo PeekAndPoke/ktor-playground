@@ -9,6 +9,7 @@ buildscript {
     }
 }
 
+apply plugin: 'java'
 apply plugin: 'kotlin'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'idea'
@@ -36,14 +37,19 @@ repositories {
 
 dependencies {
 
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
     compile "ch.qos.logback:logback-classic:$logback_version"
 
-    compile project(":karango")
-    kapt project(":karango")
+    compile 'org.atteo.classindex:classindex:3.4'
+    compile 'org.javassist:javassist:3.25.0-GA'
+
+    kapt ("org.atteo.classindex:classindex:3.4")
 }
 
 kapt {
-    includeCompileClasspath = true
+    includeCompileClasspath = false
 }
 
 test {

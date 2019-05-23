@@ -1,18 +1,15 @@
 package de.peekandpoke.karango_dev
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.KotlinModule
+import de.peekandpoke.frozen.Frozen
+import de.peekandpoke.frozen.MakeClassesProxiable
 import de.peekandpoke.karango.Db
-import de.peekandpoke.karango.aql.*
-import de.peekandpoke.karango.generated.EntityClassRegistry
+import de.peekandpoke.karango.aql.CONTAINS
+import de.peekandpoke.karango.aql.EQ
+import de.peekandpoke.karango.aql.FOR
 import de.peekandpoke.karango_dev.domain.Author
 import de.peekandpoke.karango_dev.domain.Person
 import de.peekandpoke.karango_dev.domain.Persons
 import de.peekandpoke.karango_dev.domain.name
-import javassist.ClassPool
-import javassist.CtNewConstructor
-import javassist.util.proxy.ProxyFactory
-import java.lang.reflect.Modifier
 import kotlin.system.measureTimeMillis
 
 
@@ -20,175 +17,71 @@ val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, d
 
 val persons = db.collection(Persons)
 
-
-fun manipulateClass(className: String): Class<*> {
-
-    println("manipulating $className")
-
-    val pool = ClassPool.getDefault()
-
-    val cls = pool.get(className)
-
-    val ctorSrc = """
-        public ${cls.simpleName}() {}
-    """.trimIndent()
-
-    val defaultConstructor = CtNewConstructor.make(ctorSrc, cls)
-    cls.addConstructor(defaultConstructor)
-
-    // clear the final modifier on the class
-    cls.modifiers = cls.modifiers and Modifier.FINAL.inv()
-
-    cls.declaredMethods.forEach {
-        // clear the final modifier on all methods
-        it.modifiers = it.modifiers and Modifier.FINAL.inv()
-    }
-
-    return cls.toClass()
+class MinupulateFrozenPerson : MakeClassesProxiable {
+    override fun get() = listOf(
+        "de.peekandpoke.karango_dev.FrozenAddress",
+        "de.peekandpoke.karango_dev.FrozenPerson",
+        "de.peekandpoke.karango_dev.FrozenCompany"
+    )
 }
 
-fun manipulateAllClasses() {
-    try {
-        Class.forName("de.peekandpoke.karango.generated.EntityClassRegistry")
+val x = Frozen.init()
 
-        EntityClassRegistry().entries.forEach { manipulateClass(it) }
-    } catch (e: ClassNotFoundException) {
-        println("registry not found")
-    }
-}
+//interface FrostyFrozenPerson : Frosty {
+//    var name: String
+//    var age: Int
+//}
 
-data class X(var x: String)
+data class FrozenAddress(var city: String)
 
+data class FrozenPerson(var name: String, var age: Int, var address: FrozenAddress)
 
+data class FrozenCompany(val boss: FrozenPerson)
 
 fun main() {
 
-    val mapper = ObjectMapper().registerModule(KotlinModule())
-
-    val mapped = mapper.readValue("{\"x\": \"abc\"}", X::class.java)
-
-    println(mapped)
-
     println("----------------------------------------------------")
 
-    manipulateAllClasses()
+    val orig = FrozenCompany(
+        FrozenPerson("Bubu", 123, FrozenAddress("Leipzig"))
+    )
 
-    println("----------------------------------------------------")
+    val res = Frozen.melt(orig) { draft ->
+        draft.boss.name = "Klaus"
 
-    println(Person::class.java.interfaces.map { it.name })
-    println(Person::class.java.declaredMethods.map { it.name })
-    println(Person::class.java.declaredFields.map { it.name + " " + it.type })
-
-
-    val factory = ProxyFactory()
-
-    factory.superclass = Person::class.java
-
-    factory.setFilter {
-        println("filter for method " + it.name)
-
-        true
+        draft.boss.address.city = "Aue"
     }
 
-    var lazy: Person? = null
+    println(orig)
+    println(res)
 
-    val person = factory.create(
-        arrayOf(),
-        arrayOf()
-    ) { self, thisMethod, proceed, args ->
-        println("handling thisMethod " + thisMethod.name)
-        println("handling proceed    " + proceed.name)
 
-        args.forEachIndexed { index, any ->
-            println("arg $index : $any")
-        }
+    println("----------------------------------------------------")
 
-        if (lazy == null) {
-            lazy = Person("axel", 10)
+//    moreFun()
+}
 
-            // Copy all field values to the proxy.
-            // Why? We need this to make the data class copy() method work.
 
-            Person::class.java.declaredFields
-                .filter { !Modifier.isStatic(it.modifiers) }
-                .forEach {
-                    println(it)
-                    it.isAccessible = true
-                    it.set(self, it.get(lazy))
-                }
-        }
+fun moreFun() {
 
-        thisMethod.invoke(lazy, *args)
+    println("----------------------------------------------------")
 
-    } as Person
-
+    val person = Frozen.createLazyProxy { Person("Heinz", 55) }
 
     println(person)
+    println(person::class)
     println(person.name)
-    println(Person::class.java.methods.filter { it.name == "getName"}.first().invoke(person))
+    println(Person::class.java.methods.first { it.name == "getName" }.invoke(person))
     println(person.age)
 
-    // TODO: make copy() work on proxy classes
+    println(person.copy()::class)
     println(person.copy(name = "bernd"))
     println(person.copy().name)
 //    println(System.identityHashCode(person.copy()))
 
-
-    println("<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>");
-
-    val result = db.query {
-        RETURN (
-            OBJECT(
-                "a".aql to 1.aql,
-                "b".aql to 2.aql + 3.aql
-            )
-        )
-    }
-
-    println(result.query.ret.innerType())
-
-    result.forEach {
-        println(it)
-    }
-
-//    println(listOf("s1").aql().getType())
-//
-//    val result = db.query {
-//        val persons = LET("persons") {
-//            listOf(
-//                Person("a", 10),
-//                Person("b", 20),
-//                Person("c", 30)
-//            )
-//        }
-//
-//        RETURN(
-//            SUM(
-//                FOR(persons) { p ->
-//                    FILTER(p.age GT 10)
-//                    RETURN(p.age)
-//                }
-//            )
-//        )
-//    }
-//
-//    println(result.query.aql)
-//    result.forEach { println(it) }
-//
-//    exampleInsertFromLet()
-//
-//    val res2 = db.query {
-//
-//        FOR(Persons) { x ->
-//            RETURN(x.books[`*`].authors[`*`].firstName[`**`])
-//        }
-//    }
-//
-//    println("--------------------------------------------------------------------")
-//    println(res2.toList())
-//    println("--------------------------------------------------------------------")
-
-//    y()
+    val person2 = Frozen.createLazyProxy { Person("Heinz 2", 55) }
+    println(person2)
+    println(person2::class)
 }
 
 fun y() {

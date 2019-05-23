@@ -185,16 +185,37 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
+//    items.forEach {phase ->
+//        intercept(phase) {
+//            logger.info("intercepting phase ${phase.name}")
+//
+//            proceed()
+//
+//            logger.info("intercepting phase ${phase.name} done")
+//        }
+//    }
+
+    intercept(ApplicationCallPipeline.Setup) {
+
+        val ns = measureNanoTime {
+            proceed()
+        }
+
+        logger.info("... total ${ns / 1_000_000.0} ms")
+    }
+
     intercept(ApplicationCallPipeline.Features) {
+
         val requestId = UUID.randomUUID()
+
         logger.attach("req.Id", requestId.toString()) {
-            logger.info("Interceptor[start]")
+            logger.info("Feature[start]")
 
             val ns = measureNanoTime {
                 proceed()
             }
 
-            logger.info("Interceptor[end] ${ns / 1_000_000.0} ms")
+            logger.info("Feature[end] ${ns / 1_000_000.0} ms")
         }
     }
 

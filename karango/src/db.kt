@@ -16,7 +16,6 @@ import com.fasterxml.jackson.module.kotlin.convertValue
 import de.peekandpoke.karango.aql.*
 import kotlin.system.measureTimeMillis
 
-
 class Db(private val database: ArangoDatabase) {
 
     companion object {
@@ -24,7 +23,6 @@ class Db(private val database: ArangoDatabase) {
 
             val velocyJack = VelocyJack().apply {
                 configure { mapper ->
-                    mapper.registerModule(KotlinModule())
                     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                     mapper.configure(MapperFeature.USE_ANNOTATIONS, true)
                 }
@@ -42,7 +40,7 @@ class Db(private val database: ArangoDatabase) {
 
     private val serializer = ObjectMapper()
 
-    private val deserializer = ObjectMapper().apply {
+    private val deserializerBlueprint = ObjectMapper().apply {
         registerModule(KotlinModule())
         configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
@@ -73,7 +71,9 @@ class Db(private val database: ArangoDatabase) {
         return DbCollection(this, database.collection(name), def)
     }
 
-    fun <T> query(builder: AqlBuilder.() -> TerminalExpr<T>): Cursor<T> {
+    fun <T> query(builder: AqlBuilder.() -> TerminalExpr<T>): Cursor<T> = query(deserializerBlueprint, builder)
+
+    internal fun <T> query(deserializer: ObjectMapper, builder: AqlBuilder.() -> TerminalExpr<T>): Cursor<T> {
 
         val query = de.peekandpoke.karango.query(builder)
 
@@ -92,6 +92,7 @@ class Db(private val database: ArangoDatabase) {
 
         return CursorImpl(result, query, time, deserializer)
     }
+
 }
 
 interface Cursor<T> : Iterable<T> {
@@ -128,11 +129,12 @@ interface Entity {
     val _id: String?
 }
 
-val Entity?.id : String get() = when {
-    this === null -> ""
-    this._id === null -> ""
-    else -> this._id!!
-}
+val Entity?.id: String
+    get() = when {
+        this === null -> ""
+        this._id === null -> ""
+        else -> this._id!!
+    }
 
 @Suppress("PropertyName")
 interface WithKey {
