@@ -49,13 +49,14 @@ dependencies {
     implementation ("me.eugeniomarletti.kotlin.metadata:kotlin-metadata:$kotlin_metadata_version") {
         exclude group: "me.eugeniomarletti.kotlin.metadata", module: "kotlin-compiler-lite"
     }
+
     compile "com.squareup:kotlinpoet:$kotlinpoet_version"
     compile "com.google.auto.service:auto-service:$google_auto_version"
     kapt "com.google.auto.service:auto-service:$google_auto_version"
 
     compile project(":frozen")
     kapt project(":frozen")
-    
+
 //    testCompileOnly "me.eugeniomarletti.kotlin.metadata:kotlin-metadata:$kotlin_metadata_version"
 //    testCompileOnly "com.squareup:kotlinpoet:$kotlinpoet_version"
 //    testCompileOnly "com.google.auto.service:auto-service:$google_auto_version"

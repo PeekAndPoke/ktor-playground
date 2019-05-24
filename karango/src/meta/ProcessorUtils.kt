@@ -32,6 +32,22 @@ interface ProcessorUtils : KotlinProcessingEnvironment {
 
     val Element.fqn get() = asType().fqn
 
+    val Element.isPrimitiveType get() = when (fqn) {
+        "kotlin.Boolean",
+        "kotlin.Char",
+        "kotlin.Byte",
+        "kotlin.Short",
+        "kotlin.Int",
+        "kotlin.Long",
+        "kotlin.Float",
+        "kotlin.Double",
+        "kotlin.Void" -> true
+
+        else -> false
+    }
+
+    val Element.isStringType get() = fqn == "java.lang.String"
+
     /**
      * Get all variables of a type element
      */
