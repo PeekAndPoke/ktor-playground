@@ -13,6 +13,12 @@ apply plugin: 'kotlin'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'idea'
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
 group 'karango'
 version '0.0.1'
 
@@ -54,8 +60,8 @@ dependencies {
     compile "com.google.auto.service:auto-service:$google_auto_version"
     kapt "com.google.auto.service:auto-service:$google_auto_version"
 
-    compile project(":frozen")
-    kapt project(":frozen")
+    compile project(":mutator")
+    kapt project(":mutator")
 
 //    testCompileOnly "me.eugeniomarletti.kotlin.metadata:kotlin-metadata:$kotlin_metadata_version"
 //    testCompileOnly "com.squareup:kotlinpoet:$kotlinpoet_version"

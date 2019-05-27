@@ -1,8 +1,5 @@
 package de.peekandpoke.karango_dev
 
-import de.peekandpoke.frozen.Frozen
-import de.peekandpoke.frozen.Mutator
-import de.peekandpoke.frozen.mutator
 import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.aql.CONTAINS
 import de.peekandpoke.karango.aql.EQ
@@ -11,6 +8,9 @@ import de.peekandpoke.karango_dev.domain.Author
 import de.peekandpoke.karango_dev.domain.Person
 import de.peekandpoke.karango_dev.domain.Persons
 import de.peekandpoke.karango_dev.domain.name
+import de.peekandpoke.mutator.Frozen
+import de.peekandpoke.mutator.Mutator
+import de.peekandpoke.mutator.mutator
 import kotlin.system.measureTimeMillis
 
 
@@ -24,16 +24,27 @@ data class FrozenAddress(val city: String, val zip: String)
 @Mutator
 data class FrozenPerson(val name: String, val age: Int, val address: FrozenAddress)
 
+//@Mutator
+//data class FrozenCompany(val boss: FrozenPerson, val addresses: List<FrozenAddress>)
+//
+//val FrozenCompanyMutator.addresses
+//    get() = result.addresses.mutator(
+//        { item, onModify -> item.mutator(onModify) },
+//        { modify(result::addresses, it) }
+//    )
+
 @Mutator
-data class FrozenCompany(val boss: FrozenPerson, val addresses: List<FrozenAddress>)
+data class FrozenCompany(val boss: FrozenPerson, val addresses: List<List<FrozenAddress>>)
 
 val FrozenCompanyMutator.addresses
-    get() = result.addresses.mutator(
-        { item, onModify -> item.mutator(onModify) },
-        { _, after -> modify(result::addresses, after) }
-    )
+    get() = getResult().addresses.mutator({ modify(getResult()::addresses, it) }) { i1, on1 ->
+        i1.mutator(on1) { i2, on2 -> i2.mutator(on2) }
+    }
 
 fun main() {
+
+    // warm up
+//    repeat(1000) { playWithMutator() }
 
     val t = measureTimeMillis {
         repeat(1) { playWithMutator() }
@@ -52,25 +63,38 @@ fun playWithMutator() {
     val company = FrozenCompany(
         person,
         listOf(
-            FrozenAddress("Berlin", "10117"),
-            FrozenAddress("München", "80637")
+            listOf(
+                FrozenAddress("Berlin", "10117"),
+                FrozenAddress("München", "80637")
+            ),
+            listOf(
+                FrozenAddress("Chemnitz", "01234"),
+                FrozenAddress("Jena", "121212")
+            )
         )
     )
 
     val mutation = company.mutate {
-        it.boss.name = it.boss.name.toUpperCase()
-        it.boss.age++
+
+        it.boss.name { toUpperCase() }
+        it.boss.age { it * 10 }
 
         it.boss.address.city = "Aue"
         it.boss.address.zip = "08280"
 
-        it.addresses.forEach { address ->
-            address.city = address.city.toUpperCase()
+        it.addresses[0].push(FrozenAddress("Some city", "45454"))
+
+        it.addresses.forEach { addresses ->
+            addresses.forEach { address ->
+                address.city = address.city.toUpperCase()
+            }
         }
     }
 
     println(company)
     println(mutation)
+
+    mutation.addresses.forEach { println(it) }
 }
 
 fun moreFun() {

@@ -14,6 +14,8 @@
       <module name="ktor-playground.ktor-playground.main" target="1.8" />
       <module name="ktor-playground.ktor-playground.test" target="1.8" />
       <module name="ktor-playground.main" target="1.8" />
+      <module name="ktor-playground.mutator.main" target="1.8" />
+      <module name="ktor-playground.mutator.test" target="1.8" />
       <module name="ktor-playground.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>

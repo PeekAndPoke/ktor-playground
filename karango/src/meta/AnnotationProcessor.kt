@@ -2,8 +2,8 @@ package de.peekandpoke.karango.meta
 
 import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.asClassName
-import de.peekandpoke.frozen.Mutator
 import de.peekandpoke.karango.aql.ucFirst
+import de.peekandpoke.mutator.Mutator
 import me.eugeniomarletti.kotlin.processing.KotlinAbstractProcessor
 import java.io.File
 import javax.annotation.processing.Processor
@@ -33,20 +33,21 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
 
 
         if (!roundEnv.processingOver()) {
-            val dir = File("$generatedDir/de/peekandpoke/frozen/generated").also { it.mkdirs() }
+            val dir = File("$generatedDir/de/peekandpoke/mutator/generated").also { it.mkdirs() }
             val file = File(dir, "class_registry.kt")
 
             val allClassesStr = all.joinToString(",\n                        ") { "\"${it.fqn}\"" }
 
             val content = """
-                package de.peekandpoke.frozen.generated
+                package de.peekandpoke.mutator.generated
 
-                class Karango_MakeProxiable : de.peekandpoke.frozen.MakeClassesProxiable {
+                class Karango_MakeProxiable : de.peekandpoke.mutator.MakeClassesProxiable {
                     override fun get() = listOf<String>(
                         $allClassesStr
                     )
                 }
             """.trimIndent()
+
 
             file.writeText(content)
         }
@@ -178,7 +179,6 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
         val className = element.asClassName()
         val packageName = className.packageName
         val simpleName = className.simpleName
-        val mutatorName = "${simpleName}Mutator"
 
         val codeBlocks = mutableListOf<String>()
 
@@ -186,13 +186,13 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
             """
             package $packageName
 
-            import de.peekandpoke.frozen.*
+            import de.peekandpoke.mutator.*
 
-            fun $simpleName.mutate(builder: (draft: ${simpleName}Mutator) -> Unit) = mutator().apply(builder).result
+            fun $simpleName.mutate(builder: (draft: ${simpleName}Mutator) -> Unit) = mutator().apply(builder).getResult()
 
-            fun $simpleName.mutator(onChange: OnModify<$simpleName> = {_, _ ->}) = ${simpleName}Mutator(this, onChange)
+            fun $simpleName.mutator(onChange: OnModify<$simpleName> = {}) = ${simpleName}Mutator(this, onChange)
 
-            class ${simpleName}Mutator(target: $simpleName, onChange: OnModify<$simpleName> = {_, _ ->}) : DataClassMutator<$simpleName>(target, onChange) {
+            class ${simpleName}Mutator(target: $simpleName, onChange: OnModify<$simpleName> = {}) : DataClassMutator<$simpleName>(target, onChange) {
 
         """.trimIndent()
         )
@@ -204,15 +204,15 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
 
             codeBlocks.add("//// $prop ".padEnd(160, '/') + System.lineSeparator())
 
-            logNote("$prop of type ${it.fqn}")
+            logNote("  .. $prop of type ${it.fqn}")
 
             when {
                 it.isPrimitiveType || it.isStringType ->
                     codeBlocks.add(
                         """
                             var $prop: $type
-                                get() = result.$prop
-                                set(v) = modify(result::$prop, v)
+                                get() = getResult().$prop
+                                set(v) = modify(getResult()::$prop, v)
 
                         """.trimIndent().prependIndent("    ")
                     )
@@ -223,12 +223,12 @@ open class AnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
                     codeBlocks.add(
                         """
                             val $prop: ${type}Mutator
-                                = result.$prop.mutator { before, after -> modify(result::$prop, after) }
+                                = getResult().$prop.mutator { modify(getResult()::$prop, it) }
 
                         """.trimIndent().prependIndent("    ")
                     )
 
-                else -> logWarning("Cannot handle $prop of type ${it.fqn}")
+                else -> logWarning("  !! Cannot handle $prop of type ${it.fqn}")
             }
         }
 

@@ -3,9 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktor-playground.iml" filepath="$PROJECT_DIR$/.idea/modules/ktor-playground.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/frozen/ktor-playground.frozen.iml" filepath="$PROJECT_DIR$/.idea/modules/frozen/ktor-playground.frozen.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/frozen/ktor-playground.frozen.main.iml" filepath="$PROJECT_DIR$/.idea/modules/frozen/ktor-playground.frozen.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/frozen/ktor-playground.frozen.test.iml" filepath="$PROJECT_DIR$/.idea/modules/frozen/ktor-playground.frozen.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/karango/ktor-playground.karango.iml" filepath="$PROJECT_DIR$/.idea/modules/karango/ktor-playground.karango.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/karango/ktor-playground.karango.main.iml" filepath="$PROJECT_DIR$/.idea/modules/karango/ktor-playground.karango.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/karango/ktor-playground.karango.test.iml" filepath="$PROJECT_DIR$/.idea/modules/karango/ktor-playground.karango.test.iml" />
@@ -13,6 +10,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/karango_dev/ktor-playground.karango_dev.main.iml" filepath="$PROJECT_DIR$/.idea/modules/karango_dev/ktor-playground.karango_dev.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/karango_dev/ktor-playground.karango_dev.test.iml" filepath="$PROJECT_DIR$/.idea/modules/karango_dev/ktor-playground.karango_dev.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktor-playground.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktor-playground.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mutator/ktor-playground.mutator.iml" filepath="$PROJECT_DIR$/.idea/modules/mutator/ktor-playground.mutator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mutator/ktor-playground.mutator.main.iml" filepath="$PROJECT_DIR$/.idea/modules/mutator/ktor-playground.mutator.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mutator/ktor-playground.mutator.test.iml" filepath="$PROJECT_DIR$/.idea/modules/mutator/ktor-playground.mutator.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktor-playground.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ktor-playground.test.iml" />
     </modules>
   </component>

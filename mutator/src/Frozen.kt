@@ -1,4 +1,4 @@
-package de.peekandpoke.frozen
+package de.peekandpoke.mutator
 
 import javassist.ClassPool
 import javassist.CtNewConstructor

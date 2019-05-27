@@ -1,4 +1,4 @@
-package de.peekandpoke.frozen
+package de.peekandpoke.mutator
 
 import kotlin.reflect.full.declaredFunctions
 import kotlin.reflect.full.memberProperties
@@ -7,7 +7,7 @@ import kotlin.reflect.jvm.javaField
 
 object Cloner {
 
-    fun <T : Any> clone(subject: T): T {
+    fun <T : Any> cloneDataClass(subject: T): T {
 
         val cls = subject::class
 
