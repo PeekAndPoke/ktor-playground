@@ -1,4 +1,4 @@
-package de.peekandpoke.karango.meta
+package de.peekandpoke.ultra.common.meta
 
 import com.squareup.kotlinpoet.asTypeName
 import me.eugeniomarletti.kotlin.processing.KotlinProcessingEnvironment
@@ -138,7 +138,7 @@ interface ProcessorUtils : KotlinProcessingEnvironment {
     fun Element.asKotlinClass(): String =
         asType()
             .asTypeName().toString()
-            .replace("/", ".")
+            .replace("/", "")
             .replace("kotlin.jvm.functions", "kotlin")
             .replace("java.util.List", "kotlin.collections.List")
             .replace("java.util.Set", "kotlin.collections.Set")

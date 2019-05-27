@@ -77,7 +77,7 @@ fun playWithMutator() {
     val mutation = company.mutate {
 
         it.boss.name { toUpperCase() }
-        it.boss.age { it * 10 }
+        it.boss.age *= 10
 
         it.boss.address.city = "Aue"
         it.boss.address.zip = "08280"

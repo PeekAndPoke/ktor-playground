@@ -32,14 +32,9 @@ class EntityRefDeserializer @JvmOverloads constructor(val db: Db? = null, type: 
 
     override fun deserialize(jp: JsonParser, ctxt: DeserializationContext): Entity? {
 
-//        val counter = ctxt.findInjectableValue("__counter", null, null) as AtomicInteger
-//        println("counter ${counter.getAndIncrement()}")
-
         val node: JsonNode = jp.codec.readTree(jp)
 
         val id: String = node.textValue() ?: return null
-
-        println("id $id")
 
         ctxt.contextualType
 

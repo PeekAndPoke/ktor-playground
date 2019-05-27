@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktor-playground.iml" filepath="$PROJECT_DIR$/.idea/modules/ktor-playground.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/ktor-playground.common.iml" filepath="$PROJECT_DIR$/.idea/modules/common/ktor-playground.common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/ktor-playground.common.main.iml" filepath="$PROJECT_DIR$/.idea/modules/common/ktor-playground.common.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/ktor-playground.common.test.iml" filepath="$PROJECT_DIR$/.idea/modules/common/ktor-playground.common.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/karango/ktor-playground.karango.iml" filepath="$PROJECT_DIR$/.idea/modules/karango/ktor-playground.karango.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/karango/ktor-playground.karango.main.iml" filepath="$PROJECT_DIR$/.idea/modules/karango/ktor-playground.karango.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/karango/ktor-playground.karango.test.iml" filepath="$PROJECT_DIR$/.idea/modules/karango/ktor-playground.karango.test.iml" />

@@ -5,6 +5,8 @@
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="ktor-playground.common.main" target="1.8" />
+      <module name="ktor-playground.common.test" target="1.8" />
       <module name="ktor-playground.frozen.main" target="1.8" />
       <module name="ktor-playground.frozen.test" target="1.8" />
       <module name="ktor-playground.karango.main" target="1.8" />

@@ -2,9 +2,9 @@ package de.peekandpoke.karango.e2e
 
 import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.aql.Expression
-import de.peekandpoke.karango.aql.surround
 import de.peekandpoke.karango.aql.toPrinterResult
 import de.peekandpoke.karango.meta.EntityCollection
+import de.peekandpoke.ultra.common.surround
 import io.kotlintest.TestContext
 import io.kotlintest.matchers.withClue
 
@@ -16,11 +16,11 @@ data class E2ePerson(val name: String, val age: Int)
 @Suppress("unused")
 fun <T> TestContext.withClue(expr: Expression<T>, expected: Any?, thunk: () -> Any) {
 
-    val printerResult = expr.toPrinterResult() 
-    
+    val printerResult = expr.toPrinterResult()
+
     return withClue(
         listOf(
-            "Type:     $expr", 
+            "Type:     $expr",
             "AQL:      ${printerResult.query}",
             "Vars:     ${printerResult.vars}",
             "Readable: ${printerResult.raw}",

@@ -40,8 +40,6 @@ def arangodb_driver_version = "5.0.4"
 def arangodb_velocypack_version = "0.1.3"
 def jackson_kotlin_version = "2.9.8"
 def google_auto_version = "1.0-rc4"
-def kotlinpoet_version = "1.0.1"
-def kotlin_metadata_version = "1.4.0"
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
@@ -51,22 +49,18 @@ dependencies {
     compile "com.arangodb:jackson-dataformat-velocypack:$arangodb_velocypack_version"
     compile "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_kotlin_version"
 
-    // code generation
-    implementation ("me.eugeniomarletti.kotlin.metadata:kotlin-metadata:$kotlin_metadata_version") {
-        exclude group: "me.eugeniomarletti.kotlin.metadata", module: "kotlin-compiler-lite"
-    }
+    compile project(":common")
+    compile project(":mutator")
 
-    compile "com.squareup:kotlinpoet:$kotlinpoet_version"
-    compile "com.google.auto.service:auto-service:$google_auto_version"
+    ////  code generation  //////////////////////////////////////////////////////////////////////////////////////
+
+    implementation "com.google.auto.service:auto-service:$google_auto_version"
     kapt "com.google.auto.service:auto-service:$google_auto_version"
 
-    compile project(":mutator")
     kapt project(":mutator")
 
-//    testCompileOnly "me.eugeniomarletti.kotlin.metadata:kotlin-metadata:$kotlin_metadata_version"
-//    testCompileOnly "com.squareup:kotlinpoet:$kotlinpoet_version"
-//    testCompileOnly "com.google.auto.service:auto-service:$google_auto_version"
-    kaptTest "com.google.auto.service:auto-service:$google_auto_version"
+    ////  tests  ////////////////////////////////////////////////////////////////////////////////////////////////
+
     kaptTest project(":karango")
 
     testCompile "ch.qos.logback:logback-classic:$logback_version"

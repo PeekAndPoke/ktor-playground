@@ -1,6 +1,8 @@
 package de.peekandpoke.mutator
 
+import io.kotlintest.assertSoftly
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.StringSpec
 
 /**
@@ -8,15 +10,42 @@ import io.kotlintest.specs.StringSpec
  */
 class MutationTests : StringSpec({
 
-    "Mutating scalar properties of a simple data class" {
+    "Mutating one scalar property of a simple data class" {
 
-        val source = Person("Susi", 45)
+        val source = Person("Sansa", 21)
 
-//        val result = source.mutate {
-//
-//        }
+        val result = source.mutate { draft ->
+            draft.name = "Arya"
+        }
 
-        1.shouldBe(2)
+        assertSoftly {
+            source.shouldNotBe(result)
+
+            source.name.shouldBe("Sansa")
+            source.age.shouldBe(21)
+
+            result.name.shouldBe("Arya")
+            result.age.shouldBe(21)
+        }
     }
 
+    "Mutating multiple scalar property of a simple data class" {
+
+        val source = Person("Sansa", 21)
+
+        val result = source.mutate { draft ->
+            draft.name = "Arya"
+            draft.age = 17
+        }
+
+        assertSoftly {
+            source.shouldNotBe(result)
+
+            source.name.shouldBe("Sansa")
+            source.age.shouldBe(21)
+
+            result.name.shouldBe("Arya")
+            result.age.shouldBe(17)
+        }
+    }
 })
