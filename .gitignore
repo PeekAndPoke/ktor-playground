@@ -10,3 +10,4 @@ datasources.xml
 /out
 /build
 /.kotlintest
+.kotlintest

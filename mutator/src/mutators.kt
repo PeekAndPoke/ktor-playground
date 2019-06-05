@@ -84,7 +84,7 @@ class ListMutator<T, M>(original: List<T>, onModify: OnModify<List<T>> = {}, pri
     /**
      * Get the element at the given index
      */
-    operator fun get(index: Int) : M = mapper(getMutableResult()[index]) { set(index, it) }
+    operator fun get(index: Int): M = mapper(getMutableResult()[index]) { set(index, it) }
 
     /**
      * Set the element at the given index
@@ -137,28 +137,15 @@ class SetMutator<T, M>(original: Set<T>, onModify: OnModify<Set<T>> = {}, privat
 
     internal inner class It(set: Set<T>, private val mapper: (T, OnModify<T>) -> M) : Iterator<M> {
 
-        private val inner = set.iterator()
+        private val inner = set.toList().iterator()
 
-        private val mods = mutableMapOf<T, T>()
-
-        override fun hasNext(): Boolean {
-            val has = inner.hasNext()
-
-            if (!has) {
-                mods.forEach { (before, after) ->
-                    remove(before)
-                    add(after)
-                }
-            }
-
-            return has
-        }
+        override fun hasNext() = inner.hasNext()
 
         override fun next(): M {
 
-            val next = inner.next()
+            val current = inner.next()
 
-            return mapper(next) { mods[next] = it }
+            return mapper(current) { remove(current).add(it) }
         }
     }
 }

@@ -79,19 +79,19 @@ open class MutatorAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
 
         codeBlocks.add(
             """
-            @file:Suppress("UNUSED_ANONYMOUS_PARAMETER")
+                @file:Suppress("UNUSED_ANONYMOUS_PARAMETER")
 
-            package $packageName
+                package $packageName
 
-            import de.peekandpoke.mutator.*
+                import de.peekandpoke.mutator.*
 
-            fun $simpleName.mutate(builder: (draft: ${simpleName}Mutator) -> Unit) = mutator().apply(builder).getResult()
+                fun $simpleName.mutate(builder: (draft: ${simpleName}Mutator) -> Unit) = mutator().apply(builder).getResult()
 
-            fun $simpleName.mutator(onModify: OnModify<$simpleName> = {}) = ${simpleName}Mutator(this, onModify)
+                fun $simpleName.mutator(onModify: OnModify<$simpleName> = {}) = ${simpleName}Mutator(this, onModify)
 
-            class ${simpleName}Mutator(target: $simpleName, onModify: OnModify<$simpleName> = {}) : DataClassMutator<$simpleName>(target, onModify) {
+                class ${simpleName}Mutator(target: $simpleName, onModify: OnModify<$simpleName> = {}) : DataClassMutator<$simpleName>(target, onModify) {
 
-        """.trimIndent()
+            """.trimIndent()
         )
 
         element.variables.forEach {
