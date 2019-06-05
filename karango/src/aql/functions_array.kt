@@ -273,7 +273,7 @@ fun <T> SLICE(anyArray: Expression<List<T>>, start: Expression<Number>, length: 
 fun <T> SORTED(anyArray: Expression<List<T>>) = AqlFunc.SORTED.arrayCall(anyArray.getType(), anyArray)
 
 /**
- * Sort all elements in anyArray. The function will use the default comparison order for AQL value types. 
+ * Sort all elements in anyArray. The function will use the default comparison order for AQL value types.
  * Additionally, the values in the result array will be made unique.
  *
  * See https://docs.arangodb.com/current/AQL/Functions/Array.html#sorted
@@ -321,5 +321,5 @@ inline fun <reified T> UNSHIFT(anyArray: Expression<out List<T>>, value: Express
  * See https://docs.arangodb.com/current/AQL/Functions/Array.html#unshift
  */
 @KarangoFuncMarker
-inline fun <reified T> UNSHIFT(anyArray: Expression<out List<T>>, value: Expression<out T>, unique: Expression<Boolean>) = 
+inline fun <reified T> UNSHIFT(anyArray: Expression<out List<T>>, value: Expression<out T>, unique: Expression<Boolean>) =
     AqlFunc.UNSHIFT.arrayCall(type<List<T>>(), anyArray, value, unique)

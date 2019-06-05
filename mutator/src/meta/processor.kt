@@ -11,10 +11,24 @@ import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
 
+
 @AutoService(Processor::class)
 open class MutatorAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
 
     override val logPrefix: String = "[Mutator] "
+
+    private val renderers by lazy {
+
+        // TODO: check for collections
+
+        CodeRenderers(logPrefix, env) { root ->
+            listOf(
+                PrimitiveOrStringTypeCodeRenderer(logPrefix, env),
+                ListAndSetCodeRenderer(root, logPrefix, env),
+                UserClassCodeRenderer(logPrefix, env)
+            )
+        }
+    }
 
     override fun getSupportedSourceVersion(): SourceVersion = SourceVersion.latestSupported()
 
@@ -65,53 +79,48 @@ open class MutatorAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
 
         codeBlocks.add(
             """
+            @file:Suppress("UNUSED_ANONYMOUS_PARAMETER")
+
             package $packageName
 
             import de.peekandpoke.mutator.*
 
             fun $simpleName.mutate(builder: (draft: ${simpleName}Mutator) -> Unit) = mutator().apply(builder).getResult()
 
-            fun $simpleName.mutator(onChange: OnModify<$simpleName> = {}) = ${simpleName}Mutator(this, onChange)
+            fun $simpleName.mutator(onModify: OnModify<$simpleName> = {}) = ${simpleName}Mutator(this, onModify)
 
-            class ${simpleName}Mutator(target: $simpleName, onChange: OnModify<$simpleName> = {}) : DataClassMutator<$simpleName>(target, onChange) {
+            class ${simpleName}Mutator(target: $simpleName, onModify: OnModify<$simpleName> = {}) : DataClassMutator<$simpleName>(target, onModify) {
 
         """.trimIndent()
         )
 
         element.variables.forEach {
 
-            val type = it.asKotlinClass()
             val prop = it.simpleName
 
-            codeBlocks.add("//// $prop ".padEnd(160, '/') + System.lineSeparator())
+            codeBlocks.add("    //// $prop ".padEnd(120, '/') + System.lineSeparator())
 
-            logNote("  .. $prop of type ${it.fqn}")
+            logNote("  '$prop' of type ${it.fqn}")
 
             when {
-                it.isPrimitiveType || it.isStringType ->
+                renderers.canHandle(it.asTypeName()) ->
+                    codeBlocks.add(
+                        renderers.render(it).prependIndent("    ")
+                    )
+
+                else -> {
+                    val message = "There is no known way to mutate the property $element::$prop of type ${it.fqn} yet ... sorry!"
+
+                    logWarning("  .. $message")
+
                     codeBlocks.add(
                         """
-                            var $prop: $type
-                                get() = getResult().$prop
-                                set(v) = modify(getResult()::$prop, v)
-
-                                fun $prop(cb: $type.($type) -> $type) = modify(getResult()::$prop, $prop.cb($prop))
+                            @Deprecated("$message", level = DeprecationLevel.ERROR)
+                            val $prop: Any? = null
 
                         """.trimIndent().prependIndent("    ")
                     )
-
-                // TODO: check for collections
-
-                !it.fqn.startsWith("java.") && !it.fqn.startsWith("javax.") && !it.fqn.startsWith("kotlin.") ->
-                    codeBlocks.add(
-                        """
-                            val $prop: ${type}Mutator
-                                = getResult().$prop.mutator { modify(getResult()::$prop, it) }
-
-                        """.trimIndent().prependIndent("    ")
-                    )
-
-                else -> logWarning("  !! Cannot handle $prop of type ${it.fqn}")
+                }
             }
         }
 

@@ -11,7 +11,7 @@ abstract class MutatorBase<I : Any, R : I>(input: I, private val onModify: OnMod
 
     private var mutableResult: R? = null
 
-    fun getResult() : I = if (mutableResult != null) mutableResult!! else original
+    fun getResult(): I = if (mutableResult != null) mutableResult!! else original
 
     operator fun plusAssign(value: I) {
 
@@ -51,8 +51,8 @@ abstract class DataClassMutator<T : Any>(input: T, onModify: OnModify<T> = {}) :
     override fun copy(input: T): T = Cloner.cloneDataClass(input)
 }
 
-fun <T, M> List<T>.mutator(onModify: OnModify<List<T>> = {}, mapper: (T, OnModify<T>) -> M) = ListMutator(this, onModify, mapper)
 
+fun <T, M> List<T>.mutator(onModify: OnModify<List<T>> = {}, mapper: (T, OnModify<T>) -> M) = ListMutator(this, onModify, mapper)
 
 class ListMutator<T, M>(original: List<T>, onModify: OnModify<List<T>> = {}, private val mapper: (T, OnModify<T>) -> M) :
     MutatorBase<List<T>, MutableList<T>>(original, onModify), Iterable<M> {
@@ -84,7 +84,7 @@ class ListMutator<T, M>(original: List<T>, onModify: OnModify<List<T>> = {}, pri
     /**
      * Get the element at the given index
      */
-    operator fun get(index: Int) = mapper(getMutableResult()[index]) { set(index, it) }
+    operator fun get(index: Int) : M = mapper(getMutableResult()[index]) { set(index, it) }
 
     /**
      * Set the element at the given index
@@ -102,6 +102,107 @@ class ListMutator<T, M>(original: List<T>, onModify: OnModify<List<T>> = {}, pri
             val current = pos++
 
             return mapper(list[current]) { set(current, it) }
+        }
+    }
+}
+
+fun <T, M> Set<T>.mutator(onModify: OnModify<Set<T>> = {}, mapper: (T, OnModify<T>) -> M) = SetMutator(this, onModify, mapper)
+
+class SetMutator<T, M>(original: Set<T>, onModify: OnModify<Set<T>> = {}, private val mapper: (T, OnModify<T>) -> M) :
+    MutatorBase<Set<T>, MutableSet<T>>(original, onModify), Iterable<M> {
+
+    override fun copy(input: Set<T>) = input.toMutableSet()
+
+    override fun iterator(): Iterator<M> = It(getMutableResult(), mapper)
+
+    /**
+     * Returns the size of the list
+     */
+    val size get() = getResult().size
+
+    /**
+     * Returns true when the list is empty
+     */
+    fun isEmpty() = getResult().isEmpty()
+
+    /**
+     * Adds an element to the set
+     */
+    fun add(element: T) = apply { getMutableResult().add(element) }
+
+    /**
+     * Removes an element from the set
+     */
+    fun remove(element: T) = apply { getMutableResult().remove(element) }
+
+    internal inner class It(set: Set<T>, private val mapper: (T, OnModify<T>) -> M) : Iterator<M> {
+
+        private val inner = set.iterator()
+
+        private val mods = mutableMapOf<T, T>()
+
+        override fun hasNext(): Boolean {
+            val has = inner.hasNext()
+
+            if (!has) {
+                mods.forEach { (before, after) ->
+                    remove(before)
+                    add(after)
+                }
+            }
+
+            return has
+        }
+
+        override fun next(): M {
+
+            val next = inner.next()
+
+            return mapper(next) { mods[next] = it }
+        }
+    }
+}
+
+fun <T, K, M> Map<K, T>.mutator(onModify: OnModify<Map<K, T>> = {}, mapper: (T, OnModify<T>) -> M) = MapMutator(this, onModify, mapper)
+
+class MapMutator<T, K, M>(original: Map<K, T>, onModify: OnModify<Map<K, T>> = {}, private val mapper: (T, OnModify<T>) -> M) :
+    MutatorBase<Map<K, T>, MutableMap<K, T>>(original, onModify), Iterable<M> {
+
+    override fun copy(input: Map<K, T>) = input.toMutableMap()
+
+    override fun iterator(): Iterator<M> = It(getMutableResult(), mapper)
+
+    /**
+     * Returns the size of the list
+     */
+    val size get() = getResult().size
+
+    /**
+     * Returns true when the list is empty
+     */
+    fun isEmpty() = getResult().isEmpty()
+
+    /**
+     * Get the element at the given index
+     */
+    operator fun get(index: K): M? = getMutableResult()[index]?.let { entry -> mapper(entry) { set(index, it) } }
+
+    /**
+     * Set the element at the given index
+     */
+    operator fun set(index: K, element: T) = apply { getMutableResult()[index] = element }
+
+    internal inner class It(map: Map<K, T>, private val mapper: (T, OnModify<T>) -> M) : Iterator<M> {
+
+        private val inner = map.iterator()
+
+        override fun hasNext() = inner.hasNext()
+
+        override fun next(): M {
+
+            val next = inner.next()
+
+            return mapper(next.value) { set(next.key, it) }
         }
     }
 }

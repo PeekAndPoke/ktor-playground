@@ -1,7 +1,10 @@
 package de.peekandpoke.ultra.common.meta
 
+import com.squareup.kotlinpoet.ParameterizedTypeName
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asTypeName
 import me.eugeniomarletti.kotlin.processing.KotlinProcessingEnvironment
+import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
 import javax.lang.model.element.VariableElement
@@ -13,6 +16,8 @@ import javax.tools.Diagnostic
 interface ProcessorUtils : KotlinProcessingEnvironment {
 
     val logPrefix: String
+
+    val env: ProcessingEnvironment get() = processingEnv
 
     fun logNote(str: String) = messager.printMessage(Diagnostic.Kind.NOTE, "$logPrefix $str")
 
@@ -26,27 +31,54 @@ interface ProcessorUtils : KotlinProcessingEnvironment {
 
     ////  REFLECTION  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//    val <T : Any> KClass<T>.fqn: String get() = java.canonicalName
+    fun String.asKotlinClassName(): String = this
+        .replace("/", "")
+        .replace("kotlin.jvm.functions", "kotlin")
+        .replace("java.util.List", "kotlin.collections.List")
+        .replace("java.util.Set", "kotlin.collections.Set")
+        .replace("java.util.Map", "kotlin.collections.Map")
+        .replace("java.util.SortedMap", "kotlin.collections.SortedMap")
+        .replace("java.util.Collection", "kotlin.collections.Collection")
+        .replace("java.lang.Throwable", "kotlin.Throwable")
+        .let {
+            if (it == "java.lang") it.replace("java.lang", "kotlin")
+            else it
+        }.let {
+            if (it == "java.util") it.replace("java.util", "kotlin.collections")
+            else it
+        }
+        .replace("int", "kotlin.Int")
+        .replace("kotlin.Integer", "kotlin.Int")
+        .replace("Integer", "Int")
+        .replace("java.lang.Int", "kotlin.Int")
+        .replace("java.lang.String", "kotlin.String")
+
+    val String.isPrimitiveType
+        get() = when (this) {
+            "kotlin.Boolean",
+            "kotlin.Char",
+            "kotlin.Byte",
+            "kotlin.Short",
+            "kotlin.Int",
+            "kotlin.Long",
+            "kotlin.Float",
+            "kotlin.Double",
+            "kotlin.Void" -> true
+
+            else -> false
+        }
+
+    val String.isStringType get() = this == "java.lang.String"
+
+    val TypeName.fqn get() = this.toString()
+
+    val TypeName.isPrimitiveType get() = fqn.isPrimitiveType
+
+    val TypeName.isStringType get() = fqn.isStringType
+
+    fun TypeName.asKotlinClassName() = fqn.asKotlinClassName()
 
     val TypeMirror.fqn get() = asTypeName().toString()
-
-    val Element.fqn get() = asType().fqn
-
-    val Element.isPrimitiveType get() = when (fqn) {
-        "kotlin.Boolean",
-        "kotlin.Char",
-        "kotlin.Byte",
-        "kotlin.Short",
-        "kotlin.Int",
-        "kotlin.Long",
-        "kotlin.Float",
-        "kotlin.Double",
-        "kotlin.Void" -> true
-
-        else -> false
-    }
-
-    val Element.isStringType get() = fqn == "java.lang.String"
 
     /**
      * Get all variables of a type element
@@ -55,6 +87,14 @@ interface ProcessorUtils : KotlinProcessingEnvironment {
         get() = enclosedElements
             .filterIsInstance<VariableElement>()
             .filter { !it.simpleName.contentEquals("Companion") }
+
+    val Element.fqn get() = asType().fqn
+
+    val Element.isPrimitiveType get() = fqn.isPrimitiveType
+
+    val Element.isStringType get() = fqn.isStringType
+
+    fun Element.asTypeName() = asType().asTypeName()
 
     /**
      * Get all types, that are directly or recursively used within the given Element
@@ -135,27 +175,7 @@ interface ProcessorUtils : KotlinProcessingEnvironment {
 
     ////  KOTLIN COMPAT  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    fun Element.asKotlinClass(): String =
-        asType()
-            .asTypeName().toString()
-            .replace("/", "")
-            .replace("kotlin.jvm.functions", "kotlin")
-            .replace("java.util.List", "kotlin.collections.List")
-            .replace("java.util.Set", "kotlin.collections.Set")
-            .replace("java.util.Map", "kotlin.collections.Map")
-            .replace("java.util.SortedMap", "kotlin.collections.SortedMap")
-            .replace("java.util.Collection", "kotlin.collections.Collection")
-            .replace("java.lang.Throwable", "kotlin.Throwable")
-            .let {
-                if (it == "java.lang") it.replace("java.lang", "kotlin")
-                else it
-            }.let {
-                if (it == "java.util") it.replace("java.util", "kotlin.collections")
-                else it
-            }
-            .replace("int", "kotlin.Int")
-            .replace("kotlin.Integer", "kotlin.Int")
-            .replace("Integer", "Int")
-            .replace("java.lang.Int", "kotlin.Int")
-            .replace("java.lang.String", "kotlin.String")
+    fun Element.asKotlinClassName(): String = asType().asTypeName().toString().asKotlinClassName()
+
+    fun ParameterizedTypeName.asRawKotlinClassName() : String = rawType.canonicalName.asKotlinClassName()
 }

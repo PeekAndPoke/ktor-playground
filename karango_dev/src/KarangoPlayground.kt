@@ -10,7 +10,6 @@ import de.peekandpoke.karango_dev.domain.Persons
 import de.peekandpoke.karango_dev.domain.name
 import de.peekandpoke.mutator.Frozen
 import de.peekandpoke.mutator.Mutator
-import de.peekandpoke.mutator.mutator
 import kotlin.system.measureTimeMillis
 
 
@@ -28,18 +27,30 @@ data class FrozenPerson(val name: String, val age: Int, val address: FrozenAddre
 //data class FrozenCompany(val boss: FrozenPerson, val addresses: List<FrozenAddress>)
 //
 //val FrozenCompanyMutator.addresses
-//    get() = result.addresses.mutator(
-//        { item, onModify -> item.mutator(onModify) },
-//        { modify(result::addresses, it) }
+//    get() = getResult().addresses.mutator(
+//        { modify(getResult()::addresses, it) },
+//        { item, onModify -> item.mutator(onModify) }
 //    )
 
 @Mutator
-data class FrozenCompany(val boss: FrozenPerson, val addresses: List<List<FrozenAddress>>)
+data class FrozenCompany(
+    val boss: FrozenPerson,
+    val names: List<String>,
+    val addresses: List<FrozenAddress>,
+    val listOfLists: List<List<FrozenAddress>> = listOf(),
+    val listOfListOfLists: List<List<List<FrozenAddress>>> = listOf(),
+    val set: Set<FrozenAddress> = setOf(),
+    val map: Map<String, FrozenAddress> = mapOf()
+)
 
-val FrozenCompanyMutator.addresses
-    get() = getResult().addresses.mutator({ modify(getResult()::addresses, it) }) { i1, on1 ->
-        i1.mutator(on1) { i2, on2 -> i2.mutator(on2) }
-    }
+//@Mutator
+//data class FrozenCompany(val boss: FrozenPerson, val addresses: List<List<FrozenAddress>>)
+
+//val FrozenCompanyMutator.addresses
+//    get() = getResult().addresses.mutator(
+//        { modify(getResult()::addresses, it) },
+//        { i1, on1 -> i1.mutator(on1) { i2, on2 -> i2.mutator(on2) } }
+//    )
 
 fun main() {
 
@@ -62,39 +73,66 @@ fun playWithMutator() {
     val person = FrozenPerson("Karl", 22, address)
     val company = FrozenCompany(
         person,
+        listOf("Google", "alphabet"),
         listOf(
-            listOf(
-                FrozenAddress("Berlin", "10117"),
-                FrozenAddress("München", "80637")
-            ),
-            listOf(
-                FrozenAddress("Chemnitz", "01234"),
-                FrozenAddress("Jena", "121212")
-            )
+            FrozenAddress("Berlin", "10117"),
+            FrozenAddress("München", "80637")
+        ),
+        set = setOf(
+            FrozenAddress("Berlin", "10117"),
+            FrozenAddress("München", "80637")
         )
+//        listOf(
+//            listOf(
+//                FrozenAddress("Berlin", "10117"),
+//                FrozenAddress("München", "80637")
+//            ),
+//            listOf(
+//                FrozenAddress("Chemnitz", "01234"),
+//                FrozenAddress("Jena", "121212")
+//            )
+//        )
     )
 
-    val mutation = company.mutate {
+    val mutation = company.mutate { draft ->
 
-        it.boss.name { toUpperCase() }
-        it.boss.age *= 10
+        draft.boss.name { toUpperCase() }
+        draft.boss.age *= 10
 
-        it.boss.address.city = "Aue"
-        it.boss.address.zip = "08280"
+        draft.boss.address.city = "Aue"
+        draft.boss.address.zip = "08280"
 
-        it.addresses[0].push(FrozenAddress("Some city", "45454"))
+        draft.addresses[0].city = "CHANGED"
 
-        it.addresses.forEach { addresses ->
-            addresses.forEach { address ->
-                address.city = address.city.toUpperCase()
-            }
+        draft.set.forEach {
+            it.city { toUpperCase() + "_aa" }
         }
+
+//        it.addresses[0].push(FrozenAddress("Some city", "45454"))
+//
+//        it.addresses.forEach { addresses ->
+//            addresses.forEach { address ->
+//                address.city = address.city.toUpperCase()
+//            }
+//        }
     }
 
     println(company)
     println(mutation)
 
-    mutation.addresses.forEach { println(it) }
+    println("////  list  ////")
+
+    mutation.addresses.forEach {
+        println(it)
+        println(it.hashCode())
+    }
+
+    println("////  set  ////")
+
+    mutation.set.forEach {
+        println(it)
+        println(it.hashCode())
+    }
 }
 
 fun moreFun() {

@@ -115,7 +115,7 @@ open class KarangoAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
 
         element.variables.forEach {
 
-            val type = it.asKotlinClass()
+            val type = it.asKotlinClassName()
             val prop = it.simpleName
 
             codeBlocks.add("//// $prop ".padEnd(160, '/'))

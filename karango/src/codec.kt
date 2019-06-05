@@ -22,8 +22,6 @@ class EntityRefDeserializer @JvmOverloads constructor(val db: Db? = null, type: 
 
     override fun createContextual(ctxt: DeserializationContext?, property: BeanProperty?): JsonDeserializer<*> {
 
-        println("createContextual")
-
         return EntityRefDeserializer(
             ctxt?.findInjectableValue("__db", null, null) as Db,
             property?.type?.rawClass

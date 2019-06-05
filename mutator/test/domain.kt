@@ -1,9 +1,10 @@
 package de.peekandpoke.mutator
 
-/**
- * Created by gerk on 26.05.19 23:44
- */
 
 @Mutator
-data class Person(val name: String, val age: Int)
+data class SimplePerson(val name: String, val age: Int)
 
+@Mutator
+data class PersonWithAddress(val name: String, val age: Int, val address: Address)
+
+data class Address(val city: String, val zip: String)
