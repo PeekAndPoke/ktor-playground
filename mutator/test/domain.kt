@@ -35,3 +35,12 @@ data class SetOfAddresses(val addresses: Set<Address>)
 
 @Mutator
 data class MapOfAddresses(val addresses: Map<String, Address>)
+
+@Mutator
+data class ListOfStrings(val values: List<String>)
+
+@Mutator
+data class ListOfInts(val values: List<Int>)
+
+@Mutator
+data class GenericClass<T>(val value: T)

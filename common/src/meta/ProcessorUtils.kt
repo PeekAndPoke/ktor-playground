@@ -54,7 +54,7 @@ interface ProcessorUtils : KotlinProcessingEnvironment {
         .replace("java.lang.String", "kotlin.String")
 
     val String.isPrimitiveType
-        get() = when (this) {
+        get() = when (asKotlinClassName()) {
             "kotlin.Boolean",
             "kotlin.Char",
             "kotlin.Byte",
@@ -127,7 +127,7 @@ interface ProcessorUtils : KotlinProcessingEnvironment {
 
         if (this is DeclaredType) {
 
-            logNote("DeclaredType $this")
+//            logNote("DeclaredType $this")
 
             // add the type it-self
             result.add(this)
@@ -139,10 +139,9 @@ interface ProcessorUtils : KotlinProcessingEnvironment {
 
             if (element is TypeElement) {
 
-                logNote("  .. TypeElement ${this}")
+//                logNote("  .. TypeElement ${this}")
 
-                val nested = element.variables
-                    .asSequence()
+                val nested = element.variables.asSequence()
                     .filter { !it.asType().kind.isPrimitive }
                     .map { v: VariableElement ->
 
@@ -153,7 +152,8 @@ interface ProcessorUtils : KotlinProcessingEnvironment {
                             if (elType is DeclaredType) {
                                 // add the type it self
                                 add(elType)
-                                logNote("  .. ${v.simpleName} .. DeclaredType $elType")
+
+//                                logNote("  .. ${v.simpleName} .. DeclaredType $elType")
 
                                 // add all generic type arguments of the type that are declared types
                                 addAll(elType.typeArguments.mapNotNull { (it as? DeclaredType) })
@@ -177,5 +177,5 @@ interface ProcessorUtils : KotlinProcessingEnvironment {
 
     fun Element.asKotlinClassName(): String = asType().asTypeName().toString().asKotlinClassName()
 
-    fun ParameterizedTypeName.asRawKotlinClassName() : String = rawType.canonicalName.asKotlinClassName()
+    fun ParameterizedTypeName.asRawKotlinClassName(): String = rawType.canonicalName.asKotlinClassName()
 }

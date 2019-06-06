@@ -60,19 +60,25 @@ class CodeRenderers(
 
     private val children by lazy { provider(this) }
 
+    private val cache = mutableMapOf<String, CodeRenderer?>()
+
     /**
      * Returns 'true' when one of the children returns true for the given VariableElement.
      */
-    override fun canHandle(type: TypeName) = children.any { it.canHandle(type) }
+    override fun canHandle(type: TypeName) = match(type) != null
 
     /**
      * Returns the code for the first matching child renderer
      */
-    override fun render(elem: VariableElement) = children.first { it.canHandle(elem.asTypeName()) }.render(elem)
+    override fun render(elem: VariableElement) = match(elem.asTypeName())!!.render(elem)
 
-    override fun renderForwardMapper(type: TypeName, depth: Int) = children.first { it.canHandle(type) }.renderForwardMapper(type, depth)
+    override fun renderForwardMapper(type: TypeName, depth: Int) = match(type)!!.renderForwardMapper(type, depth)
 
-    override fun renderBackwardMapper(type: TypeName, depth: Int) = children.first { it.canHandle(type) }.renderBackwardMapper(type, depth)
+    override fun renderBackwardMapper(type: TypeName, depth: Int) = match(type)!!.renderBackwardMapper(type, depth)
+
+    private fun match(type: TypeName) = cache.getOrPut(type.fqn) {
+        children.firstOrNull { it.canHandle(type) }
+    }
 }
 
 /**
@@ -155,7 +161,10 @@ class ListAndSetCodeRenderer(
         val plus1 = depth + 1
 
         return """
-            ${depth.asParam}.mutator(${depth.asOnModify}, { ${plus1.asParam} -> ${root.renderBackwardMapper(typeParam, plus1)} }) { ${plus1.asParam}, ${plus1.asOnModify} ->
+            ${depth.asParam}.mutator(${depth.asOnModify}, { ${plus1.asParam} -> ${root.renderBackwardMapper(
+            typeParam,
+            plus1
+        )} }) { ${plus1.asParam}, ${plus1.asOnModify} ->
                 ${root.renderForwardMapper(typeParam, plus1).indent(4)}
             }
         """.trimIndent()
@@ -215,7 +224,10 @@ class MapCodeRenderer(
         val plus1 = depth + 1
 
         return """
-            ${depth.asParam}.mutator(${depth.asOnModify}, { ${plus1.asParam} -> ${root.renderBackwardMapper(p1, plus1)} }) { ${plus1.asParam}, ${plus1.asOnModify} ->
+            ${depth.asParam}.mutator(${depth.asOnModify}, { ${plus1.asParam} -> ${root.renderBackwardMapper(
+            p1,
+            plus1
+        )} }) { ${plus1.asParam}, ${plus1.asOnModify} ->
                 ${root.renderForwardMapper(p1, plus1).indent(4)}
             }
         """.trimIndent()
@@ -231,12 +243,16 @@ class MapCodeRenderer(
 
 class DataClassCodeRenderer(logPrefix: String, env: ProcessingEnvironment) : CodeRendererBase(logPrefix, env) {
 
-    override fun canHandle(type: TypeName) = type.fqn.startsWithNone(
-        "java.",                // exclude java std lib
-        "javax.",               // exclude javax std lib
-        "kotlin.",              // exclude kotlin std lib
-        "com.google.common."    // exclude google guava
-    )
+    override fun canHandle(type: TypeName) =
+        // we cannot handle generic types at the moment
+        type !is ParameterizedTypeName &&
+        // we also exclude some packages completely
+        type.fqn.startsWithNone(
+            "java.",                // exclude java std lib
+            "javax.",               // exclude javax std lib
+            "kotlin.",              // exclude kotlin std lib
+            "com.google.common."    // exclude google guava
+        )
 
     override fun render(elem: VariableElement): String {
 

@@ -60,7 +60,9 @@ open class MutatorAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
             .filter { !it.fqn.startsWith("java.") }
             .filter { !it.fqn.startsWith("javax.") }
             .filter { !it.fqn.startsWith("kotlin.") }
-            .distinct().toList()
+            .distinct()
+            .filter { renderers.canHandle(it.asTypeName()) }
+            .toList()
 
         logNote("all types (nested): $all")
 
