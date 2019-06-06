@@ -5,15 +5,15 @@ import de.peekandpoke.ultra.common.push
 import de.peekandpoke.ultra.common.shift
 import de.peekandpoke.ultra.common.unshift
 
-fun <T, M : ResultHolder<T>> List<T>.mutator(onModify: OnModify<List<T>> = {}, mapper: (T, OnModify<T>) -> M): ListMutator<T, M> {
+fun <T, M> List<T>.mutator(
 
-    return ListMutator(this, onModify, mapper, { it.getResult() })
-}
+    onModify: OnModify<List<T>> = {},
+    backwardMapper: (M) -> T,
+    forwardMapper: (T, OnModify<T>) -> M
 
-@JvmName("mutator_string")
-fun List<String>.mutator(onModify: OnModify<List<String>> = {}, mapper: (String, OnModify<String>) -> String): ListMutator<String, String> {
+): ListMutator<T, M> {
 
-    return ListMutator(this, onModify, mapper, { it })
+    return ListMutator(this, onModify, forwardMapper, backwardMapper)
 }
 
 class ListMutator<T, M>(

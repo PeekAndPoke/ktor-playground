@@ -1,9 +1,15 @@
 package de.peekandpoke.mutator
 
 
-fun <T, K, M : ResultHolder<T>> Map<K, T>.mutator(onModify: OnModify<Map<K, T>> = {}, mapper: (T, OnModify<T>) -> M): MapMutator<T, K, M> {
+fun <T, K, M> Map<K, T>.mutator(
 
-    return MapMutator(this, onModify, mapper, { it.getResult() })
+    onModify: OnModify<Map<K, T>> = {},
+    backwardMapper: (M) -> T,
+    forwardMapper: (T, OnModify<T>) -> M
+
+): MapMutator<T, K, M> {
+
+    return MapMutator(this, onModify, forwardMapper, backwardMapper)
 }
 
 class MapMutator<T, K, M>(

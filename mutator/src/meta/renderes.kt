@@ -18,7 +18,9 @@ interface CodeRenderer {
      */
     fun render(elem: VariableElement): String
 
-    fun renderMapper(type: TypeName, depth: Int = 1): String
+    fun renderForwardMapper(type: TypeName, depth: Int): String
+
+    fun renderBackwardMapper(type: TypeName, depth: Int): String
 
 //    /**
 //     * Renders the code-blocks by type (without variable declaration)
@@ -68,7 +70,9 @@ class CodeRenderers(
      */
     override fun render(elem: VariableElement) = children.first { it.canHandle(elem.asTypeName()) }.render(elem)
 
-    override fun renderMapper(type: TypeName, depth: Int) = children.first { it.canHandle(type) }.renderMapper(type, depth)
+    override fun renderForwardMapper(type: TypeName, depth: Int) = children.first { it.canHandle(type) }.renderForwardMapper(type, depth)
+
+    override fun renderBackwardMapper(type: TypeName, depth: Int) = children.first { it.canHandle(type) }.renderBackwardMapper(type, depth)
 }
 
 /**
@@ -93,7 +97,14 @@ class PrimitiveOrStringTypeCodeRenderer(logPrefix: String, env: ProcessingEnviro
         """.trimIndent()
     }
 
-    override fun renderMapper(type: TypeName, depth: Int): String {
+    override fun renderForwardMapper(type: TypeName, depth: Int): String {
+
+        return """
+            ${depth.asParam}
+        """.trimIndent()
+    }
+
+    override fun renderBackwardMapper(type: TypeName, depth: Int): String {
 
         return """
             ${depth.asParam}
@@ -128,8 +139,9 @@ class ListAndSetCodeRenderer(
             val $prop by lazy {
                 getResult().$prop.mutator(
                     { modify(getResult()::$prop, it) },
+                    { ${1.asParam} -> ${root.renderBackwardMapper(typeParam, 1)} },
                     { ${1.asParam}, ${1.asOnModify} ->
-                        ${root.renderMapper(typeParam, 1).indent(6)}
+                        ${root.renderForwardMapper(typeParam, 1).indent(6)}
                     }
                 )
             }
@@ -137,15 +149,22 @@ class ListAndSetCodeRenderer(
         """.trimIndent()
     }
 
-    override fun renderMapper(type: TypeName, depth: Int): String {
+    override fun renderForwardMapper(type: TypeName, depth: Int): String {
 
         val typeParam = (type as ParameterizedTypeName).typeArguments[0]
         val plus1 = depth + 1
 
         return """
-            ${depth.asParam}.mutator(${depth.asOnModify}) { ${plus1.asParam}, ${plus1.asOnModify} ->
-                ${root.renderMapper(typeParam, plus1).indent(4)}
+            ${depth.asParam}.mutator(${depth.asOnModify}, { ${plus1.asParam} -> ${root.renderBackwardMapper(typeParam, plus1)} }) { ${plus1.asParam}, ${plus1.asOnModify} ->
+                ${root.renderForwardMapper(typeParam, plus1).indent(4)}
             }
+        """.trimIndent()
+    }
+
+    override fun renderBackwardMapper(type: TypeName, depth: Int): String {
+
+        return """
+            ${depth.asParam}.getResult()
         """.trimIndent()
     }
 }
@@ -179,8 +198,9 @@ class MapCodeRenderer(
             val $prop by lazy {
                 getResult().$prop.mutator(
                     { modify(getResult()::$prop, it) },
+                    { ${1.asParam} -> ${root.renderBackwardMapper(p1, 1)} },
                     { ${1.asParam}, ${1.asOnModify} ->
-                        ${root.renderMapper(p1, 1).indent(6)}
+                        ${root.renderForwardMapper(p1, 1).indent(6)}
                     }
                 )
             }
@@ -188,16 +208,23 @@ class MapCodeRenderer(
         """.trimIndent()
     }
 
-    override fun renderMapper(type: TypeName, depth: Int): String {
+    override fun renderForwardMapper(type: TypeName, depth: Int): String {
 
         val p1 = (type as ParameterizedTypeName).typeArguments[1]
 
         val plus1 = depth + 1
 
         return """
-            ${depth.asParam}.mutator(${depth.asOnModify}) { ${plus1.asParam}, ${plus1.asOnModify} ->
-                ${root.renderMapper(p1, plus1).indent(4)}
+            ${depth.asParam}.mutator(${depth.asOnModify}, { ${plus1.asParam} -> ${root.renderBackwardMapper(p1, plus1)} }) { ${plus1.asParam}, ${plus1.asOnModify} ->
+                ${root.renderForwardMapper(p1, plus1).indent(4)}
             }
+        """.trimIndent()
+    }
+
+    override fun renderBackwardMapper(type: TypeName, depth: Int): String {
+
+        return """
+            ${depth.asParam}.getResult()
         """.trimIndent()
     }
 }
@@ -221,10 +248,17 @@ class DataClassCodeRenderer(logPrefix: String, env: ProcessingEnvironment) : Cod
         """.trimIndent()
     }
 
-    override fun renderMapper(type: TypeName, depth: Int): String {
+    override fun renderForwardMapper(type: TypeName, depth: Int): String {
 
         return """
             ${depth.asParam}.mutator(${depth.asOnModify})
+        """.trimIndent()
+    }
+
+    override fun renderBackwardMapper(type: TypeName, depth: Int): String {
+
+        return """
+            ${depth.asParam}.getResult()
         """.trimIndent()
     }
 }

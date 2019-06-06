@@ -1,8 +1,85 @@
 package de.peekandpoke.mutator
 
-fun <T, M : ResultHolder<T>> Set<T>.mutator(onModify: OnModify<Set<T>> = {}, mapper: (T, OnModify<T>) -> M) = SetMutator(this, onModify, mapper)
+fun <T, M> Set<T>.mutator(
 
-internal     class MutableSetWrapper<X>(inner: MutableSet<X>) : MutableSet<X> {
+    onModify: OnModify<Set<T>> = {},
+    backwardMapper: (M) -> T,
+    forwardMapper: (T, OnModify<T>) -> M
+
+) : SetMutator<T, M> {
+
+    return SetMutator(this, onModify, forwardMapper, backwardMapper)
+}
+
+class SetMutator<T, M>(
+
+    original: Set<T>,
+    onModify: OnModify<Set<T>> = {},
+    private val mapper: (T, OnModify<T>) -> M,
+    private val backwardMapper: (M) -> T
+
+) : MutatorBase<Set<T>, MutableSet<T>>(original, onModify), Iterable<M> {
+
+    operator fun plusAssign(value: List<M>) = plusAssign(value.map(backwardMapper).toSet())
+
+    override fun copy(input: Set<T>) : MutableSet<T> = MutableSetWrapper(input.toMutableSet())
+
+    override fun iterator(): Iterator<M> = It(getMutableResult(), mapper)
+
+    /**
+     * Returns the size of the list
+     */
+    val size get() = getResult().size
+
+    /**
+     * Returns true when the list is empty
+     */
+    fun isEmpty() = getResult().isEmpty()
+
+    /**
+     * Clears the whole list
+     */
+    fun clear() = apply { getMutableResult().clear() }
+
+    /**
+     * Adds elements to the set
+     */
+    fun add(vararg element: T) = apply { getMutableResult().addAll(element) }
+
+    /**
+     * Removes elements from the set
+     */
+    fun remove(vararg element: T) = apply { getMutableResult().removeAll(element) }
+
+    /**
+     * Retains all elements in the list that match the filter
+     */
+    fun retainWhere(filter: (T) -> Boolean) = apply { plusAssign(getResult().filter(filter).toSet()) }
+
+    /**
+     * Removes all elements from the the list that match the filter
+     */
+    fun removeWhere(filter: (T) -> Boolean) = apply { retainWhere { !filter(it) } }
+
+    internal inner class It(set: Set<T>, private val mapper: (T, OnModify<T>) -> M) : Iterator<M> {
+
+        private val inner = set.toList().iterator()
+
+        override fun hasNext() = inner.hasNext()
+
+        override fun next(): M {
+
+            val current = inner.next()
+
+            return mapper(current) {
+                remove(current)
+                add(it)
+            }
+        }
+    }
+}
+
+internal class MutableSetWrapper<X>(inner: MutableSet<X>) : MutableSet<X> {
 
     @Volatile private var _inner = inner
 
@@ -59,72 +136,5 @@ internal     class MutableSetWrapper<X>(inner: MutableSet<X>) : MutableSet<X> {
         }
 
         return cb()
-    }
-}
-
-class SetMutator<T, M : ResultHolder<T>>(
-
-    original: Set<T>,
-    onModify: OnModify<Set<T>> = {},
-    private val mapper: (T, OnModify<T>) -> M
-
-) : MutatorBase<Set<T>, MutableSet<T>>(original, onModify), Iterable<M> {
-
-    operator fun plusAssign(value: List<M>) = plusAssign(value.map { it.getResult() }.toSet())
-
-    override fun copy(input: Set<T>) : MutableSet<T> = MutableSetWrapper(input.toMutableSet())
-
-    override fun iterator(): Iterator<M> = It(getMutableResult(), mapper)
-
-    /**
-     * Returns the size of the list
-     */
-    val size get() = getResult().size
-
-    /**
-     * Returns true when the list is empty
-     */
-    fun isEmpty() = getResult().isEmpty()
-
-    /**
-     * Clears the whole list
-     */
-    fun clear() = apply { getMutableResult().clear() }
-
-    /**
-     * Adds elements to the set
-     */
-    fun add(vararg element: T) = apply { getMutableResult().addAll(element) }
-
-    /**
-     * Removes elements from the set
-     */
-    fun remove(vararg element: T) = apply { getMutableResult().removeAll(element) }
-
-    /**
-     * Retains all elements in the list that match the filter
-     */
-    fun retainWhere(filter: (T) -> Boolean) = apply { plusAssign(getResult().filter(filter).toSet()) }
-
-    /**
-     * Removes all elements from the the list that match the filter
-     */
-    fun removeWhere(filter: (T) -> Boolean) = apply { retainWhere { !filter(it) } }
-
-    internal inner class It(set: Set<T>, private val mapper: (T, OnModify<T>) -> M) : Iterator<M> {
-
-        private val inner = set.toList().iterator()
-
-        override fun hasNext() = inner.hasNext()
-
-        override fun next(): M {
-
-            val current = inner.next()
-
-            return mapper(current) {
-                remove(current)
-                add(it)
-            }
-        }
     }
 }

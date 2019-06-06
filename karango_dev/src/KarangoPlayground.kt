@@ -39,6 +39,8 @@ data class FrozenCompany(
     val addresses: List<FrozenAddress>,
     val listOfLists: List<List<FrozenAddress>> = listOf(),
     val listOfListOfLists: List<List<List<FrozenAddress>>> = listOf(),
+    val listOfListOfMaps: List<List<Map<String, FrozenAddress>>> = listOf(),
+    val listOfMapOfLists: List<Map<String, List<FrozenAddress>>> = listOf(),
     val set: Set<FrozenAddress> = setOf(),
     val map: Map<String, FrozenAddress> = mapOf()
 )
