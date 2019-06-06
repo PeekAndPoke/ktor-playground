@@ -8,6 +8,8 @@ datasources.xml
 
 /.gradle
 /out
+*/out
 /build
+*/build
 /.kotlintest
-.kotlintest
+*/.kotlintest
