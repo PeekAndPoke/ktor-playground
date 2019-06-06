@@ -25,7 +25,8 @@ open class MutatorAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
             listOf(
                 PrimitiveOrStringTypeCodeRenderer(logPrefix, env),
                 ListAndSetCodeRenderer(root, logPrefix, env),
-                UserClassCodeRenderer(logPrefix, env)
+                MapCodeRenderer(root, logPrefix, env),
+                DataClassCodeRenderer(logPrefix, env)
             )
         }
     }

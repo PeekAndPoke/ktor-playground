@@ -21,6 +21,7 @@ class ScalarMutationsSpec : StringSpec({
         }
 
         assertSoftly {
+
             source shouldNotBe result
 
             withClue("Source object must NOT be modified") {
@@ -58,6 +59,7 @@ class ScalarMutationsSpec : StringSpec({
         }
 
         assertSoftly {
+
             source shouldNotBe result
 
             withClue("Source object must NOT be modified") {
@@ -80,6 +82,7 @@ class ScalarMutationsSpec : StringSpec({
         }
 
         assertSoftly {
+
             source shouldNotBe result
 
             withClue("Source object must NOT be modified") {
@@ -106,6 +109,7 @@ class ScalarMutationsSpec : StringSpec({
         }
 
         assertSoftly {
+
             source shouldNotBe result
 
             withClue("Source object must NOT be modified") {

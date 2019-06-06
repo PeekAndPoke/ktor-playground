@@ -28,5 +28,10 @@ data class Person(val name: String, val age: Int, val address: Address)
 data class Address(val city: String, val zip: String)
 
 @Mutator
-data class ListOfAddress(val addresses: List<Address>)
+data class ListOfAddresses(val addresses: List<Address>)
 
+@Mutator
+data class SetOfAddresses(val addresses: Set<Address>)
+
+@Mutator
+data class MapOfAddresses(val addresses: Map<String, Address>)

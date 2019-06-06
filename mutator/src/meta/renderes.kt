@@ -112,12 +112,11 @@ class ListAndSetCodeRenderer(
         "java.util.Set"
     )
 
-    override fun canHandle(type: TypeName) = when {
-
-        type is ParameterizedTypeName && supported.contains(type.rawType.fqn) -> type.typeArguments.all { root.canHandle(it) }
-
-        else -> false
-    }
+    override fun canHandle(type: TypeName) = type is ParameterizedTypeName
+            // is the type supported?
+            && supported.contains(type.rawType.fqn)
+            // and the contained type must be supported as well
+            && type.typeArguments.all { root.canHandle(it) }
 
     override fun render(elem: VariableElement): String {
 
@@ -151,7 +150,59 @@ class ListAndSetCodeRenderer(
     }
 }
 
-class UserClassCodeRenderer(logPrefix: String, env: ProcessingEnvironment) : CodeRendererBase(logPrefix, env) {
+class MapCodeRenderer(
+    private val root: CodeRenderers,
+    logPrefix: String,
+    env: ProcessingEnvironment
+) : CodeRendererBase(logPrefix, env) {
+
+    private val supported = listOf(
+        "java.util.Map"
+    )
+
+    override fun canHandle(type: TypeName) = type is ParameterizedTypeName
+            // is the type supported ?
+            && supported.contains(type.rawType.fqn)
+            // The key of the map must be primitive or a string
+            && type.typeArguments[0].let { it.isPrimitiveType || it.isStringType }
+            // and the value part must be handled as well
+            && root.canHandle(type.typeArguments[1])
+
+    override fun render(elem: VariableElement): String {
+
+        val prop = elem.simpleName
+        val type = elem.asTypeName() as ParameterizedTypeName
+
+        val p1 = type.typeArguments[1]
+
+        return """
+            val $prop by lazy {
+                getResult().$prop.mutator(
+                    { modify(getResult()::$prop, it) },
+                    { ${1.asParam}, ${1.asOnModify} ->
+                        ${root.renderMapper(p1, 1).indent(6)}
+                    }
+                )
+            }
+
+        """.trimIndent()
+    }
+
+    override fun renderMapper(type: TypeName, depth: Int): String {
+
+        val p1 = (type as ParameterizedTypeName).typeArguments[1]
+
+        val plus1 = depth + 1
+
+        return """
+            ${depth.asParam}.mutator(${depth.asOnModify}) { ${plus1.asParam}, ${plus1.asOnModify} ->
+                ${root.renderMapper(p1, plus1).indent(4)}
+            }
+        """.trimIndent()
+    }
+}
+
+class DataClassCodeRenderer(logPrefix: String, env: ProcessingEnvironment) : CodeRendererBase(logPrefix, env) {
 
     override fun canHandle(type: TypeName) = type.fqn.startsWithNone(
         "java.",                // exclude java std lib
@@ -162,7 +213,6 @@ class UserClassCodeRenderer(logPrefix: String, env: ProcessingEnvironment) : Cod
 
     override fun render(elem: VariableElement): String {
 
-        val cls = elem.asKotlinClassName()
         val prop = elem.simpleName
 
         return """

@@ -1,5 +1,6 @@
 package de.peekandpoke.mutator
 
+import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
@@ -16,16 +17,19 @@ class NestedObjectMutationsSpec : StringSpec({
             draft.name { plus("oration").toUpperCase() }
         }
 
-        withClue("Source object must NOT be modified") {
-            source shouldNotBe result
-        }
+        assertSoftly {
 
-        withClue("Nested object must stay identical, as it was not modified") {
-            source.boss shouldBe result.boss
-        }
+            withClue("Source object must NOT be modified") {
+                source shouldNotBe result
+            }
 
-        withClue("Result must be modified properly") {
-            result.name shouldBe "CORPORATION"
+            withClue("Nested object must stay identical, as it was not modified") {
+                source.boss shouldBe result.boss
+            }
+
+            withClue("Result must be modified properly") {
+                result.name shouldBe "CORPORATION"
+            }
         }
     }
 
@@ -43,18 +47,43 @@ class NestedObjectMutationsSpec : StringSpec({
             }
         }
 
-        withClue("Source object must NOT be modified") {
-            source shouldNotBe result
+        assertSoftly {
+
+            withClue("Source object must NOT be modified") {
+                source shouldNotBe result
+            }
+
+            withClue("Result must be modified properly") {
+                result.name shouldBe "CORPORATION"
+
+                result.boss shouldNotBe source.boss
+
+                result.boss.address shouldNotBe source.boss.address
+                result.boss.address shouldBe Address("Leipzig", "04109")
+            }
+        }
+    }
+
+    "Mutating an object by replacing a nested object" {
+
+        val source = Company("Corp", Person("Sam", 25, Address("Berlin", "10115")))
+
+        val result = source.mutate { draft ->
+            draft.boss.address += Address("Leipzig", "04109")
         }
 
-        withClue("Result must be modified properly") {
-            result.name shouldBe "CORPORATION"
+        assertSoftly {
 
-            result.boss shouldNotBe source.boss
+            withClue("Source object must NOT be modified") {
+                source shouldNotBe result
+            }
 
-            result.boss.address shouldNotBe source.boss.address
-            result.boss.address.city shouldBe "Leipzig"
-            result.boss.address.zip shouldBe "04109"
+            withClue("Result must be modified properly") {
+                result.boss shouldNotBe source.boss
+
+                result.boss.address shouldNotBe source.boss.address
+                result.boss.address shouldBe Address("Leipzig", "04109")
+            }
         }
     }
 })
