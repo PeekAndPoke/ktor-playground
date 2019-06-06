@@ -47,6 +47,25 @@ class MapMutator<T, K, M>(
     fun put(vararg pair: Pair<K, T>) = apply { getMutableResult().putAll(pair) }
 
     /**
+     * Remove elements from the map by their keys
+     */
+    fun remove(vararg key: K) = apply {
+        getMutableResult().apply {
+            key.forEach { k -> this.remove(k) }
+        }
+    }
+
+    /**
+     * Retains all elements in the list that match the filter
+     */
+    fun retainWhere(filter: (Map.Entry<K, T>) -> Boolean) = apply { plusAssign(getResult().filter(filter).toMap()) }
+
+    /**
+     * Removes all elements from the the list that match the filter
+     */
+    fun removeWhere(filter: (Map.Entry<K, T>) -> Boolean) = apply { retainWhere { !filter(it) } }
+
+    /**
      * Get the element at the given index
      */
     operator fun get(index: K): M = getMutableResult()[index]?.let { entry -> mapper(entry) { set(index, it) } }

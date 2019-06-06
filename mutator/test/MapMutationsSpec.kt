@@ -340,178 +340,93 @@ class MapMutationsSpec : StringSpec({
             }
         }
     }
-//
-//    "Mutating a list by clearing it via clear" {
-//
-//        val source = ListOfAddresses(
-//            addresses = listOf(
-//                Address("Berlin", "10115"),
-//                Address("Leipzig", "04109")
-//            )
-//        )
-//
-//        val result = source.mutate { draft ->
-//            draft.addresses.clear()
-//        }
-//
-//        assertSoftly {
-//
-//            withClue("Source object must NOT be modified") {
-//                source shouldNotBe result
-//                source.addresses shouldNotBe result.addresses
-//            }
-//
-//            withClue("Result must be modified properly") {
-//                result.addresses shouldBe listOf()
-//            }
-//        }
-//    }
-//
-//    "Mutating a list by removing elements via filter" {
-//
-//        val source = ListOfAddresses(
-//            addresses = listOf(
-//                Address("Berlin", "10115"),
-//                Address("Leipzig", "04109")
-//            )
-//        )
-//
-//        val result = source.mutate { draft ->
-//            draft.addresses += draft.addresses.filter { it.city == "Leipzig"}
-//        }
-//
-//        assertSoftly {
-//
-//            withClue("Source object must NOT be modified") {
-//                source shouldNotBe result
-//                source.addresses shouldNotBe result.addresses
-//            }
-//
-//            withClue("Result must be modified properly") {
-//                result.addresses shouldBe listOf(
-//                    Address("Leipzig", "04109")
-//                )
-//            }
-//        }
-//    }
-//
-//    "Mutating a list by removing elements via removeWhere" {
-//
-//        val source = ListOfAddresses(
-//            addresses = listOf(
-//                Address("Berlin", "10115"),
-//                Address("Leipzig", "04109")
-//            )
-//        )
-//
-//        val result = source.mutate { draft ->
-//            draft.addresses.removeWhere { it.city == "Leipzig"}
-//        }
-//
-//        assertSoftly {
-//
-//            withClue("Source object must NOT be modified") {
-//                source shouldNotBe result
-//                source.addresses shouldNotBe result.addresses
-//            }
-//
-//            withClue("Result must be modified properly") {
-//                result.addresses shouldBe listOf(
-//                    Address("Berlin", "10115")
-//                )
-//            }
-//        }
-//    }
-//
-//    "Mutating a list by removing elements via retainWhere" {
-//
-//        val source = ListOfAddresses(
-//            addresses = listOf(
-//                Address("Berlin", "10115"),
-//                Address("Leipzig", "04109"),
-//                Address("Bonn", "53111")
-//            )
-//        )
-//
-//        val result = source.mutate { draft ->
-//            draft.addresses.retainWhere { it.city.startsWith("B")}
-//        }
-//
-//        assertSoftly {
-//
-//            withClue("Source object must NOT be modified") {
-//                source shouldNotBe result
-//                source.addresses shouldNotBe result.addresses
-//            }
-//
-//            withClue("Result must be modified properly") {
-//                result.addresses shouldBe listOf(
-//                    Address("Berlin", "10115"),
-//                    Address("Bonn", "53111")
-//                )
-//            }
-//        }
-//    }
-//
-//    "Mutating a list by removing elements via remove" {
-//
-//        val source = ListOfAddresses(
-//            addresses = listOf(
-//                Address("Berlin", "10115"),
-//                Address("Leipzig", "04109"),
-//                Address("Bonn", "53111")
-//            )
-//        )
-//
-//        val result = source.mutate { draft ->
-//            draft.addresses.remove(
-//                Address("Berlin", "10115"),
-//                Address("Bonn", "53111")
-//            )
-//        }
-//
-//        assertSoftly {
-//
-//            withClue("Source object must NOT be modified") {
-//                source shouldNotBe result
-//                source.addresses shouldNotBe result.addresses
-//            }
-//
-//            withClue("Result must be modified properly") {
-//                result.addresses shouldBe listOf(
-//                    Address("Leipzig", "04109")
-//                )
-//            }
-//        }
-//    }
-//
-//    "Mutating a list by removing elements via removeAt" {
-//
-//        val source = ListOfAddresses(
-//            addresses = listOf(
-//                Address("Berlin", "10115"),
-//                Address("Leipzig", "04109"),
-//                Address("Bonn", "53111")
-//            )
-//        )
-//
-//        val result = source.mutate { draft ->
-//            draft.addresses.removeAt(1)
-//        }
-//
-//        assertSoftly {
-//
-//            withClue("Source object must NOT be modified") {
-//                source shouldNotBe result
-//                source.addresses shouldNotBe result.addresses
-//            }
-//
-//            withClue("Result must be modified properly") {
-//                result.addresses shouldBe listOf(
-//                    Address("Berlin", "10115"),
-//                    Address("Bonn", "53111")
-//                )
-//            }
-//        }
-//    }
+
+
+    "Mutating a map by removing elements via removeWhere" {
+
+        val source = MapOfAddresses(
+            addresses = mapOf(
+                "B" to Address("Berlin", "10115"),
+                "L" to Address("Leipzig", "04109"),
+                "C" to Address("Chemnitz", "09111")
+            )
+        )
+
+        val result = source.mutate { draft ->
+            draft.addresses.removeWhere { it.value.city == "Leipzig" || it.key == "C"}
+        }
+
+        assertSoftly {
+
+            withClue("Source object must NOT be modified") {
+                source shouldNotBe result
+                source.addresses shouldNotBe result.addresses
+            }
+
+            withClue("Result must be modified properly") {
+                result.addresses shouldBe mapOf(
+                    "B" to Address("Berlin", "10115")
+                )
+            }
+        }
+    }
+
+    "Mutating a map by removing elements via retainWhere" {
+
+        val source = MapOfAddresses(
+            addresses = mapOf(
+                "B" to Address("Berlin", "10115"),
+                "L" to Address("Leipzig", "04109"),
+                "C" to Address("Chemnitz", "09111")
+            )
+        )
+
+        val result = source.mutate { draft ->
+            draft.addresses.retainWhere { it.value.city == "Leipzig" || it.key == "C"}
+        }
+
+        assertSoftly {
+
+            withClue("Source object must NOT be modified") {
+                source shouldNotBe result
+                source.addresses shouldNotBe result.addresses
+            }
+
+            withClue("Result must be modified properly") {
+                result.addresses shouldBe mapOf(
+                    "L" to Address("Leipzig", "04109"),
+                    "C" to Address("Chemnitz", "09111")
+                )
+            }
+        }
+    }
+
+    "Mutating a map by removing elements via remove" {
+
+        val source = MapOfAddresses(
+            addresses = mapOf(
+                "B" to Address("Berlin", "10115"),
+                "L" to Address("Leipzig", "04109"),
+                "C" to Address("Chemnitz", "09111")
+            )
+        )
+
+        val result = source.mutate { draft ->
+            draft.addresses.remove("B", "C")
+        }
+
+        assertSoftly {
+
+            withClue("Source object must NOT be modified") {
+                source shouldNotBe result
+                source.addresses shouldNotBe result.addresses
+            }
+
+            withClue("Result must be modified properly") {
+                result.addresses shouldBe mapOf(
+                    "L" to Address("Leipzig", "04109")
+                )
+            }
+        }
+    }
 })
