@@ -7,7 +7,7 @@ import de.peekandpoke.ultra.common.unshift
 
 fun <T, M> List<T>.mutator(
 
-    onModify: OnModify<List<T>> = {},
+    onModify: OnModify<List<T>>,
     backwardMapper: (M) -> T,
     forwardMapper: (T, OnModify<T>) -> M
 
@@ -16,10 +16,10 @@ fun <T, M> List<T>.mutator(
     return ListMutator(this, onModify, forwardMapper, backwardMapper)
 }
 
-class ListMutator<T, M>(
+open class ListMutator<T, M>(
 
     original: List<T>,
-    onModify: OnModify<List<T>> = {},
+    onModify: OnModify<List<T>>,
     private val mapper: (T, OnModify<T>) -> M,
     private val backwardMapper: (M) -> T
 

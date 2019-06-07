@@ -2,19 +2,19 @@ package de.peekandpoke.mutator
 
 fun <T, M> Set<T>.mutator(
 
-    onModify: OnModify<Set<T>> = {},
+    onModify: OnModify<Set<T>>,
     backwardMapper: (M) -> T,
     forwardMapper: (T, OnModify<T>) -> M
 
-) : SetMutator<T, M> {
+): SetMutator<T, M> {
 
     return SetMutator(this, onModify, forwardMapper, backwardMapper)
 }
 
-class SetMutator<T, M>(
+open class SetMutator<T, M>(
 
     original: Set<T>,
-    onModify: OnModify<Set<T>> = {},
+    onModify: OnModify<Set<T>>,
     private val mapper: (T, OnModify<T>) -> M,
     private val backwardMapper: (M) -> T
 
@@ -22,7 +22,7 @@ class SetMutator<T, M>(
 
     operator fun plusAssign(value: List<M>) = plusAssign(value.map(backwardMapper).toSet())
 
-    override fun copy(input: Set<T>) : MutableSet<T> = MutableSetWrapper(input.toMutableSet())
+    override fun copy(input: Set<T>): MutableSet<T> = MutableSetWrapper(input.toMutableSet())
 
     override fun iterator(): Iterator<M> = It(getMutableResult(), mapper)
 

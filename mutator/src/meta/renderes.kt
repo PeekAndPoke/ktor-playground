@@ -90,7 +90,7 @@ class PrimitiveOrStringTypeCodeRenderer(logPrefix: String, env: ProcessingEnviro
 
     override fun render(elem: VariableElement): String {
 
-        val cls = elem.asKotlinClassName()
+        val cls = elem.asKotlinClassName() + if (elem.isNullable()) "?" else ""
         val prop = elem.simpleName
 
         return """
@@ -250,16 +250,20 @@ class DataClassCodeRenderer(logPrefix: String, env: ProcessingEnvironment) : Cod
         type.fqn.startsWithNone(
             "java.",                // exclude java std lib
             "javax.",               // exclude javax std lib
+            "javafx.",              // exclude javafx
             "kotlin.",              // exclude kotlin std lib
             "com.google.common."    // exclude google guava
         )
 
+
     override fun render(elem: VariableElement): String {
+
+        val nullable = if (elem.isNullable()) "?" else ""
 
         val prop = elem.simpleName
 
         return """
-            val $prop by lazy { getResult().$prop.mutator { modify(getResult()::$prop, it) } }
+            val $prop by lazy { getResult().$prop$nullable.mutator { modify(getResult()::$prop, it) } }
 
         """.trimIndent()
     }

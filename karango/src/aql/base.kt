@@ -130,6 +130,8 @@ class AqlBuilder internal constructor() : StatementBuilder {
 
     // TODO: UPSERT
 
+    fun <T : Entity, D: CollectionDefinition<T>> UPSERT(entity: T, col: D): TerminalExpr<T> = UpsertDocument(entity, col)
+
     fun <T : Entity, D : CollectionDefinition<T>> UPDATE(entity: T, col: D, builder: KeyValueBuilder<T>.(Expression<T>) -> Unit): TerminalExpr<Any> =
         UpdateDocument(
             entity,

@@ -37,10 +37,28 @@ data class SetOfAddresses(val addresses: Set<Address>)
 data class MapOfAddresses(val addresses: Map<String, Address>)
 
 @Mutator
-data class ListOfStrings(val values: List<String>)
+data class ListOfBools(val values: List<Boolean>)
+
+@Mutator
+data class ListOfChars(val values: List<Char>)
+
+@Mutator
+data class ListOfBytes(val values: List<Byte>)
+
+@Mutator
+data class ListOfShorts(val values: List<Short>)
 
 @Mutator
 data class ListOfInts(val values: List<Int>)
 
 @Mutator
-data class GenericClass<T>(val value: T)
+data class ListOfLongs(val values: List<Long>)
+
+@Mutator
+data class ListOfFloats(val values: List<Float>)
+
+@Mutator
+data class ListOfDoubles(val values: List<Double>)
+
+@Mutator
+data class ListOfStrings(val values: List<String>)

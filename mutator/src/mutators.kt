@@ -2,7 +2,7 @@ package de.peekandpoke.mutator
 
 typealias OnModify<T> = (newValue: T) -> Unit
 
-abstract class MutatorBase<I : Any, R : I>(input: I, protected val onModify: OnModify<I> = {}) {
+abstract class MutatorBase<I : Any, R : I>(input: I, protected val onModify: OnModify<I>) {
 
     private var original: I = input
 

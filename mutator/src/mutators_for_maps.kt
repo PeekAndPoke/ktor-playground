@@ -3,7 +3,7 @@ package de.peekandpoke.mutator
 
 fun <T, K, M> Map<K, T>.mutator(
 
-    onModify: OnModify<Map<K, T>> = {},
+    onModify: OnModify<Map<K, T>>,
     backwardMapper: (M) -> T,
     forwardMapper: (T, OnModify<T>) -> M
 
@@ -15,7 +15,7 @@ fun <T, K, M> Map<K, T>.mutator(
 class MapMutator<T, K, M>(
 
     original: Map<K, T>,
-    onModify: OnModify<Map<K, T>> = {},
+    onModify: OnModify<Map<K, T>>,
     private val mapper: (T, OnModify<T>) -> M,
     private val backwardMapper: (M) -> T
 

@@ -5,7 +5,6 @@ import com.arangodb.entity.CollectionType
 import com.arangodb.entity.CursorEntity
 import com.arangodb.model.AqlQueryOptions
 import com.arangodb.model.CollectionCreateOptions
-import com.arangodb.model.DocumentCreateOptions
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.InjectableValues
@@ -87,7 +86,11 @@ class Db(private val database: ArangoDatabase) {
         val mapped = serializer.convertValue<Map<String, Any>>(query.vars)
 
         val time = measureTimeMillis {
-            result = database.query(query.aql, mapped, options, Object::class.java)
+            try {
+                result = database.query(query.aql, mapped, options, Object::class.java)
+            } catch (e : ArangoDBException) {
+                throw KarangoException("Error while querying '${e.message}':\n\n${query.aql}\nwith params\n\n$mapped", e)
+            }
         }
 
         return CursorImpl(result, query, time, deserializer)
@@ -159,12 +162,9 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
     private val def: D
 ) {
     fun save(obj: T): T =
-        dbColl.insertDocument(
-            obj,
-            DocumentCreateOptions()
-                .returnNew(true)
-                .overwrite(true)
-        ).new
+        db.query {
+            UPSERT(obj, def)
+        }.first()
 
     fun update(entity: T, builder: KeyValueBuilder<T>.(Expression<T>) -> Unit): Cursor<Any> =
         db.query {

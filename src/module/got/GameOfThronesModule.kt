@@ -7,9 +7,7 @@ import de.peekandpoke.common.logger
 import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.aql.ASC
 import de.peekandpoke.karango.aql.FOR
-import de.peekandpoke.karango.examples.game_of_thrones.Character
-import de.peekandpoke.karango.examples.game_of_thrones.Characters
-import de.peekandpoke.karango.examples.game_of_thrones.name
+import de.peekandpoke.karango.examples.game_of_thrones.*
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.html.respondHtml
@@ -20,11 +18,13 @@ import io.ktor.locations.get
 import io.ktor.locations.post
 import io.ktor.request.receive
 import io.ktor.response.respond
+import io.ktor.response.respondRedirect
 import io.ktor.routing.Route
 import io.ktor.routing.route
 import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
 import kotlinx.html.*
+import kotlinx.html.FormMethod.post as post1
 
 
 object GameOfThronesSpec : ConfigSpec("gameOfThrones") {
@@ -66,7 +66,7 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
     internal class GetCharacter(val character: Character)
 
     @Location("/forms")
-    internal class FormTest()
+    internal class FormTest
 
     inner class LinkTo : LinkGenerator(mountPoint) {
         fun getCharacters() = linkTo(GetCharacters())
@@ -141,7 +141,43 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
             }
 
             get<GetCharacter> {
-                call.respond(it.character)
+
+                call.respondHtml {
+                    body {
+                        h4 { +"Edit Character ${it.character.fullName()}" }
+
+                        form(method = FormMethod.post) {
+                            label {
+                                +"Name"
+                                textInput(name = "name") { attributes["value"] = it.character.name }
+                            }
+                            label {
+                                +"Surname"
+                                textInput(name = "surname") { attributes["value"] = (it.character.surname ?: "") }
+                            }
+                            submitInput { +"Submit" }
+                        }
+                    }
+                }
+            }
+
+            post<GetCharacter> {
+
+                val posted = call.receive<Parameters>()
+
+                logger.info(posted.toString())
+
+                val result = it.character.mutate {draft ->
+
+                    posted["name"]?.let { v -> draft.name = v }
+                    posted["surname"]?.let { v -> draft.surname = v }
+                }
+
+                val saved = characters.save(result)
+
+                logger.info("Updated charater in database: $saved")
+
+                call.respondRedirect(linkTo.getCharacters())
             }
         }
     }

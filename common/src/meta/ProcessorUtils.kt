@@ -34,24 +34,11 @@ interface ProcessorUtils : KotlinProcessingEnvironment {
     fun String.asKotlinClassName(): String = this
         .replace("/", "")
         .replace("kotlin.jvm.functions", "kotlin")
-        .replace("java.util.List", "kotlin.collections.List")
-        .replace("java.util.Set", "kotlin.collections.Set")
-        .replace("java.util.Map", "kotlin.collections.Map")
-        .replace("java.util.SortedMap", "kotlin.collections.SortedMap")
-        .replace("java.util.Collection", "kotlin.collections.Collection")
         .replace("java.lang.Throwable", "kotlin.Throwable")
-        .let {
-            if (it == "java.lang") it.replace("java.lang", "kotlin")
-            else it
-        }.let {
-            if (it == "java.util") it.replace("java.util", "kotlin.collections")
-            else it
-        }
-        .replace("int", "kotlin.Int")
+        .replace("java.lang.", "kotlin.")
+        .replace("java.util.", "kotlin.collections.")
         .replace("kotlin.Integer", "kotlin.Int")
-        .replace("Integer", "Int")
-        .replace("java.lang.Int", "kotlin.Int")
-        .replace("java.lang.String", "kotlin.String")
+        .replace("kotlin.Character", "kotlin.Char")
 
     val String.isPrimitiveType
         get() = when (asKotlinClassName()) {
@@ -78,7 +65,10 @@ interface ProcessorUtils : KotlinProcessingEnvironment {
 
     fun TypeName.asKotlinClassName() = fqn.asKotlinClassName()
 
+    fun Element.isNullable() = getAnnotation(org.jetbrains.annotations.Nullable::class.java) != null
+
     val TypeMirror.fqn get() = asTypeName().toString()
+
 
     /**
      * Get all variables of a type element

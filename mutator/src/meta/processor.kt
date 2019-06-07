@@ -59,6 +59,7 @@ open class MutatorAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
             // Black list some packages
             .filter { !it.fqn.startsWith("java.") }
             .filter { !it.fqn.startsWith("javax.") }
+            .filter { !it.fqn.startsWith("javafx.") }
             .filter { !it.fqn.startsWith("kotlin.") }
             .distinct()
             .filter { renderers.canHandle(it.asTypeName()) }
@@ -98,6 +99,7 @@ open class MutatorAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
         )
 
         element.variables.forEach {
+
 
             val prop = it.simpleName
 
