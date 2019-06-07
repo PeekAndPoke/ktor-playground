@@ -98,36 +98,38 @@ open class MutatorAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
             """.trimIndent()
         )
 
-        element.variables.forEach {
+        element.variables
+            // filter delegated properties (e.g. by lazy)
+            .filter { !it.simpleName.contains("${"$"}delegate") }
+            .forEach {
 
+                val prop = it.simpleName
 
-            val prop = it.simpleName
+                codeBlocks.add("    //// $prop ".padEnd(120, '/') + System.lineSeparator())
 
-            codeBlocks.add("    //// $prop ".padEnd(120, '/') + System.lineSeparator())
+                logNote("  '$prop' of type ${it.fqn}")
 
-            logNote("  '$prop' of type ${it.fqn}")
+                when {
+                    renderers.canHandle(it.asTypeName()) ->
+                        codeBlocks.add(
+                            renderers.render(it).prependIndent("    ")
+                        )
 
-            when {
-                renderers.canHandle(it.asTypeName()) ->
-                    codeBlocks.add(
-                        renderers.render(it).prependIndent("    ")
-                    )
+                    else -> {
+                        val message = "There is no known way to mutate the property $element::$prop of type ${it.fqn} yet ... sorry!"
 
-                else -> {
-                    val message = "There is no known way to mutate the property $element::$prop of type ${it.fqn} yet ... sorry!"
+                        logWarning("  .. $message")
 
-                    logWarning("  .. $message")
+                        codeBlocks.add(
+                            """
+                                @Deprecated("$message", level = DeprecationLevel.ERROR)
+                                val $prop: Any? = null
 
-                    codeBlocks.add(
-                        """
-                            @Deprecated("$message", level = DeprecationLevel.ERROR)
-                            val $prop: Any? = null
-
-                        """.trimIndent().prependIndent("    ")
-                    )
+                            """.trimIndent().prependIndent("    ")
+                        )
+                    }
                 }
             }
-        }
 
         codeBlocks.add(
             """

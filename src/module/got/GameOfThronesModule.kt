@@ -144,7 +144,7 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
 
                 call.respondHtml {
                     body {
-                        h4 { +"Edit Character ${it.character.fullName()}" }
+                        h4 { +"Edit Character ${it.character.fullName}" }
 
                         form(method = FormMethod.post) {
                             label {

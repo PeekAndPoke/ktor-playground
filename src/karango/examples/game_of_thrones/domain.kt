@@ -19,7 +19,9 @@ data class Character(
     override val _key: String? = null
 ) : Entity, WithKey {
 
-    fun fullName() = listOfNotNull(name, surname).joinToString(" ")
+//    fun fullName() = listOfNotNull(name, surname).joinToString(" ")
+
+    val fullName by lazy { listOfNotNull(name, surname).joinToString(" ") }
 }
 
 @EntityCollection("got_actors", "Actors")

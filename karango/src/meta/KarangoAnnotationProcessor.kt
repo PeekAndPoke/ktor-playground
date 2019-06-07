@@ -113,29 +113,32 @@ open class KarangoAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
             )
         }
 
-        element.variables.forEach {
+        element.variables
+            // filter delegated properties (e.g. by lazy)
+            .filter { !it.simpleName.contains("${"$"}delegate") }
+            .forEach {
 
-            val type = it.asKotlinClassName()
-            val prop = it.simpleName
+                val type = it.asKotlinClassName()
+                val prop = it.simpleName
 
-            codeBlocks.add("//// $prop ".padEnd(160, '/'))
+                codeBlocks.add("//// $prop ".padEnd(160, '/'))
 
-            codeBlocks.add(
-                """
+                codeBlocks.add(
+                    """
 
-                inline val Iter<$simpleName>.$prop inline get() = PropertyPath.start(this).append<$type, $type>("$prop")
-                inline val Expression<$simpleName>.$prop inline get() = PropertyPath.start(this).append<$type, $type>("$prop")
+                        inline val Iter<$simpleName>.$prop inline get() = PropertyPath.start(this).append<$type, $type>("$prop")
+                        inline val Expression<$simpleName>.$prop inline get() = PropertyPath.start(this).append<$type, $type>("$prop")
 
-                inline val PropertyPath<$simpleName, $simpleName>.$prop inline @JvmName("${prop}_0") get() = append<$type, $type>("$prop")
-                inline val PropertyPath<$simpleName, L1<$simpleName>>.$prop inline @JvmName("${prop}_1") get() = append<$type, L1<$type>>("$prop")
-                inline val PropertyPath<$simpleName, L2<$simpleName>>.$prop inline @JvmName("${prop}_2") get() = append<$type, L2<$type>>("$prop")
-                inline val PropertyPath<$simpleName, L3<$simpleName>>.$prop inline @JvmName("${prop}_3") get() = append<$type, L3<$type>>("$prop")
-                inline val PropertyPath<$simpleName, L4<$simpleName>>.$prop inline @JvmName("${prop}_4") get() = append<$type, L4<$type>>("$prop")
-                inline val PropertyPath<$simpleName, L5<$simpleName>>.$prop inline @JvmName("${prop}_5") get() = append<$type, L5<$type>>("$prop")
+                        inline val PropertyPath<$simpleName, $simpleName>.$prop inline @JvmName("${prop}_0") get() = append<$type, $type>("$prop")
+                        inline val PropertyPath<$simpleName, L1<$simpleName>>.$prop inline @JvmName("${prop}_1") get() = append<$type, L1<$type>>("$prop")
+                        inline val PropertyPath<$simpleName, L2<$simpleName>>.$prop inline @JvmName("${prop}_2") get() = append<$type, L2<$type>>("$prop")
+                        inline val PropertyPath<$simpleName, L3<$simpleName>>.$prop inline @JvmName("${prop}_3") get() = append<$type, L3<$type>>("$prop")
+                        inline val PropertyPath<$simpleName, L4<$simpleName>>.$prop inline @JvmName("${prop}_4") get() = append<$type, L4<$type>>("$prop")
+                        inline val PropertyPath<$simpleName, L5<$simpleName>>.$prop inline @JvmName("${prop}_5") get() = append<$type, L5<$type>>("$prop")
 
-            """.trimIndent()
-            )
-        }
+                    """.trimIndent()
+                )
+            }
 
         val content = codeBlocks.joinToString(System.lineSeparator())
 
