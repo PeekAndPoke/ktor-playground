@@ -29,7 +29,7 @@ open class ListMutator<T, M>(
 
     override fun copy(input: List<T>) = input.toMutableList()
 
-    override fun iterator(): Iterator<M> = It(getMutableResult(), mapper)
+    override fun iterator(): Iterator<M> = It(getResult(), mapper)
 
     /**
      * Returns the size of the list
@@ -89,12 +89,20 @@ open class ListMutator<T, M>(
     /**
      * Get the element at the given index
      */
-    operator fun get(index: Int): M = mapper(getMutableResult()[index]) { set(index, it) }
+    operator fun get(index: Int): M = mapper(getResult()[index]) { set(index, it) }
 
     /**
      * Set the element at the given index
      */
-    operator fun set(index: Int, element: T) = apply { getMutableResult()[index] = element }
+    operator fun set(index: Int, element: T) = apply {
+
+        val current = getResult()[index]
+
+        // We only trigger the cloning, when the value has changed
+        if (current.isNotSameAs(element)) {
+            getMutableResult()[index] = element
+        }
+    }
 
     internal inner class It(private val list: List<T>, private val mapper: (T, OnModify<T>) -> M) : Iterator<M> {
 
@@ -104,9 +112,10 @@ open class ListMutator<T, M>(
 
         override fun next(): M {
 
-            val current = pos++
+            val idx = pos++
+            val current = list[idx]
 
-            return mapper(list[current]) { set(current, it) }
+            return mapper(current) { set(idx, it) }
         }
     }
 }

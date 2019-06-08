@@ -8,6 +8,36 @@ import io.kotlintest.specs.StringSpec
 
 class ListMutationsSpec : StringSpec({
 
+    "Mutating but not changing any value is treated like no mutation" {
+
+        val address1 = Address("Berlin", "10115")
+
+        val source = ListOfAddresses(
+            addresses = listOf(
+                address1,
+                Address("Leipzig", "04109")
+            )
+        )
+
+        val result = source.mutate { draft ->
+            // setting the same object must not trigger mutation
+            draft.addresses[0] = address1
+
+            // iteration must no trigger mutation on its own
+            draft.addresses.forEach { address ->
+                // setting the same value on a child object must not trigger mutation
+                address.city = address.city
+            }
+        }
+
+        assertSoftly {
+
+            withClue("When all mutations are not changing any value, the source object must be returned") {
+                (source === result) shouldBe true
+            }
+        }
+    }
+
     "Mutating a list ... using size and isEmpty" {
 
         val source = ListOfAddresses(
@@ -78,6 +108,7 @@ class ListMutationsSpec : StringSpec({
         )
 
         val result = source.mutate { draft ->
+
             draft.addresses.forEach {
                 it.city += " x"
             }
@@ -93,6 +124,40 @@ class ListMutationsSpec : StringSpec({
             withClue("Result must be modified properly") {
                 result.addresses[0] shouldBe Address("Berlin x", "10115")
                 result.addresses[1] shouldBe Address("Leipzig x", "04109")
+            }
+        }
+    }
+
+    "Mutating all elements in a list via multiple forEach loops" {
+
+        val source = ListOfAddresses(
+            addresses = listOf(
+                Address("Berlin", "10115"),
+                Address("Leipzig", "04109")
+            )
+        )
+
+        val result = source.mutate { draft ->
+
+            draft.addresses.forEach {
+                it.city += " x"
+            }
+
+            draft.addresses.forEach {
+                it.zip += " y"
+            }
+        }
+
+        assertSoftly {
+
+            withClue("Source object must NOT be modified") {
+                source shouldNotBe result
+                source.addresses shouldNotBe result.addresses
+            }
+
+            withClue("Result must be modified properly") {
+                result.addresses[0] shouldBe Address("Berlin x", "10115 y")
+                result.addresses[1] shouldBe Address("Leipzig x", "04109 y")
             }
         }
     }

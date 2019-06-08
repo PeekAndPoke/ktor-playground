@@ -23,7 +23,7 @@ open class MutatorAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
 
         CodeRenderers(logPrefix, env) { root ->
             listOf(
-                PrimitiveOrStringTypeCodeRenderer(logPrefix, env),
+                PrimitiveOrStringOrAnyTypeCodeRenderer(logPrefix, env),
                 ListAndSetCodeRenderer(root, logPrefix, env),
                 MapCodeRenderer(root, logPrefix, env),
                 DataClassCodeRenderer(logPrefix, env)
@@ -101,6 +101,8 @@ open class MutatorAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
         element.variables
             // filter delegated properties (e.g. by lazy)
             .filter { !it.simpleName.contains("${"$"}delegate") }
+            // we only look at public properties
+            .filter { element.hasPublicGetterFor(it) }
             .forEach {
 
                 val prop = it.simpleName

@@ -3,11 +3,10 @@ package de.peekandpoke.ultra.common.meta
 import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asTypeName
+import de.peekandpoke.ultra.common.ucFirst
 import me.eugeniomarletti.kotlin.processing.KotlinProcessingEnvironment
 import javax.annotation.processing.ProcessingEnvironment
-import javax.lang.model.element.Element
-import javax.lang.model.element.TypeElement
-import javax.lang.model.element.VariableElement
+import javax.lang.model.element.*
 import javax.lang.model.type.DeclaredType
 import javax.lang.model.type.TypeMirror
 import javax.tools.Diagnostic
@@ -39,6 +38,7 @@ interface ProcessorUtils : KotlinProcessingEnvironment {
         .replace("java.util.", "kotlin.collections.")
         .replace("kotlin.Integer", "kotlin.Int")
         .replace("kotlin.Character", "kotlin.Char")
+        .replace("kotlin.Object", "kotlin.Any")
 
     val String.isPrimitiveType
         get() = when (asKotlinClassName()) {
@@ -57,15 +57,17 @@ interface ProcessorUtils : KotlinProcessingEnvironment {
 
     val String.isStringType get() = this == "java.lang.String"
 
+    val String.isAnyType get() = this == "java.lang.Object"
+
     val TypeName.fqn get() = this.toString()
 
     val TypeName.isPrimitiveType get() = fqn.isPrimitiveType
 
     val TypeName.isStringType get() = fqn.isStringType
 
-    fun TypeName.asKotlinClassName() = fqn.asKotlinClassName()
+    val TypeName.isAnyType get() = fqn.isAnyType
 
-    fun Element.isNullable() = getAnnotation(org.jetbrains.annotations.Nullable::class.java) != null
+    fun TypeName.asKotlinClassName() = fqn.asKotlinClassName()
 
     val TypeMirror.fqn get() = asTypeName().toString()
 
@@ -78,11 +80,23 @@ interface ProcessorUtils : KotlinProcessingEnvironment {
             .filterIsInstance<VariableElement>()
             .filter { !it.simpleName.contentEquals("Companion") }
 
+    val TypeElement.methods
+        get() = enclosedElements
+            .filterIsInstance<ExecutableElement>()
+
+    fun TypeElement.hasPublicGetterFor(v: VariableElement) =
+            methods.any {
+                it.simpleName.toString() == "get${v.simpleName.toString().ucFirst()}" &&
+                        it.modifiers.contains(Modifier.PUBLIC)
+            }
+
     val Element.fqn get() = asType().fqn
 
     val Element.isPrimitiveType get() = fqn.isPrimitiveType
 
     val Element.isStringType get() = fqn.isStringType
+
+    val Element.isNullable get() = getAnnotation(org.jetbrains.annotations.Nullable::class.java) != null
 
     fun Element.asTypeName() = asType().asTypeName()
 

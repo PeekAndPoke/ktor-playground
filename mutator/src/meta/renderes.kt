@@ -84,21 +84,21 @@ class CodeRenderers(
 /**
  * Renderer for primitive types and Strings
  */
-class PrimitiveOrStringTypeCodeRenderer(logPrefix: String, env: ProcessingEnvironment) : CodeRendererBase(logPrefix, env) {
+class PrimitiveOrStringOrAnyTypeCodeRenderer(logPrefix: String, env: ProcessingEnvironment) : CodeRendererBase(logPrefix, env) {
 
-    override fun canHandle(type: TypeName) = type.isPrimitiveType || type.isStringType
+    override fun canHandle(type: TypeName) = type.isPrimitiveType || type.isStringType || type.isAnyType
 
     override fun render(elem: VariableElement): String {
 
-        val cls = elem.asKotlinClassName() + if (elem.isNullable()) "?" else ""
+        val cls = elem.asKotlinClassName() + if (elem.isNullable) "?" else ""
         val prop = elem.simpleName
 
         return """
             var $prop: $cls
                 get() = getResult().$prop
-                set(v) = modify(getResult()::$prop, v)
+                set(v) = modify(getResult()::$prop, getResult().$prop, v)
 
-            fun $prop(cb: $cls.($cls) -> $cls) = modify(getResult()::$prop, $prop.cb($prop))
+            fun $prop(cb: $cls.($cls) -> $cls) = modify(getResult()::$prop, getResult().$prop, $prop.cb($prop))
 
         """.trimIndent()
     }
@@ -144,7 +144,7 @@ class ListAndSetCodeRenderer(
         return """
             val $prop by lazy {
                 getResult().$prop.mutator(
-                    { modify(getResult()::$prop, it) },
+                    { modify(getResult()::$prop, getResult().$prop, it) },
                     { ${1.asParam} -> ${root.renderBackwardMapper(typeParam, 1)} },
                     { ${1.asParam}, ${1.asOnModify} ->
                         ${root.renderForwardMapper(typeParam, 1).indent(6)}
@@ -206,7 +206,7 @@ class MapCodeRenderer(
         return """
             val $prop by lazy {
                 getResult().$prop.mutator(
-                    { modify(getResult()::$prop, it) },
+                    { modify(getResult()::$prop, getResult().$prop, it) },
                     { ${1.asParam} -> ${root.renderBackwardMapper(p1, 1)} },
                     { ${1.asParam}, ${1.asOnModify} ->
                         ${root.renderForwardMapper(p1, 1).indent(6)}
@@ -246,24 +246,24 @@ class DataClassCodeRenderer(logPrefix: String, env: ProcessingEnvironment) : Cod
     override fun canHandle(type: TypeName) =
         // we cannot handle generic types at the moment
         type !is ParameterizedTypeName &&
-        // we also exclude some packages completely
-        type.fqn.startsWithNone(
-            "java.",                // exclude java std lib
-            "javax.",               // exclude javax std lib
-            "javafx.",              // exclude javafx
-            "kotlin.",              // exclude kotlin std lib
-            "com.google.common."    // exclude google guava
-        )
+                // we also exclude some packages completely
+                type.fqn.startsWithNone(
+                    "java.",                // exclude java std lib
+                    "javax.",               // exclude javax std lib
+                    "javafx.",              // exclude javafx
+                    "kotlin.",              // exclude kotlin std lib
+                    "com.google.common."    // exclude google guava
+                )
 
 
     override fun render(elem: VariableElement): String {
 
-        val nullable = if (elem.isNullable()) "?" else ""
+        val nullable = if (elem.isNullable) "?" else ""
 
         val prop = elem.simpleName
 
         return """
-            val $prop by lazy { getResult().$prop$nullable.mutator { modify(getResult()::$prop, it) } }
+            val $prop by lazy { getResult().$prop$nullable.mutator { modify(getResult()::$prop, getResult().$prop, it) } }
 
         """.trimIndent()
     }

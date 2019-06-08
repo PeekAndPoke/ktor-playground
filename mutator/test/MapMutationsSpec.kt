@@ -8,6 +8,36 @@ import io.kotlintest.specs.StringSpec
 
 class MapMutationsSpec : StringSpec({
 
+    "Mutating but not changing any value is treated like no mutation" {
+
+        val address1 = Address("Berlin", "10115")
+
+        val source = MapOfAddresses(
+            addresses = mapOf(
+                "B" to address1,
+                "L" to Address("Leipzig", "04109")
+            )
+        )
+
+        val result = source.mutate { draft ->
+            // setting the same object must not trigger mutation
+            draft.addresses["B"] = address1
+
+            // iteration must no trigger mutation on its own
+            draft.addresses.forEach { (_, address) ->
+                // setting the same value on a child object must not trigger mutation
+                address.city = address.city
+            }
+        }
+
+        assertSoftly {
+
+            withClue("When all mutations are not changing any value, the source object must be returned") {
+                (source === result) shouldBe true
+            }
+        }
+    }
+
     "Mutating a list ... using size and isEmpty" {
 
         val source = MapOfAddresses(
@@ -41,7 +71,7 @@ class MapMutationsSpec : StringSpec({
         )
 
         val result = source.mutate { draft ->
-            with(draft.addresses["B"]) {
+            draft.addresses["B"]?.apply {
                 city { toUpperCase() }
             }
         }
@@ -199,8 +229,8 @@ class MapMutationsSpec : StringSpec({
         )
 
         val result = source.mutate { draft ->
-            draft.addresses.forEach {
-                it.value.city += " x"
+            draft.addresses.forEach { (_, address) ->
+                address.city += " x"
             }
         }
 
@@ -215,6 +245,41 @@ class MapMutationsSpec : StringSpec({
                 result.addresses shouldBe mapOf(
                     "B" to Address("Berlin x", "10115"),
                     "L" to Address("Leipzig x", "04109")
+                )
+            }
+        }
+    }
+
+    "Mutating all elements in a map via multiple forEach loops" {
+
+        val source = MapOfAddresses(
+            addresses = mapOf(
+                "B" to Address("Berlin", "10115"),
+                "L" to Address("Leipzig", "04109")
+            )
+        )
+
+        val result = source.mutate { draft ->
+            draft.addresses.forEach { (_, address) ->
+                address.city += " x"
+            }
+
+            draft.addresses.forEach { (_, address) ->
+                address.zip += " y"
+            }
+        }
+
+        assertSoftly {
+
+            withClue("Source object must NOT be modified") {
+                source shouldNotBe result
+                source.addresses shouldNotBe result.addresses
+            }
+
+            withClue("Result must be modified properly") {
+                result.addresses shouldBe mapOf(
+                    "B" to Address("Berlin x", "10115 y"),
+                    "L" to Address("Leipzig x", "04109 y")
                 )
             }
         }

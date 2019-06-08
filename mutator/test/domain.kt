@@ -13,12 +13,28 @@ data class WithScalars(
     val aBool: Boolean = true
 )
 
-// TODO: fix the problem in the annotation-processor TypeElement.variables when a property has a name collision with java type
-//  like "int", "byte"  etc.
-//  In these cases the bytecode for the class is "strange" and the annotation processor will not find the variables
-//  Solution would be to look for specific getters "getInt()", "getByte()" ...
-//  ..
-//  OR: at least write something in the docs (Gotchas section)
+@Mutator
+data class WithNullableScalars(
+    val aString: String? = null,
+    val aChar: Char? = null,
+    val aByte: Byte? = null,
+    val aShort: Short? = null,
+    val aInt: Int? = null,
+    val aLong: Long? = null,
+    val aFloat: Float? = null,
+    val aDouble: Double? = null,
+    val aBool: Boolean? = null
+)
+
+@Mutator
+data class WithAnyObject(
+    val anObject: Any
+)
+
+@Mutator
+data class WithAnyNullableObject(
+    val anObject: Any?
+)
 
 @Mutator
 data class Company(val name: String, val boss: Person)
@@ -50,6 +66,9 @@ data class ListOfShorts(val values: List<Short>)
 
 @Mutator
 data class ListOfInts(val values: List<Int>)
+
+@Mutator
+data class ListOfNullableInts(val values: List<Int?>)
 
 @Mutator
 data class ListOfLongs(val values: List<Long>)

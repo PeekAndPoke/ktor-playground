@@ -30,7 +30,7 @@ class MapMutator<T, K, M>(
 
     override fun copy(input: Map<K, T>) = input.toMutableMap()
 
-    override fun iterator(): Iterator<Map.Entry<K, M>> = It(getMutableResult(), mapper)
+    override fun iterator(): Iterator<Map.Entry<K, M>> = It(getResult(), mapper)
 
     /**
      * Returns the size of the list
@@ -74,13 +74,20 @@ class MapMutator<T, K, M>(
     /**
      * Get the element at the given index
      */
-    operator fun get(index: K): M = getMutableResult()[index]?.let { entry -> mapper(entry) { set(index, it) } }
-        ?: throw Exception("There was no element with the key '$index' not found in map")
+    operator fun get(index: K): M? = getResult()[index]?.let { entry -> mapper(entry) { set(index, it) } }
 
     /**
      * Set the element at the given index
      */
-    operator fun set(index: K, element: T) = apply { getMutableResult()[index] = element }
+    operator fun set(index: K, element: T) = apply {
+
+        val current = getResult()[index]
+
+        // We only trigger the cloning, when the value has changed
+        if (current == null || current.isNotSameAs(element)) {
+            getMutableResult()[index] = element
+        }
+    }
 
     internal data class Entry<KX, VX>(override val key: KX, override val value: VX) : Map.Entry<KX, VX>
 
