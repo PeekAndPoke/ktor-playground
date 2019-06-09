@@ -10,10 +10,13 @@ abstract class MutatorBase<I : Any, R : I>(input: I, protected val onModify: OnM
 
     fun getResult(): I = if (mutableResult != null) mutableResult!! else original
 
-    open operator fun plusAssign(value: I) {
-        replaceResult(
-            copy(value)
-        )
+    operator fun plusAssign(value: I) {
+
+        if (getResult() !== value) {
+            replaceResult(
+                copy(value)
+            )
+        }
     }
 
     protected abstract fun copy(input: I): R

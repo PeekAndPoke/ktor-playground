@@ -1,9 +1,6 @@
 package de.peekandpoke.mutator
 
-import de.peekandpoke.ultra.common.pop
-import de.peekandpoke.ultra.common.push
-import de.peekandpoke.ultra.common.shift
-import de.peekandpoke.ultra.common.unshift
+import de.peekandpoke.ultra.common.*
 
 fun <T, M> List<T>.mutator(
 
@@ -20,7 +17,7 @@ open class ListMutator<T, M>(
 
     original: List<T>,
     onModify: OnModify<List<T>>,
-    private val mapper: (T, OnModify<T>) -> M,
+    private val forwardMapper: (T, OnModify<T>) -> M,
     private val backwardMapper: (M) -> T
 
 ) : MutatorBase<List<T>, MutableList<T>>(original, onModify), Iterable<M> {
@@ -29,7 +26,7 @@ open class ListMutator<T, M>(
 
     override fun copy(input: List<T>) = input.toMutableList()
 
-    override fun iterator(): Iterator<M> = It(getResult(), mapper)
+    override fun iterator(): Iterator<M> = It(getResult(), forwardMapper)
 
     /**
      * Returns the size of the list
@@ -44,7 +41,11 @@ open class ListMutator<T, M>(
     /**
      * Clears the whole list
      */
-    fun clear() = apply { getMutableResult().clear() }
+    fun clear() = apply {
+        if (size > 0) {
+            getMutableResult().clear()
+        }
+    }
 
     /**
      * Add an element at the end of the list
@@ -54,7 +55,7 @@ open class ListMutator<T, M>(
     /**
      * Removes the last element from the list and returns it
      */
-    fun pop(): T = getMutableResult().pop()
+    fun pop() = if (size > 0) getMutableResult().pop() else null
 
     /**
      * Add an element at the beginning of the list
@@ -64,32 +65,48 @@ open class ListMutator<T, M>(
     /**
      * Removes the first element from the list and returns it
      */
-    fun shift(): T = getMutableResult().shift()
+    fun shift() = if (size > 0) getMutableResult().shift() else null
 
     /**
      * Removes a specific element from the list
      */
-    fun remove(vararg element: T) = apply { getMutableResult().removeAll(element) }
+    fun remove(vararg element: T) = apply {
+
+        if (getResult().containsAny(*element)) {
+            getMutableResult().removeAll(element)
+        }
+    }
 
     /**
      * Removes the element at the given index
      */
-    fun removeAt(index: Int) = apply { getMutableResult().removeAt(index) }
+    fun removeAt(index: Int) = apply {
+        if (isInBounds(index)) {
+            getMutableResult().removeAt(index)
+        }
+    }
 
     /**
-     * Retains all elements in the list that match the filter
+     * Retains all elements in the list that match the predicate
      */
-    fun retainWhere(filter: (T) -> Boolean) = apply { plusAssign(getResult().filter(filter)) }
+    fun retainWhere(predicate: (T) -> Boolean) = apply {
+
+        val filtered = getResult().filter(predicate)
+
+        if (filtered.size < size) {
+            plusAssign(filtered)
+        }
+    }
 
     /**
      * Removes all elements from the the list that match the filter
      */
-    fun removeWhere(filter: (T) -> Boolean) = apply { retainWhere { !filter(it) } }
+    fun removeWhere(predicate: (T) -> Boolean) = retainWhere { !predicate(it) }
 
     /**
      * Get the element at the given index
      */
-    operator fun get(index: Int): M = mapper(getResult()[index]) { set(index, it) }
+    operator fun get(index: Int): M = forwardMapper(getResult()[index]) { set(index, it) }
 
     /**
      * Set the element at the given index
@@ -102,6 +119,11 @@ open class ListMutator<T, M>(
         if (current.isNotSameAs(element)) {
             getMutableResult()[index] = element
         }
+    }
+
+    private fun isInBounds(idx: Int): Boolean {
+        @Suppress("ConvertTwoComparisonsToRangeCheck")
+        return idx >= 0 && idx < size
     }
 
     internal inner class It(private val list: List<T>, private val mapper: (T, OnModify<T>) -> M) : Iterator<M> {

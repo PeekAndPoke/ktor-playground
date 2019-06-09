@@ -15,7 +15,7 @@ open class SetMutator<T, M>(
 
     original: Set<T>,
     onModify: OnModify<Set<T>>,
-    private val mapper: (T, OnModify<T>) -> M,
+    private val forwardMapper: (T, OnModify<T>) -> M,
     private val backwardMapper: (M) -> T
 
 ) : MutatorBase<Set<T>, MutableSet<T>>(original, onModify), Iterable<M> {
@@ -24,7 +24,7 @@ open class SetMutator<T, M>(
 
     override fun copy(input: Set<T>): MutableSet<T> = MutableSetWrapper(input.toMutableSet())
 
-    override fun iterator(): Iterator<M> = It(getMutableResult(), mapper)
+    override fun iterator(): Iterator<M> = It(getResult(), forwardMapper)
 
     /**
      * Returns the size of the list

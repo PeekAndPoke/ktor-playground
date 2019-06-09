@@ -1,11 +1,13 @@
-package de.peekandpoke.mutator
+package de.peekandpoke.mutator.e2e
 
+import io.kotlintest.DisplayName
 import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.StringSpec
 
+@DisplayName("E2E - ListMutationsSpec")
 class ListMutationsSpec : StringSpec({
 
     "Mutating but not changing any value is treated like no mutation" {
@@ -71,7 +73,8 @@ class ListMutationsSpec : StringSpec({
         )
 
         val result = source.mutate { draft ->
-            with(draft.addresses[0]) {
+
+            draft.addresses[0].apply {
                 city { toUpperCase() }
             }
         }
@@ -239,7 +242,7 @@ class ListMutationsSpec : StringSpec({
         lateinit var popped: Address
 
         val result = source.mutate { draft ->
-            popped = draft.addresses.pop()
+            popped = draft.addresses.pop()!!
         }
 
         assertSoftly {
@@ -307,7 +310,7 @@ class ListMutationsSpec : StringSpec({
         lateinit var shifted: Address
 
         val result = source.mutate { draft ->
-            shifted = draft.addresses.shift()
+            shifted = draft.addresses.shift()!!
         }
 
         assertSoftly {
@@ -395,7 +398,7 @@ class ListMutationsSpec : StringSpec({
         )
 
         val result = source.mutate { draft ->
-            draft.addresses += draft.addresses.filter { it.city == "Leipzig"}
+            draft.addresses += draft.addresses.filter { it.city == "Leipzig" }
         }
 
         assertSoftly {
@@ -423,7 +426,7 @@ class ListMutationsSpec : StringSpec({
         )
 
         val result = source.mutate { draft ->
-            draft.addresses.removeWhere { it.city == "Leipzig"}
+            draft.addresses.removeWhere { it.city == "Leipzig" }
         }
 
         assertSoftly {
@@ -452,7 +455,7 @@ class ListMutationsSpec : StringSpec({
         )
 
         val result = source.mutate { draft ->
-            draft.addresses.retainWhere { it.city.startsWith("B")}
+            draft.addresses.retainWhere { it.city.startsWith("B") }
         }
 
         assertSoftly {

@@ -1,4 +1,6 @@
-package de.peekandpoke.mutator
+package de.peekandpoke.mutator.e2e
+
+import de.peekandpoke.mutator.Mutator
 
 @Mutator
 data class WithScalars(

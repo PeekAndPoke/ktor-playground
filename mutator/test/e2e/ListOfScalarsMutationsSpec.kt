@@ -1,11 +1,13 @@
-package de.peekandpoke.mutator
+package de.peekandpoke.mutator.e2e
 
+import io.kotlintest.DisplayName
 import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.StringSpec
 
+@DisplayName("E2E - ListOfScalarsMutationsSpec")
 class ListOfScalarsMutationsSpec : StringSpec({
 
     ////  List of bools  //////////////////////////////////////////////////////////////////////

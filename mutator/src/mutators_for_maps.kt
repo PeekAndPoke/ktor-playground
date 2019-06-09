@@ -16,7 +16,7 @@ class MapMutator<T, K, M>(
 
     original: Map<K, T>,
     onModify: OnModify<Map<K, T>>,
-    private val mapper: (T, OnModify<T>) -> M,
+    private val forwardMapper: (T, OnModify<T>) -> M,
     private val backwardMapper: (M) -> T
 
 
@@ -30,7 +30,7 @@ class MapMutator<T, K, M>(
 
     override fun copy(input: Map<K, T>) = input.toMutableMap()
 
-    override fun iterator(): Iterator<Map.Entry<K, M>> = It(getResult(), mapper)
+    override fun iterator(): Iterator<Map.Entry<K, M>> = It(getResult(), forwardMapper)
 
     /**
      * Returns the size of the list
@@ -50,14 +50,20 @@ class MapMutator<T, K, M>(
     /**
      * Put multiple elements into the map
      */
-    fun put(vararg pair: Pair<K, T>) = apply { getMutableResult().putAll(pair) }
+    fun put(vararg pair: Pair<K, T>) = apply { pair.forEach { (k, v) -> set(k, v) } }
 
     /**
      * Remove elements from the map by their keys
      */
     fun remove(vararg key: K) = apply {
-        getMutableResult().apply {
-            key.forEach { k -> this.remove(k) }
+
+        val contained = key.filter { getResult().containsKey(it) }
+
+        if (contained.isNotEmpty()) {
+
+            getMutableResult().apply {
+                contained.forEach { k -> remove(k) }
+            }
         }
     }
 
@@ -74,7 +80,7 @@ class MapMutator<T, K, M>(
     /**
      * Get the element at the given index
      */
-    operator fun get(index: K): M? = getResult()[index]?.let { entry -> mapper(entry) { set(index, it) } }
+    operator fun get(index: K): M? = getResult()[index]?.let { entry -> forwardMapper(entry) { set(index, it) } }
 
     /**
      * Set the element at the given index

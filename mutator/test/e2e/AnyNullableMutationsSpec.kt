@@ -1,5 +1,6 @@
-package de.peekandpoke.mutator
+package de.peekandpoke.mutator.e2e
 
+import io.kotlintest.DisplayName
 import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
@@ -7,7 +8,7 @@ import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.StringSpec
 import kotlin.reflect.KMutableProperty0
 
-
+@DisplayName("E2E - AnyNullableMutationsSpec")
 class AnyNullableMutationsSpec : StringSpec({
 
     fun <T> setProp(prop: KMutableProperty0<T>, v: T) = prop.set(v)

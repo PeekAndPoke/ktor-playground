@@ -1,11 +1,13 @@
-package de.peekandpoke.mutator
+package de.peekandpoke.mutator.e2e
 
+import io.kotlintest.DisplayName
 import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.StringSpec
 
+@DisplayName("E2E - SetMutationsSpec")
 class SetMutationsSpec : StringSpec({
 
     "Mutating a set ... using size and isEmpty" {
@@ -162,7 +164,7 @@ class SetMutationsSpec : StringSpec({
         )
 
         val result = source.mutate { draft ->
-            draft.addresses += draft.addresses.filter { it.city == "Leipzig"}
+            draft.addresses += draft.addresses.filter { it.city == "Leipzig" }
         }
 
         assertSoftly {
@@ -256,7 +258,7 @@ class SetMutationsSpec : StringSpec({
         )
 
         val result = source.mutate { draft ->
-            draft.addresses.removeWhere { it.city == "Leipzig"}
+            draft.addresses.removeWhere { it.city == "Leipzig" }
         }
 
         assertSoftly {
@@ -285,7 +287,7 @@ class SetMutationsSpec : StringSpec({
         )
 
         val result = source.mutate { draft ->
-            draft.addresses.retainWhere { it.city.startsWith("B")}
+            draft.addresses.retainWhere { it.city.startsWith("B") }
         }
 
         assertSoftly {

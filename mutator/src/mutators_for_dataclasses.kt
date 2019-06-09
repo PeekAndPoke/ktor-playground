@@ -3,8 +3,7 @@ package de.peekandpoke.mutator
 import kotlin.reflect.KProperty0
 import kotlin.reflect.jvm.javaField
 
-
-abstract class DataClassMutator<T : Any>(input: T, onModify: OnModify<T>) : MutatorBase<T, T>(input, onModify) {
+open class DataClassMutator<T : Any>(input: T, onModify: OnModify<T>) : MutatorBase<T, T>(input, onModify) {
 
     fun <X> modify(property: KProperty0<X>, old: X, new: X) {
 

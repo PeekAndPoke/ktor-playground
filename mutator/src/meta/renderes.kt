@@ -8,6 +8,9 @@ import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.VariableElement
 
 interface CodeRenderer {
+
+    // TODO: do NOT use "TypeName" as parameters here. Try to use "Element"
+
     /**
      * Returns 'true' when the renderer can handle the given VariableElement
      */
@@ -21,11 +24,6 @@ interface CodeRenderer {
     fun renderForwardMapper(type: TypeName, depth: Int): String
 
     fun renderBackwardMapper(type: TypeName, depth: Int): String
-
-//    /**
-//     * Renders the code-blocks by type (without variable declaration)
-//     */
-//    fun render(type: TypeName): String
 }
 
 /**
@@ -53,9 +51,11 @@ abstract class CodeRendererBase(
  * render() returns the code by calling render on the first child that can handle the given VariableElement.
  */
 class CodeRenderers(
+
     logPrefix: String,
     env: ProcessingEnvironment,
     private val provider: (CodeRenderers) -> List<CodeRenderer>
+
 ) : CodeRendererBase(logPrefix, env), ProcessorUtils {
 
     private val children by lazy { provider(this) }
@@ -254,6 +254,7 @@ class DataClassCodeRenderer(logPrefix: String, env: ProcessingEnvironment) : Cod
                     "kotlin.",              // exclude kotlin std lib
                     "com.google.common."    // exclude google guava
                 )
+                // TODO: check if the type has a "copy" method
 
 
     override fun render(elem: VariableElement): String {

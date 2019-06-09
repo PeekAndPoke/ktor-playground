@@ -1,11 +1,13 @@
-package de.peekandpoke.mutator
+package de.peekandpoke.mutator.e2e
 
+import io.kotlintest.DisplayName
 import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.StringSpec
 
+@DisplayName("E2E - MapMutationsSpec")
 class MapMutationsSpec : StringSpec({
 
     "Mutating but not changing any value is treated like no mutation" {
@@ -323,7 +325,7 @@ class MapMutationsSpec : StringSpec({
         1 to 2
 
         val result = source.mutate { draft ->
-            draft.addresses += draft.addresses.filter { it.value.city == "Leipzig"}
+            draft.addresses += draft.addresses.filter { it.value.city == "Leipzig" }
         }
 
         assertSoftly {
@@ -418,7 +420,7 @@ class MapMutationsSpec : StringSpec({
         )
 
         val result = source.mutate { draft ->
-            draft.addresses.removeWhere { it.value.city == "Leipzig" || it.key == "C"}
+            draft.addresses.removeWhere { it.value.city == "Leipzig" || it.key == "C" }
         }
 
         assertSoftly {
@@ -447,7 +449,7 @@ class MapMutationsSpec : StringSpec({
         )
 
         val result = source.mutate { draft ->
-            draft.addresses.retainWhere { it.value.city == "Leipzig" || it.key == "C"}
+            draft.addresses.retainWhere { it.value.city == "Leipzig" || it.key == "C" }
         }
 
         assertSoftly {
