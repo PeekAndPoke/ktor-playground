@@ -72,7 +72,7 @@ class ListMutatorSpec : StringSpec({
         }
     }
 
-    "iterator: getting the an iterator must not trigger mutation" {
+    "iterator: getting the iterator must not trigger mutation" {
 
         val source = listOf(
             SomeDataClass("first", 1),
@@ -101,7 +101,25 @@ class ListMutatorSpec : StringSpec({
         }
     }
 
-    "size: must not trigger mutation" {
+    "size: must not trigger mutation on empty list" {
+
+        val source = listOf<SomeDataClass>()
+
+        var modifications = 0
+
+        val subject = ListMutator(source, { modifications++ }, { it, mod -> Wrapper(it, mod) }, { it.value })
+
+        assertSoftly {
+
+            subject.size shouldBe 0
+
+            (source === subject.getResult()) shouldBe true
+
+            modifications shouldBe 0
+        }
+    }
+
+    "size: must not trigger mutation on non-empty list" {
 
         val source = listOf(
             SomeDataClass("first", 1),
@@ -476,7 +494,7 @@ class ListMutatorSpec : StringSpec({
 
         val subject = ListMutator(source, { modifications++ }, { it, mod -> Wrapper(it, mod) }, { it.value })
 
-        subject.retainWhere { it.aString == "first" }
+        subject.retainWhere { aString == "first" }
 
         assertSoftly {
 
@@ -527,7 +545,7 @@ class ListMutatorSpec : StringSpec({
 
         val subject = ListMutator(source, { modifications++ }, { it, mod -> Wrapper(it, mod) }, { it.value })
 
-        subject.removeWhere { it.aString != "first" }
+        subject.removeWhere { aString != "first" }
 
         assertSoftly {
 

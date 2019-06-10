@@ -89,7 +89,7 @@ open class MutatorAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
 
                 import de.peekandpoke.mutator.*
 
-                fun $simpleName.mutate(builder: (draft: ${simpleName}Mutator) -> Unit) = mutator().apply(builder).getResult()
+                fun $simpleName.mutate(mutation: ${simpleName}Mutator.() -> Unit) = mutator().apply(mutation).getResult()
 
                 fun $simpleName.mutator(onModify: OnModify<$simpleName> = {}) = ${simpleName}Mutator(this, onModify)
 

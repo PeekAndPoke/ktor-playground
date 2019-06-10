@@ -81,6 +81,7 @@ open class ListMutator<T, M>(
      * Removes the element at the given index
      */
     fun removeAt(index: Int) = apply {
+
         if (isInBounds(index)) {
             getMutableResult().removeAt(index)
         }
@@ -89,7 +90,7 @@ open class ListMutator<T, M>(
     /**
      * Retains all elements in the list that match the predicate
      */
-    fun retainWhere(predicate: (T) -> Boolean) = apply {
+    fun retainWhere(predicate: T.() -> Boolean) = apply {
 
         val filtered = getResult().filter(predicate)
 
@@ -101,7 +102,7 @@ open class ListMutator<T, M>(
     /**
      * Removes all elements from the the list that match the filter
      */
-    fun removeWhere(predicate: (T) -> Boolean) = retainWhere { !predicate(it) }
+    fun removeWhere(predicate: T.() -> Boolean) = retainWhere { !predicate(this) }
 
     /**
      * Get the element at the given index
@@ -126,6 +127,9 @@ open class ListMutator<T, M>(
         return idx >= 0 && idx < size
     }
 
+    /**
+     * Iterator impl
+     */
     internal inner class It(private val list: List<T>, private val mapper: (T, OnModify<T>) -> M) : Iterator<M> {
 
         private var pos = 0

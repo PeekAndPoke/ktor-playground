@@ -17,9 +17,9 @@ class ScalarNullableMutationsSpec : StringSpec({
 
         val source = WithNullableScalars()
 
-        val result = source.mutate { draft ->
-            draft.aString = "changed"
-            draft.aByte = 1
+        val result = source.mutate {
+            aString = "changed"
+            aByte = 1
         }
 
         assertSoftly {
@@ -59,9 +59,9 @@ class ScalarNullableMutationsSpec : StringSpec({
             aByte = 1
         )
 
-        val result = source.mutate { draft ->
-            draft.aString { it?.toUpperCase() }
-            draft.aByte { null }
+        val result = source.mutate {
+            aString { it?.toUpperCase() }
+            aByte { null }
         }
 
         assertSoftly {
@@ -86,12 +86,12 @@ class ScalarNullableMutationsSpec : StringSpec({
             aByte = 1
         )
 
-        val result = source.mutate { draft ->
+        val result = source.mutate {
             @Suppress("RemoveExplicitTypeArguments")
-            setProp<String?>(draft::aString, "changed")
+            setProp<String?>(::aString, "changed")
 
             @Suppress("RemoveExplicitTypeArguments")
-            setProp<Byte?>(draft::aByte, null)
+            setProp<Byte?>(::aByte, null)
         }
 
         assertSoftly {
@@ -123,17 +123,17 @@ class ScalarNullableMutationsSpec : StringSpec({
             aBool = true
         )
 
-        val result = source.mutate { draft ->
-            draft.aString { plus(" plus") }
-            draft.aChar = 'd'
-            draft.aByte = 2
-            draft.aShort = 3
-            draft.aInt { it?.times(4) }
-            draft.aLong { it?.minus(2) }
-            draft.aFloat { it?.div(2) }
-            draft.aDouble { it?.times(3.5) }
+        val result = source.mutate {
+            aString { plus(" plus") }
+            aChar = 'd'
+            aByte = 2
+            aShort = 3
+            aInt { it?.times(4) }
+            aLong { it?.minus(2) }
+            aFloat { it?.div(2) }
+            aDouble { it?.times(3.5) }
             @Suppress("RemoveExplicitTypeArguments")
-            setProp<Boolean?>(draft::aBool, false)
+            setProp<Boolean?>(::aBool, false)
         }
 
         assertSoftly {

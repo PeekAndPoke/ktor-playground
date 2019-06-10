@@ -91,17 +91,17 @@ fun playWithMutator() {
 //        )
     )
 
-    val mutation = company.mutate { draft ->
+    val mutation = company.mutate {
 
-        draft.boss.name { toUpperCase() }
-        draft.boss.age *= 10
+        boss.name { toUpperCase() }
+        boss.age *= 10
 
-        draft.boss.address.city = "Aue"
-        draft.boss.address.zip = "08280"
+        boss.address.city = "Aue"
+        boss.address.zip = "08280"
 
-        draft.addresses[0].city = "CHANGED"
+        addresses[0].city = "CHANGED"
 
-        draft.set.forEach {
+        set.forEach {
             it.city { toUpperCase() + "_aa" }
         }
 

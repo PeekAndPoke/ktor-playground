@@ -19,8 +19,8 @@ class AnyNullableMutationsSpec : StringSpec({
             anObject = null
         )
 
-        val result = source.mutate { draft ->
-            draft.anObject = null
+        val result = source.mutate {
+            anObject = null
         }
 
         assertSoftly {
@@ -35,8 +35,8 @@ class AnyNullableMutationsSpec : StringSpec({
 
         val source = WithAnyNullableObject(anObject = "something")
 
-        val result = source.mutate { draft ->
-            draft.anObject = null
+        val result = source.mutate {
+            anObject = null
         }
 
         assertSoftly {
@@ -57,8 +57,8 @@ class AnyNullableMutationsSpec : StringSpec({
 
         val source = WithAnyNullableObject(anObject = "string")
 
-        val result = source.mutate { draft ->
-            draft.anObject {
+        val result = source.mutate {
+            anObject {
                 when (this) {
                     is String -> toUpperCase()
                     else -> null
@@ -84,9 +84,9 @@ class AnyNullableMutationsSpec : StringSpec({
 
         val source = WithAnyNullableObject(anObject = 0)
 
-        val result = source.mutate { draft ->
+        val result = source.mutate {
             @Suppress("RemoveExplicitTypeArguments")
-            setProp<Any?>(draft::anObject, null)
+            setProp<Any?>(::anObject, null)
         }
 
         assertSoftly {

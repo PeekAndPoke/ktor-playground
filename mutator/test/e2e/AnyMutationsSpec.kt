@@ -19,8 +19,8 @@ class AnyMutationsSpec : StringSpec({
             anObject = "string"
         )
 
-        val result = source.mutate { draft ->
-            draft.anObject = "string"
+        val result = source.mutate {
+            anObject = "string"
         }
 
         assertSoftly {
@@ -35,8 +35,8 @@ class AnyMutationsSpec : StringSpec({
 
         val source = WithAnyObject(anObject = 0)
 
-        val result = source.mutate { draft ->
-            draft.anObject = "changed"
+        val result = source.mutate {
+            anObject = "changed"
         }
 
         assertSoftly {
@@ -57,8 +57,8 @@ class AnyMutationsSpec : StringSpec({
 
         val source = WithAnyObject(anObject = "string")
 
-        val result = source.mutate { draft ->
-            draft.anObject {
+        val result = source.mutate {
+            anObject {
                 when (this) {
                     is String -> toUpperCase()
                     else -> this
@@ -84,9 +84,9 @@ class AnyMutationsSpec : StringSpec({
 
         val source = WithAnyObject(anObject = 0)
 
-        val result = source.mutate { draft ->
+        val result = source.mutate {
             @Suppress("RemoveExplicitTypeArguments")
-            setProp<Any>(draft::anObject, "changed")
+            setProp<Any>(::anObject, "changed")
         }
 
         assertSoftly {

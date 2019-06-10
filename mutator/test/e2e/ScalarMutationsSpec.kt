@@ -41,16 +41,16 @@ class ScalarMutationsSpec : StringSpec({
             aBool = true
         )
 
-        val result = source.mutate { draft ->
-            draft.aString = "string"
-            draft.aChar = 'c'
-            draft.aByte = 1
-            draft.aShort = 1
-            draft.aInt = 1
-            draft.aLong = 1L
-            draft.aFloat = 1.0f
-            draft.aDouble = 1.0
-            draft.aBool = true
+        val result = source.mutate {
+            aString = "string"
+            aChar = 'c'
+            aByte = 1
+            aShort = 1
+            aInt = 1
+            aLong = 1L
+            aFloat = 1.0f
+            aDouble = 1.0
+            aBool = true
         }
 
         assertSoftly {
@@ -65,8 +65,8 @@ class ScalarMutationsSpec : StringSpec({
 
         val source = WithScalars()
 
-        val result = source.mutate { draft ->
-            draft.aString = "changed"
+        val result = source.mutate {
+            aString = "changed"
         }
 
         assertSoftly {
@@ -103,8 +103,8 @@ class ScalarMutationsSpec : StringSpec({
 
         val source = WithScalars()
 
-        val result = source.mutate { draft ->
-            draft.aString { toUpperCase() }
+        val result = source.mutate {
+            aString { toUpperCase() }
         }
 
         assertSoftly {
@@ -125,9 +125,9 @@ class ScalarMutationsSpec : StringSpec({
 
         val source = WithScalars()
 
-        val result = source.mutate { draft ->
+        val result = source.mutate {
             @Suppress("RemoveExplicitTypeArguments")
-            setProp<String>(draft::aString, "changed")
+            setProp<String>(::aString, "changed")
         }
 
         assertSoftly {
@@ -148,17 +148,17 @@ class ScalarMutationsSpec : StringSpec({
 
         val source = WithScalars()
 
-        val result = source.mutate { draft ->
-            draft.aString { plus(" plus") }
-            draft.aChar = 'd'
-            draft.aByte = 2
-            draft.aShort = 3
-            draft.aInt *= 4
-            draft.aLong -= 2
-            draft.aFloat /= 2
-            draft.aDouble *= 3.5
+        val result = source.mutate {
+            aString { plus(" plus") }
+            aChar = 'd'
+            aByte = 2
+            aShort = 3
+            aInt *= 4
+            aLong -= 2
+            aFloat /= 2
+            aDouble *= 3.5
             @Suppress("RemoveExplicitTypeArguments")
-            setProp<Boolean>(draft::aBool, false)
+            setProp<Boolean>(::aBool, false)
         }
 
         assertSoftly {

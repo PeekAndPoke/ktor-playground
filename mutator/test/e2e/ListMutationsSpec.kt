@@ -21,14 +21,14 @@ class ListMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
+        val result = source.mutate {
             // setting the same object must not trigger mutation
-            draft.addresses[0] = address1
+            addresses[0] = address1
 
             // iteration must no trigger mutation on its own
-            draft.addresses.forEach { address ->
+            addresses.forEach {
                 // setting the same value on a child object must not trigger mutation
-                address.city = address.city
+                it.city = it.city
             }
         }
 
@@ -46,19 +46,20 @@ class ListMutationsSpec : StringSpec({
             addresses = listOf()
         )
 
-        source.mutate { draft ->
+        source.mutate {
 
             assertSoftly {
-                draft.addresses.size shouldBe 0
-                draft.addresses.isEmpty() shouldBe true
 
-                draft.addresses.push(
+                addresses.size shouldBe 0
+                addresses.isEmpty() shouldBe true
+
+                addresses.push(
                     Address("Berlin", "10115"),
                     Address("Leipzig", "04109")
                 )
 
-                draft.addresses.size shouldBe 2
-                draft.addresses.isEmpty() shouldBe false
+                addresses.size shouldBe 2
+                addresses.isEmpty() shouldBe false
             }
         }
     }
@@ -72,11 +73,9 @@ class ListMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
+        val result = source.mutate {
 
-            draft.addresses[0].apply {
-                city { toUpperCase() }
-            }
+            addresses[0].city { toUpperCase() }
         }
 
         assertSoftly {
@@ -110,9 +109,9 @@ class ListMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
+        val result = source.mutate {
 
-            draft.addresses.forEach {
+            addresses.forEach {
                 it.city += " x"
             }
         }
@@ -140,13 +139,13 @@ class ListMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
+        val result = source.mutate {
 
-            draft.addresses.forEach {
+            addresses.forEach {
                 it.city += " x"
             }
 
-            draft.addresses.forEach {
+            addresses.forEach {
                 it.zip += " y"
             }
         }
@@ -174,12 +173,10 @@ class ListMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses
+        val result = source.mutate {
+            addresses
                 .filter { it.city == "Berlin" }
-                .forEach {
-                    it.city += " x"
-                }
+                .forEach { it.city += " x" }
         }
 
         assertSoftly {
@@ -205,8 +202,8 @@ class ListMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses.push(
+        val result = source.mutate {
+            addresses.push(
                 Address("Chemnitz", "09111"),
                 Address("Bonn", "53111")
             )
@@ -241,8 +238,8 @@ class ListMutationsSpec : StringSpec({
 
         lateinit var popped: Address
 
-        val result = source.mutate { draft ->
-            popped = draft.addresses.pop()!!
+        val result = source.mutate {
+            popped = addresses.pop()!!
         }
 
         assertSoftly {
@@ -273,8 +270,8 @@ class ListMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses.unshift(
+        val result = source.mutate {
+            addresses.unshift(
                 Address("Chemnitz", "09111"),
                 Address("Bonn", "53111")
             )
@@ -309,8 +306,8 @@ class ListMutationsSpec : StringSpec({
 
         lateinit var shifted: Address
 
-        val result = source.mutate { draft ->
-            shifted = draft.addresses.shift()!!
+        val result = source.mutate {
+            shifted = addresses.shift()!!
         }
 
         assertSoftly {
@@ -341,8 +338,8 @@ class ListMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses += listOf(
+        val result = source.mutate {
+            addresses += listOf(
                 Address("Chemnitz", "09111")
             )
         }
@@ -371,8 +368,8 @@ class ListMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses.clear()
+        val result = source.mutate {
+            addresses.clear()
         }
 
         assertSoftly {
@@ -397,8 +394,8 @@ class ListMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses += draft.addresses.filter { it.city == "Leipzig" }
+        val result = source.mutate {
+            addresses += addresses.filter { it.city == "Leipzig" }
         }
 
         assertSoftly {
@@ -425,8 +422,8 @@ class ListMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses.removeWhere { it.city == "Leipzig" }
+        val result = source.mutate {
+            addresses.removeWhere { city == "Leipzig" }
         }
 
         assertSoftly {
@@ -454,8 +451,8 @@ class ListMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses.retainWhere { it.city.startsWith("B") }
+        val result = source.mutate {
+            addresses.retainWhere { city.startsWith("B") }
         }
 
         assertSoftly {
@@ -484,8 +481,8 @@ class ListMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses.remove(
+        val result = source.mutate {
+            addresses.remove(
                 Address("Berlin", "10115"),
                 Address("Bonn", "53111")
             )
@@ -516,8 +513,8 @@ class ListMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses.removeAt(1)
+        val result = source.mutate {
+            addresses.removeAt(1)
         }
 
         assertSoftly {

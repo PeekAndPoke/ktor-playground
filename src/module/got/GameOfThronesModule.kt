@@ -167,10 +167,10 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
 
                 logger.info(posted.toString())
 
-                val result = it.character.mutate {draft ->
+                val result = it.character.mutate {
 
-                    posted["name"]?.let { v -> draft.name = v }
-                    posted["surname"]?.let { v -> draft.surname = v }
+                    posted["name"]?.let { name = it }
+                    posted["surname"]?.let { surname = it }
                 }
 
                 val saved = characters.save(result)

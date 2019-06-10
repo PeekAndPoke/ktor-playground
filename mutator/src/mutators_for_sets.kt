@@ -1,5 +1,7 @@
 package de.peekandpoke.mutator
 
+import de.peekandpoke.ultra.common.containsAny
+
 fun <T, M> Set<T>.mutator(
 
     onModify: OnModify<Set<T>>,
@@ -39,7 +41,11 @@ open class SetMutator<T, M>(
     /**
      * Clears the whole list
      */
-    fun clear() = apply { getMutableResult().clear() }
+    fun clear() = apply {
+        if (size > 0) {
+            getMutableResult().clear()
+        }
+    }
 
     /**
      * Adds elements to the set
@@ -49,18 +55,33 @@ open class SetMutator<T, M>(
     /**
      * Removes elements from the set
      */
-    fun remove(vararg element: T) = apply { getMutableResult().removeAll(element) }
+    fun remove(vararg element: T) = apply {
+
+        if (getResult().containsAny(*element)) {
+            getMutableResult().removeAll(element)
+        }
+    }
 
     /**
-     * Retains all elements in the list that match the filter
+     * Retains all elements in the list that match the predicate
      */
-    fun retainWhere(filter: (T) -> Boolean) = apply { plusAssign(getResult().filter(filter).toSet()) }
+    fun retainWhere(predicate: T.() -> Boolean) = apply {
+
+        val filtered = getResult().filter(predicate)
+
+        if (filtered.size < size) {
+            plusAssign(filtered.toSet())
+        }
+    }
 
     /**
-     * Removes all elements from the the list that match the filter
+     * Removes all elements from the the list that match the predicate
      */
-    fun removeWhere(filter: (T) -> Boolean) = apply { retainWhere { !filter(it) } }
+    fun removeWhere(predicate: T.() -> Boolean) = retainWhere { !predicate(this) }
 
+    /**
+     * Iterator impl
+     */
     internal inner class It(set: Set<T>, private val mapper: (T, OnModify<T>) -> M) : Iterator<M> {
 
         private val inner = set.toList().iterator()

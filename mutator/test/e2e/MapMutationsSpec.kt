@@ -21,12 +21,12 @@ class MapMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
+        val result = source.mutate {
             // setting the same object must not trigger mutation
-            draft.addresses["B"] = address1
+            addresses["B"] = address1
 
             // iteration must no trigger mutation on its own
-            draft.addresses.forEach { (_, address) ->
+            addresses.forEach { (_, address) ->
                 // setting the same value on a child object must not trigger mutation
                 address.city = address.city
             }
@@ -46,19 +46,20 @@ class MapMutationsSpec : StringSpec({
             addresses = mapOf()
         )
 
-        source.mutate { draft ->
+        source.mutate {
 
             assertSoftly {
-                draft.addresses.size shouldBe 0
-                draft.addresses.isEmpty() shouldBe true
 
-                draft.addresses.put(
+                addresses.size shouldBe 0
+                addresses.isEmpty() shouldBe true
+
+                addresses.put(
                     "B" to Address("Berlin", "10115"),
                     "L" to Address("Leipzig", "04109")
                 )
 
-                draft.addresses.size shouldBe 2
-                draft.addresses.isEmpty() shouldBe false
+                addresses.size shouldBe 2
+                addresses.isEmpty() shouldBe false
             }
         }
     }
@@ -72,10 +73,8 @@ class MapMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses["B"]?.apply {
-                city { toUpperCase() }
-            }
+        val result = source.mutate {
+            addresses["B"]?.city { toUpperCase() }
         }
 
         assertSoftly {
@@ -112,8 +111,8 @@ class MapMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses["B"] = Address("Bonn", "53111")
+        val result = source.mutate {
+            addresses["B"] = Address("Bonn", "53111")
         }
 
         assertSoftly {
@@ -150,8 +149,8 @@ class MapMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses["C"] = Address("Chemnitz", "09111")
+        val result = source.mutate {
+            addresses["C"] = Address("Chemnitz", "09111")
         }
 
         assertSoftly {
@@ -188,8 +187,8 @@ class MapMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses.put(
+        val result = source.mutate {
+            addresses.put(
                 "C" to Address("Chemnitz", "09111"),
                 "O" to Address("Bonn", "53111")
             )
@@ -230,8 +229,8 @@ class MapMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses.forEach { (_, address) ->
+        val result = source.mutate {
+            addresses.forEach { (_, address) ->
                 address.city += " x"
             }
         }
@@ -261,12 +260,12 @@ class MapMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses.forEach { (_, address) ->
+        val result = source.mutate {
+            addresses.forEach { (_, address) ->
                 address.city += " x"
             }
 
-            draft.addresses.forEach { (_, address) ->
+            addresses.forEach { (_, address) ->
                 address.zip += " y"
             }
         }
@@ -296,8 +295,8 @@ class MapMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses.clear()
+        val result = source.mutate {
+            addresses.clear()
         }
 
         assertSoftly {
@@ -322,10 +321,8 @@ class MapMutationsSpec : StringSpec({
             )
         )
 
-        1 to 2
-
-        val result = source.mutate { draft ->
-            draft.addresses += draft.addresses.filter { it.value.city == "Leipzig" }
+        val result = source.mutate {
+            addresses += addresses.filter { it.value.city == "Leipzig" }
         }
 
         assertSoftly {
@@ -354,9 +351,9 @@ class MapMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses
-                .filter { it.key == "L" || it.value.city.startsWith("B") }
+        val result = source.mutate {
+            addresses
+                .filter { (k, v) -> k == "L" || v.city.startsWith("B") }
                 .forEach { it.value.city += " x" }
         }
 
@@ -387,8 +384,8 @@ class MapMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses += mapOf(
+        val result = source.mutate {
+            addresses += mapOf(
                 "C" to Address("Chemnitz", "09111")
             )
         }
@@ -419,8 +416,8 @@ class MapMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses.removeWhere { it.value.city == "Leipzig" || it.key == "C" }
+        val result = source.mutate {
+            addresses.removeWhere { it.value.city == "Leipzig" || it.key == "C" }
         }
 
         assertSoftly {
@@ -448,8 +445,8 @@ class MapMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses.retainWhere { it.value.city == "Leipzig" || it.key == "C" }
+        val result = source.mutate {
+            addresses.retainWhere { (k, v) -> v.city == "Leipzig" || k == "C" }
         }
 
         assertSoftly {
@@ -478,8 +475,8 @@ class MapMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses.remove("B", "C")
+        val result = source.mutate {
+            addresses.remove("B", "C")
         }
 
         assertSoftly {

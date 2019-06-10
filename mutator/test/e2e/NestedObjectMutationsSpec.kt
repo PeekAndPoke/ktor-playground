@@ -14,9 +14,9 @@ class NestedObjectMutationsSpec : StringSpec({
 
         val source = Company("Corp", Person("Sam", 25, Address("Berlin", "10115")))
 
-        val result = source.mutate { draft ->
+        val result = source.mutate {
 
-            draft.name { plus("oration").toUpperCase() }
+            name { plus("oration").toUpperCase() }
         }
 
         assertSoftly {
@@ -39,11 +39,11 @@ class NestedObjectMutationsSpec : StringSpec({
 
         val source = Company("Corp", Person("Sam", 25, Address("Berlin", "10115")))
 
-        val result = source.mutate { draft ->
+        val result = source.mutate {
 
-            draft.name { plus("oration").toUpperCase() }
+            name { plus("oration").toUpperCase() }
 
-            with(draft.boss.address) {
+            boss.address.apply {
                 city = "Leipzig"
                 zip = "04109"
             }
@@ -70,8 +70,8 @@ class NestedObjectMutationsSpec : StringSpec({
 
         val source = Company("Corp", Person("Sam", 25, Address("Berlin", "10115")))
 
-        val result = source.mutate { draft ->
-            draft.boss.address += Address("Leipzig", "04109")
+        val result = source.mutate {
+            boss.address += Address("Leipzig", "04109")
         }
 
         assertSoftly {

@@ -16,19 +16,19 @@ class SetMutationsSpec : StringSpec({
             addresses = setOf()
         )
 
-        source.mutate { draft ->
+        source.mutate {
 
             assertSoftly {
-                draft.addresses.size shouldBe 0
-                draft.addresses.isEmpty() shouldBe true
+                addresses.size shouldBe 0
+                addresses.isEmpty() shouldBe true
 
-                draft.addresses.add(
+                addresses.add(
                     Address("Berlin", "10115"),
                     Address("Leipzig", "04109")
                 )
 
-                draft.addresses.size shouldBe 2
-                draft.addresses.isEmpty() shouldBe false
+                addresses.size shouldBe 2
+                addresses.isEmpty() shouldBe false
             }
         }
     }
@@ -42,8 +42,8 @@ class SetMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses.forEach {
+        val result = source.mutate {
+            addresses.forEach {
                 it.city += "-x"
             }
         }
@@ -74,8 +74,8 @@ class SetMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses
+        val result = source.mutate {
+            addresses
                 .filter { it.city == "Berlin" }
                 .forEach {
                     it.city += " x"
@@ -107,8 +107,8 @@ class SetMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses += setOf(
+        val result = source.mutate {
+            addresses += setOf(
                 Address("Chemnitz", "09111")
             )
         }
@@ -137,8 +137,8 @@ class SetMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses.clear()
+        val result = source.mutate {
+            addresses.clear()
         }
 
         assertSoftly {
@@ -163,8 +163,8 @@ class SetMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses += draft.addresses.filter { it.city == "Leipzig" }
+        val result = source.mutate {
+            addresses += addresses.filter { it.city == "Leipzig" }
         }
 
         assertSoftly {
@@ -191,8 +191,8 @@ class SetMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses.add(
+        val result = source.mutate {
+            addresses.add(
                 Address("Chemnitz", "09111"),
                 Address("Bonn", "53111")
             )
@@ -226,8 +226,8 @@ class SetMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses.remove(
+        val result = source.mutate {
+            addresses.remove(
                 Address("Leipzig", "04109"),
                 Address("Chemnitz", "09111")
             )
@@ -257,8 +257,8 @@ class SetMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses.removeWhere { it.city == "Leipzig" }
+        val result = source.mutate {
+            addresses.removeWhere { city == "Leipzig" }
         }
 
         assertSoftly {
@@ -286,8 +286,8 @@ class SetMutationsSpec : StringSpec({
             )
         )
 
-        val result = source.mutate { draft ->
-            draft.addresses.retainWhere { it.city.startsWith("B") }
+        val result = source.mutate {
+            addresses.retainWhere { city.startsWith("B") }
         }
 
         assertSoftly {

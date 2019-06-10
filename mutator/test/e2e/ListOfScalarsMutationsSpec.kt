@@ -16,8 +16,8 @@ class ListOfScalarsMutationsSpec : StringSpec({
 
         val source = ListOfBools(values = listOf(true, false, true))
 
-        val result = source.mutate { draft ->
-            draft.values.removeWhere { it }
+        val result = source.mutate {
+            values.removeWhere { this }
         }
 
         assertSoftly {
@@ -37,8 +37,8 @@ class ListOfScalarsMutationsSpec : StringSpec({
 
         val source = ListOfBools(values = listOf(true, false, true))
 
-        val result = source.mutate { draft ->
-            draft.values.retainWhere { it }
+        val result = source.mutate {
+            values.retainWhere { this }
         }
 
         assertSoftly {
@@ -60,8 +60,8 @@ class ListOfScalarsMutationsSpec : StringSpec({
 
         val source = ListOfChars(values = listOf('A', 'B', 'C'))
 
-        val result = source.mutate { draft ->
-            draft.values.removeWhere { it > 'A' }
+        val result = source.mutate {
+            values.removeWhere { this > 'A' }
         }
 
         assertSoftly {
@@ -81,8 +81,8 @@ class ListOfScalarsMutationsSpec : StringSpec({
 
         val source = ListOfChars(values = listOf('A', 'B', 'C'))
 
-        val result = source.mutate { draft ->
-            draft.values.retainWhere { it > 'A' }
+        val result = source.mutate {
+            values.retainWhere { this > 'A' }
         }
 
         assertSoftly {
@@ -104,8 +104,8 @@ class ListOfScalarsMutationsSpec : StringSpec({
 
         val source = ListOfBytes(values = listOf(1, 2, 3))
 
-        val result = source.mutate { draft ->
-            draft.values.removeWhere { it > 1 }
+        val result = source.mutate {
+            values.removeWhere { this > 1 }
         }
 
         assertSoftly {
@@ -125,8 +125,8 @@ class ListOfScalarsMutationsSpec : StringSpec({
 
         val source = ListOfBytes(values = listOf(1, 2, 3))
 
-        val result = source.mutate { draft ->
-            draft.values.retainWhere { it > 1 }
+        val result = source.mutate {
+            values.retainWhere { this > 1 }
         }
 
         assertSoftly {
@@ -148,8 +148,8 @@ class ListOfScalarsMutationsSpec : StringSpec({
 
         val source = ListOfShorts(values = listOf(1, 2, 3))
 
-        val result = source.mutate { draft ->
-            draft.values.removeWhere { it > 1 }
+        val result = source.mutate {
+            values.removeWhere { this > 1 }
         }
 
         assertSoftly {
@@ -169,8 +169,8 @@ class ListOfScalarsMutationsSpec : StringSpec({
 
         val source = ListOfShorts(values = listOf(1, 2, 3))
 
-        val result = source.mutate { draft ->
-            draft.values.retainWhere { it > 1 }
+        val result = source.mutate {
+            values.retainWhere { this > 1 }
         }
 
         assertSoftly {
@@ -192,8 +192,8 @@ class ListOfScalarsMutationsSpec : StringSpec({
 
         val source = ListOfInts(values = listOf(1, 2, 3))
 
-        val result = source.mutate { draft ->
-            draft.values.removeWhere { it > 1 }
+        val result = source.mutate {
+            values.removeWhere { this > 1 }
         }
 
         assertSoftly {
@@ -213,8 +213,8 @@ class ListOfScalarsMutationsSpec : StringSpec({
 
         val source = ListOfInts(values = listOf(1, 2, 3))
 
-        val result = source.mutate { draft ->
-            draft.values.retainWhere { it > 1 }
+        val result = source.mutate {
+            values.retainWhere { this > 1 }
         }
 
         assertSoftly {
@@ -236,8 +236,8 @@ class ListOfScalarsMutationsSpec : StringSpec({
 
         val source = ListOfLongs(values = listOf(1, 2, 3))
 
-        val result = source.mutate { draft ->
-            draft.values.removeWhere { it > 1 }
+        val result = source.mutate {
+            values.removeWhere { this > 1 }
         }
 
         assertSoftly {
@@ -257,8 +257,8 @@ class ListOfScalarsMutationsSpec : StringSpec({
 
         val source = ListOfLongs(values = listOf(1, 2, 3))
 
-        val result = source.mutate { draft ->
-            draft.values.retainWhere { it > 1 }
+        val result = source.mutate {
+            values.retainWhere { this > 1 }
         }
 
         assertSoftly {
@@ -280,8 +280,8 @@ class ListOfScalarsMutationsSpec : StringSpec({
 
         val source = ListOfFloats(values = listOf(1.1f, 2.2f, 3.3f))
 
-        val result = source.mutate { draft ->
-            draft.values.removeWhere { it > 1.1f }
+        val result = source.mutate {
+            values.removeWhere { this > 1.1f }
         }
 
         assertSoftly {
@@ -301,8 +301,8 @@ class ListOfScalarsMutationsSpec : StringSpec({
 
         val source = ListOfFloats(values = listOf(1.1f, 2.2f, 3.3f))
 
-        val result = source.mutate { draft ->
-            draft.values.retainWhere { it > 1.1f }
+        val result = source.mutate {
+            values.retainWhere { this > 1.1f }
         }
 
         assertSoftly {
@@ -324,8 +324,8 @@ class ListOfScalarsMutationsSpec : StringSpec({
 
         val source = ListOfDoubles(values = listOf(1.1, 2.2, 3.3))
 
-        val result = source.mutate { draft ->
-            draft.values.removeWhere { it > 1.1 }
+        val result = source.mutate {
+            values.removeWhere { this > 1.1 }
         }
 
         assertSoftly {
@@ -345,8 +345,8 @@ class ListOfScalarsMutationsSpec : StringSpec({
 
         val source = ListOfDoubles(values = listOf(1.1, 2.2, 3.3))
 
-        val result = source.mutate { draft ->
-            draft.values.retainWhere { it > 1.1 }
+        val result = source.mutate {
+            values.retainWhere { this > 1.1 }
         }
 
         assertSoftly {
@@ -368,8 +368,8 @@ class ListOfScalarsMutationsSpec : StringSpec({
 
         val source = ListOfStrings(values = listOf("Berlin", "Leipzig"))
 
-        val result = source.mutate { draft ->
-            draft.values.removeWhere { it.startsWith("L") }
+        val result = source.mutate {
+            values.removeWhere { startsWith("L") }
         }
 
         assertSoftly {
@@ -389,8 +389,8 @@ class ListOfScalarsMutationsSpec : StringSpec({
 
         val source = ListOfStrings(values = listOf("Berlin", "Leipzig"))
 
-        val result = source.mutate { draft ->
-            draft.values.retainWhere { it.startsWith("L") }
+        val result = source.mutate {
+            values.retainWhere { startsWith("L") }
         }
 
         assertSoftly {

@@ -16,8 +16,8 @@ class ListOfScalarNullablesMutationsSpec : StringSpec({
 
         val source = ListOfNullableInts(values = listOf(1, 2, null, 3))
 
-        val result = source.mutate { draft ->
-            draft.values.removeWhere { it != null && it > 1 }
+        val result = source.mutate {
+            values.removeWhere { this != null && this > 1 }
         }
 
         assertSoftly {
@@ -37,8 +37,8 @@ class ListOfScalarNullablesMutationsSpec : StringSpec({
 
         val source = ListOfNullableInts(values = listOf(1, 2, null, 3))
 
-        val result = source.mutate { draft ->
-            draft.values.retainWhere { it != null && it > 1 }
+        val result = source.mutate {
+            values.retainWhere { this != null && this > 1 }
         }
 
         assertSoftly {
