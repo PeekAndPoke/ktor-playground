@@ -144,15 +144,15 @@ fun Application.module(testing: Boolean = false) {
             call.respond(HttpStatusCode.InternalServerError, "Internal Server Error")
         }
 
-        exception<AuthenticationException> { cause ->
+        exception<AuthenticationException> {
             call.respond(HttpStatusCode.Unauthorized)
         }
 
-        exception<AuthorizationException> { cause ->
+        exception<AuthorizationException> {
             call.respond(HttpStatusCode.Forbidden)
         }
 
-        exception<BadRequestException> { cause ->
+        exception<BadRequestException> {
             call.respond(HttpStatusCode.InternalServerError, "Bad Request ...")
         }
 

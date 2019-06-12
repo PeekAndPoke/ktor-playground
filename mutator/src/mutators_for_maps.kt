@@ -1,18 +1,18 @@
 package de.peekandpoke.mutator
 
 
-fun <T, K, M> Map<K, T>.mutator(
+fun <K, T, M> Map<K, T>.mutator(
 
     onModify: OnModify<Map<K, T>>,
     backwardMapper: (M) -> T,
     forwardMapper: (T, OnModify<T>) -> M
 
-): MapMutator<T, K, M> {
+): MapMutator<K, T, M> {
 
     return MapMutator(this, onModify, forwardMapper, backwardMapper)
 }
 
-class MapMutator<T, K, M>(
+class MapMutator<K, T, M>(
 
     original: Map<K, T>,
     onModify: OnModify<Map<K, T>>,
@@ -95,8 +95,14 @@ class MapMutator<T, K, M>(
         }
     }
 
+    /**
+     * Map.Entry impl
+     */
     internal data class Entry<KX, VX>(override val key: KX, override val value: VX) : Map.Entry<KX, VX>
 
+    /**
+     * Iterator impl
+     */
     internal inner class It(map: Map<K, T>, private val mapper: (T, OnModify<T>) -> M) : Iterator<Map.Entry<K, M>> {
 
         private val inner = map.iterator()

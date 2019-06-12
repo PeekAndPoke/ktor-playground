@@ -175,7 +175,7 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
 
                 val saved = characters.save(result)
 
-                logger.info("Updated charater in database: $saved")
+                logger.info("Updated character in database: $saved")
 
                 call.respondRedirect(linkTo.getCharacters())
             }
