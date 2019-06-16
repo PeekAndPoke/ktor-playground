@@ -53,33 +53,6 @@ class AnyNullableMutationsSpec : StringSpec({
         }
     }
 
-    "Mutating one 'kotlin.Any?' property via callback" {
-
-        val source = WithAnyNullableObject(anObject = "string")
-
-        val result = source.mutate {
-            anObject {
-                when (this) {
-                    is String -> toUpperCase()
-                    else -> null
-                }
-            }
-        }
-
-        assertSoftly {
-
-            source shouldNotBe result
-
-            withClue("Source object must NOT be modified") {
-                source.anObject shouldBe "string"
-            }
-
-            withClue("Result must be modified properly") {
-                result.anObject shouldBe "STRING"
-            }
-        }
-    }
-
     "Mutating one 'kotlin.Any?' property via reflection" {
 
         val source = WithAnyNullableObject(anObject = 0)

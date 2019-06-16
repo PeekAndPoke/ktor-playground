@@ -75,7 +75,7 @@ class ListMutationsSpec : StringSpec({
 
         val result = source.mutate {
 
-            addresses[0].city { toUpperCase() }
+            addresses[0].city = addresses[0].city.toUpperCase()
         }
 
         assertSoftly {

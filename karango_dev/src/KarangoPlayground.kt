@@ -93,7 +93,7 @@ fun playWithMutator() {
 
     val mutation = company.mutate {
 
-        boss.name { toUpperCase() }
+        boss.name.apply { toUpperCase() }
         boss.age *= 10
 
         boss.address.city = "Aue"
@@ -102,7 +102,7 @@ fun playWithMutator() {
         addresses[0].city = "CHANGED"
 
         set.forEach {
-            it.city { toUpperCase() + "_aa" }
+            it.city.apply { toUpperCase() + "_aa" }
         }
 
 //        it.addresses[0].push(FrozenAddress("Some city", "45454"))

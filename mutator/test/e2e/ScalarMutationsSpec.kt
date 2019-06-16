@@ -104,7 +104,7 @@ class ScalarMutationsSpec : StringSpec({
         val source = WithScalars()
 
         val result = source.mutate {
-            aString { toUpperCase() }
+            aString = aString.toUpperCase()
         }
 
         assertSoftly {
@@ -149,7 +149,7 @@ class ScalarMutationsSpec : StringSpec({
         val source = WithScalars()
 
         val result = source.mutate {
-            aString { plus(" plus") }
+            aString = aString.plus(" plus")
             aChar = 'd'
             aByte = 2
             aShort = 3

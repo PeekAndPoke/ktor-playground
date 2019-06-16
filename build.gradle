@@ -40,8 +40,6 @@ repositories {
     maven { url 'https://kotlin.bintray.com/kotlin-js-wrappers' }
 }
 
-def arrow_version = "0.8.2"
-
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile "io.ktor:ktor-server-netty:$ktor_version"
@@ -58,6 +56,9 @@ dependencies {
     compile "io.ktor:ktor-websockets:$ktor_version"
     compile "io.ktor:ktor-auth:$ktor_version"
     compile "io.ktor:ktor-jackson:$ktor_version"
+    implementation "io.ktor:ktor-client-cio:$ktor_version"
+    implementation "io.ktor:ktor-client-json:$ktor_version"
+    implementation "io.ktor:ktor-client-jackson:$ktor_version"
 
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
@@ -71,15 +72,6 @@ dependencies {
     compile project(":karango")
     kapt project(":karango")
     // Annotation processing END
-
-    compile "io.arrow-kt:arrow-core:$arrow_version"
-    compile "io.arrow-kt:arrow-syntax:$arrow_version"
-    compile "io.arrow-kt:arrow-typeclasses:$arrow_version"
-    compile "io.arrow-kt:arrow-data:$arrow_version"
-    compile "io.arrow-kt:arrow-instances-core:$arrow_version"
-    compile "io.arrow-kt:arrow-instances-data:$arrow_version"
-    kapt    "io.arrow-kt:arrow-annotations-processor:$arrow_version"
-    compile "io.arrow-kt:arrow-optics:$arrow_version" //optional
 
     testCompile "io.ktor:ktor-server-tests:$ktor_version"
     testCompile project(":mutator")

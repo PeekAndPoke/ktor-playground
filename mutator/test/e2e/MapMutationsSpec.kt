@@ -74,7 +74,9 @@ class MapMutationsSpec : StringSpec({
         )
 
         val result = source.mutate {
-            addresses["B"]?.city { toUpperCase() }
+            addresses["B"]?.apply {
+                city = city.toUpperCase()
+            }
         }
 
         assertSoftly {

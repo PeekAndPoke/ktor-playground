@@ -47,9 +47,6 @@
     <content url="file://$MODULE_DIR$/../../../mutator/test">
       <sourceFolder url="file://$MODULE_DIR$/../../../mutator/test" isTestSource="true" />
     </content>
-    <content url="file://$MODULE_DIR$/../../../mutator/test-functional">
-      <sourceFolder url="file://$MODULE_DIR$/../../../mutator/test-functional" isTestSource="true" />
-    </content>
     <content url="file://$MODULE_DIR$/../../../mutator/testresources">
       <sourceFolder url="file://$MODULE_DIR$/../../../mutator/testresources" type="java-test-resource" />
     </content>

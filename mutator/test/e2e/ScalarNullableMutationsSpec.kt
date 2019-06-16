@@ -52,33 +52,6 @@ class ScalarNullableMutationsSpec : StringSpec({
         }
     }
 
-    "Mutating nullable scalar properties via callback" {
-
-        val source = WithNullableScalars(
-            aString = "string",
-            aByte = 1
-        )
-
-        val result = source.mutate {
-            aString { it?.toUpperCase() }
-            aByte { null }
-        }
-
-        assertSoftly {
-
-            source shouldNotBe result
-
-            withClue("Source object must NOT be modified") {
-                source.aString shouldBe "string"
-            }
-
-            withClue("Result must be modified properly") {
-                result.aString shouldBe "STRING"
-                result.aByte shouldBe null
-            }
-        }
-    }
-
     "Mutating nullable scalar properties via reflection" {
 
         val source = WithNullableScalars(
@@ -124,14 +97,14 @@ class ScalarNullableMutationsSpec : StringSpec({
         )
 
         val result = source.mutate {
-            aString { plus(" plus") }
+            aString += " plus"
             aChar = 'd'
             aByte = 2
             aShort = 3
-            aInt { it?.times(4) }
-            aLong { it?.minus(2) }
-            aFloat { it?.div(2) }
-            aDouble { it?.times(3.5) }
+            aInt = aInt?.times(4)
+            aLong = aLong ?.minus(2)
+            aFloat = aFloat ?.div(2)
+            aDouble = aDouble ?.times(3.5)
             @Suppress("RemoveExplicitTypeArguments")
             setProp<Boolean?>(::aBool, false)
         }

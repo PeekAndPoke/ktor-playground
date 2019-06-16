@@ -98,8 +98,6 @@ class PrimitiveOrStringOrAnyTypeCodeRenderer(logPrefix: String, env: ProcessingE
                 get() = getResult().$prop
                 set(v) = modify(getResult()::$prop, getResult().$prop, v)
 
-            fun $prop(cb: $cls.($cls) -> $cls) = modify(getResult()::$prop, getResult().$prop, $prop.cb($prop))
-
         """.trimIndent()
     }
 

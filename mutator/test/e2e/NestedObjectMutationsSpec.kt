@@ -16,7 +16,7 @@ class NestedObjectMutationsSpec : StringSpec({
 
         val result = source.mutate {
 
-            name { plus("oration").toUpperCase() }
+            name = name.plus("oration").toUpperCase()
         }
 
         assertSoftly {
@@ -41,7 +41,7 @@ class NestedObjectMutationsSpec : StringSpec({
 
         val result = source.mutate {
 
-            name { plus("oration").toUpperCase() }
+            name = name.plus("oration").toUpperCase()
 
             boss.address.apply {
                 city = "Leipzig"

@@ -53,33 +53,6 @@ class AnyMutationsSpec : StringSpec({
         }
     }
 
-    "Mutating one 'kotlin.Any' property via callback" {
-
-        val source = WithAnyObject(anObject = "string")
-
-        val result = source.mutate {
-            anObject {
-                when (this) {
-                    is String -> toUpperCase()
-                    else -> this
-                }
-            }
-        }
-
-        assertSoftly {
-
-            source shouldNotBe result
-
-            withClue("Source object must NOT be modified") {
-                source.anObject shouldBe "string"
-            }
-
-            withClue("Result must be modified properly") {
-                result.anObject shouldBe "STRING"
-            }
-        }
-    }
-
     "Mutating one 'kotlin.Any' property via reflection" {
 
         val source = WithAnyObject(anObject = 0)
