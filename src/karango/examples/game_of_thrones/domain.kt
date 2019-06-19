@@ -4,9 +4,9 @@ import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.WithKey
 import de.peekandpoke.karango.meta.EntityCollection
 import de.peekandpoke.karango.meta.Ref
-import de.peekandpoke.mutator.Mutator
+import de.peekandpoke.mutator.Mutable
 
-@Mutator
+@Mutable
 @EntityCollection("got_characters", "Characters")
 data class Character(
     val name: String,

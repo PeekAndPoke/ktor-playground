@@ -1,6 +1,7 @@
 package de.peekandpoke
 
 import com.fasterxml.jackson.databind.SerializationFeature
+import de.peekandpoke.common.FlashSession
 import de.peekandpoke.common.logger
 import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.examples.game_of_thrones.Character
@@ -62,6 +63,8 @@ fun Application.module(testing: Boolean = false) {
             cookie.path = "/"
             transform(SessionTransportTransformerMessageAuthentication(hex("abcdefg")))
         }
+
+        FlashSession.register(this)
     }
 
     val authFeature = install(Authentication) {

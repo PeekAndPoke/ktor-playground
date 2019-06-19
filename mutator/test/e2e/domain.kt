@@ -1,8 +1,8 @@
 package de.peekandpoke.mutator.e2e
 
-import de.peekandpoke.mutator.Mutator
+import de.peekandpoke.mutator.Mutable
 
-@Mutator
+@Mutable
 data class WithScalars(
     val aString: String = "string",
     val aChar: Char = 'c',
@@ -15,7 +15,7 @@ data class WithScalars(
     val aBool: Boolean = true
 )
 
-@Mutator
+@Mutable
 data class WithNullableScalars(
     val aString: String? = null,
     val aChar: Char? = null,
@@ -28,58 +28,58 @@ data class WithNullableScalars(
     val aBool: Boolean? = null
 )
 
-@Mutator
+@Mutable
 data class WithAnyObject(
     val anObject: Any
 )
 
-@Mutator
+@Mutable
 data class WithAnyNullableObject(
     val anObject: Any?
 )
 
-@Mutator
+@Mutable
 data class Company(val name: String, val boss: Person)
 
 data class Person(val name: String, val age: Int, val address: Address)
 
 data class Address(val city: String, val zip: String)
 
-@Mutator
+@Mutable
 data class ListOfAddresses(val addresses: List<Address>)
 
-@Mutator
+@Mutable
 data class SetOfAddresses(val addresses: Set<Address>)
 
-@Mutator
+@Mutable
 data class MapOfAddresses(val addresses: Map<String, Address>)
 
-@Mutator
+@Mutable
 data class ListOfBools(val values: List<Boolean>)
 
-@Mutator
+@Mutable
 data class ListOfChars(val values: List<Char>)
 
-@Mutator
+@Mutable
 data class ListOfBytes(val values: List<Byte>)
 
-@Mutator
+@Mutable
 data class ListOfShorts(val values: List<Short>)
 
-@Mutator
+@Mutable
 data class ListOfInts(val values: List<Int>)
 
-@Mutator
+@Mutable
 data class ListOfNullableInts(val values: List<Int?>)
 
-@Mutator
+@Mutable
 data class ListOfLongs(val values: List<Long>)
 
-@Mutator
+@Mutable
 data class ListOfFloats(val values: List<Float>)
 
-@Mutator
+@Mutable
 data class ListOfDoubles(val values: List<Double>)
 
-@Mutator
+@Mutable
 data class ListOfStrings(val values: List<String>)

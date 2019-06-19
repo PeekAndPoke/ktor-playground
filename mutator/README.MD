@@ -2,6 +2,14 @@
 
 ## TODO
 
+### Support for different collection libraries
+
+- https://github.com/hrldcpr/pcollections
+- https://github.com/usethesource/capsule
+- https://github.com/andrewoma/dexx
+- https://github.com/GlenKPeterson/Paguro
+
+
 ### fix the problem in the annotation-processor TypeElement.variables when a property has a name collision with java type
  
 - like "int", "byte"  etc.

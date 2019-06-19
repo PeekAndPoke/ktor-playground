@@ -2,7 +2,7 @@ package de.peekandpoke.mutator.meta
 
 import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.asClassName
-import de.peekandpoke.mutator.Mutator
+import de.peekandpoke.mutator.Mutable
 import de.peekandpoke.ultra.common.meta.ProcessorUtils
 import me.eugeniomarletti.kotlin.processing.KotlinAbstractProcessor
 import java.io.File
@@ -34,7 +34,7 @@ open class MutatorAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
     override fun getSupportedSourceVersion(): SourceVersion = SourceVersion.latestSupported()
 
     override fun getSupportedAnnotationTypes(): Set<String> = setOf(
-        Mutator::class.java.canonicalName
+        Mutable::class.java.canonicalName
     )
 
     override fun process(annotations: Set<TypeElement>, roundEnv: RoundEnvironment): Boolean {
@@ -47,7 +47,7 @@ open class MutatorAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
     private fun generateMutatorFiles(roundEnv: RoundEnvironment) {
         // Find all types that have a Karango Annotation
         val elems = roundEnv
-            .getElementsAnnotatedWith(Mutator::class.java)
+            .getElementsAnnotatedWith(Mutable::class.java)
             .filterIsInstance<TypeElement>()
 
         // Find all the types that are referenced by these types and add them to the pool

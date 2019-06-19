@@ -1,3 +1,3 @@
 package de.peekandpoke.mutator
 
-annotation class Mutator
+annotation class Mutable

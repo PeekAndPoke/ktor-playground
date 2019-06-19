@@ -1,52 +1,78 @@
 package de.peekandpoke.formidable.themes
 
-import de.peekandpoke.formidable.FieldName
-import de.peekandpoke.formidable.Form
-import de.peekandpoke.formidable.GenericField
-import de.peekandpoke.formidable.RenderableField
+import de.peekandpoke.formidable.FormField
+import de.peekandpoke.formidable.FormFieldWithOptions
 import kotlinx.html.*
 
-open class BootstrapForm(name: String = "", parent: Form? = null) : Form(name, parent) {
+fun <T> FlowContent.label(field: FormField<T>, label: String?) {
 
-    override fun <T> text(name: String, value: String, setter: (T) -> Unit, fromStr: (String) -> T): RenderableField = add { formName ->
-        BootstrapTextInput(formName + name, value, setter, fromStr)
+    if (label != null) {
+        label {
+            attributes["for"] = field.name.asFormId
+            +label
+        }
     }
 }
 
-internal class BootstrapTextInput<T>(
-    name: FieldName,
-    value: String,
-    setter: (T) -> Unit,
-    mapFromString: (String) -> T
-) :
-    GenericField<T>(name, value, setter, mapFromString) {
+fun <T> FlowContent.errors(field: FormField<T>) {
+    if (!field.isValid()) {
 
-    override fun renderField(flow: FlowContent) = with(flow) {
-
-        textInput(name = _name.value, classes = "form-control") {
-            attributes["id"] = _name.toFormId
-            attributes["value"] = textValue
+        ul {
+            field.errors.forEach { li { +it } }
         }
     }
+}
 
-    override fun renderLabel(flow: FlowContent, title: String) = with(flow) {
+fun <T> FlowContent.textInput(field: FormField<T>, label: String? = null) {
 
-        label {
-            attributes["for"] = _name.toFormId
-            +title
-        }
+    label(field, label)
+
+    textInput(classes = "form-control") {
+        id = field.name.asFormId
+        name = field.name.value
+        type = InputType.text
+        value = field.textValue
     }
 
-    override fun renderErrors(flow: FlowContent) = with(flow) {
+    errors(field)
+}
 
-        if (errors.isNotEmpty()) {
+fun <T> FlowContent.numberInput(field: FormField<T>, label: String? = null, step: Double? = null) {
 
-            ul {
-                errors.forEach {
-                    li { +it }
-                }
+    label(field, label)
+
+    textInput(classes = "form-control") {
+        id = field.name.asFormId
+        name = field.name.value
+        type = InputType.number
+
+        if (step != null) {
+            this.step = step.toString()
+        }
+
+        value = field.textValue
+    }
+
+    errors(field)
+}
+
+fun <T> FlowContent.selectInput(field: FormFieldWithOptions<T>, label: String? = null) {
+
+    label(field, label)
+
+    select(classes = "form-control") {
+        id = field.name.asFormId
+        name = field.name.value
+
+        field.options.forEach {
+
+            option {
+                value = field.mapToString(it.first)
+                selected = it.first == field.value
+                +it.second
             }
         }
     }
-}
 
+    errors(field)
+}

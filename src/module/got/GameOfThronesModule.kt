@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.ConfigSpec
 import de.peekandpoke.common.*
-import de.peekandpoke.formidable.render
+import de.peekandpoke.formidable.themes.numberInput
+import de.peekandpoke.formidable.themes.selectInput
+import de.peekandpoke.formidable.themes.textInput
 import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.aql.ASC
 import de.peekandpoke.karango.aql.FOR
@@ -191,6 +193,8 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
 
                 val list = result.toList()
 
+                val flashEntries = flashSession.pull()
+
                 call.respondHtml {
 
                     head {
@@ -199,20 +203,25 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
 
                     body {
                         container_fluid {
+
+                            flashEntries.takeIf { it.isNotEmpty() }?.let { entries ->
+                                div {
+                                    entries.forEach { entry -> div(classes = "alert alert-${entry.type}") { +entry.message } }
+                                }
+                            }
+
                             h4 { +"Characters" }
 
                             ul {
                                 list.forEach {
                                     li {
-                                        a(href = linkTo.getCharacterByKey(it)) { +"${it.name} ${it.surname ?: ""}" }
+                                        a(href = linkTo.getCharacterByKey(it)) { +"${it.name} ${it.surname ?: ""} " }
 
-                                        it.age?.let {
-                                            span { +" Age: $it" }
-                                        }
+                                        span { +"${if (it.alive) "alive" else "dead"} " }
 
-                                        it.actor?.let {
-                                            span { +" (Actor: ${it.name} ${it.surname})" }
-                                        }
+                                        it.age?.let { span { +"Age: $it " } }
+
+                                        it.actor?.let { span { +"(Actor: ${it.name} ${it.surname} Age: ${it.age}) " } }
                                     }
                                 }
                             }
@@ -221,68 +230,71 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
                 }
             }
 
-            getOrPost<GetCharacter> {
+            getOrPost<GetCharacter> { data ->
 
-                val mutator = it.character.mutator()
-                val form = CharacterForm(mutator)
+                val form = CharacterForm(data.character.mutator())
 
                 if (form.submit(call)) {
 
-                    println(mutator.getResult())
+                    if (form.isModified) {
 
-                    val saved = characters.save(mutator.getResult())
+                        val savedActor = form.result.actor?.let { actors.save(it) }
+                        val saved = characters.save(form.result)
 
-                    logger.info("Updated character in database: $saved")
+                        logger.info("Updated character in database: $saved, $savedActor")
 
-                    call.respondRedirect(linkTo.getCharacters())
+                        flashSession.success("Character ${form.result.fullName} was saved")
+                    }
 
-                } else {
+                    return@getOrPost call.respondRedirect(linkTo.getCharacters())
+                }
 
-                    call.respondHtml {
+                call.respondHtml {
 
-                        head {
-                            link(rel = "stylesheet", href = "/assets/bootstrap/css/bootstrap.css")
-                        }
+                    head {
+                        link(rel = "stylesheet", href = "/assets/bootstrap/css/bootstrap.css")
+                    }
 
-                        body {
+                    body {
 
-                            container {
+                        container {
 
-                                h4 { +"Edit Character ${it.character.fullName}" }
+                            h4 { +"Edit Character ${data.character.fullName}" }
 
-                                form(method = FormMethod.post) {
+                            form(method = FormMethod.post) {
 
-                                    form_group {
-                                        row {
-                                            col_md_3 {
-                                                render(form.name, label = "Name")
-                                            }
-                                            col_md_3 {
-                                                render(form.surname, label = "Surname")
-                                            }
-                                            col_md_3 {
-                                                render(form.age, label = "Age")
-                                            }
+                                form_group {
+                                    row {
+                                        col_md_3 {
+                                            textInput(form.name, label = "Name")
                                         }
-
-                                    }
-
-                                    form.actor?.let { actorForm ->
-                                        h4 { +"Edit Actor ${it.character.actor?.name}" }
-
-                                        row {
-                                            col_md_3 {
-                                                render(actorForm.name, label = "Name")
-                                            }
-
-                                            col_md_3 {
-                                                render(actorForm.age, label = "Age")
-                                            }
+                                        col_md_3 {
+                                            textInput(form.surname, label = "Surname")
+                                        }
+                                        col_md_3 {
+                                            numberInput(form.age, label = "Age")
+                                        }
+                                        col_md_3 {
+                                            selectInput(form.alive, label = "Alive")
                                         }
                                     }
-
-                                    submit { +"Submit" }
                                 }
+
+                                form.actor?.let { actorForm ->
+                                    h4 { +"Edit Actor ${data.character.actor?.name}" }
+
+                                    row {
+                                        col_md_3 {
+                                            textInput(actorForm.name, label = "Name")
+                                        }
+
+                                        col_md_3 {
+                                            numberInput(actorForm.age, label = "Age")
+                                        }
+                                    }
+                                }
+
+                                submit { +"Submit" }
                             }
                         }
                     }

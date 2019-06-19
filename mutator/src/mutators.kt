@@ -2,13 +2,19 @@ package de.peekandpoke.mutator
 
 typealias OnModify<T> = (newValue: T) -> Unit
 
-abstract class MutatorBase<I : Any, R : I>(input: I, protected val onModify: OnModify<I>) {
+interface Mutator<I : Any> {
+    fun getResult(): I
 
-    private var original: I = input
+    fun isModified() : Boolean
+}
+
+abstract class MutatorBase<I : Any, R : I>(private val input: I, protected val onModify: OnModify<I>) : Mutator<I> {
 
     private var mutableResult: R? = null
 
-    fun getResult(): I = if (mutableResult != null) mutableResult!! else original
+    override fun isModified() = mutableResult != null
+
+    override fun getResult(): I = if (mutableResult != null) mutableResult!! else input
 
     operator fun plusAssign(value: I) {
 
@@ -28,7 +34,7 @@ abstract class MutatorBase<I : Any, R : I>(input: I, protected val onModify: OnM
         }
 
         return replaceResult(
-            copy(original)
+            copy(input)
         )
     }
 

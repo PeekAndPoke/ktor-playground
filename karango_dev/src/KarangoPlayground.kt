@@ -4,7 +4,7 @@ import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango_dev.domain.*
 import de.peekandpoke.mutator.Frozen
-import de.peekandpoke.mutator.Mutator
+import de.peekandpoke.mutator.Mutable
 import kotlin.system.measureTimeMillis
 
 
@@ -12,10 +12,10 @@ val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, d
 
 val persons = db.collection(Persons)
 
-@Mutator
+@Mutable
 data class FrozenAddress(val city: String, val zip: String)
 
-@Mutator
+@Mutable
 data class FrozenPerson(val name: String, val age: Int, val address: FrozenAddress)
 
 //@Mutator
@@ -27,7 +27,7 @@ data class FrozenPerson(val name: String, val age: Int, val address: FrozenAddre
 //        { item, onModify -> item.mutator(onModify) }
 //    )
 
-@Mutator
+@Mutable
 data class FrozenCompany(
     val boss: FrozenPerson,
     val names: List<String>,
