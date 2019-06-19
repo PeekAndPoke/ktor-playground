@@ -3,12 +3,8 @@ package de.peekandpoke.module.got
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.ConfigSpec
-import de.peekandpoke.common.LinkGenerator
-import de.peekandpoke.common.getOrPost
-import de.peekandpoke.common.logger
-import de.peekandpoke.formidable.Form
-import de.peekandpoke.formidable.field
-import de.peekandpoke.formidable.textInput
+import de.peekandpoke.common.*
+import de.peekandpoke.formidable.render
 import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.aql.ASC
 import de.peekandpoke.karango.aql.FOR
@@ -26,13 +22,11 @@ import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.utils.EmptyContent
 import io.ktor.html.respondHtml
-import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Location
 import io.ktor.locations.get
 import io.ktor.locations.post
-import io.ktor.request.httpMethod
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.response.respondRedirect
@@ -41,6 +35,7 @@ import io.ktor.routing.route
 import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
 import kotlinx.html.*
+import kotlinx.html.label
 import kotlinx.html.FormMethod.post as post1
 
 
@@ -197,16 +192,27 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
                 val list = result.toList()
 
                 call.respondHtml {
+
+                    head {
+                        link(rel = "stylesheet", href = "/assets/bootstrap/css/bootstrap.css")
+                    }
+
                     body {
-                        h4 { +"Characters" }
+                        container_fluid {
+                            h4 { +"Characters" }
 
-                        ul {
-                            list.forEach {
-                                li {
-                                    a(href = linkTo.getCharacterByKey(it)) { +"${it.name} ${it.surname}" }
+                            ul {
+                                list.forEach {
+                                    li {
+                                        a(href = linkTo.getCharacterByKey(it)) { +"${it.name} ${it.surname ?: ""}" }
 
-                                    it.actor?.let {
-                                        span { +"(Actor: ${it.name} ${it.surname})" }
+                                        it.age?.let {
+                                            span { +" Age: $it" }
+                                        }
+
+                                        it.actor?.let {
+                                            span { +" (Actor: ${it.name} ${it.surname})" }
+                                        }
                                     }
                                 }
                             }
@@ -218,25 +224,11 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
             getOrPost<GetCharacter> {
 
                 val mutator = it.character.mutator()
-                val form = object : Form() {
-                    val name = textInput(mutator::name)
-                    val surname = textInput(mutator::surname)
-                }
+                val form = CharacterForm(mutator)
 
+                if (form.submit(call)) {
 
-                if (call.request.httpMethod == HttpMethod.Post) {
-
-                    val posted = call.receive<Parameters>()
-
-                    logger.info(posted.toString())
-
-                    form.submit(posted)
-
-//                    val result = it.character.mutate {
-//
-//                        posted["name"]?.let { name = it }
-//                        posted["surname"]?.let { surname = it }
-//                    }
+                    println(mutator.getResult())
 
                     val saved = characters.save(mutator.getResult())
 
@@ -247,21 +239,50 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
                 } else {
 
                     call.respondHtml {
-                        body {
-                            h4 { +"Edit Character ${it.character.fullName}" }
 
-                            form(method = FormMethod.post) {
-                                label {
-                                    +"Name"
-//                                    textInput(name = "name") { attributes["value"] = it.character.name }
-                                    field(form.name)
+                        head {
+                            link(rel = "stylesheet", href = "/assets/bootstrap/css/bootstrap.css")
+                        }
+
+                        body {
+
+                            container {
+
+                                h4 { +"Edit Character ${it.character.fullName}" }
+
+                                form(method = FormMethod.post) {
+
+                                    form_group {
+                                        row {
+                                            col_md_3 {
+                                                render(form.name, label = "Name")
+                                            }
+                                            col_md_3 {
+                                                render(form.surname, label = "Surname")
+                                            }
+                                            col_md_3 {
+                                                render(form.age, label = "Age")
+                                            }
+                                        }
+
+                                    }
+
+                                    form.actor?.let { actorForm ->
+                                        h4 { +"Edit Actor ${it.character.actor?.name}" }
+
+                                        row {
+                                            col_md_3 {
+                                                render(actorForm.name, label = "Name")
+                                            }
+
+                                            col_md_3 {
+                                                render(actorForm.age, label = "Age")
+                                            }
+                                        }
+                                    }
+
+                                    submit { +"Submit" }
                                 }
-                                label {
-                                    +"Surname"
-//                                    textInput(name = "surname") { attributes["value"] = (it.character.surname ?: "") }
-                                    field(form.surname)
-                                }
-                                submitInput { +"Submit" }
                             }
                         }
                     }

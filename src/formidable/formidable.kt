@@ -1,71 +1,112 @@
 package de.peekandpoke.formidable
 
+import io.ktor.application.ApplicationCall
+import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
+import io.ktor.request.httpMethod
+import io.ktor.request.receive
 import kotlinx.html.FlowContent
-import kotlinx.html.textInput
-import kotlin.reflect.KMutableProperty0
 
 interface FormField {
     fun submit(params: Parameters)
+
+    fun isValid(): Boolean
+
+    fun accepting(rule: AcceptRule, errorMessage: String): FormField
 }
 
-interface RenderableField {
-    fun render(flow: FlowContent)
+interface RenderableField : FormField {
+    fun renderField(flow: FlowContent)
+    fun renderLabel(flow: FlowContent, title: String)
+    fun renderErrors(flow: FlowContent)
+
+    override fun accepting(rule: AcceptRule, errorMessage: String): RenderableField
 }
 
-interface FormFieldContainer {
-    val children: List<FormField>
+typealias Rule<T> = (value: T) -> Boolean
+
+typealias AcceptRule = Rule<String>
+
+data class FieldName(val value: String) {
+
+    val toFormId by lazy {
+        value.replace("[^a-zA-Z0-9]".toRegex(), "-")
+    }
+
+    operator fun plus(str: String) = when {
+
+        value.isEmpty() -> FieldName(str)
+
+        else -> FieldName("$value.$str")
+    }
 }
 
-abstract class Form : FormField, FormFieldContainer {
+abstract class Form(name: String = "", parent: Form? = null) : FormField {
+
+    private val _name: FieldName = if (parent != null) parent._name + name else FieldName(name)
 
     private val _children: MutableList<FormField> = mutableListOf()
 
-    override val children: List<FormField> get() = _children
+    private val acceptRules = mutableListOf<Pair<AcceptRule, String>>()
 
-    fun <T: FormField>add(field: T) : T = field.apply { _children.add(this) }
+    override fun accepting(rule: AcceptRule, errorMessage: String) = apply { acceptRules.add(rule to errorMessage) }
+
+    fun <T : FormField> add(creator: (FieldName) -> T): T = creator(_name).apply { _children.add(this) }
 
     override fun submit(params: Parameters) {
 
-        children.forEach { it.submit(params) }
+        _children.forEach { it.submit(params) }
     }
+
+    override fun isValid(): Boolean = _children.all { it.isValid() }
+
+    suspend fun submit(call: ApplicationCall) : Boolean {
+
+        if (call.request.httpMethod == HttpMethod.Post) {
+            submit(call.receive<Parameters>())
+
+            return isValid()
+        }
+
+        return false
+    }
+
+    abstract fun <T> text(name: String, value: String, setter: (T) -> Unit, fromStr: (String) -> T): RenderableField
 }
-
-@JvmName("textInput_String")
-fun Form.textInput(property: KMutableProperty0<String>) = add(
-    TextInput(property.name, property.getter(), property.setter, { it }, { it })
-)
-
-@JvmName("textInput_String_nullable")
-fun Form.textInput(property: KMutableProperty0<String?>) = add(
-    TextInput(property.name, property.getter(), property.setter, { it ?: "" }, { it })
-)
 
 abstract class GenericField<T>(
-    val name: String,
-    var value: T,
+    protected val _name: FieldName,
+    protected var textValue: String,
     private val setter: (T) -> Unit,
-    private val toStr: (T) -> String,
     private val fromStr: (String) -> T
-) : FormField, RenderableField {
+) :
+    FormField, RenderableField {
 
-    val valAsStr get() = toStr(value)
+    protected var errors = listOf<String>()
+
+    private val acceptRules = mutableListOf<Pair<AcceptRule, String>>()
+
+    override fun accepting(rule: AcceptRule, errorMessage: String) = apply { acceptRules.add(rule to errorMessage) }
+
+    override fun isValid() = errors.isEmpty()
 
     override fun submit(params: Parameters) {
 
-        params[name]?.let {
-            value = fromStr(it)
-            setter(value)
+        if (params.contains(_name.value)) {
+
+            val input = params[_name.value] ?: ""
+
+            // update the internal value of the form-field
+            textValue = input
+
+            errors = acceptRules.filter { !it.first(input) }.map { it.second }
+
+            if (errors.isEmpty()) {
+
+                // propagate the value to the result
+                setter(fromStr(textValue))
+            }
         }
     }
 }
 
-open class TextInput<T>(name: String, value: T, setter: (T) -> Unit, mapToString: (T) -> String, mapFromString: (String) -> T) :
-    GenericField<T>(name, value, setter, mapToString, mapFromString) {
-
-    override fun render(flow: FlowContent) {
-        flow.textInput(name = name) {
-            attributes["value"] = valAsStr
-        }
-    }
-}

@@ -52,7 +52,6 @@ dependencies {
     compile "io.ktor:ktor-server-sessions:$ktor_version"
     compile "io.ktor:ktor-server-host-common:$ktor_version"
     compile "io.ktor:ktor-webjars:$ktor_version"
-    compile "org.webjars:jquery:3.2.1"
     compile "io.ktor:ktor-websockets:$ktor_version"
     compile "io.ktor:ktor-auth:$ktor_version"
     compile "io.ktor:ktor-jackson:$ktor_version"
@@ -67,6 +66,10 @@ dependencies {
 
     // reading configuration files to objects
     compile 'com.uchuhimo:konf:0.13.2'
+
+    // assets
+    compile 'org.webjars:bootstrap:4.3.1'
+    compile "org.webjars:jquery:3.2.1"
 
     // Annotation processing
     compile project(":karango")

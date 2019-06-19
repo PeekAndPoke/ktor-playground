@@ -107,7 +107,7 @@ fun Application.module(testing: Boolean = false) {
     }
 
     install(Webjars) {
-        path = "/webjars" //defaults to /webjars
+        path = "/assets" //defaults to /webjars
         zone = ZoneId.systemDefault() //defaults to ZoneId.systemDefault()
     }
 

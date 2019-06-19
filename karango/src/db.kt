@@ -76,14 +76,15 @@ class Db(private val database: ArangoDatabase) {
 
         val query = de.peekandpoke.karango.query(builder)
 
-//        println(query)
-//        println(query.ret.innerType())
-
         val options = AqlQueryOptions().count(true)
 
         lateinit var result: ArangoCursor<*>
 
         val mapped = serializer.convertValue<Map<String, Any>>(query.vars)
+
+//        println(query)
+//        println(query.ret.innerType())
+//        println(mapped)
 
         val time = measureTimeMillis {
             try {
@@ -126,9 +127,9 @@ class CursorImpl<T>(
     override fun iterator() = iterator
 }
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 @Suppress("PropertyName")
 interface Entity {
+    @get:JsonInclude(JsonInclude.Include.NON_EMPTY)
     val _id: String?
 }
 
