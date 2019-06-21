@@ -11,10 +11,6 @@ interface FormElement {
     fun submit(params: Parameters)
 
     fun isValid(): Boolean
-
-//    fun accepting(rule: AcceptRule, errorMessage: String): FormElement
-
-
 }
 
 typealias Rule<T> = (value: T) -> Boolean
@@ -40,10 +36,6 @@ abstract class Form(name: String = "", parent: Form? = null) : FormElement {
     private val _name: FieldName = if (parent != null) parent._name + name else FieldName(name)
 
     private val _children: MutableList<FormElement> = mutableListOf()
-
-//    private val acceptRules = mutableListOf<Pair<AcceptRule, String>>()
-//
-//    override fun accepting(rule: AcceptRule, errorMessage: String) = apply { acceptRules.add(rule to errorMessage) }
 
     override fun submit(params: Parameters) {
 

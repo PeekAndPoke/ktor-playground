@@ -25,30 +25,30 @@ open class KarangoAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
         generateKarangoFiles(roundEnv)
 
         // build registry with all the classes for which we want to create dynamic proxies
-        val all = roundEnv
-            .getElementsAnnotatedWith(EntityCollection::class.java)
-            .filterIsInstance<TypeElement>()
-
-
-        if (!roundEnv.processingOver()) {
-            val dir = File("$generatedDir/de/peekandpoke/mutator/generated").also { it.mkdirs() }
-            val file = File(dir, "class_registry.kt")
-
-            val allClassesStr = all.joinToString(",\n                        ") { "\"${it.fqn}\"" }
-
-            val content = """
-                package de.peekandpoke.mutator.generated
-
-                class Karango_MakeProxiable : de.peekandpoke.mutator.MakeClassesProxiable {
-                    override fun get() = listOf<String>(
-                        $allClassesStr
-                    )
-                }
-            """.trimIndent()
-
-
-            file.writeText(content)
-        }
+//        val all = roundEnv
+//            .getElementsAnnotatedWith(EntityCollection::class.java)
+//            .filterIsInstance<TypeElement>()
+//
+//
+//        if (!roundEnv.processingOver()) {
+//            val dir = File("$generatedDir/de/peekandpoke/mutator/generated").also { it.mkdirs() }
+//            val file = File(dir, "class_registry.kt")
+//
+//            val allClassesStr = all.joinToString(",\n                        ") { "\"${it.fqn}\"" }
+//
+//            val content = """
+//                package de.peekandpoke.mutator.generated
+//
+//                class Karango_MakeProxiable : de.peekandpoke.mutator.MakeClassesProxiable {
+//                    override fun get() = listOf<String>(
+//                        $allClassesStr
+//                    )
+//                }
+//            """.trimIndent()
+//
+//
+//            file.writeText(content)
+//        }
 
         return true
     }

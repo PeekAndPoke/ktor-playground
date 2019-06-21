@@ -89,7 +89,7 @@ class Db(private val database: ArangoDatabase) {
         val time = measureTimeMillis {
             try {
                 result = database.query(query.aql, mapped, options, Object::class.java)
-            } catch (e : ArangoDBException) {
+            } catch (e: ArangoDBException) {
                 throw KarangoException("Error while querying '${e.message}':\n\n${query.aql}\nwith params\n\n$mapped", e)
             }
         }
@@ -142,6 +142,7 @@ val Entity?.id: String
 
 @Suppress("PropertyName")
 interface WithKey {
+    @get:JsonInclude(JsonInclude.Include.NON_EMPTY)
     val _key: String?
 }
 
@@ -162,10 +163,13 @@ class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor
     private val dbColl: ArangoCollection,
     private val def: D
 ) {
-    fun save(obj: T): T =
-        db.query {
-            UPSERT(obj, def)
-        }.first()
+    fun save(obj: T): T = when (obj._id) {
+
+        null -> db.query { INSERT(obj) INTO def }.first()
+
+        else -> db.query { UPSERT(obj) INTO def }.first()
+    }
+
 
     fun update(entity: T, builder: KeyValueBuilder<T>.(Expression<T>) -> Unit): Cursor<Any> =
         db.query {

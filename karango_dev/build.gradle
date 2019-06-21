@@ -38,6 +38,9 @@ dependencies {
 
     compile "ch.qos.logback:logback-classic:$logback_version"
 
+    compile project(":mutator")
+    kapt project(":mutator")
+
     compile project(":karango")
     kapt project(":karango")
 }

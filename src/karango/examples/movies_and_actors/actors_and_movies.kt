@@ -10,7 +10,7 @@ import kotlin.system.exitProcess
  */
 fun main() {
 
-    val db = Db.default(user = "root", pass = "root", host = "localhost", port = 8529, database = "kotlindev")
+    val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev")
 
     val movies = db.collection(Movies)
     movies.removeAll()

@@ -3,8 +3,16 @@ package de.peekandpoke.karango.aql
 import de.peekandpoke.karango.CollectionDefinition
 import de.peekandpoke.karango.Entity
 
-// TODO: what is the real return value of an upsert ?
-class UpsertDocument<T : Entity>(private val entity: T, private val col: CollectionDefinition<T>) : TerminalExpr<T> {
+@KarangoFuncMarker
+fun <T: Entity> UPSERT(entity: T) = UpsertPreStageEntity(entity)
+
+@KarangoFuncMarker
+infix fun <T : Entity> UpsertPreStageEntity<T>.INTO(collection: CollectionDefinition<T>) = UpsertInto(entity, collection)
+
+class UpsertPreStageEntity<T: Entity> internal constructor(val entity: T)
+
+
+class UpsertInto<T : Entity>(private val entity: T, private val col: CollectionDefinition<T>) : TerminalExpr<T> {
 
     override fun innerType() = col.getType().down<T>()
 

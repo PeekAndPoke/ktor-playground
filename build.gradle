@@ -71,10 +71,13 @@ dependencies {
     compile 'org.webjars:bootstrap:4.3.1'
     compile "org.webjars:jquery:3.2.1"
 
-    // Annotation processing
+    compile project(":mutator")
+    kapt project(":mutator")
+
+    compile project(":formidable")
+
     compile project(":karango")
     kapt project(":karango")
-    // Annotation processing END
 
     testCompile "io.ktor:ktor-server-tests:$ktor_version"
     testCompile project(":mutator")

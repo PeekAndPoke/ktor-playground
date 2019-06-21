@@ -8,6 +8,8 @@ import de.peekandpoke.karango.examples.game_of_thrones.Character
 import de.peekandpoke.karango.examples.game_of_thrones.Characters
 import de.peekandpoke.karango_ktor.add
 import de.peekandpoke.module.got.gameOfThrones
+import de.peekandpoke.z_appimpl.Translations
+import de.peekandpoke.z_appimpl.iocI18n
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.features.*
@@ -220,6 +222,13 @@ fun Application.module(testing: Boolean = false) {
 
             logger.info("Feature[end] ${ns / 1_000_000.0} ms")
         }
+    }
+
+    intercept(ApplicationCallPipeline.Features) {
+
+        logger.info("injecting I18N")
+
+        call.attributes.put(iocI18n, Translations.withLocale("en"))
     }
 
     routing {

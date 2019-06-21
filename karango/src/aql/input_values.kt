@@ -112,7 +112,7 @@ inline fun <reified T> ARRAY(vararg args: Expression<out T>): Expression<List<T>
 @KarangoInputMarker
 inline fun <reified T> OBJECT(vararg pairs: Pair<Expression<String>, Expression<out T>>) = ObjectValue(type(), pairs.toList())
 
-data class Value<T>(private val type: TypeRef<T>, private val value: T, private val name: String) : Expression<T> {
+data class Value<T>(private val type: TypeRef<T>, private val value: T, private val name: String = "v") : Expression<T> {
 
     override fun getType() = type
     override fun printAql(p: AqlPrinter) = p.value(name, value as Any)

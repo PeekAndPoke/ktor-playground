@@ -12,6 +12,8 @@ import de.peekandpoke.karango.aql.ASC
 import de.peekandpoke.karango.aql.FOR
 import de.peekandpoke.karango.examples.game_of_thrones.*
 import de.peekandpoke.ultra.common.md5
+import de.peekandpoke.z_appimpl.WELCOME
+import de.peekandpoke.z_appimpl.t
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.client.HttpClient
@@ -38,7 +40,6 @@ import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
 import kotlinx.html.*
 import kotlinx.html.label
-import kotlinx.html.FormMethod.post as post1
 
 
 object GameOfThronesSpec : ConfigSpec("gameOfThrones") {
@@ -209,6 +210,8 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
                                     entries.forEach { entry -> div(classes = "alert alert-${entry.type}") { +entry.message } }
                                 }
                             }
+
+                            h2 { +t.WELCOME() }
 
                             h4 { +"Characters" }
 

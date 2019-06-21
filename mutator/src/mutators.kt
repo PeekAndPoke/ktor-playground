@@ -38,15 +38,6 @@ abstract class MutatorBase<I : Any, R : I>(private val input: I, protected val o
         )
     }
 
-    protected fun <X> X.isNotSameAs(other : X) = when {
-
-        this == null -> this != other
-
-        (this as Any)::class.javaPrimitiveType != null -> this != other
-
-        else -> this !== other
-    }
-
     private fun replaceResult(new: R): R = new.apply {
 
         mutableResult = new

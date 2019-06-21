@@ -6,6 +6,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/ktor-playground.common.iml" filepath="$PROJECT_DIR$/.idea/modules/common/ktor-playground.common.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/ktor-playground.common.main.iml" filepath="$PROJECT_DIR$/.idea/modules/common/ktor-playground.common.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/ktor-playground.common.test.iml" filepath="$PROJECT_DIR$/.idea/modules/common/ktor-playground.common.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/formidable/ktor-playground.formidable.iml" filepath="$PROJECT_DIR$/.idea/modules/formidable/ktor-playground.formidable.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/formidable/ktor-playground.formidable.main.iml" filepath="$PROJECT_DIR$/.idea/modules/formidable/ktor-playground.formidable.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/formidable/ktor-playground.formidable.test.iml" filepath="$PROJECT_DIR$/.idea/modules/formidable/ktor-playground.formidable.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/karango/ktor-playground.karango.iml" filepath="$PROJECT_DIR$/.idea/modules/karango/ktor-playground.karango.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/karango/ktor-playground.karango.main.iml" filepath="$PROJECT_DIR$/.idea/modules/karango/ktor-playground.karango.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/karango/ktor-playground.karango.test.iml" filepath="$PROJECT_DIR$/.idea/modules/karango/ktor-playground.karango.test.iml" />
