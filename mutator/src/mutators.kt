@@ -14,7 +14,7 @@ abstract class MutatorBase<I : Any, R : I>(private val input: I, protected val o
 
     override fun isModified() = mutableResult != null
 
-    override fun getResult(): I = if (mutableResult != null) mutableResult!! else input
+    override fun getResult(): I = mutableResult ?: input
 
     operator fun plusAssign(value: I) {
 
@@ -29,9 +29,7 @@ abstract class MutatorBase<I : Any, R : I>(private val input: I, protected val o
 
     protected fun getMutableResult(): R {
 
-        if (mutableResult != null) {
-            return mutableResult!!
-        }
+        mutableResult?.let { return it }
 
         return replaceResult(
             copy(input)

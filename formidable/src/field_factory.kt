@@ -4,6 +4,7 @@ package de.peekandpoke.formidable
 
 import kotlin.reflect.KMutableProperty0
 
+
 @JvmName("text_Boolean")
 fun Form.field(prop: KMutableProperty0<Boolean>) =
     add(prop.name, prop.getter(), prop.setter, { it.toString() }, { it.toBoolean() })
