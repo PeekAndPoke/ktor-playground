@@ -3,8 +3,8 @@ package de.peekandpoke.karango_dev
 import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango_dev.domain.*
-import de.peekandpoke.mutator.Frozen
-import de.peekandpoke.mutator.Mutable
+import io.ultra.mutator.Frozen
+import io.ultra.mutator.Mutable
 import kotlin.system.measureTimeMillis
 
 

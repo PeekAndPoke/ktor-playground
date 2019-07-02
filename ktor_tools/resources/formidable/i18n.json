@@ -1,0 +1,17 @@
+{
+    "en": {
+        "formidable.errors.must_be_an_integer": "Must be an integer",
+        "formidable.errors.must_be_an_integer_or_blank": "Must be an integer or blank",
+
+        "formidable.errors.must_be_in_range": "Must be in range %range%",
+        "formidable.errors.must_be_in_range_or_blank": "Must be in range %range% or blank"
+    },
+
+    "de": {
+        "formidable.errors.must_be_an_integer": "Ganze Zahl erwartet",
+        "formidable.errors.must_be_an_integer_or_blank": "Ganze Zahl oder leer erwartet",
+
+        "formidable.errors.must_be_in_range": "Muss im Bereich %range% sein",
+        "formidable.errors.must_be_in_range_or_blank": "Muss im Bereich %range% oder leer sein"
+    }
+}

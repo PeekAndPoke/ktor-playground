@@ -4,7 +4,7 @@ import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.WithKey
 import de.peekandpoke.karango.meta.EntityCollection
 import de.peekandpoke.karango.meta.Ref
-import de.peekandpoke.mutator.Mutable
+import io.ultra.mutator.Mutable
 
 @Mutable
 @EntityCollection("got_characters", "Characters")

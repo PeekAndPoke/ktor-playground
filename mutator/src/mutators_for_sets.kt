@@ -1,6 +1,6 @@
-package de.peekandpoke.mutator
+package io.ultra.mutator
 
-import de.peekandpoke.ultra.common.containsAny
+import io.ultra.common.containsAny
 
 fun <T, M> Set<T>.mutator(
 

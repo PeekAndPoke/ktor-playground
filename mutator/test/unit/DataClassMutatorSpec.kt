@@ -1,11 +1,11 @@
-package de.peekandpoke.mutator.unit
+package io.ultra.mutator.unit
 
-import de.peekandpoke.mutator.DataClassMutator
 import io.kotlintest.DisplayName
 import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
+import io.ultra.mutator.DataClassMutator
 
 @DisplayName("UNIT - DataClassMutatorSpec")
 class DataClassMutatorSpec : StringSpec({

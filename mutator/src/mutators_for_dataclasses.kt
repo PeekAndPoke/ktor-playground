@@ -1,4 +1,4 @@
-package de.peekandpoke.mutator
+package io.ultra.mutator
 
 import kotlin.reflect.KProperty0
 import kotlin.reflect.jvm.javaField

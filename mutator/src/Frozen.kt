@@ -1,4 +1,4 @@
-package de.peekandpoke.mutator
+package io.ultra.mutator
 
 import javassist.ClassPool
 import javassist.CtNewConstructor

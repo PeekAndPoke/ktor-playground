@@ -1,6 +1,6 @@
-package de.peekandpoke.mutator
+package io.ultra.mutator
 
-import de.peekandpoke.ultra.common.*
+import io.ultra.common.*
 
 fun <T, M> List<T>.mutator(
 

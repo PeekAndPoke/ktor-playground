@@ -46,7 +46,6 @@ fun Route.login(auth: Authentication, users: UserHashedTableAuth) {
             validate { users.authenticate(it) }
             skipWhen {
 
-
                 val session = it.sessions.get<MySession>()
                 println(session)
 

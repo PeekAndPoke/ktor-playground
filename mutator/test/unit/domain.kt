@@ -1,6 +1,6 @@
-package de.peekandpoke.mutator.unit
+package io.ultra.mutator.unit
 
-import de.peekandpoke.mutator.OnModify
+import io.ultra.mutator.OnModify
 
 data class Wrapper<X>(val value: X, val onModify: OnModify<X>)
 

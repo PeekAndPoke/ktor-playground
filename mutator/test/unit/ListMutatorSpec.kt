@@ -1,10 +1,10 @@
-package de.peekandpoke.mutator.unit
+package io.ultra.mutator.unit
 
-import de.peekandpoke.mutator.ListMutator
 import io.kotlintest.DisplayName
 import io.kotlintest.assertSoftly
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
+import io.ultra.mutator.ListMutator
 
 @DisplayName("UNIT - ListMutatorSpec")
 class ListMutatorSpec : StringSpec({

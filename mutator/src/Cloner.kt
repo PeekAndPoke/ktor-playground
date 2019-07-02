@@ -1,4 +1,4 @@
-package de.peekandpoke.mutator
+package io.ultra.mutator
 
 import kotlin.reflect.full.declaredFunctions
 import kotlin.reflect.full.memberProperties

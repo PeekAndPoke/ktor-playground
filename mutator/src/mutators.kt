@@ -1,4 +1,4 @@
-package de.peekandpoke.mutator
+package io.ultra.mutator
 
 typealias OnModify<T> = (newValue: T) -> Unit
 

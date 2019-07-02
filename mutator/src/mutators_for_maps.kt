@@ -1,4 +1,4 @@
-package de.peekandpoke.mutator
+package io.ultra.mutator
 
 
 fun <K, T, M> Map<K, T>.mutator(

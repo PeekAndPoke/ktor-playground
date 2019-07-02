@@ -1,25 +1,25 @@
 package de.peekandpoke
 
 import com.fasterxml.jackson.databind.SerializationFeature
-import de.peekandpoke.common.FlashSession
 import de.peekandpoke.common.logger
 import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.examples.game_of_thrones.Character
 import de.peekandpoke.karango.examples.game_of_thrones.Characters
 import de.peekandpoke.karango_ktor.add
 import de.peekandpoke.module.got.gameOfThrones
-import de.peekandpoke.z_appimpl.Translations
-import de.peekandpoke.z_appimpl.iocI18n
-import io.ktor.application.*
+import de.peekandpoke.resources.GlobalStyles
+import de.peekandpoke.resources.Translations
+import io.ktor.application.Application
+import io.ktor.application.ApplicationCallPipeline
+import io.ktor.application.call
+import io.ktor.application.install
 import io.ktor.auth.*
 import io.ktor.features.*
 import io.ktor.html.respondHtml
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.*
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.readText
+import io.ktor.http.content.CachingOptions
 import io.ktor.jackson.jackson
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Location
@@ -38,7 +38,9 @@ import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.hex
 import io.ktor.webjars.Webjars
 import io.ktor.websocket.webSocket
-import kotlinx.css.*
+import io.ultra.ktor_tools.FlashSession
+import io.ultra.ktor_tools.iocStylesheets
+import io.ultra.ktor_tools.put
 import kotlinx.html.*
 import java.time.Duration
 import java.time.ZoneId
@@ -142,6 +144,15 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
+    install(CachingHeaders) {
+        options { outgoingContent ->
+            when (outgoingContent.contentType?.withoutParameters()) {
+                ContentType.Text.CSS -> CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 24 * 60 * 60))
+                else -> null
+            }
+        }
+    }
+
     install(StatusPages) {
 
         exception<Throwable> { cause ->
@@ -226,9 +237,13 @@ fun Application.module(testing: Boolean = false) {
 
     intercept(ApplicationCallPipeline.Features) {
 
-        logger.info("injecting I18N")
+        logger.info("injecting services")
 
-        call.attributes.put(iocI18n, Translations.withLocale("en"))
+        with(call.attributes) {
+
+            put(Translations.withLocale("en"))
+            put(GlobalStyles)
+        }
     }
 
     routing {
@@ -264,18 +279,13 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-        get("/styles.css") {
-            call.respondCss {
-                body {
-                    backgroundColor = Color.red
-                }
-                p {
-                    fontSize = 2.em
-                }
-                rule("p.myclass") {
-                    color = Color.blue
-                }
-            }
+        get("/styles/{filename}") {
+
+            val filename = (call.parameters["filename"] ?: "").split("?").first()
+
+            val style = iocStylesheets[filename] ?: throw NotFoundException()
+
+            call.respondText(style.content, ContentType.Text.CSS)
         }
 
         get<MyLocation> {
@@ -403,17 +413,3 @@ data class MySession(val userId: String? = null, val count: Int = 0)
 
 class AuthenticationException : RuntimeException()
 class AuthorizationException : RuntimeException()
-
-fun FlowOrMetaDataContent.styleCss(builder: CSSBuilder.() -> Unit) {
-    style(type = ContentType.Text.CSS.toString()) {
-        +CSSBuilder().apply(builder).toString()
-    }
-}
-
-fun CommonAttributeGroupFacade.style(builder: CSSBuilder.() -> Unit) {
-    this.style = CSSBuilder().apply(builder).toString().trim()
-}
-
-suspend inline fun ApplicationCall.respondCss(builder: CSSBuilder.() -> Unit) {
-    this.respondText(CSSBuilder().apply(builder).toString(), ContentType.Text.CSS)
-}

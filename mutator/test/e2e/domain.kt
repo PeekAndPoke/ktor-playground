@@ -1,6 +1,6 @@
-package de.peekandpoke.mutator.e2e
+package io.ultra.mutator.e2e
 
-import de.peekandpoke.mutator.Mutable
+import io.ultra.mutator.Mutable
 
 @Mutable
 data class WithScalars(

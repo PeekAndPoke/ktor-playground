@@ -1,9 +1,9 @@
-package de.peekandpoke.mutator.meta
+package io.ultra.mutator.meta
 
 import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.asClassName
-import de.peekandpoke.mutator.Mutable
-import de.peekandpoke.ultra.common.meta.ProcessorUtils
+import io.ultra.common.meta.ProcessorUtils
+import io.ultra.mutator.Mutable
 import me.eugeniomarletti.kotlin.processing.KotlinAbstractProcessor
 import java.io.File
 import javax.annotation.processing.Processor
@@ -87,7 +87,7 @@ open class MutatorAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
 
                 package $packageName
 
-                import de.peekandpoke.mutator.*
+                import io.ultra.mutator.*
 
                 fun $simpleName.mutate(mutation: ${simpleName}Mutator.() -> Unit) = mutator().apply(mutation).getResult()
 

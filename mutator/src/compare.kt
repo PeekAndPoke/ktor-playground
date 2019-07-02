@@ -1,4 +1,4 @@
-package de.peekandpoke.mutator
+package io.ultra.mutator
 
 infix fun <X> X.isSameAs(other: X) = !isNotSameAs(other)
 

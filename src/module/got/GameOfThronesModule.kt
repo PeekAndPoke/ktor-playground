@@ -3,17 +3,12 @@ package de.peekandpoke.module.got
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.ConfigSpec
-import de.peekandpoke.common.*
-import de.peekandpoke.formidable.themes.numberInput
-import de.peekandpoke.formidable.themes.selectInput
-import de.peekandpoke.formidable.themes.textInput
+import de.peekandpoke.common.logger
 import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.aql.ASC
 import de.peekandpoke.karango.aql.FOR
 import de.peekandpoke.karango.examples.game_of_thrones.*
-import de.peekandpoke.ultra.common.md5
-import de.peekandpoke.z_appimpl.WELCOME
-import de.peekandpoke.z_appimpl.t
+import de.peekandpoke.resources.WELCOME
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.client.HttpClient
@@ -26,6 +21,7 @@ import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.utils.EmptyContent
 import io.ktor.html.respondHtml
+import io.ktor.html.respondHtmlTemplate
 import io.ktor.http.Parameters
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Location
@@ -38,6 +34,11 @@ import io.ktor.routing.Route
 import io.ktor.routing.route
 import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
+import io.ultra.common.md5
+import io.ultra.ktor_tools.architecture.LinkGenerator
+import io.ultra.ktor_tools.bootstrap.*
+import io.ultra.ktor_tools.flashSession
+import io.ultra.ktor_tools.getOrPost
 import kotlinx.html.*
 import kotlinx.html.label
 
@@ -196,14 +197,11 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
 
                 val flashEntries = flashSession.pull()
 
-                call.respondHtml {
+                call.respondHtmlTemplate(MainTemplate(call)) {
 
-                    head {
-                        link(rel = "stylesheet", href = "/assets/bootstrap/css/bootstrap.css")
-                    }
+                    content {
 
-                    body {
-                        container_fluid {
+                        container {
 
                             flashEntries.takeIf { it.isNotEmpty() }?.let { entries ->
                                 div {
@@ -217,6 +215,7 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
 
                             ul {
                                 list.forEach {
+
                                     li {
                                         a(href = linkTo.getCharacterByKey(it)) { +"${it.name} ${it.surname ?: ""} " }
 
@@ -252,14 +251,13 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
                     return@getOrPost call.respondRedirect(linkTo.getCharacters())
                 }
 
-                call.respondHtml {
+                call.respondHtmlTemplate(MainTemplate(call)) {
 
-                    head {
-                        link(rel = "stylesheet", href = "/assets/bootstrap/css/bootstrap.css")
+                    pageTitle {
+                        title { +"GoT Edit Character" }
                     }
 
-                    body {
-
+                    content {
                         container {
 
                             h4 { +"Edit Character ${data.character.fullName}" }
@@ -269,16 +267,16 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
                                 form_group {
                                     row {
                                         col_md_3 {
-                                            textInput(form.name, label = "Name")
+                                            textInput(t, form.name, label = "Name")
                                         }
                                         col_md_3 {
-                                            textInput(form.surname, label = "Surname")
+                                            textInput(t, form.surname, label = "Surname")
                                         }
                                         col_md_3 {
-                                            numberInput(form.age, label = "Age")
+                                            textInput(t, form.age, label = "Age")
                                         }
                                         col_md_3 {
-                                            selectInput(form.alive, label = "Alive")
+                                            selectInput(t, form.alive, label = "Alive")
                                         }
                                     }
                                 }
@@ -288,11 +286,11 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
 
                                     row {
                                         col_md_3 {
-                                            textInput(actorForm.name, label = "Name")
+                                            textInput(t, actorForm.name, label = "Name")
                                         }
 
                                         col_md_3 {
-                                            numberInput(actorForm.age, label = "Age")
+                                            numberInput(t, actorForm.age, label = "Age")
                                         }
                                     }
                                 }

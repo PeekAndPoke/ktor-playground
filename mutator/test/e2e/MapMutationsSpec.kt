@@ -1,4 +1,4 @@
-package de.peekandpoke.mutator.e2e
+package io.ultra.mutator.e2e
 
 import io.kotlintest.DisplayName
 import io.kotlintest.assertSoftly

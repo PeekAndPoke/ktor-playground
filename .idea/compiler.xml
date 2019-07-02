@@ -17,9 +17,13 @@
       <module name="ktor-playground.karango_dev.test" target="1.8" />
       <module name="ktor-playground.ktor-playground.main" target="1.8" />
       <module name="ktor-playground.ktor-playground.test" target="1.8" />
+      <module name="ktor-playground.ktor_tools.main" target="1.8" />
+      <module name="ktor-playground.ktor_tools.test" target="1.8" />
       <module name="ktor-playground.main" target="1.8" />
       <module name="ktor-playground.mutator.main" target="1.8" />
       <module name="ktor-playground.mutator.test" target="1.8" />
+      <module name="ktor-playground.polyglot.main" target="1.8" />
+      <module name="ktor-playground.polyglot.test" target="1.8" />
       <module name="ktor-playground.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
