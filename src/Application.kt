@@ -7,7 +7,7 @@ import de.peekandpoke.karango.examples.game_of_thrones.Character
 import de.peekandpoke.karango.examples.game_of_thrones.Characters
 import de.peekandpoke.karango_ktor.add
 import de.peekandpoke.module.got.gameOfThrones
-import de.peekandpoke.resources.GlobalStyles
+import de.peekandpoke.resources.MainTemplate
 import de.peekandpoke.resources.Translations
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCallPipeline
@@ -16,17 +16,17 @@ import io.ktor.application.install
 import io.ktor.auth.*
 import io.ktor.features.*
 import io.ktor.html.respondHtml
+import io.ktor.html.respondHtmlTemplate
 import io.ktor.http.*
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.readText
 import io.ktor.http.content.CachingOptions
 import io.ktor.jackson.jackson
 import io.ktor.locations.KtorExperimentalLocationsAPI
-import io.ktor.locations.Location
 import io.ktor.locations.Locations
-import io.ktor.locations.get
 import io.ktor.request.header
 import io.ktor.request.receive
+import io.ktor.request.uri
 import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.get
@@ -38,9 +38,7 @@ import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.hex
 import io.ktor.webjars.Webjars
 import io.ktor.websocket.webSocket
-import io.ultra.ktor_tools.FlashSession
-import io.ultra.ktor_tools.iocStylesheets
-import io.ultra.ktor_tools.put
+import io.ultra.ktor_tools.*
 import kotlinx.html.*
 import java.time.Duration
 import java.time.ZoneId
@@ -51,6 +49,27 @@ import kotlin.system.measureNanoTime
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 private val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev")
+
+val Meta = object : AppMeta() {}
+
+val WebResources = object : WebResources(CacheBuster(Meta.getVersionMd5())) {
+
+    init {
+        // vendor css
+        webjarCss("/vendor/bootstrap/css/bootstrap.css")
+        webjarCss("/vendor/font-awesome/css/all.css")
+
+        // vendor js
+        webjarJs("/vendor/jquery/jquery.min.js")
+        webjarJs("/vendor/bootstrap/js/bootstrap.min.js")
+
+        // custom css
+        resourceCss("/assets/css/styles.css")
+
+        // custom
+        resourceJs("/assets/js/template.js")
+    }
+}
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
@@ -114,7 +133,7 @@ fun Application.module(testing: Boolean = false) {
     }
 
     install(Webjars) {
-        path = "/assets" //defaults to /webjars
+        path = "/vendor" //defaults to /webjars
         zone = ZoneId.systemDefault() //defaults to ZoneId.systemDefault()
     }
 
@@ -147,7 +166,13 @@ fun Application.module(testing: Boolean = false) {
     install(CachingHeaders) {
         options { outgoingContent ->
             when (outgoingContent.contentType?.withoutParameters()) {
-                ContentType.Text.CSS -> CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 24 * 60 * 60))
+
+                ContentType.Text.CSS ->
+                    CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 30 * 24 * 60 * 60))
+
+                ContentType.Application.JavaScript ->
+                    CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 30 * 24 * 60 * 60))
+
                 else -> null
             }
         }
@@ -201,21 +226,9 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
-//    items.forEach {phase ->
-//        intercept(phase) {
-//            logger.info("intercepting phase ${phase.name}")
-//
-//            proceed()
-//
-//            logger.info("intercepting phase ${phase.name} done")
-//        }
-//    }
-
     intercept(ApplicationCallPipeline.Setup) {
 
-        val ns = measureNanoTime {
-            proceed()
-        }
+        val ns = measureNanoTime { proceed() }
 
         logger.info("... total ${ns / 1_000_000.0} ms")
     }
@@ -242,7 +255,7 @@ fun Application.module(testing: Boolean = false) {
         with(call.attributes) {
 
             put(Translations.withLocale("en"))
-            put(GlobalStyles)
+            put(WebResources)
         }
     }
 
@@ -259,49 +272,15 @@ fun Application.module(testing: Boolean = false) {
 
         login(authFeature, users)
 
-        get("/") {
+        get("/assets/{path...}") {
 
-            val name = call.sessions.get<MySession>()?.userId ?: "Stranger"
+            val filename = call.request.uri.split("?").first()
 
-            call.respondText("HELLO $name!", contentType = ContentType.Text.Plain)
-        }
+            logger.info("ASSET: $filename")
 
-        get("/html-dsl") {
-            call.respondHtml {
-                body {
-                    h1 { +"HTML" }
-                    ul {
-                        for (n in 1..10) {
-                            li { +"$n" }
-                        }
-                    }
-                }
-            }
-        }
+            val stream = Application::class.java.getResourceAsStream(filename) ?: throw NotFoundException()
 
-        get("/styles/{filename}") {
-
-            val filename = (call.parameters["filename"] ?: "").split("?").first()
-
-            val style = iocStylesheets[filename] ?: throw NotFoundException()
-
-            call.respondText(style.content, ContentType.Text.CSS)
-        }
-
-        get<MyLocation> {
-            call.respondText("Location: name=${it.name}, arg1=${it.arg1}, arg2=${it.arg2}")
-        }
-        // Register nested routes
-        get<Type.Edit> {
-            call.respondText("Inside $it")
-        }
-        get<Type.List> {
-            call.respondText("Inside $it")
-        }
-
-
-        get("/webjars") {
-            call.respondText("<script src='/webjars/jquery/jquery.js'></script>", ContentType.Text.Html)
+            call.respondText(String(stream.readBytes()), ContentType.Text.CSS)
         }
 
         webSocket("/myws/echo") {
@@ -321,12 +300,16 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-        get("/json/jackson") {
-            call.respond(mapOf("hello" to "world"))
-        }
-
         val gameOfThrones = gameOfThrones(db)
 
+        get("/") {
+
+            call.respondHtmlTemplate(MainTemplate(call)) {}
+
+            val name = call.sessions.get<MySession>()?.userId ?: "Stranger"
+
+            call.respondText("HELLO $name!", contentType = ContentType.Text.Plain)
+        }
 
         host("admin.*".toRegex()) {
             get("/admin") {
@@ -392,21 +375,6 @@ fun Application.module(testing: Boolean = false) {
             }
         }
     }
-}
-
-
-@KtorExperimentalLocationsAPI
-@Location("/location/{name}")
-class MyLocation(val name: String, val arg1: Int = 42, val arg2: String = "default")
-
-@KtorExperimentalLocationsAPI
-@Location("/type/{name}")
-data class Type(val name: String) {
-    @Location("/edit")
-    data class Edit(val type: Type)
-
-    @Location("/list/{page}")
-    data class List(val type: Type, val page: Int)
 }
 
 data class MySession(val userId: String? = null, val count: Int = 0)

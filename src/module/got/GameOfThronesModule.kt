@@ -8,6 +8,7 @@ import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.aql.ASC
 import de.peekandpoke.karango.aql.FOR
 import de.peekandpoke.karango.examples.game_of_thrones.*
+import de.peekandpoke.resources.MainTemplate
 import de.peekandpoke.resources.WELCOME
 import io.ktor.application.Application
 import io.ktor.application.call
@@ -200,8 +201,7 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
                 call.respondHtmlTemplate(MainTemplate(call)) {
 
                     content {
-
-                        container {
+                        container_fluid {
 
                             flashEntries.takeIf { it.isNotEmpty() }?.let { entries ->
                                 div {
@@ -258,7 +258,7 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
                     }
 
                     content {
-                        container {
+                        container_fluid  {
 
                             h4 { +"Edit Character ${data.character.fullName}" }
 
