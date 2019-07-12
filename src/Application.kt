@@ -36,12 +36,11 @@ import io.ktor.routing.routing
 import io.ktor.sessions.*
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.hex
-import io.ktor.webjars.Webjars
 import io.ktor.websocket.webSocket
-import io.ultra.ktor_tools.*
+import io.ultra.ktor_tools.FlashSession
+import io.ultra.ktor_tools.resources.*
 import kotlinx.html.*
 import java.time.Duration
-import java.time.ZoneId
 import java.util.*
 import kotlin.collections.set
 import kotlin.system.measureNanoTime
@@ -49,6 +48,7 @@ import kotlin.system.measureNanoTime
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 private val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev")
+
 
 val Meta = object : AppMeta() {}
 
@@ -132,9 +132,8 @@ fun Application.module(testing: Boolean = false) {
         includeSubDomains = true
     }
 
-    install(Webjars) {
-        path = "/vendor" //defaults to /webjars
-        zone = ZoneId.systemDefault() //defaults to ZoneId.systemDefault()
+    install(BetterWebjars) {
+        loader = Application::class.java.classLoader
     }
 
     install(io.ktor.websocket.WebSockets) {

@@ -1,4 +1,4 @@
-package io.ultra.ktor_tools
+package io.ultra.ktor_tools.resources
 
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call

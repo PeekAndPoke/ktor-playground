@@ -21,14 +21,10 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.utils.EmptyContent
-import io.ktor.html.respondHtml
 import io.ktor.html.respondHtmlTemplate
-import io.ktor.http.Parameters
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Location
 import io.ktor.locations.get
-import io.ktor.locations.post
-import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.response.respondRedirect
 import io.ktor.routing.Route
@@ -85,9 +81,6 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
     @Location("/characters/{character}")
     internal class GetCharacter(val character: Character)
 
-    @Location("/forms")
-    internal class FormTest
-
     inner class LinkTo : LinkGenerator(mountPoint) {
         fun getCharacters() = linkTo(GetCharacters())
         fun getCharacterByKey(character: Character) = linkTo(GetCharacter(character))
@@ -106,9 +99,7 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
                 val publicKey = "1423abd5e3a043f4347e313bec4c5abb"
                 val signatureKey = "b0f0a94720b24604c794dc6393184b56"
 
-
                 val base = "https://office.bexio.com/api2.php/$company/$user/$publicKey"
-
 
                 val client = HttpClient(CIO) {
 
@@ -151,35 +142,6 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
                         "text" to text
                     )
                 )
-            }
-
-            get<FormTest> {
-
-                call.respondHtml {
-                    body {
-                        form(method = FormMethod.post) {
-                            label {
-                                +"Name"
-                                input(name = "name")
-                            }
-                            label {
-                                +"Name again"
-                                input(name = "name")
-                            }
-
-                            button(type = ButtonType.submit) {
-                                +"Submit"
-                            }
-                        }
-                    }
-                }
-            }
-
-            post<FormTest> {
-
-                val posted = call.receive<Parameters>()
-
-                call.respond(posted.entries())
             }
 
             get<GetCharacters> { p ->
@@ -258,7 +220,7 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
                     }
 
                     content {
-                        container_fluid  {
+                        container_fluid {
 
                             h4 { +"Edit Character ${data.character.fullName}" }
 

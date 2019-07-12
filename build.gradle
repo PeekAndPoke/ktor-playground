@@ -23,6 +23,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 
 tasks.distZip.enabled = false
 tasks.distTar.enabled = false
+tasks.shadowJar.enabled = false
 
 group 'ktor-playground'
 version '0.0.1'
@@ -52,7 +53,6 @@ dependencies {
     compile "io.ktor:ktor-metrics:$ktor_version"
     compile "io.ktor:ktor-server-sessions:$ktor_version"
     compile "io.ktor:ktor-server-host-common:$ktor_version"
-    compile "io.ktor:ktor-webjars:$ktor_version"
     compile "io.ktor:ktor-websockets:$ktor_version"
     compile "io.ktor:ktor-auth:$ktor_version"
     compile "io.ktor:ktor-jackson:$ktor_version"

@@ -49,6 +49,9 @@ dependencies {
     compile "ch.qos.logback:logback-classic:$logback_version"
     compile "net.logstash.logback:logstash-logback-encoder:5.3"
 
+    // webjars
+    compile 'org.webjars:webjars-locator-core:0.37'
+
     compile project(":mutator")
     compile project(":polyglot")
 

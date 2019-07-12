@@ -4,8 +4,8 @@ import io.ktor.application.ApplicationCall
 import io.ktor.html.Placeholder
 import io.ktor.html.Template
 import io.ktor.html.insert
-import io.ultra.ktor_tools.iocTranslations
-import io.ultra.ktor_tools.iocWebResources
+import io.ultra.ktor_tools.resources.iocTranslations
+import io.ultra.ktor_tools.resources.iocWebResources
 import kotlinx.html.*
 
 class MainTemplate(call: ApplicationCall) : Template<HTML> {
@@ -27,8 +27,10 @@ class MainTemplate(call: ApplicationCall) : Template<HTML> {
         head {
             insert(pageTitle)
 
-            webResources.css.forEach {
-                link(rel = "stylesheet", href = it.full)
+            webResources.css.forEach { css ->
+                link(rel = "stylesheet", href = css.fullUri) {
+                    css.integrity?.let { integrity = it }
+                }
             }
         }
 
@@ -129,8 +131,10 @@ class MainTemplate(call: ApplicationCall) : Template<HTML> {
                     insert(content)
                 }
 
-                webResources.js.forEach {
-                    script(type = ScriptType.textJavaScript, src = it.full) {}
+                webResources.js.forEach { js ->
+                    script(type = ScriptType.textJavaScript, src = js.fullUri) {
+                        js.integrity?.let { integrity = it }
+                    }
                 }
             }
         }

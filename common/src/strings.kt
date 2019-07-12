@@ -1,8 +1,5 @@
 package io.ultra.common
 
-import java.math.BigInteger
-import java.security.MessageDigest
-
 fun String.surround(with: String) = "$with${this}$with"
 
 /**
@@ -35,8 +32,3 @@ fun String.startsWithAny(vararg prefix: String) = prefix.any { startsWith(it) }
  */
 fun String.startsWithNone(vararg prefix: String) = !startsWithAny(*prefix)
 
-
-fun String.md5(): String {
-    val md = MessageDigest.getInstance("MD5")
-    return BigInteger(1, md.digest(toByteArray())).toString(16).padStart(32, '0')
-}
