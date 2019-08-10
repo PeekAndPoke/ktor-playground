@@ -1,7 +1,5 @@
 rootProject.name = "ktor-playground"
 
-include ":common"
-include ":mutator"
 include ":polyglot"
 include ":ktor_tools"
 include ":karango"

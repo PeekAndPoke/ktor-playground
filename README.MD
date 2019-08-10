@@ -1,3 +1,13 @@
+# Auto reload
+
+In one terminal do
+
+> ./gradlew -t build -x test
+
+In another terminal do
+
+> ./gradlew run 
+
 # Karango
 
 This repo has become the testbed for Karango. 

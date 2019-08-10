@@ -4,7 +4,7 @@ import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.WithKey
 import de.peekandpoke.karango.meta.EntityCollection
 import de.peekandpoke.karango.meta.Ref
-import io.ultra.mutator.Mutable
+import de.peekandpoke.ultra.mutator.Mutable
 
 @Mutable
 @EntityCollection("got_characters", "Characters")
@@ -31,4 +31,4 @@ data class Actor(
     val age: Int = 0,
     override val _id: String? = null,
     override val _key: String? = null
-) :  Entity, WithKey
+) : Entity, WithKey

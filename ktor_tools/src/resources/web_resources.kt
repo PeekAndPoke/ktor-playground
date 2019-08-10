@@ -1,13 +1,13 @@
 package io.ultra.ktor_tools.resources
 
+import de.peekandpoke.ultra.common.base64
+import de.peekandpoke.ultra.common.md5
+import de.peekandpoke.ultra.common.sha384
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.util.AttributeKey
 import io.ktor.util.Attributes
 import io.ktor.util.pipeline.PipelineContext
-import io.ultra.common.base64
-import io.ultra.common.md5
-import io.ultra.common.sha384
 import java.io.InputStream
 
 data class CacheBuster(val key: String) {
@@ -61,7 +61,7 @@ abstract class WebResources(private val cacheBuster: CacheBuster) {
         )
     }
 
-    private fun String.toInputStream() : InputStream = this::class.java.getResourceAsStream(this)
+    private fun String.toInputStream(): InputStream = this::class.java.getResourceAsStream(this)
 }
 
 val iocWebResourcesKey = AttributeKey<WebResources>("web-resources")

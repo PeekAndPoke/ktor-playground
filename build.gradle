@@ -41,6 +41,9 @@ repositories {
     jcenter()
     maven { url 'https://kotlin.bintray.com/ktor' }
     maven { url 'https://kotlin.bintray.com/kotlin-js-wrappers' }
+
+    // my stuff
+    maven { url 'https://dl.bintray.com/peekandpoke/maven' }
 }
 
 dependencies {
@@ -70,8 +73,8 @@ dependencies {
     compile "org.webjars:jquery:3.2.1"
     compile 'org.webjars:font-awesome:5.9.0'
 
-    compile project(":mutator")
-    kapt project(":mutator")
+    compile "de.peekandpoke.ultra:mutator:$ultra_version"
+    kapt "de.peekandpoke.ultra:mutator:$ultra_version"
 
     compile project(":polyglot")
     compile project(":ktor_tools")
@@ -80,7 +83,6 @@ dependencies {
     kapt project(":karango")
 
     testCompile "io.ktor:ktor-server-tests:$ktor_version"
-    testCompile project(":mutator")
     testCompile project(":karango")
     testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.2.1'
 }

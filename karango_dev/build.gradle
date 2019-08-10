@@ -38,8 +38,8 @@ dependencies {
 
     compile "ch.qos.logback:logback-classic:$logback_version"
 
-    compile project(":mutator")
-    kapt project(":mutator")
+    compile "de.peekandpoke.ultra:mutator:$ultra_version"
+    kapt "de.peekandpoke.ultra:mutator:$ultra_version"
 
     compile project(":karango")
     kapt project(":karango")

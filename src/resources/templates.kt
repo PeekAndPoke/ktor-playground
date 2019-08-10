@@ -24,6 +24,9 @@ class MainTemplate(call: ApplicationCall) : Template<HTML> {
 
     override fun HTML.apply() {
 
+        // see https://bootsnipp.com/snippets/Q0dAX "Pro Sidebar Template with Bootstrap 4"
+
+
         head {
             insert(pageTitle)
 

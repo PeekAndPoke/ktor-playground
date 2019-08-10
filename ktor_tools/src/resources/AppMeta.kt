@@ -1,6 +1,6 @@
 package io.ultra.ktor_tools.resources
 
-import io.ultra.common.md5
+import de.peekandpoke.ultra.common.md5
 
 /**
  * Created by gerk on 11.07.19 00:27

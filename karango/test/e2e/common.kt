@@ -4,9 +4,9 @@ import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.aql.Expression
 import de.peekandpoke.karango.aql.toPrinterResult
 import de.peekandpoke.karango.meta.EntityCollection
+import de.peekandpoke.ultra.common.surround
 import io.kotlintest.TestContext
 import io.kotlintest.matchers.withClue
-import io.ultra.common.surround
 
 val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev")
 

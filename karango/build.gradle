@@ -49,7 +49,7 @@ dependencies {
     compile "com.arangodb:jackson-dataformat-velocypack:$arangodb_velocypack_version"
     compile "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_kotlin_version"
 
-    compile project(":common")
+    compile "de.peekandpoke.ultra:meta:$ultra_version"
 
     ////  code generation  //////////////////////////////////////////////////////////////////////////////////////
 

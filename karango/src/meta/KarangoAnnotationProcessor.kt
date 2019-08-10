@@ -2,8 +2,8 @@ package de.peekandpoke.karango.meta
 
 import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.asClassName
-import io.ultra.common.meta.ProcessorUtils
-import io.ultra.common.ucFirst
+import de.peekandpoke.ultra.common.ucFirst
+import de.peekandpoke.ultra.meta.ProcessorUtils
 import me.eugeniomarletti.kotlin.processing.KotlinAbstractProcessor
 import java.io.File
 import javax.annotation.processing.Processor
