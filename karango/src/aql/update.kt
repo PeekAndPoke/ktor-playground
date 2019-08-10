@@ -1,11 +1,11 @@
 package de.peekandpoke.karango.aql
 
-import de.peekandpoke.karango.CollectionDefinition
 import de.peekandpoke.karango.Entity
+import de.peekandpoke.karango.ICollection
 
 class UpdateDocument<T : Entity>(
-    private val entity: T, 
-    private val col: CollectionDefinition<T>, 
+    private val entity: T,
+    private val col: ICollection<T>,
     private val kv: KeyValueBuilder<T>
 ) : TerminalExpr<Any> { // TODO: what is the real return value of an update ?
 

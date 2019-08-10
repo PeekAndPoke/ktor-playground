@@ -1,10 +1,11 @@
 package de.peekandpoke.karango_dev.domain
 
 import de.peekandpoke.karango.Entity
-import de.peekandpoke.karango.meta.EntityCollection
+import de.peekandpoke.karango.meta.Karango
+import de.peekandpoke.ultra.mutator.Mutable
 
-
-@EntityCollection("persons")
+@Karango
+@Mutable
 data class Person(
     val name: String,
     val age: Int,
@@ -22,13 +23,15 @@ data class Book(
     val authors: List<Author>
 )
 
-@EntityCollection("authors")
+@Karango
+@Mutable
 data class Author(
     val firstName: String,
     val lastName: String
 )
 
-@EntityCollection("addresses")
+@Karango
+@Mutable
 data class Address(
     val city: String,
     override val _id: String = ""

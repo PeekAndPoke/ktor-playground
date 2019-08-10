@@ -2,7 +2,6 @@ package de.peekandpoke.karango.meta
 
 import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.asClassName
-import de.peekandpoke.ultra.common.ucFirst
 import de.peekandpoke.ultra.meta.ProcessorUtils
 import me.eugeniomarletti.kotlin.processing.KotlinAbstractProcessor
 import java.io.File
@@ -18,7 +17,7 @@ open class KarangoAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
 
     override fun getSupportedSourceVersion(): SourceVersion = SourceVersion.latestSupported()
 
-    override fun getSupportedAnnotationTypes(): Set<String> = setOf(EntityCollection::class.java.canonicalName)
+    override fun getSupportedAnnotationTypes(): Set<String> = setOf(Karango::class.java.canonicalName)
 
     override fun process(annotations: Set<TypeElement>, roundEnv: RoundEnvironment): Boolean {
 
@@ -56,7 +55,7 @@ open class KarangoAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
     private fun generateKarangoFiles(roundEnv: RoundEnvironment) {
         // Find all types that have a Karango Annotation
         val elems = roundEnv
-            .getElementsAnnotatedWith(EntityCollection::class.java)
+            .getElementsAnnotatedWith(Karango::class.java)
             .filterIsInstance<TypeElement>()
 
         // Find all the types that are referenced by these types and add them to the pool
@@ -81,8 +80,6 @@ open class KarangoAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
 
         logNote("Found type ${element.simpleName} in ${element.asClassName().packageName}")
 
-        val annotation: EntityCollection? = element.getAnnotation(EntityCollection::class.java)
-
         val className = element.asClassName()
         val packageName = className.packageName
         val simpleName = className.simpleName
@@ -98,20 +95,6 @@ open class KarangoAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
 
         """.trimIndent()
         )
-
-        if (annotation != null) {
-
-            // TODO: make sure that we get a valid property name here ... split non Alphanum-chars and join camel-case
-            val defName = if (annotation.defName.isNotEmpty()) annotation.defName else annotation.collection.ucFirst()
-
-            codeBlocks.add(
-                """
-                val $defName : EntityCollectionDefinition<$simpleName> =
-                    object : EntityCollectionDefinitionImpl<$simpleName>("${annotation.collection}", type()) {}
-
-            """.trimIndent()
-            )
-        }
 
         element.variables
             // filter delegated properties (e.g. by lazy)

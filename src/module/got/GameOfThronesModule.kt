@@ -3,9 +3,6 @@ package de.peekandpoke.module.got
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.ConfigSpec
 import de.peekandpoke.common.logger
-import de.peekandpoke.karango.Db
-import de.peekandpoke.karango.aql.ASC
-import de.peekandpoke.karango.aql.FOR
 import de.peekandpoke.karango.examples.game_of_thrones.*
 import de.peekandpoke.resources.MainTemplate
 import de.peekandpoke.resources.WELCOME
@@ -36,7 +33,7 @@ class GameOfThronesConfig(private val config: Config) {
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
-fun Application.gameOfThrones(db: Db): GameOfThronesModule {
+fun Application.gameOfThrones(): GameOfThronesModule {
 
     val config = GameOfThronesConfig(
         Config { addSpec(GameOfThronesSpec) }.from.hocon.resource("module.game-of-thrones.conf")
@@ -47,7 +44,7 @@ fun Application.gameOfThrones(db: Db): GameOfThronesModule {
 
     routing {
         route(config.mountPoint) {
-            module = GameOfThronesModule(this, config, db)
+            module = GameOfThronesModule(this, config)
         }
     }
 
@@ -56,7 +53,7 @@ fun Application.gameOfThrones(db: Db): GameOfThronesModule {
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
-class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig, db: Db) {
+class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig) {
 
     @Location("/characters")
     internal class GetCharacters(val page: Int = 1, val epp: Int = 100)
@@ -77,13 +74,7 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
 
             get<GetCharacters> { p ->
 
-                val result = db.query {
-                    FOR(Characters) { c ->
-                        SORT(c.name.ASC)
-                        LIMIT((p.page - 1) * p.epp, p.epp)
-                        RETURN(c)
-                    }
-                }
+                val result = Characters.findAllPaged(p.page, p.epp)
 
                 logger.info("${result.timeMs} vs ${result.stats.executionTime}")
 

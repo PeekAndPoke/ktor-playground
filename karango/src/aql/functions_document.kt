@@ -2,7 +2,7 @@
 
 package de.peekandpoke.karango.aql
 
-import de.peekandpoke.karango.CollectionDefinition
+import de.peekandpoke.karango.ICollection
 
 /**
  * Get a single document by its full id.
@@ -16,7 +16,7 @@ fun <T> DOCUMENT(cls: Class<T>, id: String) : Expression<T> =
 /**
  * Get a single document from the given collection by its key.
  */
-fun <T> DOCUMENT(collection: CollectionDefinition<T>, key: String): Expression<T> =
+fun <T> DOCUMENT(collection: ICollection<T>, key: String): Expression<T> =
     AqlFunc.DOCUMENT.call(
         collection.getType().down(),
         "${collection.getAlias()}/${key.ensureKey}".aql("id")
@@ -25,7 +25,7 @@ fun <T> DOCUMENT(collection: CollectionDefinition<T>, key: String): Expression<T
 /**
  * Get a list of documents by their IDs
  */
-inline fun <reified T> DOCUMENT(vararg ids: String): Expression<List<T>> = 
+inline fun <reified T> DOCUMENT(vararg ids: String): Expression<List<T>> =
     DOCUMENT(ids.toList())
 
 /**
@@ -37,13 +37,13 @@ inline fun <reified T> DOCUMENT(ids: List<String>): Expression<List<T>> =
 /**
  * Get a list of documents from the given collection by their keys.
  */
-fun <T> DOCUMENT(collection: CollectionDefinition<T>, vararg keys: String) = 
+fun <T> DOCUMENT(collection: ICollection<T>, vararg keys: String) =
     DOCUMENT(collection, keys.toList())
 
 /**
  * Get a list of documents from the given collection by their keys.
  */
-fun <T> DOCUMENT(collection: CollectionDefinition<T>, keys: List<String>) = 
+fun <T> DOCUMENT(collection: ICollection<T>, keys: List<String>) =
     DOCUMENT(collection.getType(), collection.getAlias(), keys)
 
 /**

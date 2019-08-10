@@ -46,7 +46,7 @@ class Db(private val database: ArangoDatabase) {
         injectableValues = InjectableValues.Std().addValue("__db", this@Db)
     }
 
-    fun <T : Entity, D : EntityCollectionDefinition<T>> collection(def: D): DbCollection<T, D> {
+    fun <T : Entity, D : IEntityCollection<T>> collection(def: D): DbCollection<T, D> {
 
         val name = def.getAlias()
         val coll = database.collection(name)
@@ -58,7 +58,7 @@ class Db(private val database: ArangoDatabase) {
         return DbCollection(this, database.collection(name), def)
     }
 
-    fun <T : Edge, D : EdgeCollectionDefinition<T>> edgeCollection(def: D): DbCollection<T, D> {
+    fun <T : Edge, D : IEdgeCollection<T>> edgeCollection(def: D): DbCollection<T, D> {
 
         val name = def.getAlias()
         val coll = database.collection(name)
@@ -158,7 +158,7 @@ interface Edge : Entity {
 }
 
 
-class DbCollection<T : Entity, D : CollectionDefinition<T>> internal constructor(
+class DbCollection<T : Entity, D : ICollection<T>> internal constructor(
     private val db: Db,
     private val dbColl: ArangoCollection,
     private val def: D

@@ -4,13 +4,13 @@ package de.peekandpoke.karango
 
 import de.peekandpoke.karango.aql.*
 
-interface CollectionDefinition<T> : Expression<List<T>>, Aliased
+interface ICollection<T> : Expression<List<T>>, Aliased
 
-interface EntityCollectionDefinition<T> : CollectionDefinition<T>
+interface IEntityCollection<T> : ICollection<T>
 
-interface EdgeCollectionDefinition<T> : CollectionDefinition<T>
+interface IEdgeCollection<T> : ICollection<T>
 
-abstract class CollectionDefinitionImpl<T>(private val name_: String, private val type: TypeRef<List<T>>) : CollectionDefinition<T> {
+abstract class Collection<T>(private val name_: String, private val type: TypeRef<List<T>>) : ICollection<T> {
 
     override fun getAlias() = name_
     override fun getType() = type
@@ -18,11 +18,11 @@ abstract class CollectionDefinitionImpl<T>(private val name_: String, private va
     override fun printAql(p: AqlPrinter) = p.name(name_)
 }
 
-abstract class EntityCollectionDefinitionImpl<T>(name: String, type: TypeRef<List<T>>) :
-    CollectionDefinitionImpl<T>(name, type), EntityCollectionDefinition<T>
+abstract class EntityCollection<T>(name: String, type: TypeRef<List<T>>) :
+    Collection<T>(name, type), IEntityCollection<T>
 
-abstract class EdgeCollectionDefinitionImpl<T>(name: String, type: TypeRef<List<T>>) :
-    CollectionDefinitionImpl<T>(name, type), EdgeCollectionDefinition<T>
+abstract class EdgeCollection<T>(name: String, type: TypeRef<List<T>>) :
+    Collection<T>(name, type), IEdgeCollection<T>
 
 @Suppress("unused")
 inline val <reified T: Entity> Expression<T>._id

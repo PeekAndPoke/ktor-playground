@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
 @KtorExperimentalAPI
 inline fun <reified X, reified T : X> DataConversion.Configuration.add(
     db: Db,
-    collection: CollectionDefinition<X>,
+    collection: ICollection<X>,
     type: KClass<T>
 ) where X : Entity, X : WithKey {
 

@@ -1,9 +1,9 @@
 package de.peekandpoke.karango.testdomain
 
 import de.peekandpoke.karango.Entity
-import de.peekandpoke.karango.meta.EntityCollection
+import de.peekandpoke.karango.meta.Karango
 
-@EntityCollection("test-names", "TestNames")
+@Karango("test-names", "TestNames")
 data class TestName(
     val name: String,
     override val _id: String = ""
@@ -11,7 +11,7 @@ data class TestName(
 
 
 
-@EntityCollection("test-persons", "TestPersons")
+@Karango("test-persons", "TestPersons")
 data class TestPerson(
     val name: String,
     val details: TestPersonDetails = TestPersonDetails(""),

@@ -1,7 +1,7 @@
 package de.peekandpoke.karango.aql
 
-import de.peekandpoke.karango.CollectionDefinition
 import de.peekandpoke.karango.Entity
+import de.peekandpoke.karango.ICollection
 
 @DslMarker
 annotation class KarangoDslMarker
@@ -125,7 +125,7 @@ class AqlBuilder internal constructor() : StatementBuilder {
     fun <T> RETURN(expr: Expression<T>): TerminalExpr<T> = Return(expr)
 
     // TODO: UPDATE
-    fun <T : Entity, D : CollectionDefinition<T>> UPDATE(entity: T, col: D, builder: KeyValueBuilder<T>.(Expression<T>) -> Unit): TerminalExpr<Any> =
+    fun <T : Entity, D : ICollection<T>> UPDATE(entity: T, col: D, builder: KeyValueBuilder<T>.(Expression<T>) -> Unit): TerminalExpr<Any> =
         UpdateDocument(
             entity,
             col,

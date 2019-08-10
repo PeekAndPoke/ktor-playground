@@ -1,18 +1,18 @@
 package de.peekandpoke.karango.aql
 
-import de.peekandpoke.karango.CollectionDefinition
 import de.peekandpoke.karango.Entity
+import de.peekandpoke.karango.ICollection
 
 @KarangoFuncMarker
 fun <T: Entity> UPSERT(entity: T) = UpsertPreStageEntity(entity)
 
 @KarangoFuncMarker
-infix fun <T : Entity> UpsertPreStageEntity<T>.INTO(collection: CollectionDefinition<T>) = UpsertInto(entity, collection)
+infix fun <T : Entity> UpsertPreStageEntity<T>.INTO(collection: ICollection<T>) = UpsertInto(entity, collection)
 
 class UpsertPreStageEntity<T: Entity> internal constructor(val entity: T)
 
 
-class UpsertInto<T : Entity>(private val entity: T, private val col: CollectionDefinition<T>) : TerminalExpr<T> {
+class UpsertInto<T : Entity>(private val entity: T, private val col: ICollection<T>) : TerminalExpr<T> {
 
     override fun innerType() = col.getType().down<T>()
 

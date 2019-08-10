@@ -3,14 +3,14 @@ package de.peekandpoke.karango.e2e
 import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.aql.Expression
 import de.peekandpoke.karango.aql.toPrinterResult
-import de.peekandpoke.karango.meta.EntityCollection
+import de.peekandpoke.karango.meta.Karango
 import de.peekandpoke.ultra.common.surround
 import io.kotlintest.TestContext
 import io.kotlintest.matchers.withClue
 
-val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev")
+val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "_system")
 
-@EntityCollection("e2e-persons", "E2ePersons")
+@Karango("e2e-persons", "E2ePersons")
 data class E2ePerson(val name: String, val age: Int)
 
 @Suppress("unused")

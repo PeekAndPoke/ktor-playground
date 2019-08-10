@@ -299,7 +299,7 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-        val gameOfThrones = gameOfThrones(db)
+        val gameOfThrones = gameOfThrones()
 
         get("/") {
 
