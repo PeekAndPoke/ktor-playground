@@ -2,10 +2,12 @@
   <library name="Gradle: de.peekandpoke.ultra:mutator:0.0.2">
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/de/peekandpoke/ultra/mutator/0.0.2/mutator-0.0.2.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/de.peekandpoke.ultra/mutator/0.0.2/fccfbdbc8e6333539e79f97ca1b8e49987a3cdb9/mutator-0.0.2.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/de/peekandpoke/ultra/mutator/0.0.2/mutator-0.0.2-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/de.peekandpoke.ultra/mutator/0.0.2/5b182a1114cc3b729e169c55a46a736098e65892/mutator-0.0.2-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

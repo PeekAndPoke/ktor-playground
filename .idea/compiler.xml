@@ -11,20 +11,20 @@
       <module name="ktor-playground.formidable.test" target="1.8" />
       <module name="ktor-playground.frozen.main" target="1.8" />
       <module name="ktor-playground.frozen.test" target="1.8" />
-      <module name="ktor-playground.karango.main" target="11" />
-      <module name="ktor-playground.karango.test" target="11" />
-      <module name="ktor-playground.karango_dev.main" target="11" />
-      <module name="ktor-playground.karango_dev.test" target="11" />
+      <module name="ktor-playground.karango.main" target="1.8" />
+      <module name="ktor-playground.karango.test" target="1.8" />
+      <module name="ktor-playground.karango_dev.main" target="1.8" />
+      <module name="ktor-playground.karango_dev.test" target="1.8" />
       <module name="ktor-playground.ktor-playground.main" target="1.8" />
       <module name="ktor-playground.ktor-playground.test" target="1.8" />
-      <module name="ktor-playground.ktor_tools.main" target="11" />
-      <module name="ktor-playground.ktor_tools.test" target="11" />
-      <module name="ktor-playground.main" target="11" />
+      <module name="ktor-playground.ktor_tools.main" target="1.8" />
+      <module name="ktor-playground.ktor_tools.test" target="1.8" />
+      <module name="ktor-playground.main" target="1.8" />
       <module name="ktor-playground.mutator.main" target="1.8" />
       <module name="ktor-playground.mutator.test" target="1.8" />
-      <module name="ktor-playground.polyglot.main" target="11" />
-      <module name="ktor-playground.polyglot.test" target="11" />
-      <module name="ktor-playground.test" target="11" />
+      <module name="ktor-playground.polyglot.main" target="1.8" />
+      <module name="ktor-playground.polyglot.test" target="1.8" />
+      <module name="ktor-playground.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

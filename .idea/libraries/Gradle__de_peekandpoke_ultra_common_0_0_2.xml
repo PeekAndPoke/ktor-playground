@@ -2,10 +2,12 @@
   <library name="Gradle: de.peekandpoke.ultra:common:0.0.2">
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/de/peekandpoke/ultra/common/0.0.2/common-0.0.2.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/de.peekandpoke.ultra/common/0.0.2/a2eab4caf132bc22bbf429d43b1240c5cad326ea/common-0.0.2.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/de/peekandpoke/ultra/common/0.0.2/common-0.0.2-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/de.peekandpoke.ultra/common/0.0.2/c77a41b0883cbdc59fff4413e2ce50bcdabacd20/common-0.0.2-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
