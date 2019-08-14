@@ -10,7 +10,7 @@ import io.kotlintest.matchers.withClue
 
 val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "_system")
 
-@Karango("e2e-persons", "E2ePersons")
+@Karango
 data class E2ePerson(val name: String, val age: Int)
 
 @Suppress("unused")

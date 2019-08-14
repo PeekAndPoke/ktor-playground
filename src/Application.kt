@@ -35,6 +35,7 @@ import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.sessions.*
 import io.ktor.util.KtorExperimentalAPI
+import io.ktor.util.getDigestFunction
 import io.ktor.util.hex
 import io.ktor.websocket.webSocket
 import io.ultra.ktor_tools.FlashSession
@@ -260,12 +261,15 @@ fun Application.module(testing: Boolean = false) {
 
     routing {
 
+        val digester = getDigestFunction("SHA-256") { "ktor${it.length}" }
+
         // We have a single user for testing in the user table: user=root, password=root
         // So for the login you have to use those credentials since you cannot register new users in this sample.
         val users = UserHashedTableAuth(
+            digester,
             table = mapOf(
-                "root" to UserHashedTableAuth(table = emptyMap()).digester("root"),
-                "rudi" to UserHashedTableAuth(table = emptyMap()).digester("rudi")
+                "root" to digester("root"),
+                "rudi" to digester("rudi")
             )
         )
 
@@ -308,6 +312,10 @@ fun Application.module(testing: Boolean = false) {
             val name = call.sessions.get<MySession>()?.userId ?: "Stranger"
 
             call.respondText("HELLO $name!", contentType = ContentType.Text.Plain)
+        }
+
+        get("/__hello__") {
+            call.respondText("Hello", ContentType.Text.Html, HttpStatusCode.OK)
         }
 
         host("admin.*".toRegex()) {
