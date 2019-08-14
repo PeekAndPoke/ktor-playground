@@ -34,6 +34,7 @@ repositories {
     jcenter()
     maven { url 'https://kotlin.bintray.com/ktor' }
     maven { url 'https://kotlin.bintray.com/kotlin-js-wrappers' }
+    maven { url 'https://dl.bintray.com/peekandpoke/maven' }
 }
 
 def arangodb_driver_version = "5.0.4"
