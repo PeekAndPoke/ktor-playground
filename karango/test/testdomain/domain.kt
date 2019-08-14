@@ -1,23 +1,30 @@
 package de.peekandpoke.karango.testdomain
 
 import de.peekandpoke.karango.Entity
+import de.peekandpoke.karango.EntityCollection
+import de.peekandpoke.karango.IEntityCollection
+import de.peekandpoke.karango.aql.type
 import de.peekandpoke.karango.meta.Karango
 
-@Karango("test-names", "TestNames")
+@Karango
 data class TestName(
     val name: String,
     override val _id: String = ""
 ) : Entity
 
+val TestNames : IEntityCollection<TestName> =
+    object : EntityCollection<TestName>("test-names", type()) {}
 
-
-@Karango("test-persons", "TestPersons")
+@Karango
 data class TestPerson(
     val name: String,
     val details: TestPersonDetails = TestPersonDetails(""),
     val addresses: List<TestAddress>,
     val books: List<TestBook> = listOf()
 )
+
+val TestPersons : IEntityCollection<TestPerson> =
+    object : EntityCollection<TestPerson>("test-persons", type()) {}
 
 data class TestPersonDetails (
     val middleName: String
