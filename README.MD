@@ -31,3 +31,12 @@ If you are interested on how ArangoDBs query langugage is implemented as a Kotli
 If you want to see it in action, check out the examples:
 - [Game of thrones](./src/karango/examples/game_of_thrones)
 - [Movies and Actors](./src/karango/examples/movies_and_actors)
+
+
+## Stuff
+
+### Better ReCSS
+
+```
+javascript:void(function(){var i,a,s;a=document.getElementsByTagName('link');for(i=0;i<a.length;i++){s=a[i];if(s.rel.toLowerCase().indexOf('stylesheet')>=0&&s.href&&s.href.indexOf('blob:')===-1) {var h=s.href.replace(/(&|%5C?)forceReload=\d+/,'');s.href=h+(h.indexOf('?')>=0?'&':'?')+'forceReload='+(new Date().valueOf())}}})();
+```
