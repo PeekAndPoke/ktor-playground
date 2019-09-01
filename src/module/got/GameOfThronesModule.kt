@@ -95,7 +95,7 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
 
                             h2 { +t.WELCOME() }
 
-                            h4 { +"Characters" }
+                            h4 { +"List of Characters" }
 
                             ul {
                                 list.forEach {

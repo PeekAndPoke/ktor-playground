@@ -25,43 +25,65 @@ data class WebResource(val uri: String, val cacheKey: String? = null, val integr
     }
 }
 
-abstract class WebResources(private val cacheBuster: CacheBuster) {
+data class WebResourceGroup(val css: List<WebResource>, val js: List<WebResource>) {
 
-    private val _css = mutableListOf<WebResource>()
-    private val _js = mutableListOf<WebResource>()
+    class Builder(private val cacheBuster: CacheBuster) {
 
-    val x = 1
+        private val css = mutableListOf<WebResource>()
+        private val js = mutableListOf<WebResource>()
 
-    val css: List<WebResource> get() = _css
-    val js: List<WebResource> get() = _js
+        internal fun build(): WebResourceGroup = WebResourceGroup(css, js)
 
-    fun webjarCss(uri: String) = apply {
-        _css.add(WebResource(uri, cacheBuster.key))
+        fun webjarCss(uri: String): WebResource {
+            return WebResource(uri, cacheBuster.key).apply {
+                css.add(this)
+            }
+        }
+
+        fun resourceCss(uri: String): WebResource {
+
+            val bytes = uri.toInputStream().readBytes()
+
+            return WebResource(uri, bytes.md5(), "sha384-${bytes.sha384().base64()}").apply {
+                css.add(this)
+            }
+        }
+
+        fun webjarJs(uri: String): WebResource {
+            return WebResource(uri, cacheBuster.key).apply {
+                js.add(this)
+            }
+        }
+
+        fun resourceJs(uri: String): WebResource {
+
+            val bytes = uri.toInputStream().readBytes()
+
+            return WebResource(uri, bytes.md5(), "sha384-${bytes.sha384().base64()}").apply {
+                js.add(this)
+            }
+        }
+
+        private fun String.toInputStream(): InputStream = this::class.java.getResourceAsStream(this)
+    }
+}
+
+fun webResources(meta: AppMeta, builder: WebResources.() -> Unit): WebResources {
+    return WebResources(meta.cacheBuster()).apply(builder)
+}
+
+class WebResources(private val cacheBuster: CacheBuster) {
+
+    private val groups = mutableMapOf<String, WebResourceGroup>()
+
+    fun group(name: String, builder: WebResourceGroup.Builder.() -> Unit): Unit {
+
+        WebResourceGroup.Builder(cacheBuster).apply(builder).build().apply {
+            groups[name] = this
+        }
     }
 
-    fun resourceCss(uri: String) = apply {
-
-        val bytes = uri.toInputStream().readBytes()
-
-        _css.add(
-            WebResource(uri, bytes.md5(), "sha384-${bytes.sha384().base64()}")
-        )
-    }
-
-    fun webjarJs(uri: String) = apply {
-        _js.add(WebResource(uri, cacheBuster.key))
-    }
-
-    fun resourceJs(uri: String) = apply {
-
-        val bytes = uri.toInputStream().readBytes()
-
-        _js.add(
-            WebResource(uri, bytes.md5(), "sha384-${bytes.sha384().base64()}")
-        )
-    }
-
-    private fun String.toInputStream(): InputStream = this::class.java.getResourceAsStream(this)
+    operator fun get(name: String) = groups[name] ?: throw Exception("Resource group '$name' not present")
 }
 
 val iocWebResourcesKey = AttributeKey<WebResources>("web-resources")

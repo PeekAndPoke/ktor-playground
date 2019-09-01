@@ -11,10 +11,11 @@ import kotlinx.html.*
 class MainTemplate(call: ApplicationCall) : Template<HTML> {
 
     val t = call.iocTranslations
-    private val webResources = call.iocWebResources
+    private val webResources = call.iocWebResources["legacy"]
 
     val pageTitle = Placeholder<HEAD>()
     val content = Placeholder<MAIN>()
+
 
     init {
         pageTitle {
@@ -25,7 +26,6 @@ class MainTemplate(call: ApplicationCall) : Template<HTML> {
     override fun HTML.apply() {
 
         // see https://bootsnipp.com/snippets/Q0dAX "Pro Sidebar Template with Bootstrap 4"
-
 
         head {
             insert(pageTitle)

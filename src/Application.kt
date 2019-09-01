@@ -40,6 +40,7 @@ import io.ktor.util.hex
 import io.ktor.websocket.webSocket
 import io.ultra.ktor_tools.FlashSession
 import io.ultra.ktor_tools.resources.*
+import io.ultra.ktor_tools.semanticui.ui
 import kotlinx.html.*
 import java.time.Duration
 import java.util.*
@@ -50,25 +51,27 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 private val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev")
 
-
 val Meta = object : AppMeta() {}
 
-val WebResources = object : WebResources(CacheBuster(Meta.getVersionMd5())) {
+val WebResources = webResources(Meta) {
 
-    init {
-        // vendor css
+    group("legacy") {
+
         webjarCss("/vendor/bootstrap/css/bootstrap.css")
-        webjarCss("/vendor/font-awesome/css/all.css")
-
-        // vendor js
-        webjarJs("/vendor/jquery/jquery.min.js")
         webjarJs("/vendor/bootstrap/js/bootstrap.min.js")
 
-        // custom css
-        resourceCss("/assets/css/styles.css")
+        webjarCss("/vendor/font-awesome/css/all.css")
+
+        webjarJs("/vendor/jquery/jquery.min.js")
 
         // custom
+        resourceCss("/assets/css/styles.css")
         resourceJs("/assets/js/template.js")
+    }
+
+    group("semantic") {
+        webjarCss("/vendor/Semantic-UI/semantic.css")
+        webjarJs("/vendor/Semantic-UI/semantic.js")
     }
 }
 
@@ -316,6 +319,98 @@ fun Application.module(testing: Boolean = false) {
 
         get("/__hello__") {
             call.respondText("Hello", ContentType.Text.Html, HttpStatusCode.OK)
+        }
+
+        get("/semantic-ui") {
+            call.respondHtml {
+
+                head {
+
+                    meta {
+                        charset = "utf-8"
+                    }
+
+                    iocWebResources["semantic"].css.forEach { css ->
+                        link(rel = "stylesheet", href = css.fullUri) {
+                            css.integrity?.let { integrity = it }
+                        }
+                    }
+                }
+
+                body {
+
+                    ui.container {
+
+                        h1 {
+                            +"Site"
+                        }
+
+                        ui.three.column.stackable.divided.grid {
+
+                            ui.column {
+                                h1 { +"Heading 1" }
+                                h2 { +"Heading 2" }
+                                h3 { +"Heading 3" }
+                                h4 { +"Heading 4" }
+                                h5 { +"Heading 5" }
+                                h6 { +"Heading 6" }
+                            }
+
+                            ui.column {
+                                h2 { +"""Example body text""" }
+                                p {
+                                    +"""Nullam quis risus eget"""
+                                    a {
+                                        href = "#"
+                                        +"""urna mollis ornare"""
+                                    }
+                                    +"""vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam id dolor id nibh ultricies vehicula."""
+                                }
+                                p {
+                                    small { +"""This line of text is meant to be treated as fine print.""" }
+                                }
+                                p {
+                                    +"""The following snippet of text is """
+                                    strong { +"""rendered as bold text""" }
+                                    +"""."""
+                                }
+                                p {
+                                    +"""The following snippet of text is """
+                                    em { +"""rendered as italicized text""" }
+                                    +"""."""
+                                }
+                                p {
+                                    +"""An abbreviation of the word attribute is """
+                                    abbr {
+                                        title = "attribute"
+                                        +"""attr"""
+                                    }
+                                    +"""."""
+                                }
+                            }
+
+                            ui.column {
+                                ui.three.column.stackable.padded.middle.aligned.centered.column.grid {
+
+                                    ui.red.column { +"Red" }
+                                    ui.orange.column { +"Orange" }
+                                    ui.yellow.column { +"Yellow" }
+                                    ui.olive.column { +"olive" }
+                                    ui.green.column { +"green" }
+                                    ui.teal.column { +"teal" }
+                                    ui.blue.column { +"blue" }
+                                    ui.violet.column { +"violet" }
+                                    ui.purple.column { +"purple" }
+                                    ui.pink.column { +"pink" }
+                                    ui.brown.column { +"brown" }
+                                    ui.grey.column { +"grey" }
+                                    ui.black.column { +"black" }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         host("admin.*".toRegex()) {
