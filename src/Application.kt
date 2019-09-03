@@ -40,8 +40,10 @@ import io.ktor.util.getDigestFunction
 import io.ktor.util.hex
 import io.ktor.websocket.webSocket
 import io.ultra.ktor_tools.FlashSession
-import io.ultra.ktor_tools.resources.*
-import io.ultra.ktor_tools.semanticui.ui
+import io.ultra.ktor_tools.resources.AppMeta
+import io.ultra.ktor_tools.resources.BetterWebjars
+import io.ultra.ktor_tools.resources.put
+import io.ultra.ktor_tools.resources.webResources
 import kotlinx.html.*
 import java.time.Duration
 import java.util.*
@@ -73,6 +75,17 @@ val WebResources = webResources(Meta) {
     group("semantic") {
         webjarCss("/vendor/Semantic-UI/semantic.css")
         webjarJs("/vendor/Semantic-UI/semantic.js")
+    }
+
+    group("prism") {
+        webjarCss("/vendor/prismjs/prism.css")
+        webjarCss("/vendor/prismjs/prism.css")
+        webjarCss("/vendor/prismjs/plugins/toolbar/prism-toolbar.css")
+
+        webjarJs("/vendor/prismjs/prism.js")
+        webjarJs("/vendor/prismjs/plugins/toolbar/prism-toolbar.js")
+        webjarJs("/vendor/prismjs/show-language/prism-show-language.js")
+        webjarJs("/vendor/prismjs/components/prism-kotlin.js")
     }
 }
 

@@ -18,7 +18,7 @@ import kotlinx.html.*
 internal class Template constructor(private val linkTo: SemanticUiModule.LinkTo, call: ApplicationCall) : Template<HTML> {
 
     val t = call.iocTranslations
-    private val webResources = call.iocWebResources["semantic"]
+    private val webResources = call.iocWebResources
 
     val pageTitle = Placeholder<HEAD>()
     val content = Placeholder<FlowContent>()
@@ -37,7 +37,8 @@ internal class Template constructor(private val linkTo: SemanticUiModule.LinkTo,
 
             insert(pageTitle)
 
-            css(webResources)
+            css(webResources["semantic"])
+            css(webResources["prism"])
 
             style(
                 "text/css", """
@@ -66,7 +67,8 @@ internal class Template constructor(private val linkTo: SemanticUiModule.LinkTo,
                 }
             }
 
-            js(webResources)
+            js(webResources["semantic"])
+            js(webResources["prism"])
         }
     }
 }
