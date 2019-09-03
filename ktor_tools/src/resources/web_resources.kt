@@ -8,21 +8,29 @@ import io.ktor.application.call
 import io.ktor.util.AttributeKey
 import io.ktor.util.Attributes
 import io.ktor.util.pipeline.PipelineContext
+import kotlinx.html.*
 import java.io.InputStream
 
 data class CacheBuster(val key: String) {
     override fun toString() = key
 }
 
-data class WebResource(val uri: String, val cacheKey: String? = null, val integrity: String? = null) {
+fun webResources(meta: AppMeta, builder: WebResources.() -> Unit): WebResources {
+    return WebResources(meta.cacheBuster()).apply(builder)
+}
 
-    val fullUri by lazy {
+class WebResources(private val cacheBuster: CacheBuster) {
 
-        when (cacheKey) {
-            null -> uri
-            else -> "$uri?$cacheKey"
+    private val groups = mutableMapOf<String, WebResourceGroup>()
+
+    fun group(name: String, builder: WebResourceGroup.Builder.() -> Unit): Unit {
+
+        WebResourceGroup.Builder(cacheBuster).apply(builder).build().apply {
+            groups[name] = this
         }
     }
+
+    operator fun get(name: String) = groups[name] ?: throw Exception("Resource group '$name' not present")
 }
 
 data class WebResourceGroup(val css: List<WebResource>, val js: List<WebResource>) {
@@ -68,23 +76,32 @@ data class WebResourceGroup(val css: List<WebResource>, val js: List<WebResource
     }
 }
 
-fun webResources(meta: AppMeta, builder: WebResources.() -> Unit): WebResources {
-    return WebResources(meta.cacheBuster()).apply(builder)
-}
+data class WebResource(val uri: String, val cacheKey: String? = null, val integrity: String? = null) {
 
-class WebResources(private val cacheBuster: CacheBuster) {
+    val fullUri by lazy {
 
-    private val groups = mutableMapOf<String, WebResourceGroup>()
-
-    fun group(name: String, builder: WebResourceGroup.Builder.() -> Unit): Unit {
-
-        WebResourceGroup.Builder(cacheBuster).apply(builder).build().apply {
-            groups[name] = this
+        when (cacheKey) {
+            null -> uri
+            else -> "$uri?$cacheKey"
         }
     }
-
-    operator fun get(name: String) = groups[name] ?: throw Exception("Resource group '$name' not present")
 }
+
+// HTML //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+fun FlowOrMetaDataContent.css(group: WebResourceGroup) = group.css.forEach { css ->
+    link(rel = "stylesheet", href = css.fullUri) {
+        css.integrity?.let { integrity = it }
+    }
+}
+
+fun FlowOrMetaDataContent.js(group: WebResourceGroup) = group.js.forEach { js ->
+    script(type = ScriptType.textJavaScript, src = js.fullUri) {
+        js.integrity?.let { integrity = it }
+    }
+}
+
+// IOC //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 val iocWebResourcesKey = AttributeKey<WebResources>("web-resources")
 

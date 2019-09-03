@@ -1,6 +1,7 @@
 package io.ultra.ktor_tools.semanticui
 
 import kotlinx.html.FlowContent
+import kotlinx.html.button
 import kotlinx.html.classes
 import kotlinx.html.div
 
@@ -10,16 +11,31 @@ annotation class SemanticUiDslMarker
 @DslMarker
 annotation class SemanticUiCssMarker
 
+@SemanticUiDslMarker val FlowContent.ui get() = SemanticUiDiv(this, mutableSetOf("ui"))
 
-@SemanticUiDslMarker
-val FlowContent.ui
-    get() = SemanticUi(this)
+abstract class SemanticUi(val parent: FlowContent, val cssClasses: MutableSet<String>) {
 
-class SemanticUi(private val parent: FlowContent, private val cssClasses: MutableSet<String> = mutableSetOf("ui")) {
+    // switches
+
+    @SemanticUiCssMarker val button get() : SemanticUiButton {
+        cssClasses.add("button")
+
+        return SemanticUiButton(parent, cssClasses)
+    }
+
+
+    @SemanticUiCssMarker val overlay get() = this + "overlay"
+    @SemanticUiCssMarker val fixed get() = this + "fixed"
+    @SemanticUiCssMarker val shrink get() = this + "shrink"
+    @SemanticUiCssMarker val basic get() = this + "basic"
+    @SemanticUiCssMarker val scale get() = this + "scale"
+    @SemanticUiCssMarker val down get() = this + "down"
 
     // container
 
     @SemanticUiCssMarker val container get() = this + "container"
+    @SemanticUiCssMarker val segment get() = this + "segment"
+    @SemanticUiCssMarker val pusher get() = this + "pusher"
 
     // numbers
 
@@ -29,12 +45,30 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
     @SemanticUiCssMarker val four get() = this + "four"
     @SemanticUiCssMarker val five get() = this + "five"
     @SemanticUiCssMarker val six get() = this + "six"
+    @SemanticUiCssMarker val seven get() = this + "seven"
+    @SemanticUiCssMarker val eight get() = this + "eight"
+    @SemanticUiCssMarker val nine get() = this + "nine"
+    @SemanticUiCssMarker val ten get() = this + "ten"
+    @SemanticUiCssMarker val eleven get() = this + "eleven"
+    @SemanticUiCssMarker val twelve get() = this + "twelve"
+
+    // positions
+
+    @SemanticUiCssMarker val left get() = this + "left"
+    @SemanticUiCssMarker val right get() = this + "right"
+
+    // directions
+
+    @SemanticUiCssMarker val horizontal get() = this + "horizontal"
+    @SemanticUiCssMarker val vertical get() = this + "vertical"
 
     // grid
 
     @SemanticUiCssMarker val column get() = this + "column"
     @SemanticUiCssMarker val grid get() = this + "grid"
+    @SemanticUiCssMarker val wide get() = this + "wide"
     @SemanticUiCssMarker val stackable get() = this + "stackable"
+    @SemanticUiCssMarker val stretched get() = this + "stretched"
 
     // layout
 
@@ -47,6 +81,8 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
     // colors
 
     @SemanticUiCssMarker val color get() = this + "color"
+    @SemanticUiCssMarker val inverted get() = this + "inverted"
+
     @SemanticUiCssMarker val red get() = this + "red"
     @SemanticUiCssMarker val orange get() = this + "orange"
     @SemanticUiCssMarker val yellow get() = this + "yellow"
@@ -61,17 +97,62 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
     @SemanticUiCssMarker val grey get() = this + "grey"
     @SemanticUiCssMarker val black get() = this + "black"
 
+    // emphasis
+
+    @SemanticUiCssMarker val primary get() = this + "primary"
+    @SemanticUiCssMarker val secondary get() = this + "secondary"
+
+    // animations
+
+    @SemanticUiCssMarker val animated get() = this + "animated"
+    @SemanticUiCssMarker val fade get() = this + "fade"
+
+    // content
+
+    @SemanticUiCssMarker val content get() = this + "content"
+    @SemanticUiCssMarker val visible get() = this + "visible"
+    @SemanticUiCssMarker val hidden get() = this + "hidden"
+
+    // labels
+
+    @SemanticUiCssMarker val labeled get() = this + "labeled"
+
+    // modules
+
+    @SemanticUiCssMarker val menu get() = this + "menu"
+    @SemanticUiCssMarker val sidebar get() = this + "sidebar"
+    @SemanticUiCssMarker val item get() = this + "item"
+
+
     @SemanticUiCssMarker
-    operator fun invoke(inner: FlowContent.() -> Unit) {
+    abstract operator fun invoke(inner: FlowContent.() -> Unit)
+
+    private operator fun plus(cls: String) = apply {
+        cssClasses.add(cls)
+    }
+}
+
+class SemanticUiDiv(parent: FlowContent, cssClasses: MutableSet<String>) : SemanticUi(parent, cssClasses) {
+
+    @SemanticUiCssMarker
+    override operator fun invoke(inner: FlowContent.() -> Unit) {
 
         parent.div {
             classes = cssClasses
             apply(inner)
         }
     }
+}
 
-    private operator fun plus(cls: String) = apply {
-        cssClasses.add(cls)
+class SemanticUiButton(parent: FlowContent, cssClasses: MutableSet<String>) : SemanticUi(parent, cssClasses) {
+
+    @SemanticUiCssMarker
+    override operator fun invoke(inner: FlowContent.() -> Unit) {
+
+        parent.button {
+            classes = cssClasses
+            apply(inner)
+        }
     }
 }
 
