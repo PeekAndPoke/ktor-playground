@@ -2,15 +2,6 @@ package io.ultra.ktor_tools.semanticui
 
 import kotlinx.html.*
 
-@DslMarker
-annotation class SemanticUiDslMarker
-
-@DslMarker
-annotation class SemanticUiCssMarker
-
-@DslMarker
-annotation class SemanticUiTagMarker
-
 @SemanticUiDslMarker val FlowContent.ui get() = SemanticUi(this, mutableSetOf("ui"))
 
 class SemanticUi(private val parent: FlowContent, private val cssClasses: MutableSet<String>) {

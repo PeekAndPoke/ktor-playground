@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id=":mod_semanticui" external.linked.project.path="$MODULE_DIR$/../../../mod_semanticui" external.root.project.path="$MODULE_DIR$/../../.." external.system.id="GRADLE" external.system.module.group="de.peekandpoke.ultra" external.system.module.version="0.0.1" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../mod_semanticui">
+      <excludeFolder url="file://$MODULE_DIR$/../../../mod_semanticui/.gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../mod_semanticui/build" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../mod_semanticui/out" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

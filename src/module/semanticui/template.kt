@@ -42,9 +42,15 @@ internal class Template constructor(private val linkTo: SemanticUiModule.LinkTo,
 
             style(
                 "text/css", """
+                    
                 .pusher.padded.right {
                     padding-right: 260px;
                 }
+                
+                .button {
+                    margin: 0 10px 10px 0 !important;
+                }
+
             """.trimIndent()
             )
         }
@@ -58,6 +64,8 @@ internal class Template constructor(private val linkTo: SemanticUiModule.LinkTo,
                 a(classes = "item", href = linkTo.playground()) { +"Playground" }
 
                 a(classes = "item", href = linkTo.buttons()) { +"Buttons" }
+
+                a(classes = "item", href = linkTo.icons()) { +"Icons" }
             }
 
             ui.pusher.padded.right {

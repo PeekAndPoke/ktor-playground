@@ -1,6 +1,7 @@
 package de.peekandpoke.module.semanticui
 
 import de.peekandpoke.module.semanticui.views.buttons
+import de.peekandpoke.module.semanticui.views.icons
 import de.peekandpoke.module.semanticui.views.index
 import de.peekandpoke.module.semanticui.views.playground
 import io.ktor.application.Application
@@ -44,12 +45,16 @@ class SemanticUiModule(val mountPoint: Route) {
     @Location("/buttons")
     internal class Buttons
 
+    @Location("/icons")
+    internal class Icons
+
     @Location("/playground")
     internal class Playground
 
     inner class LinkTo : LinkGenerator(mountPoint) {
         fun index() = linkTo(Index())
         fun buttons() = linkTo(Buttons())
+        fun icons() = linkTo(Icons())
         fun playground() = linkTo(Playground())
     }
 
@@ -68,6 +73,10 @@ class SemanticUiModule(val mountPoint: Route) {
 
             get<Buttons> {
                 respond { buttons() }
+            }
+
+            get<Icons> {
+                respond { icons() }
             }
 
             get<Playground> {

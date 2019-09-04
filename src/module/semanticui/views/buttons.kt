@@ -11,6 +11,7 @@ import kotlinx.html.h1
 import kotlinx.html.i
 import kotlinx.html.p
 
+@Suppress("DuplicatedCode")
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
 internal fun Template.buttons() {
@@ -140,16 +141,16 @@ internal fun Template.buttons() {
                     ui.red.button { +"Red" }
                     ui.orange.button { +"Orange" }
                     ui.yellow.button { +"Yellow" }
-                    ui.olive.button { +"olive" }
-                    ui.green.button { +"green" }
-                    ui.teal.button { +"teal" }
-                    ui.blue.button { +"blue" }
-                    ui.violet.button { +"violet" }
-                    ui.purple.button { +"purple" }
-                    ui.pink.button { +"pink" }
-                    ui.brown.button { +"brown" }
-                    ui.grey.button { +"grey" }
-                    ui.black.button { +"black" }
+                    ui.olive.button { +"Olive" }
+                    ui.green.button { +"Green" }
+                    ui.teal.button { +"Teal" }
+                    ui.blue.button { +"Blue" }
+                    ui.violet.button { +"Violet" }
+                    ui.purple.button { +"Purple" }
+                    ui.pink.button { +"Pink" }
+                    ui.brown.button { +"Brown" }
+                    ui.grey.button { +"Grey" }
+                    ui.black.button { +"Black" }
                 }
                 ui.column {
                     prism(Lang.Kotlin) {
@@ -157,55 +158,116 @@ internal fun Template.buttons() {
                             ui.red.button { +"Red" }
                             ui.orange.button { +"Orange" }
                             ui.yellow.button { +"Yellow" }
-                            ui.olive.button { +"olive" }
-                            ui.green.button { +"green" }
-                            ui.teal.button { +"teal" }
-                            ui.blue.button { +"blue" }
-                            ui.violet.button { +"violet" }
-                            ui.purple.button { +"purple" }
-                            ui.pink.button { +"pink" }
-                            ui.brown.button { +"brown" }
-                            ui.grey.button { +"grey" }
-                            ui.black.button { +"black" }
+                            ui.olive.button { +"Olive" }
+                            ui.green.button { +"Green" }
+                            ui.teal.button { +"Teal" }
+                            ui.blue.button { +"Blue" }
+                            ui.violet.button { +"Violet" }
+                            ui.purple.button { +"Purple" }
+                            ui.pink.button { +"Pink" }
+                            ui.brown.button { +"Brown" }
+                            ui.grey.button { +"Grey" }
+                            ui.black.button { +"Black" }
                         """.trimIndent()
                     }
                 }
             }
 
             ui.row {
-                ui.column { +"Buttons with colors (basic)" }
+                ui.column { +"Basic Buttons are less pronounced" }
                 ui.column {
+                    ui.basic.button { +"Default" }
+                    ui.basic.primary.button { +"Primary" }
+                    ui.basic.secondary.button { +"Secondary" }
+                    ui.basic.positive.button { +"Positive" }
+                    ui.basic.negative.button { +"Negative" }
                     ui.basic.red.button { +"Red" }
                     ui.basic.basic.red.button { +"Red" }
                     ui.basic.orange.button { +"Orange" }
                     ui.basic.yellow.button { +"Yellow" }
-                    ui.basic.olive.button { +"olive" }
-                    ui.basic.green.button { +"green" }
-                    ui.basic.teal.button { +"teal" }
-                    ui.basic.blue.button { +"blue" }
-                    ui.basic.violet.button { +"violet" }
-                    ui.basic.purple.button { +"purple" }
-                    ui.basic.pink.button { +"pink" }
-                    ui.basic.brown.button { +"brown" }
-                    ui.basic.grey.button { +"grey" }
-                    ui.basic.black.button { +"black" }
+                    ui.basic.olive.button { +"Olive" }
+                    ui.basic.green.button { +"Green" }
+                    ui.basic.teal.button { +"Teal" }
+                    ui.basic.blue.button { +"Blue" }
+                    ui.basic.violet.button { +"Violet" }
+                    ui.basic.purple.button { +"Purple" }
+                    ui.basic.pink.button { +"Pink" }
+                    ui.basic.brown.button { +"Brown" }
+                    ui.basic.grey.button { +"Grey" }
+                    ui.basic.black.button { +"Black" }
                 }
                 ui.column {
                     prism(Lang.Kotlin) {
                         """
+                            ui.basic.button { +"Default" }
+                            ui.basic.primary.button { +"Primary" }
+                            ui.basic.secondary.button { +"Secondary" }
+                            ui.basic.positive.button { +"Positive" }
+                            ui.basic.negative.button { +"Negative" }
                             ui.basic.red.button { +"Red" }
                             ui.basic.orange.button { +"Orange" }
                             ui.basic.yellow.button { +"Yellow" }
-                            ui.basic.olive.button { +"olive" }
-                            ui.basic.green.button { +"green" }
-                            ui.basic.teal.button { +"teal" }
-                            ui.basic.blue.button { +"blue" }
-                            ui.basic.violet.button { +"violet" }
-                            ui.basic.purple.button { +"purple" }
-                            ui.basic.pink.button { +"pink" }
-                            ui.basic.brown.button { +"brown" }
-                            ui.basic.grey.button { +"grey" }
-                            ui.basic.black.button { +"black" }
+                            ui.basic.olive.button { +"Olive" }
+                            ui.basic.green.button { +"Green" }
+                            ui.basic.teal.button { +"Teal" }
+                            ui.basic.blue.button { +"Blue" }
+                            ui.basic.violet.button { +"Violet" }
+                            ui.basic.purple.button { +"Purple" }
+                            ui.basic.pink.button { +"Pink" }
+                            ui.basic.brown.button { +"Brown" }
+                            ui.basic.grey.button { +"Grey" }
+                            ui.basic.black.button { +"Black" }
+                        """.trimIndent()
+                    }
+                }
+            }
+
+            ui.row {
+                ui.column { +"Basic Buttons on inverted background" }
+                ui.column {
+                    ui.inverted.segment {
+                        ui.inverted.button { +"Default" }
+                        ui.inverted.primary.button { +"Primary" }
+                        ui.inverted.secondary.button { +"Secondary" }
+                        ui.inverted.positive.button { +"Positive" }
+                        ui.inverted.negative.button { +"Negative" }
+                        ui.inverted.red.button { +"Red" }
+                        ui.inverted.basic.red.button { +"Red" }
+                        ui.inverted.orange.button { +"Orange" }
+                        ui.inverted.yellow.button { +"Yellow" }
+                        ui.inverted.olive.button { +"Olive" }
+                        ui.inverted.green.button { +"Green" }
+                        ui.inverted.teal.button { +"Teal" }
+                        ui.inverted.blue.button { +"Blue" }
+                        ui.inverted.violet.button { +"Violet" }
+                        ui.inverted.purple.button { +"Purple" }
+                        ui.inverted.pink.button { +"Pink" }
+                        ui.inverted.brown.button { +"Brown" }
+                        ui.inverted.grey.button { +"Grey" }
+                        ui.inverted.black.button { +"Black" }
+                    }
+                }
+                ui.column {
+                    prism(Lang.Kotlin) {
+                        """
+                            ui.inverted.button { +"Default" }
+                            ui.inverted.primary.button { +"Primary" }
+                            ui.inverted.secondary.button { +"Secondary" }
+                            ui.inverted.positive.button { +"Positive" }
+                            ui.inverted.negative.button { +"Negative" }
+                            ui.basic.red.button { +"Red" }
+                            ui.basic.orange.button { +"Orange" }
+                            ui.basic.yellow.button { +"Yellow" }
+                            ui.basic.olive.button { +"Olive" }
+                            ui.basic.green.button { +"Green" }
+                            ui.basic.teal.button { +"Teal" }
+                            ui.basic.blue.button { +"Blue" }
+                            ui.basic.violet.button { +"Violet" }
+                            ui.basic.purple.button { +"Purple" }
+                            ui.basic.pink.button { +"Pink" }
+                            ui.basic.brown.button { +"Brown" }
+                            ui.basic.grey.button { +"Grey" }
+                            ui.basic.black.button { +"Black" }
                         """.trimIndent()
                     }
                 }
@@ -290,7 +352,7 @@ internal fun Template.buttons() {
                 ui.column {
                     ui.labeled.button {
                         ui.button { i(classes = "heart icon") }
-                        a(classes = "ui basic label") { +"2,048" }
+                        ui.basic.label A { +"2,048" }
                     }
                 }
                 ui.column {
@@ -298,7 +360,7 @@ internal fun Template.buttons() {
                         """
                         ui.labeled.button {
                             ui.button { i(classes = "heart icon") }
-                            a(classes = "ui basic label") { +"2,048" }
+                            ui.basic.label A { +"2,048" }
                         }
                     """.trimIndent()
                     }
@@ -375,8 +437,14 @@ internal fun Template.buttons() {
                         """.trimIndent()
                     }
                 }
-
             }
         }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ui.dividing.header H3 { +"Buttons with icons" }
+
+        // TODO: continue
+
     }
 }
