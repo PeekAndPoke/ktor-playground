@@ -1,0 +1,24 @@
+
+var mapr = (input) => input.split("\n").filter(it => it.length > 0)
+.map(it => /.*class="(.*)".*/.exec(it))
+.map(it => {
+    let parts = it[1].split(" ")
+    parts.pop()
+    return parts
+})
+.map(it => `ui.column {
+    icon.${it.join("_")}()
+    +"${it.join(" ")}"
+}`)
+.join("\n\n")
+
+
+var mapf = (input) => input.split("\n").filter(it => it.length > 0)
+.map(it => /.*class="(.*)".*/.exec(it))
+.map(it => {
+    let parts = it[1].split(" ")
+    parts.pop()
+    return parts
+})
+.map(it => `@SemanticUiCssMarker fun ${it.join("_")}() = render("${it.join(" ")} icon")`)
+.join("\n\n")

@@ -74,6 +74,8 @@ val WebResources = webResources(Meta) {
 
     group("semantic") {
         webjarCss("/vendor/Semantic-UI/semantic.css")
+
+        webjarJs("/vendor/jquery/jquery.min.js")
         webjarJs("/vendor/Semantic-UI/semantic.js")
     }
 
