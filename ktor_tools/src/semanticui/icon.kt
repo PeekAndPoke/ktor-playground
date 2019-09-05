@@ -503,6 +503,8 @@ class SemanticIcon(private val parent: FlowContent) {
 
     @SemanticUiCssMarker fun fire_extinguisher() = render("fire extinguisher icon")
 
+    @SemanticUiCssMarker fun fork() = render("fork icon")
+
     @SemanticUiCssMarker fun qrcode() = render("qrcode icon")
 
     @SemanticUiCssMarker fun shield_alternate() = render("shield alternate icon")
@@ -903,6 +905,1076 @@ class SemanticIcon(private val parent: FlowContent) {
     @SemanticUiCssMarker fun images_outline() = render("images outline icon")
 
     @SemanticUiCssMarker fun sliders_horizontal() = render("sliders horizontal icon")
+
+
+    // Interfaces ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @SemanticUiCssMarker fun ban() = render("ban icon")
+
+    @SemanticUiCssMarker fun bars() = render("bars icon")
+
+    @SemanticUiCssMarker fun beer() = render("beer icon")
+
+    @SemanticUiCssMarker fun check() = render("check icon")
+
+    @SemanticUiCssMarker fun check_circle() = render("check circle icon")
+
+    @SemanticUiCssMarker fun check_circle_outline() = render("check circle outline icon")
+
+    @SemanticUiCssMarker fun check_square() = render("check square icon")
+
+    @SemanticUiCssMarker fun check_square_outline() = render("check square outline icon")
+
+    @SemanticUiCssMarker fun cloud() = render("cloud icon")
+
+    @SemanticUiCssMarker fun cog() = render("cog icon")
+
+    @SemanticUiCssMarker fun cogs() = render("cogs icon")
+
+    @SemanticUiCssMarker fun database() = render("database icon")
+
+    @SemanticUiCssMarker fun dot_circle() = render("dot circle icon")
+
+    @SemanticUiCssMarker fun dot_circle_outline() = render("dot circle outline icon")
+
+    @SemanticUiCssMarker fun ellipsis_horizontal() = render("ellipsis horizontal icon")
+
+    @SemanticUiCssMarker fun ellipsis_vertical() = render("ellipsis vertical icon")
+
+    @SemanticUiCssMarker fun exclamation() = render("exclamation icon")
+
+    @SemanticUiCssMarker fun exclamation_circle() = render("exclamation circle icon")
+
+    @SemanticUiCssMarker fun exclamation_triangle() = render("exclamation triangle icon")
+
+    @SemanticUiCssMarker fun flag() = render("flag icon")
+
+    @SemanticUiCssMarker fun flag_outline() = render("flag outline icon")
+
+    @SemanticUiCssMarker fun flag_checkered() = render("flag checkered icon")
+
+    @SemanticUiCssMarker fun frown() = render("frown icon")
+
+    @SemanticUiCssMarker fun frown_outline() = render("frown outline icon")
+
+    @SemanticUiCssMarker fun hashtag() = render("hashtag icon")
+
+    @SemanticUiCssMarker fun home() = render("home icon")
+
+    @SemanticUiCssMarker fun info() = render("info icon")
+
+    @SemanticUiCssMarker fun info_circle() = render("info circle icon")
+
+    @SemanticUiCssMarker fun magic() = render("magic icon")
+
+    @SemanticUiCssMarker fun meh() = render("meh icon")
+
+    @SemanticUiCssMarker fun meh_outline() = render("meh outline icon")
+
+    @SemanticUiCssMarker fun minus() = render("minus icon")
+
+    @SemanticUiCssMarker fun minus_circle() = render("minus circle icon")
+
+    @SemanticUiCssMarker fun minus_square() = render("minus square icon")
+
+    @SemanticUiCssMarker fun minus_square_outline() = render("minus square outline icon")
+
+    @SemanticUiCssMarker fun plus() = render("plus icon")
+
+    @SemanticUiCssMarker fun plus_circle() = render("plus circle icon")
+
+    @SemanticUiCssMarker fun question() = render("question icon")
+
+    @SemanticUiCssMarker fun search() = render("search icon")
+
+    @SemanticUiCssMarker fun search_minus() = render("search minus icon")
+
+    @SemanticUiCssMarker fun search_plus() = render("search plus icon")
+
+    @SemanticUiCssMarker fun share_alternate() = render("share alternate icon")
+
+    @SemanticUiCssMarker fun share_alternate_square() = render("share alternate square icon")
+
+    @SemanticUiCssMarker fun signal() = render("signal icon")
+
+    @SemanticUiCssMarker fun smile() = render("smile icon")
+
+    @SemanticUiCssMarker fun smile_outline() = render("smile outline icon")
+
+    @SemanticUiCssMarker fun star() = render("star icon")
+
+    @SemanticUiCssMarker fun star_outline() = render("star outline icon")
+
+    @SemanticUiCssMarker fun star_half() = render("star half icon")
+
+    @SemanticUiCssMarker fun star_half_outline() = render("star half outline icon")
+
+    @SemanticUiCssMarker fun times() = render("times icon")
+
+    @SemanticUiCssMarker fun times_circle() = render("times circle icon")
+
+    @SemanticUiCssMarker fun times_circle_outline() = render("times circle outline icon")
+
+    @SemanticUiCssMarker fun toggle_off() = render("toggle off icon")
+
+    @SemanticUiCssMarker fun toggle_on() = render("toggle on icon")
+
+    @SemanticUiCssMarker fun trophy() = render("trophy icon")
+
+    @SemanticUiCssMarker fun user() = render("user icon")
+
+    @SemanticUiCssMarker fun user_outline() = render("user outline icon")
+
+    @SemanticUiCssMarker fun user_circle() = render("user circle icon")
+
+    @SemanticUiCssMarker fun user_circle_outline() = render("user circle outline icon")
+
+
+    // Logistics ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @SemanticUiCssMarker fun box() = render("box icon")
+
+    @SemanticUiCssMarker fun boxes() = render("boxes icon")
+
+    @SemanticUiCssMarker fun clipboard_check() = render("clipboard check icon")
+
+    @SemanticUiCssMarker fun clipboard_list() = render("clipboard list icon")
+
+    @SemanticUiCssMarker fun dolly() = render("dolly icon")
+
+    @SemanticUiCssMarker fun dolly_flatbed() = render("dolly flatbed icon")
+
+    @SemanticUiCssMarker fun pallet() = render("pallet icon")
+
+    @SemanticUiCssMarker fun shipping_fast() = render("shipping fast icon")
+
+    @SemanticUiCssMarker fun truck() = render("truck icon")
+
+    @SemanticUiCssMarker fun warehouse() = render("warehouse icon")
+
+
+    // Maps /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @SemanticUiCssMarker fun anchor() = render("anchor icon")
+
+    @SemanticUiCssMarker fun bed() = render("bed icon")
+
+    @SemanticUiCssMarker fun bicycle() = render("bicycle icon")
+
+    @SemanticUiCssMarker fun binoculars() = render("binoculars icon")
+
+    @SemanticUiCssMarker fun bomb() = render("bomb icon")
+
+    @SemanticUiCssMarker fun bookmark() = render("bookmark icon")
+
+    @SemanticUiCssMarker fun bookmark_outline() = render("bookmark outline icon")
+
+    @SemanticUiCssMarker fun car() = render("car icon")
+
+    @SemanticUiCssMarker fun fighter_jet() = render("fighter jet icon")
+
+    @SemanticUiCssMarker fun fire() = render("fire icon")
+
+    @SemanticUiCssMarker fun flask() = render("flask icon")
+
+    @SemanticUiCssMarker fun gamepad() = render("gamepad icon")
+
+    @SemanticUiCssMarker fun gavel() = render("gavel icon")
+
+    @SemanticUiCssMarker fun gift() = render("gift icon")
+
+    @SemanticUiCssMarker fun glass_martini() = render("glass martini icon")
+
+    @SemanticUiCssMarker fun graduation_cap() = render("graduation cap icon")
+
+    @SemanticUiCssMarker fun key() = render("key icon")
+
+    @SemanticUiCssMarker fun leaf() = render("leaf icon")
+
+    @SemanticUiCssMarker fun lemon() = render("lemon icon")
+
+    @SemanticUiCssMarker fun lemon_outline() = render("lemon outline icon")
+
+    @SemanticUiCssMarker fun life_ring() = render("life ring icon")
+
+    @SemanticUiCssMarker fun life_ring_outline() = render("life ring outline icon")
+
+    @SemanticUiCssMarker fun lightbulb() = render("lightbulb icon")
+
+    @SemanticUiCssMarker fun lightbulb_outline() = render("lightbulb outline icon")
+
+    @SemanticUiCssMarker fun magnet() = render("magnet icon")
+
+    @SemanticUiCssMarker fun male() = render("male icon")
+
+    @SemanticUiCssMarker fun map() = render("map icon")
+
+    @SemanticUiCssMarker fun map_outline() = render("map outline icon")
+
+    @SemanticUiCssMarker fun map_marker() = render("map marker icon")
+
+    @SemanticUiCssMarker fun map_marker_alternate() = render("map marker alternate icon")
+
+    @SemanticUiCssMarker fun map_pin() = render("map pin icon")
+
+    @SemanticUiCssMarker fun map_signs() = render("map signs icon")
+
+    @SemanticUiCssMarker fun motorcycle() = render("motorcycle icon")
+
+    @SemanticUiCssMarker fun newspaper() = render("newspaper icon")
+
+    @SemanticUiCssMarker fun newspaper_outline() = render("newspaper outline icon")
+
+    @SemanticUiCssMarker fun paw() = render("paw icon")
+
+    @SemanticUiCssMarker fun plane() = render("plane icon")
+
+    @SemanticUiCssMarker fun road() = render("road icon")
+
+    @SemanticUiCssMarker fun rocket() = render("rocket icon")
+
+    @SemanticUiCssMarker fun ship() = render("ship icon")
+
+    @SemanticUiCssMarker fun shopping_bag() = render("shopping bag icon")
+
+    @SemanticUiCssMarker fun shopping_basket() = render("shopping basket icon")
+
+    @SemanticUiCssMarker fun shop() = render("shop icon")
+
+    @SemanticUiCssMarker fun shopping_cart() = render("shopping cart icon")
+
+    @SemanticUiCssMarker fun shower() = render("shower icon")
+
+    @SemanticUiCssMarker fun street_view() = render("street view icon")
+
+    @SemanticUiCssMarker fun subway() = render("subway icon")
+
+    @SemanticUiCssMarker fun taxi() = render("taxi icon")
+
+    @SemanticUiCssMarker fun ticket_alternate() = render("ticket alternate icon")
+
+    @SemanticUiCssMarker fun train() = render("train icon")
+
+    @SemanticUiCssMarker fun tree() = render("tree icon")
+
+    @SemanticUiCssMarker fun umbrella() = render("umbrella icon")
+
+    @SemanticUiCssMarker fun university() = render("university icon")
+
+    @SemanticUiCssMarker fun utensil_spoon() = render("utensil spoon icon")
+
+    @SemanticUiCssMarker fun utensils() = render("utensils icon")
+
+    @SemanticUiCssMarker fun wrench() = render("wrench icon")
+
+
+    // Medical //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @SemanticUiCssMarker fun band_aid() = render("band aid icon")
+
+    @SemanticUiCssMarker fun dna() = render("dna icon")
+
+    @SemanticUiCssMarker fun first_aid() = render("first aid icon")
+
+    @SemanticUiCssMarker fun hospital_symbol() = render("hospital symbol icon")
+
+    @SemanticUiCssMarker fun pills() = render("pills icon")
+
+    @SemanticUiCssMarker fun syringe() = render("syringe icon")
+
+    @SemanticUiCssMarker fun thermometer() = render("thermometer icon")
+
+    @SemanticUiCssMarker fun weight() = render("weight icon")
+
+
+    // Objects //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @SemanticUiCssMarker fun bus() = render("bus icon")
+
+    @SemanticUiCssMarker fun cube() = render("cube icon")
+
+    @SemanticUiCssMarker fun cubes() = render("cubes icon")
+
+    @SemanticUiCssMarker fun futbol() = render("futbol icon")
+
+    @SemanticUiCssMarker fun futbol_outline() = render("futbol outline icon")
+
+    @SemanticUiCssMarker fun gem() = render("gem icon")
+
+    @SemanticUiCssMarker fun gem_outline() = render("gem outline icon")
+
+    @SemanticUiCssMarker fun lock() = render("lock icon")
+
+    @SemanticUiCssMarker fun lock_open() = render("lock open icon")
+
+    @SemanticUiCssMarker fun moon() = render("moon icon")
+
+    @SemanticUiCssMarker fun moon_outline() = render("moon outline icon")
+
+    @SemanticUiCssMarker fun puzzle_piece() = render("puzzle piece icon")
+
+    @SemanticUiCssMarker fun snowflake() = render("snowflake icon")
+
+    @SemanticUiCssMarker fun snowflake_outline() = render("snowflake outline icon")
+
+    @SemanticUiCssMarker fun space_shuttle() = render("space shuttle icon")
+
+    @SemanticUiCssMarker fun sun() = render("sun icon")
+
+    @SemanticUiCssMarker fun sun_outline() = render("sun outline icon")
+
+    @SemanticUiCssMarker fun tachometer_alternate() = render("tachometer alternate icon")
+
+    @SemanticUiCssMarker fun unlock() = render("unlock icon")
+
+    @SemanticUiCssMarker fun unlock_alternate() = render("unlock alternate icon")
+
+
+    // Payments & Shopping //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @SemanticUiCssMarker fun cart_plus() = render("cart plus icon")
+
+    @SemanticUiCssMarker fun credit_card() = render("credit card icon")
+
+    @SemanticUiCssMarker fun credit_card_outline() = render("credit card outline icon")
+
+
+    // Shapes ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @SemanticUiCssMarker fun square() = render("square icon")
+
+    @SemanticUiCssMarker fun square_outline() = render("square outline icon")
+
+
+    // Spinners /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @SemanticUiCssMarker fun asterisk() = render("asterisk icon")
+
+    @SemanticUiCssMarker fun circle_notch() = render("circle notch icon")
+
+    @SemanticUiCssMarker fun spinner() = render("spinner icon")
+
+
+    // Sports ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @SemanticUiCssMarker fun baseball_ball() = render("baseball ball icon")
+
+    @SemanticUiCssMarker fun basketball_ball() = render("basketball ball icon")
+
+    @SemanticUiCssMarker fun bowling_ball() = render("bowling ball icon")
+
+    @SemanticUiCssMarker fun football_ball() = render("football ball icon")
+
+    @SemanticUiCssMarker fun golf_ball() = render("golf ball icon")
+
+    @SemanticUiCssMarker fun hockey_puck() = render("hockey puck icon")
+
+    @SemanticUiCssMarker fun quidditch() = render("quidditch icon")
+
+    @SemanticUiCssMarker fun table_tennis() = render("table tennis icon")
+
+    @SemanticUiCssMarker fun volleyball_ball() = render("volleyball ball icon")
+
+
+    // Status ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @SemanticUiCssMarker fun battery_empty() = render("battery empty icon")
+
+    @SemanticUiCssMarker fun battery_full() = render("battery full icon")
+
+    @SemanticUiCssMarker fun battery_half() = render("battery half icon")
+
+    @SemanticUiCssMarker fun battery_quarter() = render("battery quarter icon")
+
+    @SemanticUiCssMarker fun battery_three_quarters() = render("battery three quarters icon")
+
+    @SemanticUiCssMarker fun thermometer_empty() = render("thermometer empty icon")
+
+    @SemanticUiCssMarker fun thermometer_full() = render("thermometer full icon")
+
+    @SemanticUiCssMarker fun thermometer_half() = render("thermometer half icon")
+
+    @SemanticUiCssMarker fun thermometer_quarter() = render("thermometer quarter icon")
+
+    @SemanticUiCssMarker fun thermometer_three_quarters() = render("thermometer three quarters icon")
+
+
+    // User & People ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @SemanticUiCssMarker fun child() = render("child icon")
+
+    @SemanticUiCssMarker fun female() = render("female icon")
+
+    @SemanticUiCssMarker fun user_plus() = render("user plus icon")
+
+    @SemanticUiCssMarker fun user_times() = render("user times icon")
+
+    @SemanticUiCssMarker fun users() = render("users icon")
+
+
+    // Brands ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @SemanticUiCssMarker fun `500px`() = render("500px icon")
+
+    @SemanticUiCssMarker fun accessible_icon() = render("accessible icon icon")
+
+    @SemanticUiCssMarker fun accusoft() = render("accusoft icon")
+
+    @SemanticUiCssMarker fun adn() = render("adn icon")
+
+    @SemanticUiCssMarker fun adversal() = render("adversal icon")
+
+    @SemanticUiCssMarker fun affiliatetheme() = render("affiliatetheme icon")
+
+    @SemanticUiCssMarker fun algolia() = render("algolia icon")
+
+    @SemanticUiCssMarker fun amazon() = render("amazon icon")
+
+    @SemanticUiCssMarker fun amazon_pay() = render("amazon pay icon")
+
+    @SemanticUiCssMarker fun amilia() = render("amilia icon")
+
+    @SemanticUiCssMarker fun android() = render("android icon")
+
+    @SemanticUiCssMarker fun angellist() = render("angellist icon")
+
+    @SemanticUiCssMarker fun angrycreative() = render("angrycreative icon")
+
+    @SemanticUiCssMarker fun angular() = render("angular icon")
+
+    @SemanticUiCssMarker fun app_store() = render("app store icon")
+
+    @SemanticUiCssMarker fun app_store_ios() = render("app store ios icon")
+
+    @SemanticUiCssMarker fun apper() = render("apper icon")
+
+    @SemanticUiCssMarker fun apple() = render("apple icon")
+
+    @SemanticUiCssMarker fun apple_pay() = render("apple pay icon")
+
+    @SemanticUiCssMarker fun asymmetrik() = render("asymmetrik icon")
+
+    @SemanticUiCssMarker fun audible() = render("audible icon")
+
+    @SemanticUiCssMarker fun autoprefixer() = render("autoprefixer icon")
+
+    @SemanticUiCssMarker fun avianex() = render("avianex icon")
+
+    @SemanticUiCssMarker fun aviato() = render("aviato icon")
+
+    @SemanticUiCssMarker fun aws() = render("aws icon")
+
+    @SemanticUiCssMarker fun bandcamp() = render("bandcamp icon")
+
+    @SemanticUiCssMarker fun behance() = render("behance icon")
+
+    @SemanticUiCssMarker fun behance_square() = render("behance square icon")
+
+    @SemanticUiCssMarker fun bimobject() = render("bimobject icon")
+
+    @SemanticUiCssMarker fun bitbucket() = render("bitbucket icon")
+
+    @SemanticUiCssMarker fun bitcoin() = render("bitcoin icon")
+
+    @SemanticUiCssMarker fun bity() = render("bity icon")
+
+    @SemanticUiCssMarker fun black_tie() = render("black tie icon")
+
+    @SemanticUiCssMarker fun blackberry() = render("blackberry icon")
+
+    @SemanticUiCssMarker fun blogger() = render("blogger icon")
+
+    @SemanticUiCssMarker fun blogger_b() = render("blogger b icon")
+
+    @SemanticUiCssMarker fun bluetooth() = render("bluetooth icon")
+
+    @SemanticUiCssMarker fun bluetooth_b() = render("bluetooth b icon")
+
+    @SemanticUiCssMarker fun btc() = render("btc icon")
+
+    @SemanticUiCssMarker fun buromobelexperte() = render("buromobelexperte icon")
+
+    @SemanticUiCssMarker fun buysellads() = render("buysellads icon")
+
+    @SemanticUiCssMarker fun cc_amazon_pay() = render("cc amazon pay icon")
+
+    @SemanticUiCssMarker fun cc_amex() = render("cc amex icon")
+
+    @SemanticUiCssMarker fun cc_apple_pay() = render("cc apple pay icon")
+
+    @SemanticUiCssMarker fun cc_diners_club() = render("cc diners club icon")
+
+    @SemanticUiCssMarker fun cc_discover() = render("cc discover icon")
+
+    @SemanticUiCssMarker fun cc_jcb() = render("cc jcb icon")
+
+    @SemanticUiCssMarker fun cc_mastercard() = render("cc mastercard icon")
+
+    @SemanticUiCssMarker fun cc_paypal() = render("cc paypal icon")
+
+    @SemanticUiCssMarker fun cc_stripe() = render("cc stripe icon")
+
+    @SemanticUiCssMarker fun cc_visa() = render("cc visa icon")
+
+    @SemanticUiCssMarker fun centercode() = render("centercode icon")
+
+    @SemanticUiCssMarker fun chrome() = render("chrome icon")
+
+    @SemanticUiCssMarker fun cloudscale() = render("cloudscale icon")
+
+    @SemanticUiCssMarker fun cloudsmith() = render("cloudsmith icon")
+
+    @SemanticUiCssMarker fun cloudversify() = render("cloudversify icon")
+
+    @SemanticUiCssMarker fun codepen() = render("codepen icon")
+
+    @SemanticUiCssMarker fun codiepie() = render("codiepie icon")
+
+    @SemanticUiCssMarker fun connectdevelop() = render("connectdevelop icon")
+
+    @SemanticUiCssMarker fun contao() = render("contao icon")
+
+    @SemanticUiCssMarker fun cpanel() = render("cpanel icon")
+
+    @SemanticUiCssMarker fun creative_commons() = render("creative commons icon")
+
+    @SemanticUiCssMarker fun css3() = render("css3 icon")
+
+    @SemanticUiCssMarker fun css3_alternate() = render("css3 alternate icon")
+
+    @SemanticUiCssMarker fun cuttlefish() = render("cuttlefish icon")
+
+    @SemanticUiCssMarker fun d_and_d() = render("d and d icon")
+
+    @SemanticUiCssMarker fun dashcube() = render("dashcube icon")
+
+    @SemanticUiCssMarker fun delicious() = render("delicious icon")
+
+    @SemanticUiCssMarker fun deploydog() = render("deploydog icon")
+
+    @SemanticUiCssMarker fun deskpro() = render("deskpro icon")
+
+    @SemanticUiCssMarker fun deviantart() = render("deviantart icon")
+
+    @SemanticUiCssMarker fun digg() = render("digg icon")
+
+    @SemanticUiCssMarker fun digital_ocean() = render("digital ocean icon")
+
+    @SemanticUiCssMarker fun discord() = render("discord icon")
+
+    @SemanticUiCssMarker fun discourse() = render("discourse icon")
+
+    @SemanticUiCssMarker fun dochub() = render("dochub icon")
+
+    @SemanticUiCssMarker fun docker() = render("docker icon")
+
+    @SemanticUiCssMarker fun draft2digital() = render("draft2digital icon")
+
+    @SemanticUiCssMarker fun dribbble() = render("dribbble icon")
+
+    @SemanticUiCssMarker fun dribbble_square() = render("dribbble square icon")
+
+    @SemanticUiCssMarker fun dropbox() = render("dropbox icon")
+
+    @SemanticUiCssMarker fun drupal() = render("drupal icon")
+
+    @SemanticUiCssMarker fun dyalog() = render("dyalog icon")
+
+    @SemanticUiCssMarker fun earlybirds() = render("earlybirds icon")
+
+    @SemanticUiCssMarker fun edge() = render("edge icon")
+
+    @SemanticUiCssMarker fun elementor() = render("elementor icon")
+
+    @SemanticUiCssMarker fun ember() = render("ember icon")
+
+    @SemanticUiCssMarker fun empire() = render("empire icon")
+
+    @SemanticUiCssMarker fun envira() = render("envira icon")
+
+    @SemanticUiCssMarker fun erlang() = render("erlang icon")
+
+    @SemanticUiCssMarker fun ethereum() = render("ethereum icon")
+
+    @SemanticUiCssMarker fun etsy() = render("etsy icon")
+
+    @SemanticUiCssMarker fun expeditedssl() = render("expeditedssl icon")
+
+    @SemanticUiCssMarker fun facebook() = render("facebook icon")
+
+    @SemanticUiCssMarker fun facebook_f() = render("facebook f icon")
+
+    @SemanticUiCssMarker fun facebook_messenger() = render("facebook messenger icon")
+
+    @SemanticUiCssMarker fun facebook_square() = render("facebook square icon")
+
+    @SemanticUiCssMarker fun firefox() = render("firefox icon")
+
+    @SemanticUiCssMarker fun first_order() = render("first order icon")
+
+    @SemanticUiCssMarker fun firstdraft() = render("firstdraft icon")
+
+    @SemanticUiCssMarker fun flickr() = render("flickr icon")
+
+    @SemanticUiCssMarker fun flipboard() = render("flipboard icon")
+
+    @SemanticUiCssMarker fun fly() = render("fly icon")
+
+    @SemanticUiCssMarker fun font_awesome() = render("font awesome icon")
+
+    @SemanticUiCssMarker fun font_awesome_alternate() = render("font awesome alternate icon")
+
+    @SemanticUiCssMarker fun font_awesome_flag() = render("font awesome flag icon")
+
+    @SemanticUiCssMarker fun fonticons() = render("fonticons icon")
+
+    @SemanticUiCssMarker fun fonticons_fi() = render("fonticons fi icon")
+
+    @SemanticUiCssMarker fun fort_awesome() = render("fort awesome icon")
+
+    @SemanticUiCssMarker fun fort_awesome_alternate() = render("fort awesome alternate icon")
+
+    @SemanticUiCssMarker fun forumbee() = render("forumbee icon")
+
+    @SemanticUiCssMarker fun foursquare() = render("foursquare icon")
+
+    @SemanticUiCssMarker fun free_code_camp() = render("free code camp icon")
+
+    @SemanticUiCssMarker fun freebsd() = render("freebsd icon")
+
+    @SemanticUiCssMarker fun get_pocket() = render("get pocket icon")
+
+    @SemanticUiCssMarker fun gg() = render("gg icon")
+
+    @SemanticUiCssMarker fun gg_circle() = render("gg circle icon")
+
+    @SemanticUiCssMarker fun git() = render("git icon")
+
+    @SemanticUiCssMarker fun git_square() = render("git square icon")
+
+    @SemanticUiCssMarker fun github() = render("github icon")
+
+    @SemanticUiCssMarker fun github_alternate() = render("github alternate icon")
+
+    @SemanticUiCssMarker fun github_square() = render("github square icon")
+
+    @SemanticUiCssMarker fun gitkraken() = render("gitkraken icon")
+
+    @SemanticUiCssMarker fun gitlab() = render("gitlab icon")
+
+    @SemanticUiCssMarker fun gitter() = render("gitter icon")
+
+    @SemanticUiCssMarker fun glide() = render("glide icon")
+
+    @SemanticUiCssMarker fun glide_g() = render("glide g icon")
+
+    @SemanticUiCssMarker fun gofore() = render("gofore icon")
+
+    @SemanticUiCssMarker fun goodreads() = render("goodreads icon")
+
+    @SemanticUiCssMarker fun goodreads_g() = render("goodreads g icon")
+
+    @SemanticUiCssMarker fun google() = render("google icon")
+
+    @SemanticUiCssMarker fun google_drive() = render("google drive icon")
+
+    @SemanticUiCssMarker fun google_play() = render("google play icon")
+
+    @SemanticUiCssMarker fun google_plus() = render("google plus icon")
+
+    @SemanticUiCssMarker fun google_plus_g() = render("google plus g icon")
+
+    @SemanticUiCssMarker fun google_plus_square() = render("google plus square icon")
+
+    @SemanticUiCssMarker fun google_wallet() = render("google wallet icon")
+
+    @SemanticUiCssMarker fun gratipay() = render("gratipay icon")
+
+    @SemanticUiCssMarker fun grav() = render("grav icon")
+
+    @SemanticUiCssMarker fun gripfire() = render("gripfire icon")
+
+    @SemanticUiCssMarker fun grunt() = render("grunt icon")
+
+    @SemanticUiCssMarker fun gulp() = render("gulp icon")
+
+    @SemanticUiCssMarker fun hacker_news() = render("hacker news icon")
+
+    @SemanticUiCssMarker fun hacker_news_square() = render("hacker news square icon")
+
+    @SemanticUiCssMarker fun hips() = render("hips icon")
+
+    @SemanticUiCssMarker fun hire_a_helper() = render("hire a helper icon")
+
+    @SemanticUiCssMarker fun hooli() = render("hooli icon")
+
+    @SemanticUiCssMarker fun hotjar() = render("hotjar icon")
+
+    @SemanticUiCssMarker fun houzz() = render("houzz icon")
+
+    @SemanticUiCssMarker fun html5() = render("html5 icon")
+
+    @SemanticUiCssMarker fun hubspot() = render("hubspot icon")
+
+    @SemanticUiCssMarker fun imdb() = render("imdb icon")
+
+    @SemanticUiCssMarker fun instagram() = render("instagram icon")
+
+    @SemanticUiCssMarker fun internet_explorer() = render("internet explorer icon")
+
+    @SemanticUiCssMarker fun ioxhost() = render("ioxhost icon")
+
+    @SemanticUiCssMarker fun itunes() = render("itunes icon")
+
+    @SemanticUiCssMarker fun itunes_note() = render("itunes note icon")
+
+    @SemanticUiCssMarker fun jenkins() = render("jenkins icon")
+
+    @SemanticUiCssMarker fun joget() = render("joget icon")
+
+    @SemanticUiCssMarker fun joomla() = render("joomla icon")
+
+    @SemanticUiCssMarker fun js() = render("js icon")
+
+    @SemanticUiCssMarker fun js_square() = render("js square icon")
+
+    @SemanticUiCssMarker fun jsfiddle() = render("jsfiddle icon")
+
+    @SemanticUiCssMarker fun keycdn() = render("keycdn icon")
+
+    @SemanticUiCssMarker fun kickstarter() = render("kickstarter icon")
+
+    @SemanticUiCssMarker fun kickstarter_k() = render("kickstarter k icon")
+
+    @SemanticUiCssMarker fun korvue() = render("korvue icon")
+
+    @SemanticUiCssMarker fun laravel() = render("laravel icon")
+
+    @SemanticUiCssMarker fun lastfm() = render("lastfm icon")
+
+    @SemanticUiCssMarker fun lastfm_square() = render("lastfm square icon")
+
+    @SemanticUiCssMarker fun leanpub() = render("leanpub icon")
+
+    @SemanticUiCssMarker fun less() = render("less icon")
+
+    @SemanticUiCssMarker fun linechat() = render("linechat icon")
+
+    @SemanticUiCssMarker fun linkedin() = render("linkedin icon")
+
+    @SemanticUiCssMarker fun linkedin_in() = render("linkedin in icon")
+
+    @SemanticUiCssMarker fun linode() = render("linode icon")
+
+    @SemanticUiCssMarker fun linux() = render("linux icon")
+
+    @SemanticUiCssMarker fun lyft() = render("lyft icon")
+
+    @SemanticUiCssMarker fun magento() = render("magento icon")
+
+    @SemanticUiCssMarker fun maxcdn() = render("maxcdn icon")
+
+    @SemanticUiCssMarker fun medapps() = render("medapps icon")
+
+    @SemanticUiCssMarker fun medium() = render("medium icon")
+
+    @SemanticUiCssMarker fun medium_m() = render("medium m icon")
+
+    @SemanticUiCssMarker fun medrt() = render("medrt icon")
+
+    @SemanticUiCssMarker fun meetup() = render("meetup icon")
+
+    @SemanticUiCssMarker fun microsoft() = render("microsoft icon")
+
+    @SemanticUiCssMarker fun mix() = render("mix icon")
+
+    @SemanticUiCssMarker fun mixcloud() = render("mixcloud icon")
+
+    @SemanticUiCssMarker fun mizuni() = render("mizuni icon")
+
+    @SemanticUiCssMarker fun modx() = render("modx icon")
+
+    @SemanticUiCssMarker fun monero() = render("monero icon")
+
+    @SemanticUiCssMarker fun napster() = render("napster icon")
+
+    @SemanticUiCssMarker fun nintendo_switch() = render("nintendo switch icon")
+
+    @SemanticUiCssMarker fun node() = render("node icon")
+
+    @SemanticUiCssMarker fun node_js() = render("node js icon")
+
+    @SemanticUiCssMarker fun npm() = render("npm icon")
+
+    @SemanticUiCssMarker fun ns8() = render("ns8 icon")
+
+    @SemanticUiCssMarker fun nutritionix() = render("nutritionix icon")
+
+    @SemanticUiCssMarker fun odnoklassniki() = render("odnoklassniki icon")
+
+    @SemanticUiCssMarker fun odnoklassniki_square() = render("odnoklassniki square icon")
+
+    @SemanticUiCssMarker fun opencart() = render("opencart icon")
+
+    @SemanticUiCssMarker fun openid() = render("openid icon")
+
+    @SemanticUiCssMarker fun opera() = render("opera icon")
+
+    @SemanticUiCssMarker fun optin_monster() = render("optin monster icon")
+
+    @SemanticUiCssMarker fun osi() = render("osi icon")
+
+    @SemanticUiCssMarker fun page4() = render("page4 icon")
+
+    @SemanticUiCssMarker fun pagelines() = render("pagelines icon")
+
+    @SemanticUiCssMarker fun palfed() = render("palfed icon")
+
+    @SemanticUiCssMarker fun patreon() = render("patreon icon")
+
+    @SemanticUiCssMarker fun paypal() = render("paypal icon")
+
+    @SemanticUiCssMarker fun periscope() = render("periscope icon")
+
+    @SemanticUiCssMarker fun phabricator() = render("phabricator icon")
+
+    @SemanticUiCssMarker fun phoenix_framework() = render("phoenix framework icon")
+
+    @SemanticUiCssMarker fun php() = render("php icon")
+
+    @SemanticUiCssMarker fun pied_piper() = render("pied piper icon")
+
+    @SemanticUiCssMarker fun pied_piper_alternate() = render("pied piper alternate icon")
+
+    @SemanticUiCssMarker fun pied_piper_pp() = render("pied piper pp icon")
+
+    @SemanticUiCssMarker fun pinterest() = render("pinterest icon")
+
+    @SemanticUiCssMarker fun pinterest_p() = render("pinterest p icon")
+
+    @SemanticUiCssMarker fun pinterest_square() = render("pinterest square icon")
+
+    @SemanticUiCssMarker fun playstation() = render("playstation icon")
+
+    @SemanticUiCssMarker fun product_hunt() = render("product hunt icon")
+
+    @SemanticUiCssMarker fun pushed() = render("pushed icon")
+
+    @SemanticUiCssMarker fun python() = render("python icon")
+
+    @SemanticUiCssMarker fun qq() = render("qq icon")
+
+    @SemanticUiCssMarker fun quinscape() = render("quinscape icon")
+
+    @SemanticUiCssMarker fun quora() = render("quora icon")
+
+    @SemanticUiCssMarker fun ravelry() = render("ravelry icon")
+
+    @SemanticUiCssMarker fun react() = render("react icon")
+
+    @SemanticUiCssMarker fun rebel() = render("rebel icon")
+
+    @SemanticUiCssMarker fun redriver() = render("redriver icon")
+
+    @SemanticUiCssMarker fun reddit() = render("reddit icon")
+
+    @SemanticUiCssMarker fun reddit_alien() = render("reddit alien icon")
+
+    @SemanticUiCssMarker fun reddit_square() = render("reddit square icon")
+
+    @SemanticUiCssMarker fun rendact() = render("rendact icon")
+
+    @SemanticUiCssMarker fun renren() = render("renren icon")
+
+    @SemanticUiCssMarker fun replyd() = render("replyd icon")
+
+    @SemanticUiCssMarker fun resolving() = render("resolving icon")
+
+    @SemanticUiCssMarker fun rocketchat() = render("rocketchat icon")
+
+    @SemanticUiCssMarker fun rockrms() = render("rockrms icon")
+
+    @SemanticUiCssMarker fun safari() = render("safari icon")
+
+    @SemanticUiCssMarker fun sass() = render("sass icon")
+
+    @SemanticUiCssMarker fun schlix() = render("schlix icon")
+
+    @SemanticUiCssMarker fun scribd() = render("scribd icon")
+
+    @SemanticUiCssMarker fun searchengin() = render("searchengin icon")
+
+    @SemanticUiCssMarker fun sellcast() = render("sellcast icon")
+
+    @SemanticUiCssMarker fun sellsy() = render("sellsy icon")
+
+    @SemanticUiCssMarker fun servicestack() = render("servicestack icon")
+
+    @SemanticUiCssMarker fun shirtsinbulk() = render("shirtsinbulk icon")
+
+    @SemanticUiCssMarker fun simplybuilt() = render("simplybuilt icon")
+
+    @SemanticUiCssMarker fun sistrix() = render("sistrix icon")
+
+    @SemanticUiCssMarker fun skyatlas() = render("skyatlas icon")
+
+    @SemanticUiCssMarker fun skype() = render("skype icon")
+
+    @SemanticUiCssMarker fun slack() = render("slack icon")
+
+    @SemanticUiCssMarker fun slack_hash() = render("slack hash icon")
+
+    @SemanticUiCssMarker fun slideshare() = render("slideshare icon")
+
+    @SemanticUiCssMarker fun snapchat() = render("snapchat icon")
+
+    @SemanticUiCssMarker fun snapchat_ghost() = render("snapchat ghost icon")
+
+    @SemanticUiCssMarker fun snapchat_square() = render("snapchat square icon")
+
+    @SemanticUiCssMarker fun soundcloud() = render("soundcloud icon")
+
+    @SemanticUiCssMarker fun speakap() = render("speakap icon")
+
+    @SemanticUiCssMarker fun spotify() = render("spotify icon")
+
+    @SemanticUiCssMarker fun stack_exchange() = render("stack exchange icon")
+
+    @SemanticUiCssMarker fun stack_overflow() = render("stack overflow icon")
+
+    @SemanticUiCssMarker fun staylinked() = render("staylinked icon")
+
+    @SemanticUiCssMarker fun steam() = render("steam icon")
+
+    @SemanticUiCssMarker fun steam_square() = render("steam square icon")
+
+    @SemanticUiCssMarker fun steam_symbol() = render("steam symbol icon")
+
+    @SemanticUiCssMarker fun sticker_mule() = render("sticker mule icon")
+
+    @SemanticUiCssMarker fun strava() = render("strava icon")
+
+    @SemanticUiCssMarker fun stripe() = render("stripe icon")
+
+    @SemanticUiCssMarker fun stripe_s() = render("stripe s icon")
+
+    @SemanticUiCssMarker fun studiovinari() = render("studiovinari icon")
+
+    @SemanticUiCssMarker fun stumbleupon() = render("stumbleupon icon")
+
+    @SemanticUiCssMarker fun stumbleupon_circle() = render("stumbleupon circle icon")
+
+    @SemanticUiCssMarker fun superpowers() = render("superpowers icon")
+
+    @SemanticUiCssMarker fun supple() = render("supple icon")
+
+    @SemanticUiCssMarker fun telegram() = render("telegram icon")
+
+    @SemanticUiCssMarker fun telegram_plane() = render("telegram plane icon")
+
+    @SemanticUiCssMarker fun tencent_weibo() = render("tencent weibo icon")
+
+    @SemanticUiCssMarker fun themeisle() = render("themeisle icon")
+
+    @SemanticUiCssMarker fun trello() = render("trello icon")
+
+    @SemanticUiCssMarker fun tripadvisor() = render("tripadvisor icon")
+
+    @SemanticUiCssMarker fun tumblr() = render("tumblr icon")
+
+    @SemanticUiCssMarker fun tumblr_square() = render("tumblr square icon")
+
+    @SemanticUiCssMarker fun twitch() = render("twitch icon")
+
+    @SemanticUiCssMarker fun twitter() = render("twitter icon")
+
+    @SemanticUiCssMarker fun twitter_square() = render("twitter square icon")
+
+    @SemanticUiCssMarker fun typo3() = render("typo3 icon")
+
+    @SemanticUiCssMarker fun uber() = render("uber icon")
+
+    @SemanticUiCssMarker fun uikit() = render("uikit icon")
+
+    @SemanticUiCssMarker fun uniregistry() = render("uniregistry icon")
+
+    @SemanticUiCssMarker fun untappd() = render("untappd icon")
+
+    @SemanticUiCssMarker fun usb() = render("usb icon")
+
+    @SemanticUiCssMarker fun ussunnah() = render("ussunnah icon")
+
+    @SemanticUiCssMarker fun vaadin() = render("vaadin icon")
+
+    @SemanticUiCssMarker fun viacoin() = render("viacoin icon")
+
+    @SemanticUiCssMarker fun viadeo() = render("viadeo icon")
+
+    @SemanticUiCssMarker fun viadeo_square() = render("viadeo square icon")
+
+    @SemanticUiCssMarker fun viber() = render("viber icon")
+
+    @SemanticUiCssMarker fun vimeo() = render("vimeo icon")
+
+    @SemanticUiCssMarker fun vimeo_square() = render("vimeo square icon")
+
+    @SemanticUiCssMarker fun vimeo_v() = render("vimeo v icon")
+
+    @SemanticUiCssMarker fun vine() = render("vine icon")
+
+    @SemanticUiCssMarker fun vk() = render("vk icon")
+
+    @SemanticUiCssMarker fun vnv() = render("vnv icon")
+
+    @SemanticUiCssMarker fun vuejs() = render("vuejs icon")
+
+    @SemanticUiCssMarker fun wechat() = render("wechat icon")
+
+    @SemanticUiCssMarker fun weibo() = render("weibo icon")
+
+    @SemanticUiCssMarker fun weixin() = render("weixin icon")
+
+    @SemanticUiCssMarker fun whatsapp() = render("whatsapp icon")
+
+    @SemanticUiCssMarker fun whatsapp_square() = render("whatsapp square icon")
+
+    @SemanticUiCssMarker fun whmcs() = render("whmcs icon")
+
+    @SemanticUiCssMarker fun wikipedia_w() = render("wikipedia w icon")
+
+    @SemanticUiCssMarker fun windows() = render("windows icon")
+
+    @SemanticUiCssMarker fun wordpress() = render("wordpress icon")
+
+    @SemanticUiCssMarker fun wordpress_simple() = render("wordpress simple icon")
+
+    @SemanticUiCssMarker fun wpbeginner() = render("wpbeginner icon")
+
+    @SemanticUiCssMarker fun wpexplorer() = render("wpexplorer icon")
+
+    @SemanticUiCssMarker fun wpforms() = render("wpforms icon")
+
+    @SemanticUiCssMarker fun xbox() = render("xbox icon")
+
+    @SemanticUiCssMarker fun xing() = render("xing icon")
+
+    @SemanticUiCssMarker fun xing_square() = render("xing square icon")
+
+    @SemanticUiCssMarker fun y_combinator() = render("y combinator icon")
+
+    @SemanticUiCssMarker fun yahoo() = render("yahoo icon")
+
+    @SemanticUiCssMarker fun yandex() = render("yandex icon")
+
+    @SemanticUiCssMarker fun yandex_international() = render("yandex international icon")
+
+    @SemanticUiCssMarker fun yelp() = render("yelp icon")
+
+    @SemanticUiCssMarker fun yoast() = render("yoast icon")
+
+    @SemanticUiCssMarker fun youtube() = render("youtube icon")
+
+    @SemanticUiCssMarker fun youtube_square() = render("youtube square icon")
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

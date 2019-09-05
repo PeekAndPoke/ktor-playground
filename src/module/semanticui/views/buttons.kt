@@ -5,10 +5,10 @@ import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.util.KtorExperimentalAPI
 import io.ultra.ktor_tools.prismjs.Lang
 import io.ultra.ktor_tools.prismjs.prism
+import io.ultra.ktor_tools.semanticui.icon
 import io.ultra.ktor_tools.semanticui.ui
 import kotlinx.html.a
 import kotlinx.html.h1
-import kotlinx.html.i
 import kotlinx.html.p
 
 @Suppress("DuplicatedCode")
@@ -285,7 +285,7 @@ internal fun Template.buttons() {
                 ui.column {
                     ui.animated.button {
                         ui.visible.content { +"Next" }
-                        ui.hidden.content { i(classes = "right arrow icon") }
+                        ui.hidden.content { icon.arrow_right() }
                     }
                 }
                 ui.column {
@@ -293,7 +293,7 @@ internal fun Template.buttons() {
                         """
                             ui.animated.button {
                                 ui.visible.content { +"Next" }
-                                ui.hidden.content { i(classes = "right arrow icon") }
+                                ui.hidden.content { icon.arrow_right() }
                             }
                         """.trimIndent()
                     }
@@ -304,7 +304,7 @@ internal fun Template.buttons() {
                 ui.column { +"Vertical animation" }
                 ui.column {
                     ui.vertical.animated.button {
-                        ui.visible.content { i(classes = "shop icon") }
+                        ui.visible.content { icon.shop() }
                         ui.hidden.content { +"Shop" }
                     }
                 }
@@ -312,7 +312,7 @@ internal fun Template.buttons() {
                     prism(Lang.Kotlin) {
                         """
                             ui.vertical.animated.button {
-                                ui.visible.content { i(classes = "shop icon") }
+                                ui.visible.content { icon.shop() }
                                 ui.hidden.content { +"Shop" }
                             }
                         """.trimIndent()
@@ -351,7 +351,7 @@ internal fun Template.buttons() {
                 ui.column { +"Labeled button" }
                 ui.column {
                     ui.labeled.button {
-                        ui.button { i(classes = "heart icon") }
+                        ui.button { icon.heart() }
                         ui.basic.label A { +"2,048" }
                     }
                 }
@@ -359,7 +359,7 @@ internal fun Template.buttons() {
                     prism(Lang.Kotlin) {
                         """
                         ui.labeled.button {
-                            ui.button { i(classes = "heart icon") }
+                            ui.button { icon.heart() }
                             ui.basic.label A { +"2,048" }
                         }
                     """.trimIndent()
@@ -372,7 +372,7 @@ internal fun Template.buttons() {
                 ui.column {
                     ui.left.labeled.button {
                         ui.basic.right.pointing.label A { +"2,048" }
-                        ui.button { i(classes = "heart icon") }
+                        ui.button { icon.heart() }
                     }
                 }
                 ui.column {
@@ -380,7 +380,7 @@ internal fun Template.buttons() {
                         """
                         ui.left.labeled.button {
                             ui.basic.right.pointing.label A { +"2,048" } 
-                            ui.button { i(classes = "heart icon") }
+                            ui.button { icon.heart() }
                         }
                     """.trimIndent()
                     }
@@ -392,7 +392,7 @@ internal fun Template.buttons() {
                 ui.column {
                     ui.labeled.button {
                         ui.red.button {
-                            i(classes = "heart icon")
+                            icon.heart()
                             +"Like"
                         }
                         ui.basic.red.left.pointing.label A { +"2,048" }
@@ -403,7 +403,7 @@ internal fun Template.buttons() {
                         """
                             ui.labeled.button {
                                 ui.red.button {
-                                    i(classes = "heart icon")
+                                    icon.heart()
                                     +"Like"
                                 }
                                 ui.basic.red.left.pointing.label A { +"2,048" }
@@ -418,7 +418,7 @@ internal fun Template.buttons() {
                 ui.column {
                     ui.labeled.button {
                         ui.basic.blue.button {
-                            i(classes = "fork icon")
+                            icon.fork()
                             +"Forks"
                         }
                         ui.basic.blue.left.pointing.label A { +"2,048" }
@@ -429,7 +429,7 @@ internal fun Template.buttons() {
                         """
                             ui.labeled.button {
                                 ui.basic.blue.button {
-                                    i(classes = "fork icon")
+                                    icon.fork()
                                     +"Forks"
                                 }
                                 ui.basic.blue.left.pointing.label A { +"2,048" }

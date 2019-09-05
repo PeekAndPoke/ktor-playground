@@ -43,15 +43,11 @@ internal class Template constructor(private val linkTo: SemanticUiModule.LinkTo,
             style(
                 "text/css", """
                     
-                .pusher.padded.right {
-                    padding-right: 260px;
-                }
-                
-                .button {
-                    margin: 0 10px 10px 0 !important;
-                }
-
-            """.trimIndent()
+                    .pusher.padded.right {
+                        padding-right: 260px;
+                    }
+                    
+                """.trimIndent()
             )
         }
 
