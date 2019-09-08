@@ -80,6 +80,44 @@ internal fun Template.icons() {
                     }
                 }
             }
+
+            ui.row {
+                ui.column { +"Icons can have colors" }
+                ui.column {
+                    icon.red.question_circle()
+                    icon.orange.question_circle()
+                    icon.yellow.question_circle()
+                    icon.olive.question_circle()
+                    icon.green.question_circle()
+                    icon.teal.question_circle()
+                    icon.blue.question_circle()
+                    icon.violet.question_circle()
+                    icon.purple.question_circle()
+                    icon.pink.question_circle()
+                    icon.brown.question_circle()
+                    icon.grey.question_circle()
+                    icon.black.question_circle()
+                }
+                ui.column {
+                    prism(Lang.Kotlin) {
+                        """
+                            icon.red.question_circle()
+                            icon.orange.question_circle()
+                            icon.yellow.question_circle()
+                            icon.olive.question_circle()
+                            icon.green.question_circle()
+                            icon.teal.question_circle()
+                            icon.blue.question_circle()
+                            icon.violet.question_circle()
+                            icon.purple.question_circle()
+                            icon.pink.question_circle()
+                            icon.brown.question_circle()
+                            icon.grey.question_circle()
+                            icon.black.question_circle()
+                        """.trimIndent()
+                    }
+                }
+            }
         }
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1803,6 +1841,11 @@ internal fun Template.icons() {
             ui.column {
                 icon.server()
                 +"server"
+            }
+
+            ui.column {
+                icon.settings()
+                +"settings"
             }
 
             ui.column {

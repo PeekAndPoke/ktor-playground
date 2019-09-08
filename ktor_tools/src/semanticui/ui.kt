@@ -4,6 +4,7 @@ import kotlinx.html.*
 
 @SemanticUiDslMarker val FlowContent.ui get() = SemanticUi(this, mutableSetOf("ui"))
 
+@Suppress("FunctionName", "PropertyName")
 class SemanticUi(private val parent: FlowContent, private val cssClasses: MutableSet<String>) {
 
     // switches
@@ -29,6 +30,7 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
     // misc
 
     @SemanticUiCssMarker val button get() = this + "button"
+    @SemanticUiCssMarker val buttons get() = this + "buttons"
     @SemanticUiCssMarker val header get() = this + "header"
     @SemanticUiCssMarker val overlay get() = this + "overlay"
     @SemanticUiCssMarker val fixed get() = this + "fixed"
@@ -38,6 +40,15 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
     @SemanticUiCssMarker val down get() = this + "down"
     @SemanticUiCssMarker val dividing get() = this + "dividing"
     @SemanticUiCssMarker val pointing get() = this + "pointing"
+    @SemanticUiCssMarker val icon get() = this + "icon"
+    @SemanticUiCssMarker val active get() = this + "active"
+    @SemanticUiCssMarker val disabled get() = this + "disabled"
+    @SemanticUiCssMarker val loading get() = this + "loading"
+    @SemanticUiCssMarker val floated get() = this + "floated"
+    @SemanticUiCssMarker val compact get() = this + "compact"
+    @SemanticUiCssMarker val toggle get() = this + "toggle"
+    @SemanticUiCssMarker val fluid get() = this + "fluid"
+    @SemanticUiCssMarker val circular get() = this + "circular"
 
     // container
 
@@ -107,6 +118,17 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
     @SemanticUiCssMarker val grey get() = this + "grey"
     @SemanticUiCssMarker val black get() = this + "black"
 
+    // size
+
+    @SemanticUiCssMarker val mini get() = this + "mini"
+    @SemanticUiCssMarker val tiny get() = this + "tiny"
+    @SemanticUiCssMarker val small get() = this + "small"
+    @SemanticUiCssMarker val medium get() = this + "medium"
+    @SemanticUiCssMarker val large get() = this + "large"
+    @SemanticUiCssMarker val big get() = this + "big"
+    @SemanticUiCssMarker val huge get() = this + "huge"
+    @SemanticUiCssMarker val massive get() = this + "massive"
+
     // emphasis
 
     @SemanticUiCssMarker val primary get() = this + "primary"
@@ -135,6 +157,15 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
     @SemanticUiCssMarker val menu get() = this + "menu"
     @SemanticUiCssMarker val sidebar get() = this + "sidebar"
     @SemanticUiCssMarker val item get() = this + "item"
+
+    // brands
+
+    @SemanticUiCssMarker val facebook get() = this + "facebook"
+    @SemanticUiCssMarker val twitter get() = this + "twitter"
+    @SemanticUiCssMarker val google_plus get() = this + "google plus"
+    @SemanticUiCssMarker val linkedin get() = this + "linkedin"
+    @SemanticUiCssMarker val instagram get() = this + "instagram"
+    @SemanticUiCssMarker val youtube get() = this + "youtube"
 
     @SemanticUiCssMarker
     operator fun invoke(flow: FlowContent.() -> Unit) = renderDiv(flow)

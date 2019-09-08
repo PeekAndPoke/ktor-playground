@@ -8,6 +8,7 @@ import io.ultra.ktor_tools.prismjs.prism
 import io.ultra.ktor_tools.semanticui.icon
 import io.ultra.ktor_tools.semanticui.ui
 import kotlinx.html.a
+import kotlinx.html.div
 import kotlinx.html.h1
 import kotlinx.html.p
 
@@ -229,8 +230,6 @@ internal fun Template.buttons() {
                         ui.inverted.button { +"Default" }
                         ui.inverted.primary.button { +"Primary" }
                         ui.inverted.secondary.button { +"Secondary" }
-                        ui.inverted.positive.button { +"Positive" }
-                        ui.inverted.negative.button { +"Negative" }
                         ui.inverted.red.button { +"Red" }
                         ui.inverted.basic.red.button { +"Red" }
                         ui.inverted.orange.button { +"Orange" }
@@ -253,21 +252,101 @@ internal fun Template.buttons() {
                             ui.inverted.button { +"Default" }
                             ui.inverted.primary.button { +"Primary" }
                             ui.inverted.secondary.button { +"Secondary" }
-                            ui.inverted.positive.button { +"Positive" }
-                            ui.inverted.negative.button { +"Negative" }
-                            ui.basic.red.button { +"Red" }
-                            ui.basic.orange.button { +"Orange" }
-                            ui.basic.yellow.button { +"Yellow" }
-                            ui.basic.olive.button { +"Olive" }
-                            ui.basic.green.button { +"Green" }
-                            ui.basic.teal.button { +"Teal" }
-                            ui.basic.blue.button { +"Blue" }
-                            ui.basic.violet.button { +"Violet" }
-                            ui.basic.purple.button { +"Purple" }
-                            ui.basic.pink.button { +"Pink" }
-                            ui.basic.brown.button { +"Brown" }
-                            ui.basic.grey.button { +"Grey" }
-                            ui.basic.black.button { +"Black" }
+                            ui.inverted.red.button { +"Red" }
+                            ui.inverted.orange.button { +"Orange" }
+                            ui.inverted.yellow.button { +"Yellow" }
+                            ui.inverted.olive.button { +"Olive" }
+                            ui.inverted.green.button { +"Green" }
+                            ui.inverted.teal.button { +"Teal" }
+                            ui.inverted.blue.button { +"Blue" }
+                            ui.inverted.violet.button { +"Violet" }
+                            ui.inverted.purple.button { +"Purple" }
+                            ui.inverted.pink.button { +"Pink" }
+                            ui.inverted.brown.button { +"Brown" }
+                            ui.inverted.grey.button { +"Grey" }
+                            ui.inverted.black.button { +"Black" }
+                        """.trimIndent()
+                    }
+                }
+            }
+
+            ui.row {
+                ui.column { +"Basic Inverted Buttons on inverted background" }
+                ui.column {
+                    ui.inverted.segment {
+                        ui.basic.inverted.button { +"Default" }
+                        ui.basic.inverted.primary.button { +"Primary" }
+                        ui.basic.inverted.secondary.button { +"Secondary" }
+                        ui.basic.inverted.red.button { +"Red" }
+                        ui.basic.inverted.basic.red.button { +"Red" }
+                        ui.basic.inverted.orange.button { +"Orange" }
+                        ui.basic.inverted.yellow.button { +"Yellow" }
+                        ui.basic.inverted.olive.button { +"Olive" }
+                        ui.basic.inverted.green.button { +"Green" }
+                        ui.basic.inverted.teal.button { +"Teal" }
+                        ui.basic.inverted.blue.button { +"Blue" }
+                        ui.basic.inverted.violet.button { +"Violet" }
+                        ui.basic.inverted.purple.button { +"Purple" }
+                        ui.basic.inverted.pink.button { +"Pink" }
+                        ui.basic.inverted.brown.button { +"Brown" }
+                        ui.basic.inverted.grey.button { +"Grey" }
+                        ui.basic.inverted.black.button { +"Black" }
+                    }
+                }
+                ui.column {
+                    prism(Lang.Kotlin) {
+                        """
+                            ui.basic.inverted.button { +"Default" }
+                            ui.basic.inverted.primary.button { +"Primary" }
+                            ui.basic.inverted.secondary.button { +"Secondary" }
+                            ui.basic.inverted.red.button { +"Red" }
+                            ui.basic.inverted.orange.button { +"Orange" }
+                            ui.basic.inverted.yellow.button { +"Yellow" }
+                            ui.basic.inverted.olive.button { +"Olive" }
+                            ui.basic.inverted.green.button { +"Green" }
+                            ui.basic.inverted.teal.button { +"Teal" }
+                            ui.basic.inverted.blue.button { +"Blue" }
+                            ui.basic.inverted.violet.button { +"Violet" }
+                            ui.basic.inverted.purple.button { +"Purple" }
+                            ui.basic.inverted.pink.button { +"Pink" }
+                            ui.basic.inverted.brown.button { +"Brown" }
+                            ui.basic.inverted.grey.button { +"Grey" }
+                            ui.basic.inverted.black.button { +"Black" }
+                        """.trimIndent()
+                    }
+                }
+            }
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ui.dividing.header H3 { +"Sizes" }
+
+        ui.three.column.celled.grid {
+
+            ui.row {
+                ui.column { +"Buttons can have different sizes" }
+                ui.column {
+                    ui.mini.button { +"Mini" }
+                    ui.tiny.button { +"Tiny" }
+                    ui.small.button { +"Small" }
+                    ui.medium.button { +"Medium" }
+                    ui.large.button { +"Large" }
+                    ui.big.button { +"Big" }
+                    ui.huge.button { +"Huge" }
+                    ui.massive.button { +"Massive" }
+                }
+                ui.column {
+                    prism(Lang.Kotlin) {
+                        """
+                            ui.mini.button { +"Mini" }
+                            ui.tiny.button { +"Tiny" }
+                            ui.small.button { +"Small" }
+                            ui.medium.button { +"Medium" }
+                            ui.large.button { +"Large" }
+                            ui.big.button { +"Big" }
+                            ui.huge.button { +"Huge" }
+                            ui.massive.button { +"Massive" }
                         """.trimIndent()
                     }
                 }
@@ -444,7 +523,416 @@ internal fun Template.buttons() {
 
         ui.dividing.header H3 { +"Buttons with icons" }
 
-        // TODO: continue
+        ui.three.column.celled.grid {
 
+            ui.row {
+                ui.column { +"A button can have only an icon" }
+                ui.column {
+                    ui.icon.button {
+                        icon.cloud()
+                    }
+                }
+                ui.column {
+                    prism(Lang.Kotlin) {
+                        """
+                            ui.icon.button {
+                                icon.cloud()
+                            }
+                        """.trimIndent()
+                    }
+                }
+            }
+
+            ui.row {
+                ui.column { +"A button can use an icon as a label" }
+                ui.column {
+                    ui.labeled.icon.button {
+                        icon.pause()
+                        +"Pause"
+                    }
+                    ui.right.labeled.icon.button {
+                        icon.arrow_right()
+                        +"Next"
+                    }
+                }
+                ui.column {
+                    prism(Lang.Kotlin) {
+                        """
+                            ui.labeled.icon.button {
+                                icon.pause()
+                                +"Pause"
+                            }
+                            ui.right.labeled.icon.button {
+                                icon.arrow_right()
+                                +"Next"
+                            }
+                        """.trimIndent()
+                    }
+                }
+            }
+
+            ui.row {
+                ui.column { +"A basic button with icon" }
+                ui.column {
+                    ui.basic.button {
+                        icon.user()
+                        +"Add friend"
+                    }
+                }
+                ui.column {
+                    prism(Lang.Kotlin) {
+                        """
+                            ui.basic.button {
+                                icon.user()
+                                +"Add friend"
+                            }
+                        """.trimIndent()
+                    }
+                }
+            }
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ui.dividing.header H3 { +"Groups" }
+
+        ui.three.column.celled.grid {
+
+            ui.row {
+                ui.column { +"Buttons can exist together as a group" }
+                ui.column {
+                    ui.buttons {
+                        ui.button Button { +"One" }
+                        ui.button Button { +"Two" }
+                        ui.button Button { +"Three" }
+                    }
+                }
+                ui.column {
+                    prism(Lang.Kotlin) {
+                        """
+                            ui.buttons {
+                                ui.button Button { +"One" }
+                                ui.button Button { +"Two" }
+                                ui.button Button { +"Three" }
+                            }
+                        """.trimIndent()
+                    }
+                }
+            }
+
+            ui.row {
+                ui.column { +"Buttons groups can show groups of icons" }
+                ui.column {
+                    ui.icon.buttons {
+                        ui.button { icon.align_left() }
+                        ui.button { icon.align_center() }
+                        ui.button { icon.align_right() }
+                        ui.button { icon.align_justify() }
+                    }
+                    ui.icon.buttons {
+                        ui.button { icon.bold() }
+                        ui.button { icon.underline() }
+                        ui.button { icon.text_width() }
+                    }
+                }
+                ui.column {
+                    prism(Lang.Kotlin) {
+                        """
+                            ui.icon.buttons {
+                                ui.button { icon.align_left() }
+                                ui.button { icon.align_center() }
+                                ui.button { icon.align_right() }
+                                ui.button { icon.align_justify() }
+                            }
+                            ui.icon.buttons {
+                                ui.button { icon.bold() }
+                                ui.button { icon.underline() }
+                                ui.button { icon.text_width() }
+                            }
+                        """.trimIndent()
+                    }
+                }
+            }
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ui.dividing.header H3 { +"Content" }
+
+        ui.three.column.celled.grid {
+
+            ui.row {
+                ui.column { +"Buttons groups can contain conditionals" }
+                ui.column {
+                    ui.buttons {
+                        ui.button.active Button { +"Cancel" }
+                        div(classes = "or") {}
+                        ui.button.positive Button { +"Save" }
+                    }
+                }
+                ui.column {
+                    prism(Lang.Kotlin) {
+                        """
+                            ui.buttons {
+                                ui.button.active Button { +"Cancel" }
+                                div(classes = "or")
+                                ui.button.positive Button { +"Save" }
+                            }
+                        """.trimIndent()
+                    }
+                }
+            }
+
+            ui.row {
+                ui.column { +"Buttons groups can contain conditionals with translation" }
+                ui.column {
+                    ui.buttons {
+                        ui.button.active Button { +"un" }
+                        div(classes = "or") { attributes["data-text"] = "ou" }
+                        ui.button.positive Button { +"deux" }
+                    }
+                }
+                ui.column {
+                    prism(Lang.Kotlin) {
+                        """
+                            ui.buttons {
+                                ui.button.active Button { +"un" }
+                                div(classes = "or") { attributes["data-text"] = "ou" }
+                                ui.button.positive Button { +"deux" }
+                            }
+                        """.trimIndent()
+                    }
+                }
+            }
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ui.dividing.header H3 { +"States" }
+
+        ui.three.column.celled.grid {
+
+            ui.row {
+                ui.column { +"A button can show it is currently the active user selection" }
+                ui.column {
+                    ui.active.button {
+                        icon.user()
+                        +"Follow"
+                    }
+                }
+                ui.column {
+                    prism(Lang.Kotlin) {
+                        """
+                            ui.active.button {
+                                icon.user()
+                                +"Follow"
+                            }
+                        """.trimIndent()
+                    }
+                }
+            }
+
+            ui.row {
+                ui.column { +"A button can show it is currently unable to be interacted with" }
+                ui.column {
+                    ui.disabled.button {
+                        icon.user()
+                        +"Followed"
+                    }
+                }
+                ui.column {
+                    prism(Lang.Kotlin) {
+                        """
+                            ui.disabled.button {
+                                icon.user()
+                                +"Followed"
+                            }
+                        """.trimIndent()
+                    }
+                }
+            }
+
+            ui.row {
+                ui.column { +"A button can show a loading indicator" }
+                ui.column {
+                    ui.loading.button { +"Loading" }
+                    ui.basic.loading.button { +"Loading" }
+                    ui.primary.loading.button { +"Loading" }
+                    ui.secondary.loading.button { +"Loading" }
+                }
+                ui.column {
+                    prism(Lang.Kotlin) {
+                        """
+                            ui.loading.button { +"Loading" }
+                            ui.basic.loading.button { +"Loading" }
+                            ui.primary.loading.button { +"Loading" }
+                            ui.secondary.loading.button { +"Loading" }
+                        """.trimIndent()
+                    }
+                }
+            }
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ui.dividing.header H3 { +"Floated" }
+
+        ui.three.column.celled.grid {
+
+            ui.row {
+                ui.column { +"A button can be aligned to the left or right of its container" }
+                ui.column {
+                    ui.right.floated.button { +"Right Floated" }
+                    ui.left.floated.button { +"Left Floated" }
+                }
+                ui.column {
+                    prism(Lang.Kotlin) {
+                        """
+                            ui.right.floated.button { +"Right Floated" }
+                            ui.left.floated.button { +"Left Floated" }
+                        """.trimIndent()
+                    }
+                }
+            }
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ui.dividing.header H3 { +"Compact" }
+
+        ui.three.column.celled.grid {
+
+            ui.row {
+                ui.column { +"A button can reduce its padding to fit into tighter spaces" }
+                ui.column {
+                    ui.compact.button { +"Hold" }
+                    ui.compact.icon.button { icon.pause() }
+                    ui.compact.labeled.icon.button {
+                        icon.pause()
+                        +"Pause"
+                    }
+                }
+                ui.column {
+                    prism(Lang.Kotlin) {
+                        """
+                            ui.compact.button { +"Hold" }
+                            ui.compact.icon.button { icon.pause() }
+                            ui.compact.labeled.icon.button {
+                                icon.pause()
+                                +"Pause"
+                            }
+                        """.trimIndent()
+                    }
+                }
+            }
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ui.dividing.header H3 { +"Toggle" }
+
+        ui.three.column.celled.grid {
+
+            ui.row {
+                ui.column { +"A button can be formatted to toggle on and off" }
+                ui.column {
+                    ui.toggle.button Button { +"Vote" }
+                    ui.toggle.button.active Button { +"Voted" }
+                }
+                ui.column {
+                    prism(Lang.Kotlin) {
+                        """
+                            ui.toggle.button Button { +"Vote" }
+                            ui.toggle.button.active Button { +"Voted" }
+                        """.trimIndent()
+                    }
+                }
+            }
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ui.dividing.header H3 { +"Fluid" }
+
+        ui.three.column.celled.grid {
+
+            ui.row {
+                ui.column { +"A button can take the width of its container" }
+                ui.column {
+                    ui.fluid.button Button { +"Fits container" }
+                }
+                ui.column {
+                    prism(Lang.Kotlin) {
+                        """
+                            ui.fluid.button Button { +"Fits container" }
+                        """.trimIndent()
+                    }
+                }
+            }
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ui.dividing.header H3 { +"Circular" }
+
+        ui.three.column.celled.grid {
+
+            ui.row {
+                ui.column { +"A button can be circular" }
+                ui.column {
+                    ui.circular.icon.button Button { icon.settings() }
+                }
+                ui.column {
+                    prism(Lang.Kotlin) {
+                        """
+                            ui.circular.icon.button Button { icon.settings() }
+                        """.trimIndent()
+                    }
+                }
+            }
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ui.dividing.header H3 { +"Social variations" }
+
+        ui.three.column.celled.grid {
+
+            ui.row {
+                ui.column { +"A button can be formatted to link to a social website" }
+                ui.column {
+                    ui.facebook.icon.button { icon.facebook(); +"Facebook" }
+                    ui.circular.facebook.icon.button { icon.facebook() }
+                    ui.twitter.icon.button { icon.twitter(); +"Twitter" }
+                    ui.circular.twitter.icon.button { icon.twitter() }
+                    ui.google_plus.icon.button { icon.google_plus(); +"Google Plus" }
+                    ui.circular.google_plus.icon.button { icon.google_plus() }
+                    ui.linkedin.icon.button { icon.linkedin(); +"Linkedin" }
+                    ui.circular.linkedin.icon.button { icon.linkedin() }
+                    ui.instagram.icon.button { icon.instagram(); +"Instagram" }
+                    ui.circular.instagram.icon.button { icon.instagram() }
+                    ui.youtube.icon.button { icon.youtube(); +"Youtube" }
+                    ui.circular.youtube.icon.button { icon.youtube() }
+                }
+                ui.column {
+                    prism(Lang.Kotlin) {
+                        """
+                            ui.facebook.icon.button { icon.facebook(); +"Facebook" }
+                            ui.circular.facebook.icon.button { icon.facebook() }
+                            
+                            ui.twitter.icon.button { icon.twitter(); +"Twitter" }
+                            ui.google_plus.icon.button { icon.google_plus(); +"Google Plus" }
+                            ui.linkedin.icon.button { icon.linkedin(); +"Linkedin" }
+                            ui.instagram.icon.button { icon.instagram(); +"Instagram" }
+                            ui.youtube.icon.button { icon.youtube(); +"Youtube" }
+                        """.trimIndent()
+                    }
+                }
+            }
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ui.dividing.header H3 { +"TODO ... there is more" }
     }
 }

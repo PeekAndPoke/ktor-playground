@@ -12,6 +12,27 @@ import kotlinx.html.i
 @Suppress("PropertyName", "FunctionName")
 class SemanticIcon(private val parent: FlowContent) {
 
+    private val cssClasses = mutableListOf<String>()
+
+    private operator fun plus(cls: String) = apply { cssClasses.add(cls) }
+
+    private fun render(classes: String): Unit = parent.i(classes = "${cssClasses.joinToString(" ")} $classes")
+
+    // coloring ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @SemanticUiCssMarker val red get() = this + "red"
+    @SemanticUiCssMarker val orange get() = this + "orange"
+    @SemanticUiCssMarker val yellow get() = this + "yellow"
+    @SemanticUiCssMarker val olive get() = this + "olive"
+    @SemanticUiCssMarker val green get() = this + "green"
+    @SemanticUiCssMarker val teal get() = this + "teal"
+    @SemanticUiCssMarker val blue get() = this + "blue"
+    @SemanticUiCssMarker val violet get() = this + "violet"
+    @SemanticUiCssMarker val purple get() = this + "purple"
+    @SemanticUiCssMarker val pink get() = this + "pink"
+    @SemanticUiCssMarker val brown get() = this + "brown"
+    @SemanticUiCssMarker val grey get() = this + "grey"
+    @SemanticUiCssMarker val black get() = this + "black"
 
     // Accessibility ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -592,6 +613,8 @@ class SemanticIcon(private val parent: FlowContent) {
     @SemanticUiCssMarker fun print() = render("print icon")
 
     @SemanticUiCssMarker fun server() = render("server icon")
+
+    @SemanticUiCssMarker fun settings() = render("settings icon")
 
     @SemanticUiCssMarker fun tablet() = render("tablet icon")
 
@@ -1975,8 +1998,4 @@ class SemanticIcon(private val parent: FlowContent) {
     @SemanticUiCssMarker fun youtube() = render("youtube icon")
 
     @SemanticUiCssMarker fun youtube_square() = render("youtube square icon")
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private fun render(classes: String): Unit = parent.i(classes = classes)
 }
