@@ -42,6 +42,7 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
     @SemanticUiCssMarker fun with(cls: String, flow: FlowContent.() -> Unit) = (this + cls).renderDiv(flow)
 
     @SemanticUiCssMarker fun given(condition: Boolean, action: SemanticUi.() -> SemanticUi) = when(condition) {
+
         false -> this
 
         else -> this.action()
@@ -49,34 +50,42 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
 
     // misc
 
+    @SemanticUiCssMarker val active get() = this + "active"
+    @SemanticUiCssMarker val basic get() = this + "basic"
     @SemanticUiCssMarker val button get() = this + "button"
     @SemanticUiCssMarker val buttons get() = this + "buttons"
-    @SemanticUiCssMarker val header get() = this + "header"
-    @SemanticUiCssMarker val overlay get() = this + "overlay"
-    @SemanticUiCssMarker val fixed get() = this + "fixed"
-    @SemanticUiCssMarker val shrink get() = this + "shrink"
-    @SemanticUiCssMarker val basic get() = this + "basic"
-    @SemanticUiCssMarker val scale get() = this + "scale"
-    @SemanticUiCssMarker val down get() = this + "down"
-    @SemanticUiCssMarker val dividing get() = this + "dividing"
-    @SemanticUiCssMarker val pointing get() = this + "pointing"
-    @SemanticUiCssMarker val icon get() = this + "icon"
-    @SemanticUiCssMarker val active get() = this + "active"
-    @SemanticUiCssMarker val disabled get() = this + "disabled"
-    @SemanticUiCssMarker val loading get() = this + "loading"
-    @SemanticUiCssMarker val floated get() = this + "floated"
-    @SemanticUiCssMarker val compact get() = this + "compact"
-    @SemanticUiCssMarker val toggle get() = this + "toggle"
-    @SemanticUiCssMarker val fluid get() = this + "fluid"
     @SemanticUiCssMarker val circular get() = this + "circular"
+    @SemanticUiCssMarker val compact get() = this + "compact"
+    @SemanticUiCssMarker val disabled get() = this + "disabled"
+    @SemanticUiCssMarker val dividing get() = this + "dividing"
+    @SemanticUiCssMarker val down get() = this + "down"
+    @SemanticUiCssMarker val floated get() = this + "floated"
+    @SemanticUiCssMarker val fluid get() = this + "fluid"
+    @SemanticUiCssMarker val fixed get() = this + "fixed"
+    @SemanticUiCssMarker val header get() = this + "header"
+    @SemanticUiCssMarker val icon get() = this + "icon"
     @SemanticUiCssMarker val list get() = this + "list"
+    @SemanticUiCssMarker val loading get() = this + "loading"
     @SemanticUiCssMarker val message get() = this + "message"
-    @SemanticUiCssMarker val warning get() = this + "warning"
-    @SemanticUiCssMarker val field get() = this + "field"
-    @SemanticUiCssMarker val table get() = this + "table"
-    @SemanticUiCssMarker val form get() = this + "form"
-    @SemanticUiCssMarker val tablet get() = this + "tablet"
+    @SemanticUiCssMarker val overlay get() = this + "overlay"
+    @SemanticUiCssMarker val pointing get() = this + "pointing"
+    @SemanticUiCssMarker val scale get() = this + "scale"
+    @SemanticUiCssMarker val shrink get() = this + "shrink"
+    @SemanticUiCssMarker val toggle get() = this + "toggle"
+
+    // display sizes
+
     @SemanticUiCssMarker val computer get() = this + "computer"
+    @SemanticUiCssMarker val tablet get() = this + "tablet"
+
+    // form
+
+    @SemanticUiCssMarker val form get() = this + "form"
+    @SemanticUiCssMarker val field get() = this + "field"
+
+    // table
+
+    @SemanticUiCssMarker val table get() = this + "table"
 
     // container
 
@@ -167,6 +176,7 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
     @SemanticUiCssMarker val secondary get() = this + "secondary"
     @SemanticUiCssMarker val positive get() = this + "positive"
     @SemanticUiCssMarker val negative get() = this + "negative"
+    @SemanticUiCssMarker val warning get() = this + "warning"
 
     // animations
 

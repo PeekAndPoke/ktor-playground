@@ -8,7 +8,10 @@ import io.ktor.application.call
 import io.ktor.util.AttributeKey
 import io.ktor.util.Attributes
 import io.ktor.util.pipeline.PipelineContext
-import kotlinx.html.*
+import kotlinx.html.FlowOrMetaDataContent
+import kotlinx.html.ScriptType
+import kotlinx.html.link
+import kotlinx.html.script
 import java.io.InputStream
 
 data class CacheBuster(val key: String) {
@@ -109,5 +112,5 @@ inline val ApplicationCall.iocWebResources get() = attributes[iocWebResourcesKey
 
 inline val PipelineContext<Unit, ApplicationCall>.iocWebResources get() = call.iocWebResources
 
-fun Attributes.put(value: WebResources) = put(iocWebResourcesKey, value)
+fun Attributes.provide(value: WebResources) = put(iocWebResourcesKey, value)
 

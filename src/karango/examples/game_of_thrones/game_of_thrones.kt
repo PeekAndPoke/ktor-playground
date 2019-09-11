@@ -7,7 +7,7 @@ import de.peekandpoke.karango.examples.printQueryResult
 import de.peekandpoke.karango.examples.runDemo
 import de.peekandpoke.karango.id
 
-private val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev").apply {
+private val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev") {
     registerGotCollections()
 }
 

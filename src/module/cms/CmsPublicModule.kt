@@ -1,6 +1,6 @@
 package de.peekandpoke.module.cms
 
-import de.peekandpoke.karango.Db
+import de.peekandpoke.karango_ktor.database
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.features.NotFoundException
@@ -16,11 +16,11 @@ import io.ultra.ktor_tools.architecture.Module
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
-fun Application.cmsPublic(db: Db) = CmsPublicModule(this, db)
+fun Application.cmsPublic() = CmsPublicModule(this)
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
-class CmsPublicModule(app: Application, private val db: Db) : Module(app) {
+class CmsPublicModule(app: Application) : Module(app) {
 
     override fun mount(mountPoint: Route) = with(mountPoint) {
 
@@ -28,7 +28,7 @@ class CmsPublicModule(app: Application, private val db: Db) : Module(app) {
 
             val path = call.request.uri.trimStart('/')
 
-            val page = db.cmsPages.findBySlug(path) ?: throw NotFoundException("Cms page '$path' not found")
+            val page = database.cmsPages.findBySlug(path) ?: throw NotFoundException("Cms page '$path' not found")
 
             call.respondText(ContentType.Text.Html, HttpStatusCode.OK) {
                 page.markup

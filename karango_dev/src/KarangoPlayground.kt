@@ -8,11 +8,11 @@ import de.peekandpoke.ultra.mutator.Mutable
 import kotlin.system.measureTimeMillis
 
 
-val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev").apply {
-    register(PersonsCollection(this))
+private val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev") {
+    addEntityCollection { db -> PersonsCollection(db) }
 }
 
-val persons = db.getEntityCollection<PersonsCollection>()
+private val persons = db.getEntityCollection<PersonsCollection>()
 
 @Mutable
 data class FrozenAddress(val city: String, val zip: String)

@@ -1,6 +1,6 @@
 package de.peekandpoke.module.cms
 
-import de.peekandpoke.karango.Db
+import de.peekandpoke.karango_ktor.database
 import de.peekandpoke.module.cms.forms.PageForm
 import de.peekandpoke.module.cms.views.Template
 import de.peekandpoke.module.cms.views.editPage
@@ -28,11 +28,11 @@ import io.ultra.ktor_tools.logger.logger
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
-fun Application.cmsAdmin(db: Db) = CmsAdminModule(this, db)
+fun Application.cmsAdmin() = CmsAdminModule(this)
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
-class CmsAdminModule(app: Application, private val db: Db): Module(app) {
+class CmsAdminModule(app: Application) : Module(app) {
 
     val mountPoint = "/cms"
 
@@ -73,7 +73,7 @@ class CmsAdminModule(app: Application, private val db: Db): Module(app) {
 
             get<Pages> {
                 respond {
-                    pages(db.cmsPages.findAllSorted().toList())
+                    pages(database.cmsPages.findAllSorted().toList())
                 }
             }
 
@@ -84,7 +84,7 @@ class CmsAdminModule(app: Application, private val db: Db): Module(app) {
                 if (form.submit(call)) {
 
                     if (form.isModified) {
-                        val saved = db.cmsPages.save(form.result)
+                        val saved = database.cmsPages.save(form.result)
                         logger.info("Updated page in database '${saved.name}'")
                         flashSession.success("Page ${form.result.name} was saved")
                     }
@@ -95,7 +95,6 @@ class CmsAdminModule(app: Application, private val db: Db): Module(app) {
                 respond {
                     editPage(data.page, form)
                 }
-
             }
 
             getOrPost<CreatePage> {
@@ -107,7 +106,7 @@ class CmsAdminModule(app: Application, private val db: Db): Module(app) {
                 if (form.submit(call)) {
 
                     if (form.isModified) {
-                        val saved = db.cmsPages.save(form.result)
+                        val saved = database.cmsPages.save(form.result)
                         logger.info("Updated page in database '${saved.name}'")
                         flashSession.success("Page ${form.result.name} was created")
                     }

@@ -71,7 +71,7 @@ internal class Template constructor(
 
         body {
 
-            ui.sidebar.vertical.left.inverted.menu.visible.fixed {
+            ui.sidebar.vertical.left.inverted.violet.menu.visible.fixed {
 
                 ui.item.given(activeMenu == MenuEntries.HOME) { active } A { href = linkTo.index(); +"Overview" }
 

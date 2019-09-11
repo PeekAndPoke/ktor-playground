@@ -8,9 +8,9 @@ import de.peekandpoke.karango.aql.Direction
 import de.peekandpoke.karango.aql.FOR
 import de.peekandpoke.karango.aql.type
 
-fun Db.registerGotCollections() {
-    register(CharactersCollection(this))
-    register(ActorsCollection(this))
+fun Db.Builder.registerGotCollections() {
+    addEntityCollection { db -> CharactersCollection(db) }
+    addEntityCollection { db -> ActorsCollection(db) }
 }
 
 

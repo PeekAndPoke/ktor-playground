@@ -13,4 +13,4 @@ inline val ApplicationCall.iocTranslations: I18n get() = attributes[iocTranslati
 
 inline val PipelineContext<Unit, ApplicationCall>.iocTranslations: I18n get() = call.iocTranslations
 
-fun Attributes.put(value: I18n) = put(iocTranslationsKey, value)
+fun Attributes.provide(value: I18n) = put(iocTranslationsKey, value)

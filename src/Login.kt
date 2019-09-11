@@ -2,6 +2,7 @@ package de.peekandpoke
 
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
+import io.ktor.application.feature
 import io.ktor.auth.*
 import io.ktor.html.respondHtml
 import io.ktor.http.HttpMethod
@@ -9,10 +10,7 @@ import io.ktor.locations.*
 import io.ktor.request.uri
 import io.ktor.response.respond
 import io.ktor.response.respondRedirect
-import io.ktor.routing.Route
-import io.ktor.routing.get
-import io.ktor.routing.method
-import io.ktor.routing.post
+import io.ktor.routing.*
 import io.ktor.sessions.get
 import io.ktor.sessions.sessions
 import io.ktor.sessions.set
@@ -34,16 +32,16 @@ data class Login(val userName: String = "", val password: String = "")
  */
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
-fun Route.login(auth: Authentication, users: UserHashedTableAuth) {
-    val myFormAuthentication = "myFormAuthentication"
+fun Route.login(authName: String, users: UserHashedTableAuth) {
+
 
     /**
      * Installs the Authentication feature that handles the challenge and parsing and attaches a [UserIdPrincipal]
      * to the [ApplicationCall] if the authentication succeedes.
      */
-    auth.configure {
+    application.feature(Authentication).configure {
 
-        form(myFormAuthentication) {
+        form(authName) {
 
             userParamName = Login::userName.name
             passwordParamName = Login::password.name
@@ -60,19 +58,13 @@ fun Route.login(auth: Authentication, users: UserHashedTableAuth) {
             }
 
             skipWhen {
-
-                val session = it.sessions.get<MySession>()
-                println(session)
-
-                val skip = session?.userId != null
-
-                return@skipWhen skip
+                it.sessions.get<UserSession>()?.userId != null
             }
         }
     }
 
     get("/logout") {
-        call.sessions.set(MySession())
+        call.sessions.set(UserSession())
         call.respond("Logged out")
     }
 
@@ -82,13 +74,13 @@ fun Route.login(auth: Authentication, users: UserHashedTableAuth) {
     location<Login> {
         /**
          * We have an authenticated POST handler, that would set a session when the [UserIdPrincipal] is set,
-         * and would redirect to the [Index] page.
+         * and would redirect to the originally requested page.
          */
-        authenticate(myFormAuthentication) {
+        authenticate(authName) {
             post {
                 val principal = call.principal<UserIdPrincipal>()
                 if (principal != null) {
-                    call.sessions.set(MySession(principal.name))
+                    call.sessions.set(UserSession(principal.name))
                 }
                 call.respondRedirect(
                     call.sessions.get<LoginSession>()?.requestedUri ?: "/"
@@ -103,7 +95,7 @@ fun Route.login(auth: Authentication, users: UserHashedTableAuth) {
 
             handle<Login> {
 
-                if (call.sessions.get<MySession>()?.userId != null) {
+                if (call.sessions.get<UserSession>()?.userId != null) {
                     call.respondRedirect(
                         call.sessions.get<LoginSession>()?.requestedUri ?: "/"
                     )

@@ -1,10 +1,10 @@
 package de.peekandpoke.module.got
 
-import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.examples.game_of_thrones.Character
 import de.peekandpoke.karango.examples.game_of_thrones.actors
 import de.peekandpoke.karango.examples.game_of_thrones.characters
 import de.peekandpoke.karango.examples.game_of_thrones.mutator
+import de.peekandpoke.karango_ktor.database
 import de.peekandpoke.resources.MainTemplate
 import de.peekandpoke.resources.WELCOME
 import io.ktor.application.Application
@@ -27,11 +27,11 @@ import kotlinx.html.*
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
-fun Application.gameOfThrones(db: Db) = GameOfThronesModule(this, db)
+fun Application.gameOfThrones() = GameOfThronesModule(this)
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
-class GameOfThronesModule(app: Application, private val db: Db): Module(app) {
+class GameOfThronesModule(app: Application) : Module(app) {
 
     val config = GameOfThronesConfig.from(application.environment.config)
 
@@ -46,7 +46,7 @@ class GameOfThronesModule(app: Application, private val db: Db): Module(app) {
         fun getCharacterByKey(character: Character) = linkTo(GetCharacter(character))
     }
 
-    val linkTo = LinkTo()
+    private val linkTo = LinkTo()
 
     override fun mount(mountPoint: Route) {
 
@@ -54,7 +54,7 @@ class GameOfThronesModule(app: Application, private val db: Db): Module(app) {
 
             get<GetCharacters> { p ->
 
-                val result = db.characters.findAllPaged(p.page, p.epp)
+                val result = database.characters.findAllPaged(p.page, p.epp)
 
                 logger.info("${result.timeMs} vs ${result.stats.executionTime}")
 
@@ -104,8 +104,8 @@ class GameOfThronesModule(app: Application, private val db: Db): Module(app) {
 
                     if (form.isModified) {
 
-                        val savedActor = form.result.actor?.let { db.actors.save(it) }
-                        val saved = db.characters.save(form.result)
+                        val savedActor = form.result.actor?.let { database.actors.save(it) }
+                        val saved = database.characters.save(form.result)
 
                         logger.info("Updated character in database: $saved, $savedActor")
 

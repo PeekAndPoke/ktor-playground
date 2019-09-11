@@ -1,5 +1,6 @@
 package de.peekandpoke.karango.addon
 
+import de.peekandpoke.karango.OnSaveHook
 import java.time.LocalDateTime
 
 data class Timestamps(
@@ -12,7 +13,18 @@ interface Timestamped {
     val _ts: Timestamps?
 }
 
-internal fun Timestamped.updateTimestamps() {
+class TimestampedOnSaveHook : OnSaveHook {
+    override operator fun <T> invoke(obj: T): T {
+
+        if (obj is Timestamped) {
+            obj.update()
+        }
+
+        return obj
+    }
+}
+
+private fun Timestamped.update() {
 
     val now = LocalDateTime.now()
 
@@ -26,7 +38,7 @@ internal fun Timestamped.updateTimestamps() {
         )
     }
 
-    val field = this.javaClass.declaredFields.first { it.name == "_ts" }
+    val field = this.javaClass.declaredFields.first { it.name == ::_ts.name }
 
     field.isAccessible = true
     field.set(this, ts)

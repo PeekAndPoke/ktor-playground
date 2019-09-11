@@ -8,23 +8,25 @@ import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.convertValue
-import de.peekandpoke.karango.addon.Timestamped
-import de.peekandpoke.karango.addon.updateTimestamps
 import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.jackson.KarangoDateTimeModule
 import kotlin.reflect.KClass
 import kotlin.system.measureTimeMillis
 
+typealias EntityCollectionProvider<T> = (db: Db) -> DbEntityCollection<T>
+
+typealias OnSaveHookProvider = (db: Db) -> OnSaveHook
+
 /**
  * The database class
  */
-class Db(internal val database: ArangoDatabase) {
+class Db(val arangoDb: ArangoDatabase, private val settings: Settings) {
 
     companion object {
         /**
          * Creates a Db with default setup
          */
-        fun default(user: String, pass: String, host: String, port: Int, database: String): Db {
+        fun default(user: String, pass: String, host: String, port: Int, database: String, builder: Builder.() -> Unit): Db {
 
             val velocyJack = VelocyJack().apply {
                 configure { mapper ->
@@ -39,14 +41,56 @@ class Db(internal val database: ArangoDatabase) {
                 .host(host, port)
                 .build()
 
-            return Db(arango.db(database))
+            return Builder(arango.db(database)).apply(builder).build().apply {
+                ensureCollections()
+            }
         }
     }
 
-    /**
-     * All entity collections registered on the Db
-     */
-    private val entityCollections: MutableMap<KClass<out DbEntityCollection<*>>, DbEntityCollection<*>> = mutableMapOf()
+    data class Settings(
+        val entityCollections: List<EntityCollectionProvider<*>>,
+        val onSaveHooks: List<OnSaveHookProvider>
+    )
+
+    class Builder(private val arangoDb: ArangoDatabase) {
+
+        /**
+         * All entity collections registered on the Db
+         */
+        private val entityCollections: MutableList<EntityCollectionProvider<*>> = mutableListOf()
+
+        /**
+         * List of hooks that will be called before an entity is saved
+         */
+        private val onSaveHooks: MutableList<OnSaveHookProvider> = mutableListOf()
+
+        /**
+         * Registers an entity collection on the database
+         *
+         * Fails and throws an exception when:
+         *
+         * 1. A collection with the same name is already registered
+         * 2. A collection with the same type is already registered
+         *
+         * @throws KarangoException
+         */
+        @JvmName("registerEntityCollection")
+        fun <T : Entity> addEntityCollection(provider: EntityCollectionProvider<T>) = apply { entityCollections.add(provider) }
+
+        /**
+         * Register a onSave hook
+         */
+        @JvmName("registerOnSaveHook")
+        fun addOnSaveHook(provider: OnSaveHookProvider) = apply { onSaveHooks.add(provider) }
+
+        fun build() = Db(
+            arangoDb,
+            Settings(
+                entityCollections.toList(),
+                onSaveHooks.toList()
+            )
+        )
+    }
 
     /**
      * The object mapper used for serializing queries
@@ -74,10 +118,25 @@ class Db(internal val database: ArangoDatabase) {
         injectableValues = InjectableValues.Std().addValue("__db", this@Db)
     }
 
+    private val entityCollections: MutableMap<KClass<out DbEntityCollection<*>>, DbEntityCollection<*>> = mutableMapOf()
+
+    private val onSaveHooks: MutableList<OnSaveHook> = mutableListOf()
+
+    init {
+        settings.entityCollections.forEach { registerCollection(it) }
+
+        settings.onSaveHooks.forEach { onSaveHooks.add(it(this)) }
+    }
+
     /**
      * Get a list of all registered entity collections
      */
     fun getEntityCollections(): List<DbEntityCollection<*>> = entityCollections.values.toList()
+
+    /**
+     * Get the list of all registered onSave hooks
+     */
+    fun getOnSaveHooks(): List<OnSaveHook> = onSaveHooks.toList()
 
     /**
      * Get an entity collection by its type
@@ -99,18 +158,6 @@ class Db(internal val database: ArangoDatabase) {
         entityCollections[cls] as T? ?: throw KarangoException("Collection of type '${cls.java.canonicalName}' not registered.")
 
     /**
-     * Registers an entity collection on the database
-     *
-     * Fails and throws an exception when:
-     *
-     * 1. A collection with the same name is already registered
-     * 2. A collection with the same type is already registered
-     *
-     * @throws KarangoException
-     */
-    fun <T : Entity, C : DbEntityCollection<T>> register(coll: C): C = registerCollection { coll }
-
-    /**
      * Executes the query created by the given builder and returns a list of results
      */
     fun <T> query(builder: AqlBuilder.() -> TerminalExpr<T>): Cursor<T> = query(deserializer, de.peekandpoke.karango.query(builder))
@@ -121,6 +168,26 @@ class Db(internal val database: ArangoDatabase) {
     fun <T> queryFirst(builder: AqlBuilder.() -> TerminalExpr<T>): T? = query(builder).firstOrNull()
 
     /**
+     * Return a new Db instance while changing its settings.
+     *
+     * The 'builder' can create new Settings which will be used for the new Db instance
+     */
+    fun customize(builder: (Settings) -> Settings): Db = Db(arangoDb, builder(settings))
+
+    /**
+     * Creates all collections that are not yet present in the database
+     */
+    fun ensureCollections() {
+
+        entityCollections.values.forEach {
+
+            if (!it.arangoColl.exists()) {
+                arangoDb.createCollection(it.name, CollectionCreateOptions().type(CollectionType.DOCUMENT))
+            }
+        }
+    }
+
+    /**
      * Register am entity collection
      *
      * Fails and throws an exception when:
@@ -128,9 +195,9 @@ class Db(internal val database: ArangoDatabase) {
      * 1. A collection with the same name is already registered
      * 2. A collection with the same type is already registered
      */
-    private fun <T : Entity, C : DbEntityCollection<T>> registerCollection(builder: () -> C): C {
+    private fun registerCollection(builder: EntityCollectionProvider<*>) {
 
-        val result = builder()
+        val result = builder(this)
         val type = result::class
         val name = result.name
 
@@ -143,12 +210,6 @@ class Db(internal val database: ArangoDatabase) {
         }
 
         entityCollections[type] = result
-
-        if (!result.arangoColl.exists()) {
-            database.createCollection(name, CollectionCreateOptions().type(CollectionType.DOCUMENT))
-        }
-
-        return result
     }
 
     /**
@@ -167,7 +228,7 @@ class Db(internal val database: ArangoDatabase) {
 
         val time = measureTimeMillis {
             try {
-                result = database.query(query.aql, mapped, options, Object::class.java)
+                result = arangoDb.query(query.aql, mapped, options, Object::class.java)
             } catch (e: ArangoDBException) {
                 throw KarangoException("Error while querying '${e.message}':\n\n${query.aql}\nwith params\n\n$mapped", e)
             }
@@ -191,7 +252,7 @@ open class DbEntityCollection<T : Entity>(val db: Db, val coll: IEntityCollectio
     /**
      * The underlying low-level arango collection
      */
-    val arangoColl: ArangoCollection = db.database.collection(name)
+    val arangoColl: ArangoCollection = db.arangoDb.collection(name)
 
     /**
      * Save or update the given object.
@@ -285,12 +346,5 @@ open class DbEntityCollection<T : Entity>(val db: Db, val coll: IEntityCollectio
     /**
      * Applies an plugin on an entity before it is saved
      */
-    private fun onBeforeSave(obj: T): T {
-
-        if (obj is Timestamped) {
-            obj.updateTimestamps()
-        }
-
-        return obj
-    }
+    private fun onBeforeSave(obj: T): T = db.getOnSaveHooks().fold(obj, { acc, onSaveHook -> onSaveHook(acc) })
 }

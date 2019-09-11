@@ -2,8 +2,12 @@ package de.peekandpoke
 
 import com.fasterxml.jackson.databind.SerializationFeature
 import de.peekandpoke.karango.Db
+import de.peekandpoke.karango.addon.TimestampedOnSaveHook
+import de.peekandpoke.karango.addon.UserRecord
+import de.peekandpoke.karango.addon.UserRecordOnSaveHook
 import de.peekandpoke.karango.examples.game_of_thrones.registerGotCollections
 import de.peekandpoke.karango_ktor.add
+import de.peekandpoke.karango_ktor.provide
 import de.peekandpoke.module.cms.cmsAdmin
 import de.peekandpoke.module.cms.cmsPublic
 import de.peekandpoke.module.cms.registerCmsCollections
@@ -11,15 +15,22 @@ import de.peekandpoke.module.got.gameOfThrones
 import de.peekandpoke.module.semanticui.semanticUi
 import de.peekandpoke.resources.Translations
 import de.peekandpoke.test_module.TestModule
-import io.ktor.application.*
+import io.ktor.application.Application
+import io.ktor.application.ApplicationCallPipeline
+import io.ktor.application.call
+import io.ktor.application.install
 import io.ktor.auth.*
 import io.ktor.features.*
 import io.ktor.html.respondHtml
 import io.ktor.http.*
 import io.ktor.http.content.CachingOptions
+import io.ktor.http.content.resource
+import io.ktor.http.content.resources
+import io.ktor.http.content.static
 import io.ktor.jackson.jackson
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Locations
+import io.ktor.request.httpMethod
 import io.ktor.request.uri
 import io.ktor.response.respond
 import io.ktor.response.respondText
@@ -34,7 +45,7 @@ import io.ultra.ktor_tools.FlashSession
 import io.ultra.ktor_tools.logger.logger
 import io.ultra.ktor_tools.resources.AppMeta
 import io.ultra.ktor_tools.resources.BetterWebjars
-import io.ultra.ktor_tools.resources.put
+import io.ultra.ktor_tools.resources.provide
 import io.ultra.ktor_tools.resources.webResources
 import kotlinx.html.*
 import java.time.Duration
@@ -44,7 +55,10 @@ import kotlin.system.measureNanoTime
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-private val db: Db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev").apply {
+private val db: Db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev") {
+
+    addOnSaveHook { TimestampedOnSaveHook() }
+
     registerCmsCollections()
     registerGotCollections()
 }
@@ -92,24 +106,24 @@ val WebResources = webResources(Meta) {
 @Suppress("unused", "UNUSED_PARAMETER") // Referenced in application.conf
 fun Application.module(testing: Boolean = false) {
 
-    val gameOfThronesModule = gameOfThrones(db)
+    val gameOfThronesModule = gameOfThrones()
 
     val semanticUiModule = semanticUi()
 
-    val cmsAdminModule = cmsAdmin(db)
-    val cmsPublicModule = cmsPublic(db)
+    val cmsAdminModule = cmsAdmin()
+    val cmsPublicModule = cmsPublic()
 
     install(Locations) {
     }
 
     install(Sessions) {
-        cookie<MySession>("MY_SESSION") {
+        cookie<UserSession>("user") {
             cookie.extensions["SameSite"] = "lax"
             cookie.path = "/"
             transform(SessionTransportTransformerMessageAuthentication(hex("abcdefg")))
         }
 
-        cookie<LoginSession>("LOGIN") {
+        cookie<LoginSession>("login") {
             cookie.extensions["SameSite"] = "lax"
             cookie.path = "/"
             transform(SessionTransportTransformerMessageAuthentication(hex("abcdefg")))
@@ -118,7 +132,7 @@ fun Application.module(testing: Boolean = false) {
         FlashSession.register(this)
     }
 
-    val authFeature = install(Authentication) {
+    install(Authentication) {
         basic("myBasicAuth") {
             realm = "Ktor Server"
             validate { if (it.name == "test" && it.password == "password") UserIdPrincipal(it.name) else null }
@@ -177,13 +191,6 @@ fun Application.module(testing: Boolean = false) {
         maxRangeCount = 10
     }
 
-//    install(Authentication) {
-//        basic("myBasicAuth") {
-//            realm = "Ktor Server"
-//            validate { if (it.name == "test" && it.password == "password") UserIdPrincipal(it.name) else null }
-//        }
-//    }
-
     install(ContentNegotiation) {
         jackson {
             enable(SerializationFeature.INDENT_OUTPUT)
@@ -199,6 +206,10 @@ fun Application.module(testing: Boolean = false) {
                     CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 30 * 24 * 60 * 60))
 
                 ContentType.Application.JavaScript ->
+                    CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 30 * 24 * 60 * 60))
+
+                // f.e. favicon
+                ContentType.Image.XIcon ->
                     CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 30 * 24 * 60 * 60))
 
                 // f.e. woff2 files
@@ -262,7 +273,7 @@ fun Application.module(testing: Boolean = false) {
 
         val ns = measureNanoTime { proceed() }
 
-        logger.info("... total ${ns / 1_000_000.0} ms")
+        logger.debug("${call.request.httpMethod.value} ${call.request.uri} took ${ns / 1_000_000.0} ms")
     }
 
     intercept(ApplicationCallPipeline.Features) {
@@ -270,78 +281,97 @@ fun Application.module(testing: Boolean = false) {
         val requestId = UUID.randomUUID()
 
         logger.attach("req.Id", requestId.toString()) {
-            logger.info("Feature[start]")
-
-            val ns = measureNanoTime {
-                proceed()
-            }
-
-            logger.info("Feature[end] ${ns / 1_000_000.0} ms")
+            proceed()
         }
     }
 
     intercept(ApplicationCallPipeline.Features) {
 
-        logger.info("injecting services")
+        val ns = measureNanoTime {
 
-        with(call.attributes) {
-
-            put(Translations.withLocale("en"))
-            put(WebResources)
+            // via the calls attributes we provide the following things
+            with(call.attributes) {
+                // The i18n based on the choosen language
+                provide(Translations.withLocale("en"))
+                // The web resources
+                provide(WebResources)
+                // A customized version of the database, with a hook for UserRecords
+                provide(db.customize {
+                    it.copy(
+                        onSaveHooks = it.onSaveHooks.plus {
+                            UserRecordOnSaveHook {
+                                UserRecord(
+                                    call.sessions.get<UserSession>()?.userId ?: "anonymous",
+                                    call.request.origin.remoteHost
+                                )
+                            }
+                        }
+                    )
+                })
+            }
         }
+
+        logger.debug("Service injection into call attributes took ${ns / 1_000_000.0} ms")
     }
 
     routing {
 
-        trace { application.log.trace(it.buildText()) }
+//        trace { application.log.trace(it.buildText()) }
 
-        val digester = getDigestFunction("SHA-256") { "ktor${it.length}" }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //  Common area
+        /////
 
-        // We have a single user for testing in the user table: user=root, password=root
-        // So for the login you have to use those credentials since you cannot register new users in this sample.
-        val users = UserHashedTableAuth(
-            digester,
-            table = mapOf(
-                "root" to digester("root"),
-                "rudi" to digester("rudi")
-            )
-        )
-
-        get("/assets/{path...}") {
-
-            val filename = call.request.uri.split("?").first()
-
-            logger.info("ASSET: $filename")
-
-            val stream = Application::class.java.getResourceAsStream(filename) ?: throw NotFoundException()
-
-            call.respondText(String(stream.readBytes()), ContentType.Text.CSS)
+        static {
+            resource("favicon.ico", resourcePackage = "assets")
         }
 
-        authenticate("myBasicAuth") {
-            get("/protected/route/basic") {
-                val principal = call.principal<UserIdPrincipal>()!!
-                call.respondText("Hello ${principal.name}")
+        static("assets") {
+            resources("assets")
+        }
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //  Frontend area
+        /////
+
+        host("www.*".toRegex()) {
+
+            get("/") {
+
+                val name = call.sessions.get<UserSession>()?.userId ?: "Stranger"
+
+                call.respondText("HELLO $name!", contentType = ContentType.Text.Plain)
             }
+
+            get("/test") {
+                call.respondText(TestModule().doSomething(111).toString(), ContentType.Text.Html, HttpStatusCode.OK)
+            }
+
+            gameOfThronesModule.mount(this)
+            cmsPublicModule.mount(this)
         }
 
-        get("/") {
-
-            val name = call.sessions.get<MySession>()?.userId ?: "Stranger"
-
-            call.respondText("HELLO $name!", contentType = ContentType.Text.Plain)
-        }
-
-        get("/test") {
-            call.respondText(TestModule().doSomething(111).toString(), ContentType.Text.Html, HttpStatusCode.OK)
-        }
-
-        gameOfThronesModule.mount(this)
-        cmsPublicModule.mount(this)
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //  Admin area
+        /////
 
         host("admin.*".toRegex()) {
 
-            login(authFeature, users)
+            val authName = "adminAreaFormAuth"
+
+            val digester = getDigestFunction("SHA-256") { "ktor${it.length}" }
+
+            // We have a single user for testing in the user table: user=root, password=root
+            // So for the login you have to use those credentials since you cannot register new users in this sample.
+            val users = UserHashedTableAuth(
+                digester,
+                table = mapOf(
+                    "root" to digester("root"),
+                    "rudi" to digester("rudi")
+                )
+            )
+
+            login(authName, users)
 
             get("/") {
                 call.respondHtml {
@@ -361,7 +391,7 @@ fun Application.module(testing: Boolean = false) {
                 }
             }
 
-            authenticate("myFormAuthentication") {
+            authenticate(authName) {
 
                 semanticUiModule.mount(this)
                 cmsAdminModule.mount(this)
@@ -382,7 +412,7 @@ fun Application.module(testing: Boolean = false) {
 
 data class LoginSession(val requestedUri: String)
 
-data class MySession(val userId: String? = null, val count: Int = 0)
+data class UserSession(val userId: String? = null, val count: Int = 0)
 
 class AuthenticationException : RuntimeException()
 class AuthorizationException : RuntimeException()

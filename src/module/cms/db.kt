@@ -8,8 +8,8 @@ import de.peekandpoke.karango.aql.EQ
 import de.peekandpoke.karango.aql.FOR
 import de.peekandpoke.karango.aql.type
 
-fun Db.registerCmsCollections() {
-    register(CmsPagesCollection(this))
+fun Db.Builder.registerCmsCollections() {
+    addEntityCollection { db -> CmsPagesCollection(db) }
 }
 
 internal val Db.cmsPages get() = getEntityCollection<CmsPagesCollection>()

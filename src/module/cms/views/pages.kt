@@ -16,7 +16,7 @@ internal fun Template.pages(pages: List<CmsPage>) {
         ui.dividing.header H1 {
             +"Pages"
 
-            ui.right.floated.primary.button A {
+            ui.right.floated.basic.primary.button A {
                 href = linkTo.createPage()
                 +"Create Page"
             }
@@ -29,6 +29,7 @@ internal fun Template.pages(pages: List<CmsPage>) {
                     th { +"Name" }
                     th { +"Created at" }
                     th { +"Updated at" }
+                    th { +"Last edit by" }
                 }
             }
 
@@ -43,6 +44,9 @@ internal fun Template.pages(pages: List<CmsPage>) {
                         }
                         td {
                             +(it._ts?.updatedAt?.toString() ?: "n/a")
+                        }
+                        td {
+                            +(it._userRecord?.user ?: "n/a")
                         }
                     }
                 }
