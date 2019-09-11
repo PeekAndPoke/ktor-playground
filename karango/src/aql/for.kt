@@ -50,6 +50,9 @@ class ForLoop internal constructor() : StatementBuilder {
     fun SORT(sort: Sort): Unit = run { sort.addStmt() }
 
     @KarangoDslMarker
+    fun <T> SORT(expr: Expression<T>, direction: Direction= Direction.ASC): Unit = SORT(expr.sort(direction))
+
+    @KarangoDslMarker
     fun LIMIT(limit: Int): Unit = run { OffsetAndLimit(0, limit).addStmt() }
 
     @KarangoDslMarker

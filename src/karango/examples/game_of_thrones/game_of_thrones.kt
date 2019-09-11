@@ -7,10 +7,12 @@ import de.peekandpoke.karango.examples.printQueryResult
 import de.peekandpoke.karango.examples.runDemo
 import de.peekandpoke.karango.id
 
-val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev")
+private val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev").apply {
+    registerGotCollections()
+}
 
-val characters = db.collection(Characters)
-val actors = db.collection(Actors)
+private val characters = db.characters
+private val actors = db.actors
 
 fun main() {
 

@@ -66,12 +66,6 @@ dependencies {
 
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    // reading configuration files to objects
-    compile("com.uchuhimo:konf:0.14.0") {
-        // exclude deps to outdates and vulnerable version of jackson
-        exclude group: "com.fasterxml.jackson.core"
-    }
-
     // assets
     compile 'org.webjars:bootstrap:4.3.1'
     compile "org.webjars:jquery:3.2.1"
@@ -81,6 +75,8 @@ dependencies {
 
     compile "de.peekandpoke.ultra:mutator:$ultra_version"
     kapt "de.peekandpoke.ultra:mutator:$ultra_version"
+
+    compile project(":test_module")
 
     compile project(":polyglot")
     compile project(":ktor_tools")

@@ -91,6 +91,9 @@ class BetterWebjars(private val configuration: Configuration) {
                 context.call.respond(HttpStatusCode.InternalServerError)
             } catch (notFound: IllegalArgumentException) {
             }
+
+            // important ... stop any other route matching etc.
+            context.finish()
         }
     }
 

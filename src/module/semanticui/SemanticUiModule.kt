@@ -14,58 +14,49 @@ import io.ktor.locations.Location
 import io.ktor.locations.get
 import io.ktor.routing.Route
 import io.ktor.routing.route
-import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.pipeline.PipelineContext
 import io.ultra.ktor_tools.architecture.LinkGenerator
+import io.ultra.ktor_tools.architecture.Module
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
-fun Application.semanticUi(): SemanticUiModule {
-
-    @KtorExperimentalLocationsAPI
-    lateinit var module: SemanticUiModule
-
-    routing {
-        route("/semantic-ui") {
-            module = SemanticUiModule(this)
-        }
-    }
-
-    return module
-}
+fun Application.semanticUi() = SemanticUiModule(this)
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
-class SemanticUiModule(val mountPoint: Route) {
+class SemanticUiModule(app: Application) : Module(app) {
+
+    val mountPoint = "/semantic-ui"
 
     @Location("")
-    internal class Index
+    class Index
 
     @Location("/buttons")
-    internal class Buttons
+    class Buttons
 
     @Location("/icons")
-    internal class Icons
+    class Icons
 
     @Location("/playground")
-    internal class Playground
+    class Playground
 
-    inner class LinkTo : LinkGenerator(mountPoint) {
+    inner class LinkTo : LinkGenerator(mountPoint, application) {
         fun index() = linkTo(Index())
         fun buttons() = linkTo(Buttons())
         fun icons() = linkTo(Icons())
         fun playground() = linkTo(Playground())
     }
 
-    private val linkTo = LinkTo()
+    val linkTo = LinkTo()
 
     private suspend fun PipelineContext<Unit, ApplicationCall>.respond(status: HttpStatusCode = HttpStatusCode.OK, body: Template.() -> Unit) {
         call.respondHtmlTemplate(Template(linkTo, call), status, body)
     }
 
-    init {
-        with(mountPoint) {
+    override fun mount(mountPoint: Route) {
+
+        mountPoint.route(this.mountPoint) {
 
             get<Index> {
                 respond { index() }

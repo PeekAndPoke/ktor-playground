@@ -17,6 +17,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/polyglot/ktor-playground.polyglot.main.iml" filepath="$PROJECT_DIR$/.idea/modules/polyglot/ktor-playground.polyglot.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/polyglot/ktor-playground.polyglot.test.iml" filepath="$PROJECT_DIR$/.idea/modules/polyglot/ktor-playground.polyglot.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktor-playground.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ktor-playground.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/test_module/ktor-playground.test_module.iml" filepath="$PROJECT_DIR$/.idea/modules/test_module/ktor-playground.test_module.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/test_module/ktor-playground.test_module.main.iml" filepath="$PROJECT_DIR$/.idea/modules/test_module/ktor-playground.test_module.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/test_module/ktor-playground.test_module.test.iml" filepath="$PROJECT_DIR$/.idea/modules/test_module/ktor-playground.test_module.test.iml" />
     </modules>
   </component>
 </project>

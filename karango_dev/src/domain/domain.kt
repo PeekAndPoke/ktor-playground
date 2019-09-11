@@ -1,7 +1,7 @@
 package de.peekandpoke.karango_dev.domain
 
 import de.peekandpoke.karango.Entity
-import de.peekandpoke.karango.meta.Karango
+import de.peekandpoke.karango.Karango
 import de.peekandpoke.ultra.mutator.Mutable
 
 @Karango
@@ -12,7 +12,8 @@ data class Person(
     val address: Address = Address("n/a"),
     val books: List<Book> = listOf(),
     val favouriteBook: Book? = null,
-    override val _id: String = ""
+    override val _id: String = "",
+    override val _key: String = ""
 ) : Entity {
     companion object
 }
@@ -34,7 +35,8 @@ data class Author(
 @Mutable
 data class Address(
     val city: String,
-    override val _id: String = ""
+    override val _id: String = "",
+    override val _key: String = ""
 ) : Entity {
     companion object
 }

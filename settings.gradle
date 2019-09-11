@@ -4,3 +4,5 @@ include ":polyglot"
 include ":ktor_tools"
 include ":karango"
 include ":karango_dev"
+
+include ":test_module"

@@ -13,7 +13,8 @@ data class ActsIn(
     override val _to: String,
     val roles: List<String>,
     val year: Int,
-    override val _id: String = ""
+    override val _id: String = "",
+    override val _key: String = ""
 ) : Edge {
 
     @Suppress("unused") @Deprecated("Deserialization only", level = DeprecationLevel.HIDDEN)

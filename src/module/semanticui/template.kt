@@ -40,28 +40,30 @@ internal class Template constructor(private val linkTo: SemanticUiModule.LinkTo,
             css(webResources["semantic"])
             css(webResources["prism"])
 
-            style(
-                "text/css", """
-                    
-                    .pusher.padded.right {
-                        padding-right: 260px;
-                    }
-                    
-                """.trimIndent()
-            )
+            style("text/css") {
+                unsafe {
+                    +"""
+                        
+                        .pusher.padded.right {
+                            padding-right: 260px;
+                        }
+                        
+                    """.trimIndent()
+                }
+            }
         }
 
         body {
 
             ui.sidebar.vertical.left.inverted.menu.visible.fixed {
 
-                a(classes = "item", href = linkTo.index()) { +"Semantic UI" }
+                ui.item A { href = linkTo.index(); +"Semantic UI" }
 
-                a(classes = "item", href = linkTo.playground()) { +"Playground" }
+                ui.item A { href = linkTo.playground(); +"Playground" }
 
-                a(classes = "item", href = linkTo.buttons()) { +"Buttons" }
+                ui.item A { href = linkTo.buttons(); +"Buttons" }
 
-                a(classes = "item", href = linkTo.icons()) { +"Icons" }
+                ui.item A { href = linkTo.icons(); +"Icons" }
             }
 
             ui.pusher.padded.right {

@@ -2,10 +2,9 @@ package de.peekandpoke.karango.examples.movies_and_actors
 
 import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.EntityCollection
-import de.peekandpoke.karango.WithKey
+import de.peekandpoke.karango.Karango
 import de.peekandpoke.karango.WithRev
 import de.peekandpoke.karango.aql.type
-import de.peekandpoke.karango.meta.Karango
 import de.peekandpoke.ultra.mutator.Mutable
 
 @Karango
@@ -16,7 +15,7 @@ data class Actor(
     override val _id: String = "",
     override val _key: String = "",
     override val _rev: String = ""
-) : Entity, WithKey, WithRev
+) : Entity, WithRev
 
 val Actors = ActorsCollection()
 

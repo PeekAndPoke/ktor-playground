@@ -19,6 +19,8 @@ val must_be_an_integer = "$errorGroup.must_be_an_integer".translatable()
 
 val must_be_an_integer_or_blank = "$errorGroup.must_be_an_integer_or_blank".translatable()
 
+val must_not_be_blank = "$errorGroup.must_not_be_blank".translatable()
+
 val invalid_value = "$errorGroup.invalid_value".translatable()
 
 fun <T : Comparable<T>> must_be_in_range(range: ClosedRange<T>) =

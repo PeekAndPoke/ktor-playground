@@ -3,13 +3,14 @@ package de.peekandpoke.karango.testdomain
 import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.EntityCollection
 import de.peekandpoke.karango.IEntityCollection
+import de.peekandpoke.karango.Karango
 import de.peekandpoke.karango.aql.type
-import de.peekandpoke.karango.meta.Karango
 
 @Karango
 data class TestName(
     val name: String,
-    override val _id: String = ""
+    override val _id: String = "",
+    override val _key: String = ""
 ) : Entity
 
 val TestNames : IEntityCollection<TestName> =

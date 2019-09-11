@@ -11,3 +11,4 @@ fun <T : Comparable<T>> FormField<T?>.resultingInRange(range: ClosedRange<T>, me
 
 fun <T> FormField<T>.resultingInAnyOf(options: List<T>, message: Translatable = invalid_value) =
     resultingIn(message) { options.contains(it) }
+

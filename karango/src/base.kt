@@ -18,7 +18,7 @@ abstract class Collection<T>(private val name_: String, private val type: TypeRe
     override fun printAql(p: AqlPrinter) = p.name(name_)
 }
 
-abstract class EntityCollection<T>(name: String, type: TypeRef<List<T>>) :
+open class EntityCollection<T>(name: String, type: TypeRef<List<T>>) :
     Collection<T>(name, type), IEntityCollection<T>
 
 abstract class EdgeCollection<T>(name: String, type: TypeRef<List<T>>) :

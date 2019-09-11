@@ -2,30 +2,50 @@ package io.ultra.ktor_tools.semanticui
 
 import kotlinx.html.*
 
-@SemanticUiDslMarker val FlowContent.ui get() = SemanticUi(this, mutableSetOf("ui"))
+@SemanticUiDslMarker val FlowContent.ui get() = SemanticUi(this, mutableListOf("ui"))
 
 @Suppress("FunctionName", "PropertyName")
-class SemanticUi(private val parent: FlowContent, private val cssClasses: MutableSet<String>) {
+class SemanticUi(private val parent: FlowContent, private val cssClasses: MutableList<String>) {
 
     // switches
 
-    @SemanticUiTagMarker infix fun H1(flow: FlowContent.() -> Unit) = renderH1(flow)
+    @SemanticUiTagMarker infix fun H1(flow: H1.() -> Unit) = renderH1(flow)
 
-    @SemanticUiTagMarker infix fun H2(flow: FlowContent.() -> Unit) = renderH2(flow)
+    @SemanticUiTagMarker infix fun H2(flow: H2.() -> Unit) = renderH2(flow)
 
-    @SemanticUiTagMarker infix fun H3(flow: FlowContent.() -> Unit) = renderH3(flow)
+    @SemanticUiTagMarker infix fun H3(flow: H3.() -> Unit) = renderH3(flow)
 
-    @SemanticUiTagMarker infix fun H4(flow: FlowContent.() -> Unit) = renderH4(flow)
+    @SemanticUiTagMarker infix fun H4(flow: H4.() -> Unit) = renderH4(flow)
 
-    @SemanticUiTagMarker infix fun H5(flow: FlowContent.() -> Unit) = renderH5(flow)
+    @SemanticUiTagMarker infix fun H5(flow: H5.() -> Unit) = renderH5(flow)
 
-    @SemanticUiTagMarker infix fun H6(flow: FlowContent.() -> Unit) = renderH6(flow)
+    @SemanticUiTagMarker infix fun H6(flow: H6.() -> Unit) = renderH6(flow)
 
-    @SemanticUiTagMarker infix fun A(flow: FlowContent.() -> Unit) = renderA(flow)
+    @SemanticUiTagMarker infix fun A(flow: A.() -> Unit) = renderA(flow)
 
-    @SemanticUiTagMarker infix fun Button(flow: FlowContent.() -> Unit) = renderButton(flow)
+    @SemanticUiTagMarker infix fun Button(flow: BUTTON.() -> Unit) = renderButton(flow)
 
-    @SemanticUiTagMarker infix fun Div(flow: FlowContent.() -> Unit) = renderDiv(flow)
+    @SemanticUiTagMarker infix fun Div(flow: DIV.() -> Unit) = renderDiv(flow)
+
+    @SemanticUiTagMarker infix fun Form(flow: FORM.() -> Unit) = renderForm(flow)
+
+    @SemanticUiTagMarker infix fun Label(flow: LABEL.() -> Unit) = renderLabel(flow)
+
+    @SemanticUiTagMarker infix fun Submit(flow: BUTTON.() -> Unit) = renderSubmitButton(flow)
+
+    @SemanticUiTagMarker infix fun Table(flow: TABLE.() -> Unit) = renderTable(flow)
+
+    // dynamic class
+
+    @SemanticUiCssMarker fun with(cls: String) = this + cls
+
+    @SemanticUiCssMarker fun with(cls: String, flow: FlowContent.() -> Unit) = (this + cls).renderDiv(flow)
+
+    @SemanticUiCssMarker fun given(condition: Boolean, action: SemanticUi.() -> SemanticUi) = when(condition) {
+        false -> this
+
+        else -> this.action()
+    }
 
     // misc
 
@@ -49,6 +69,14 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
     @SemanticUiCssMarker val toggle get() = this + "toggle"
     @SemanticUiCssMarker val fluid get() = this + "fluid"
     @SemanticUiCssMarker val circular get() = this + "circular"
+    @SemanticUiCssMarker val list get() = this + "list"
+    @SemanticUiCssMarker val message get() = this + "message"
+    @SemanticUiCssMarker val warning get() = this + "warning"
+    @SemanticUiCssMarker val field get() = this + "field"
+    @SemanticUiCssMarker val table get() = this + "table"
+    @SemanticUiCssMarker val form get() = this + "form"
+    @SemanticUiCssMarker val tablet get() = this + "tablet"
+    @SemanticUiCssMarker val computer get() = this + "computer"
 
     // container
 
@@ -70,6 +98,10 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
     @SemanticUiCssMarker val ten get() = this + "ten"
     @SemanticUiCssMarker val eleven get() = this + "eleven"
     @SemanticUiCssMarker val twelve get() = this + "twelve"
+    @SemanticUiCssMarker val thirteen get() = this + "thirteen"
+    @SemanticUiCssMarker val fourteen get() = this + "fourteen"
+    @SemanticUiCssMarker val fifteen get() = this + "fifteen"
+    @SemanticUiCssMarker val sixteen get() = this + "sixteen"
 
     // positions
 
@@ -168,25 +200,34 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
     @SemanticUiCssMarker val youtube get() = this + "youtube"
 
     @SemanticUiCssMarker
-    operator fun invoke(flow: FlowContent.() -> Unit) = renderDiv(flow)
+    operator fun invoke(flow: DIV.() -> Unit) = renderDiv(flow)
 
     private operator fun plus(cls: String) = apply { cssClasses.add(cls) }
 
-    private fun renderH1(flow: H1.() -> Unit) = parent.h1 { classes = cssClasses; apply(flow) }
+    private fun renderH1(flow: H1.() -> Unit) = parent.h1(classes = cssClasses.joinToString(" "), block = flow)
 
-    private fun renderH2(flow: H2.() -> Unit) = parent.h2 { classes = cssClasses; apply(flow) }
+    private fun renderH2(flow: H2.() -> Unit) = parent.h2(classes = cssClasses.joinToString(" "), block = flow)
 
-    private fun renderH3(flow: H3.() -> Unit) = parent.h3 { classes = cssClasses; apply(flow) }
+    private fun renderH3(flow: H3.() -> Unit) = parent.h3(classes = cssClasses.joinToString(" "), block = flow)
 
-    private fun renderH4(flow: H4.() -> Unit) = parent.h4 { classes = cssClasses; apply(flow) }
+    private fun renderH4(flow: H4.() -> Unit) = parent.h4(classes = cssClasses.joinToString(" "), block = flow)
 
-    private fun renderH5(flow: H5.() -> Unit) = parent.h5 { classes = cssClasses; apply(flow) }
+    private fun renderH5(flow: H5.() -> Unit) = parent.h5(classes = cssClasses.joinToString(" "), block = flow)
 
-    private fun renderH6(flow: H6.() -> Unit) = parent.h6 { classes = cssClasses; apply(flow) }
+    private fun renderH6(flow: H6.() -> Unit) = parent.h6(classes = cssClasses.joinToString(" "), block = flow)
 
-    private fun renderA(flow: A.() -> Unit) = parent.a { classes = cssClasses; apply(flow) }
+    private fun renderA(flow: A.() -> Unit) = parent.a(classes = cssClasses.joinToString(" "), block = flow)
 
-    private fun renderButton(flow: BUTTON.() -> Unit) = parent.button { classes = cssClasses; apply(flow) }
+    private fun renderButton(flow: BUTTON.() -> Unit) = parent.button(classes = cssClasses.joinToString(" "), block = flow)
 
-    private fun renderDiv(flow: DIV.() -> Unit) = parent.div { classes = cssClasses; apply(flow) }
+    private fun renderSubmitButton(flow: BUTTON.() -> Unit) =
+        parent.button(type = ButtonType.submit, classes = cssClasses.joinToString(" "), block = flow)
+
+    private fun renderDiv(flow: DIV.() -> Unit) = parent.div(classes = cssClasses.joinToString(" "), block = flow)
+
+    private fun renderForm(flow: FORM.() -> Unit) = parent.form(classes = cssClasses.joinToString(" "), block = flow)
+
+    private fun renderLabel(flow: LABEL.() -> Unit) = parent.label(classes = cssClasses.joinToString(" "), block = flow)
+
+    private fun renderTable(flow: TABLE.() -> Unit) = parent.table(classes = cssClasses.joinToString(" "), block = flow)
 }

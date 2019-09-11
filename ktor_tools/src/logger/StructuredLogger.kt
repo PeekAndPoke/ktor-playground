@@ -1,4 +1,4 @@
-package de.peekandpoke.common
+package io.ultra.ktor_tools.logger
 
 import io.ktor.application.ApplicationCall
 import io.ktor.application.application
@@ -23,7 +23,7 @@ val PipelineContext<Unit, ApplicationCall>.logger get() = this.call.attributes.c
  * Non-static [StructuredLogger] that allows to temporarily attach named context objects to it, so calls to logging methods
  * delegate their logging to the [logger] but with attaching the named context objects available when the call is performed.
  */
-class StructuredLogger(val logger: Logger) : Logger {
+class StructuredLogger(private val logger: Logger) : Logger {
 
     @PublishedApi
     internal val attributes = LinkedHashMap<String, String>()

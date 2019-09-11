@@ -2,6 +2,7 @@ package de.peekandpoke.karango.meta
 
 import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.asClassName
+import de.peekandpoke.karango.Karango
 import de.peekandpoke.ultra.meta.ProcessorUtils
 import me.eugeniomarletti.kotlin.processing.KotlinAbstractProcessor
 import java.io.File

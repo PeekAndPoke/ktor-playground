@@ -29,7 +29,7 @@ abstract class Form(name: String = "", parent: Form? = null) : FormElement {
     private fun <T : FormElement> addField(field: T): T = field.apply { _children.add(this) }
 }
 
-abstract class MutatorForm<T : Any>(private val target: Mutator<T>, name: String = "", parent: Form? = null) : Form(name, parent) {
+abstract class MutatorForm<T : Any>(val target: Mutator<T>, name: String = "", parent: Form? = null) : Form(name, parent) {
 
     suspend fun submit(call: ApplicationCall) : Boolean {
 

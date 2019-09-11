@@ -1,9 +1,10 @@
 package de.peekandpoke.module.got
 
-import com.uchuhimo.konf.Config
-import com.uchuhimo.konf.ConfigSpec
-import de.peekandpoke.common.logger
-import de.peekandpoke.karango.examples.game_of_thrones.*
+import de.peekandpoke.karango.Db
+import de.peekandpoke.karango.examples.game_of_thrones.Character
+import de.peekandpoke.karango.examples.game_of_thrones.actors
+import de.peekandpoke.karango.examples.game_of_thrones.characters
+import de.peekandpoke.karango.examples.game_of_thrones.mutator
 import de.peekandpoke.resources.MainTemplate
 import de.peekandpoke.resources.WELCOME
 import io.ktor.application.Application
@@ -15,45 +16,24 @@ import io.ktor.locations.get
 import io.ktor.response.respondRedirect
 import io.ktor.routing.Route
 import io.ktor.routing.route
-import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
 import io.ultra.ktor_tools.architecture.LinkGenerator
+import io.ultra.ktor_tools.architecture.Module
 import io.ultra.ktor_tools.bootstrap.*
 import io.ultra.ktor_tools.flashSession
 import io.ultra.ktor_tools.getOrPost
+import io.ultra.ktor_tools.logger.logger
 import kotlinx.html.*
 
-object GameOfThronesSpec : ConfigSpec("gameOfThrones") {
-    val mountPoint by required<String>()
-}
-
-class GameOfThronesConfig(private val config: Config) {
-    val mountPoint get() = config[GameOfThronesSpec.mountPoint]
-}
+@KtorExperimentalAPI
+@KtorExperimentalLocationsAPI
+fun Application.gameOfThrones(db: Db) = GameOfThronesModule(this, db)
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
-fun Application.gameOfThrones(): GameOfThronesModule {
+class GameOfThronesModule(app: Application, private val db: Db): Module(app) {
 
-    val config = GameOfThronesConfig(
-        Config { addSpec(GameOfThronesSpec) }.from.hocon.resource("module.game-of-thrones.conf")
-    )
-
-    @KtorExperimentalLocationsAPI
-    lateinit var module: GameOfThronesModule
-
-    routing {
-        route(config.mountPoint) {
-            module = GameOfThronesModule(this, config)
-        }
-    }
-
-    return module
-}
-
-@KtorExperimentalAPI
-@KtorExperimentalLocationsAPI
-class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig) {
+    val config = GameOfThronesConfig.from(application.environment.config)
 
     @Location("/characters")
     internal class GetCharacters(val page: Int = 1, val epp: Int = 100)
@@ -61,20 +41,20 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
     @Location("/characters/{character}")
     internal class GetCharacter(val character: Character)
 
-    inner class LinkTo : LinkGenerator(mountPoint) {
+    inner class LinkTo : LinkGenerator(config.mountPoint, application) {
         fun getCharacters() = linkTo(GetCharacters())
         fun getCharacterByKey(character: Character) = linkTo(GetCharacter(character))
     }
 
     val linkTo = LinkTo()
 
-    init {
+    override fun mount(mountPoint: Route) {
 
-        with(mountPoint) {
+        mountPoint.route(config.mountPoint) {
 
             get<GetCharacters> { p ->
 
-                val result = Characters.findAllPaged(p.page, p.epp)
+                val result = db.characters.findAllPaged(p.page, p.epp)
 
                 logger.info("${result.timeMs} vs ${result.stats.executionTime}")
 
@@ -124,8 +104,8 @@ class GameOfThronesModule(val mountPoint: Route, val config: GameOfThronesConfig
 
                     if (form.isModified) {
 
-                        val savedActor = form.result.actor?.let { actors.save(it) }
-                        val saved = characters.save(form.result)
+                        val savedActor = form.result.actor?.let { db.actors.save(it) }
+                        val saved = db.characters.save(form.result)
 
                         logger.info("Updated character in database: $saved, $savedActor")
 

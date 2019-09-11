@@ -6,6 +6,7 @@ import io.ktor.auth.*
 import io.ktor.html.respondHtml
 import io.ktor.http.HttpMethod
 import io.ktor.locations.*
+import io.ktor.request.uri
 import io.ktor.response.respond
 import io.ktor.response.respondRedirect
 import io.ktor.routing.Route
@@ -16,6 +17,9 @@ import io.ktor.sessions.get
 import io.ktor.sessions.sessions
 import io.ktor.sessions.set
 import io.ktor.util.KtorExperimentalAPI
+import io.ultra.ktor_tools.resources.css
+import io.ultra.ktor_tools.resources.iocWebResources
+import io.ultra.ktor_tools.semanticui.ui
 import kotlinx.html.*
 
 /**
@@ -40,10 +44,21 @@ fun Route.login(auth: Authentication, users: UserHashedTableAuth) {
     auth.configure {
 
         form(myFormAuthentication) {
+
             userParamName = Login::userName.name
             passwordParamName = Login::password.name
-            challenge = FormAuthChallenge.Redirect { url(Login(it?.name ?: "")) { parameters.clear() } }
-            validate { users.authenticate(it) }
+
+            challenge = FormAuthChallenge.Redirect {
+                // remember the url the was requested in a session
+                sessions.set(LoginSession(request.uri))
+                // redirect to the login page
+                url(Login(it?.name ?: "")) { parameters.clear() }
+            }
+
+            validate {
+                users.authenticate(it)
+            }
+
             skipWhen {
 
                 val session = it.sessions.get<MySession>()
@@ -75,7 +90,9 @@ fun Route.login(auth: Authentication, users: UserHashedTableAuth) {
                 if (principal != null) {
                     call.sessions.set(MySession(principal.name))
                 }
-                call.respondRedirect("/private/show")
+                call.respondRedirect(
+                    call.sessions.get<LoginSession>()?.requestedUri ?: "/"
+                )
             }
         }
 
@@ -83,39 +100,65 @@ fun Route.login(auth: Authentication, users: UserHashedTableAuth) {
          * For a GET method, we respond with an HTML with a form asking for the user credentials.
          */
         method(HttpMethod.Get) {
+
             handle<Login> {
 
                 if (call.sessions.get<MySession>()?.userId != null) {
-                    call.respondRedirect("/")
+                    call.respondRedirect(
+                        call.sessions.get<LoginSession>()?.requestedUri ?: "/"
+                    )
                     return@handle
                 }
 
-                call.respondHtml {
-                    body {
-                        h2 { +"Login" }
-                        form(
-                            call.url(Login()) { parameters.clear() },
-                            classes = "pure-form-stacked",
-                            encType = FormEncType.applicationXWwwFormUrlEncoded,
-                            method = FormMethod.post
-                        ) {
-                            acceptCharset = "utf-8"
+                val webResources = call.iocWebResources
 
-                            label {
-                                +"Username: "
-                                textInput {
-                                    name = Login::userName.name
-                                    value = it.userName
+                call.respondHtml {
+
+                    head {
+                        title { +"Admin area" }
+
+                        css(webResources["semantic"])
+                    }
+
+                    body {
+
+                        ui.container {
+                            style = "padding-top: 10%"
+
+                            ui.grid.centered.middle.aligned {
+
+                                ui.row {
+
+                                    ui.sixteen.wide.tablet.six.wide.computer.column {
+
+                                        ui.form Form {
+                                            action = call.url(Login()) { parameters.clear() }
+                                            method = FormMethod.post
+
+                                            ui.field {
+                                                label {
+                                                    attributes["for"] = Login::userName.name
+                                                    +"User"
+                                                }
+                                                textInput {
+                                                    name = Login::userName.name
+                                                }
+                                            }
+
+                                            ui.field {
+                                                label {
+                                                    attributes["for"] = Login::password.name
+                                                    +"Password"
+                                                }
+                                                textInput {
+                                                    name = Login::password.name
+                                                }
+                                            }
+
+                                            ui.wide.button Submit { +"Login" }
+                                        }
+                                    }
                                 }
-                            }
-                            label {
-                                +"Password: "
-                                passwordInput {
-                                    name = Login::password.name
-                                }
-                            }
-                            submitInput(classes = "pure-button pure-button-primary") {
-                                value = "Login"
                             }
                         }
                     }

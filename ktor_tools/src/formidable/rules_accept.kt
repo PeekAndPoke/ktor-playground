@@ -26,3 +26,6 @@ fun isIntegerOrBlank(value: String) = value.isBlank() || isInteger(value)
 
 fun <T> FormField<T?>.acceptsIntegerOrBlank(message: Translatable = must_be_an_integer_or_blank) = accepting(message, ::isIntegerOrBlank)
 
+fun isNotBlank(value: String) = value.isNotBlank()
+
+fun <T> FormField<T>.acceptsNonBlank(message: Translatable = must_not_be_blank) = accepting(message, ::isNotBlank)

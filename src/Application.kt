@@ -1,45 +1,37 @@
 package de.peekandpoke
 
 import com.fasterxml.jackson.databind.SerializationFeature
-import de.peekandpoke.common.logger
 import de.peekandpoke.karango.Db
-import de.peekandpoke.karango.examples.game_of_thrones.Character
-import de.peekandpoke.karango.examples.game_of_thrones.Characters
+import de.peekandpoke.karango.examples.game_of_thrones.registerGotCollections
 import de.peekandpoke.karango_ktor.add
+import de.peekandpoke.module.cms.cmsAdmin
+import de.peekandpoke.module.cms.cmsPublic
+import de.peekandpoke.module.cms.registerCmsCollections
 import de.peekandpoke.module.got.gameOfThrones
 import de.peekandpoke.module.semanticui.semanticUi
-import de.peekandpoke.resources.MainTemplate
 import de.peekandpoke.resources.Translations
-import io.ktor.application.Application
-import io.ktor.application.ApplicationCallPipeline
-import io.ktor.application.call
-import io.ktor.application.install
+import de.peekandpoke.test_module.TestModule
+import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.features.*
 import io.ktor.html.respondHtml
-import io.ktor.html.respondHtmlTemplate
 import io.ktor.http.*
-import io.ktor.http.cio.websocket.Frame
-import io.ktor.http.cio.websocket.readText
 import io.ktor.http.content.CachingOptions
 import io.ktor.jackson.jackson
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Locations
-import io.ktor.request.header
-import io.ktor.request.receive
 import io.ktor.request.uri
 import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.host
-import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.sessions.*
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.getDigestFunction
 import io.ktor.util.hex
-import io.ktor.websocket.webSocket
 import io.ultra.ktor_tools.FlashSession
+import io.ultra.ktor_tools.logger.logger
 import io.ultra.ktor_tools.resources.AppMeta
 import io.ultra.ktor_tools.resources.BetterWebjars
 import io.ultra.ktor_tools.resources.put
@@ -52,7 +44,10 @@ import kotlin.system.measureNanoTime
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-private val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev")
+private val db: Db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev").apply {
+    registerCmsCollections()
+    registerGotCollections()
+}
 
 val Meta = object : AppMeta() {}
 
@@ -93,15 +88,28 @@ val WebResources = webResources(Meta) {
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
-@Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
+@Suppress("unused", "UNUSED_PARAMETER") // Referenced in application.conf
 fun Application.module(testing: Boolean = false) {
+
+    val gameOfThronesModule = gameOfThrones(db)
+
+    val semanticUiModule = semanticUi()
+
+    val cmsAdminModule = cmsAdmin(db)
+    val cmsPublicModule = cmsPublic(db)
 
     install(Locations) {
     }
 
     install(Sessions) {
         cookie<MySession>("MY_SESSION") {
+            cookie.extensions["SameSite"] = "lax"
+            cookie.path = "/"
+            transform(SessionTransportTransformerMessageAuthentication(hex("abcdefg")))
+        }
+
+        cookie<LoginSession>("LOGIN") {
             cookie.extensions["SameSite"] = "lax"
             cookie.path = "/"
             transform(SessionTransportTransformerMessageAuthentication(hex("abcdefg")))
@@ -141,7 +149,7 @@ fun Application.module(testing: Boolean = false) {
     }
 
     install(DataConversion) {
-        add(db, Characters, Character::class)
+        add(db)
     }
 
     install(DefaultHeaders) {
@@ -184,12 +192,17 @@ fun Application.module(testing: Boolean = false) {
 
     install(CachingHeaders) {
         options { outgoingContent ->
+
             when (outgoingContent.contentType?.withoutParameters()) {
 
                 ContentType.Text.CSS ->
                     CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 30 * 24 * 60 * 60))
 
                 ContentType.Application.JavaScript ->
+                    CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 30 * 24 * 60 * 60))
+
+                // f.e. woff2 files
+                ContentType.Application.OctetStream ->
                     CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 30 * 24 * 60 * 60))
 
                 else -> null
@@ -280,6 +293,8 @@ fun Application.module(testing: Boolean = false) {
 
     routing {
 
+        trace { application.log.trace(it.buildText()) }
+
         val digester = getDigestFunction("SHA-256") { "ktor${it.length}" }
 
         // We have a single user for testing in the user table: user=root, password=root
@@ -292,8 +307,6 @@ fun Application.module(testing: Boolean = false) {
             )
         )
 
-        login(authFeature, users)
-
         get("/assets/{path...}") {
 
             val filename = call.request.uri.split("?").first()
@@ -305,16 +318,6 @@ fun Application.module(testing: Boolean = false) {
             call.respondText(String(stream.readBytes()), ContentType.Text.CSS)
         }
 
-        webSocket("/myws/echo") {
-            send(Frame.Text("Hi from server"))
-            while (true) {
-                val frame = incoming.receive()
-                if (frame is Frame.Text) {
-                    send(Frame.Text("Client said: " + frame.readText()))
-                }
-            }
-        }
-
         authenticate("myBasicAuth") {
             get("/protected/route/basic") {
                 val principal = call.principal<UserIdPrincipal>()!!
@@ -322,88 +325,62 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-        val gameOfThrones = gameOfThrones()
-
-        semanticUi()
-
         get("/") {
-
-            call.respondHtmlTemplate(MainTemplate(call)) {}
 
             val name = call.sessions.get<MySession>()?.userId ?: "Stranger"
 
             call.respondText("HELLO $name!", contentType = ContentType.Text.Plain)
         }
 
-        get("/__hello__") {
-            call.respondText("Hello", ContentType.Text.Html, HttpStatusCode.OK)
+        get("/test") {
+            call.respondText(TestModule().doSomething(111).toString(), ContentType.Text.Html, HttpStatusCode.OK)
         }
+
+        gameOfThronesModule.mount(this)
+        cmsPublicModule.mount(this)
 
         host("admin.*".toRegex()) {
-            get("/admin") {
+
+            login(authFeature, users)
+
+            get("/") {
                 call.respondHtml {
                     body {
-                        div {
+                        h1 {
                             +"Admin area"
                         }
-                    }
-                }
-            }
-        }
-
-        authenticate("myFormAuthentication") {
-
-            get("/session/increment") {
-                val session = call.sessions.get<MySession>()!!
-                call.sessions.set(session.copy(count = session.count + 1))
-                call.respondText("Counter is ${session.count}. Refresh to increment.")
-            }
-
-            get("/private/show") {
-
-                logger.info("Private[start]")
-
-                call.respondHtml {
-                    body {
-                        div { +("Private show " + call.sessions.get<MySession>()!!.userId) }
-                        div {
-                            a(href = "/logout") { +"Logout" }
-                        }
-                        div {
-                            attributes["data-stuff"] = "stuff"
-                            a(href = gameOfThrones.linkTo.getCharacters()) { +"GoT" }
-                        }
-                        div {
-                            +(call.request.header(HttpHeaders.Host) ?: "n/a")
-                        }
-                        form(method = FormMethod.post) {
-                            div {
-                                label { +"Name" }
-                                textInput { name = "input[name]" }
+                        ul {
+                            li {
+                                a(href = semanticUiModule.linkTo.index()) { +"Semantic UI demo" }
                             }
-                            div {
-                                label { +"Age" }
-                                numberInput { name = "input[age]" }
-                            }
-                            div {
-                                submitInput { +"submit" }
+                            li {
+                                a(href = cmsAdminModule.linkTo.index()) { +"Mini CMS" }
                             }
                         }
                     }
                 }
-
-                logger.info("Private[end]")
             }
 
-            post("/private/show") {
-                logger.info("Private[post]")
-                call.respondText {
-                    call.receive()
+            authenticate("myFormAuthentication") {
+
+                semanticUiModule.mount(this)
+                cmsAdminModule.mount(this)
+
+                get("/admin") {
+                    call.respondHtml {
+                        body {
+                            div {
+                                +"Admin area"
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 }
+
+data class LoginSession(val requestedUri: String)
 
 data class MySession(val userId: String? = null, val count: Int = 0)
 

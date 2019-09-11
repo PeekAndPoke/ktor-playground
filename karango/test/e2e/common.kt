@@ -1,9 +1,9 @@
 package de.peekandpoke.karango.e2e
 
 import de.peekandpoke.karango.Db
+import de.peekandpoke.karango.Karango
 import de.peekandpoke.karango.aql.Expression
 import de.peekandpoke.karango.aql.toPrinterResult
-import de.peekandpoke.karango.meta.Karango
 import de.peekandpoke.ultra.common.surround
 import io.kotlintest.TestContext
 import io.kotlintest.matchers.withClue

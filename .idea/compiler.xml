@@ -27,6 +27,8 @@
       <module name="ktor-playground.polyglot.main" target="1.8" />
       <module name="ktor-playground.polyglot.test" target="1.8" />
       <module name="ktor-playground.test" target="1.8" />
+      <module name="ktor-playground.test_module.main" target="1.8" />
+      <module name="ktor-playground.test_module.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
