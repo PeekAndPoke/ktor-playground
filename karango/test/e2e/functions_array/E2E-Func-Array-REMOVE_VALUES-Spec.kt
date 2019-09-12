@@ -21,7 +21,7 @@ class `E2E-Func-Array-REMOVE_VALUESS-Spec` : StringSpec({
         row(
             "REMOVE_VALUES ([1], [])",
             REMOVE_VALUES(ARRAY(1.aql), ARRAY()),
-            listOf(1L)
+            listOf(1)
         ),
         row(
             "REMOVE_VALUES ([1], [1])",
@@ -31,7 +31,7 @@ class `E2E-Func-Array-REMOVE_VALUESS-Spec` : StringSpec({
         row(
             "REMOVE_VALUES ([1, 1, 2, 2, 3, 3, 4, 5], [1, 3, 4])",
             REMOVE_VALUES(ARRAY(1.aql, 1.aql, 2.aql, 2.aql, 3.aql, 4.aql, 5.aql), ARRAY(1.aql, 3.aql, 5.aql)),
-            listOf(2L, 2L, 4L)
+            listOf(2, 2, 4)
         )
     )
 

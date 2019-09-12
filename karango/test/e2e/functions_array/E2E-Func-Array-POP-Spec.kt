@@ -26,15 +26,15 @@ class `E2E-Func-Array-POP-Spec` : StringSpec({
         row(
             "POP ([1, 2])",
             POP(ARRAY(1.aql, 2.aql)),
-            listOf(1L)
+            listOf(1)
         ),
         row(
             "POP ([1, 2, 3])",
             POP(ARRAY(1.aql, 2.aql, 3.aql)),
-            listOf(1L, 2L)
+            listOf(1, 2)
         )
     )
-    
+
     for ((description, expression, expected) in cases) {
 
         "$description - direct return" {

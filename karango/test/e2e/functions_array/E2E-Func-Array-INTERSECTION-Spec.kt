@@ -27,7 +27,7 @@ class `E2E-Func-Array-INTERSECTION-Spec` : StringSpec({
         row(
             "INTERSECTION ([1, 2], [2, 3])",
             INTERSECTION(ARRAY(1.aql, 2.aql), ARRAY(2.aql, 3.aql)),
-            listOf(2L)
+            listOf(2)
         ),
         row(
             "INTERSECTION ([1, 2], ['a', 'b'])",
@@ -45,7 +45,7 @@ class `E2E-Func-Array-INTERSECTION-Spec` : StringSpec({
             listOf(listOf(1L, 2L))
         )
     )
-    
+
     for ((description, expression, expected) in cases) {
 
         "$description - direct return" {

@@ -26,15 +26,15 @@ class `E2E-Func-Array-SHIFT-Spec` : StringSpec({
         row(
             "SHIFT ([1, 2])",
             SHIFT(ARRAY(1.aql, 2.aql)),
-            listOf(2L)
+            listOf(2)
         ),
         row(
             "SHIFT ([1, 2, 3])",
             SHIFT(ARRAY(1.aql, 2.aql, 3.aql)),
-            listOf(2L, 3L)
+            listOf(2, 3)
         )
     )
-    
+
     for ((description, expression, expected) in cases) {
 
         "$description - direct return" {

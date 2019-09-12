@@ -17,7 +17,7 @@ class `E2E-Func-Array-PUSH-Spec` : StringSpec({
         row(
             "PUSH ([], 0)",
             PUSH(ARRAY(), 1.aql),
-            listOf(1L)
+            listOf(1)
         ),
         row(
             "PUSH ([1], 'a')",
@@ -27,15 +27,15 @@ class `E2E-Func-Array-PUSH-Spec` : StringSpec({
         row(
             "PUSH ([1], 1, true)",
             PUSH(ARRAY(1.aql), 1.aql, true.aql),
-            listOf(1L)
+            listOf(1)
         ),
         row(
             "PUSH ([1, 1], 2, true)",
             PUSH(ARRAY(1.aql, 1.aql), 2.aql, true.aql),
-            listOf(1L, 1L, 2L)
+            listOf(1, 1, 2)
         )
     )
-    
+
     for ((description, expression, expected) in cases) {
 
         "$description - direct return" {

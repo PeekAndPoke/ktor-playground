@@ -27,12 +27,12 @@ class `E2E-Func-Array-OUTERSECTION-Spec` : StringSpec({
         row(
             "OUTERSECTION ([1], [])",
             OUTERSECTION(ARRAY(1.aql), ARRAY()),
-            listOf(1L)
+            listOf(1)
         ),
         row(
             "OUTERSECTION ([1, 2], [2, 3])",
             OUTERSECTION(ARRAY(1.aql, 2.aql), ARRAY(2.aql, 3.aql)),
-            listOf(3L, 1L)
+            listOf(3, 1)
         ),
         row(
             "OUTERSECTION ([1, 2], ['a', 'b'])",
@@ -50,7 +50,7 @@ class `E2E-Func-Array-OUTERSECTION-Spec` : StringSpec({
             listOf(listOf("a", "b"))
         )
     )
-    
+
     for ((description, expression, expected) in cases) {
 
         "$description - direct return" {

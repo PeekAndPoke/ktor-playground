@@ -31,37 +31,37 @@ class `E2E-Func-Array-REMOVE_NTH-Spec` : StringSpec({
         row(
             "REMOVE_NTH ([1], 1)",
             REMOVE_NTH(ARRAY(1.aql), 1.aql),
-            listOf(1L)
+            listOf(1)
         ),
         row(
             "REMOVE_NTH ([1, 2], 0)",
             REMOVE_NTH(ARRAY(1.aql, 2.aql), 0.aql),
-            listOf(2L)
+            listOf(2)
         ),
         row(
             "REMOVE_NTH ([1, 2], 1)",
             REMOVE_NTH(ARRAY(1.aql, 2.aql), 1.aql),
-            listOf(1L)
+            listOf(1)
         ),
         row(
             "REMOVE_NTH ([1, 2], 2)",
             REMOVE_NTH(ARRAY(1.aql, 2.aql), 2.aql),
-            listOf(1L, 2L)
+            listOf(1, 2)
         ),
         row(
             "REMOVE_NTH ([1, 2], -1)",
             REMOVE_NTH(ARRAY(1.aql, 2.aql), (-1).aql),
-            listOf(1L)
+            listOf(1)
         ),
         row(
             "REMOVE_NTH ([1, 2], -2)",
             REMOVE_NTH(ARRAY(1.aql, 2.aql), (-2).aql),
-            listOf(2L)
+            listOf(2)
         ),
         row(
             "REMOVE_NTH ([1, 2], -3)",
             REMOVE_NTH(ARRAY(1.aql, 2.aql), (-3).aql),
-            listOf(1L, 2L)
+            listOf(1, 2)
         )
     )
 

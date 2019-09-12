@@ -22,12 +22,12 @@ class `E2E-Func-Array-UNION-Spec` : StringSpec({
         row(
             "UNION ([1], [])",
             UNION(ARRAY(1.aql), ARRAY()),
-            listOf(1L)
+            listOf(1)
         ),
         row(
             "UNION ([1, 2], [2, 3])",
             UNION(ARRAY(1.aql, 2.aql), ARRAY(2.aql, 3.aql)),
-            listOf(1L, 2L, 2L, 3L)
+            listOf(1, 2, 2, 3)
         ),
         row(
             "UNION ([1, 2], ['a', 'b'])",
@@ -40,7 +40,7 @@ class `E2E-Func-Array-UNION-Spec` : StringSpec({
             listOf(1L, 2L, "a", "b", "c")
         )
     )
-    
+
     for ((description, expression, expected) in cases) {
 
         "$description - direct return" {

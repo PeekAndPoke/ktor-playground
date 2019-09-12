@@ -17,7 +17,7 @@ class `E2E-Func-Array-UNSHIFT-Spec` : StringSpec({
         row(
             "UNSHIFT ([], 0)",
             UNSHIFT(ARRAY(), 1.aql),
-            listOf(1L)
+            listOf(1)
         ),
         row(
             "UNSHIFT ([1], 'a')",
@@ -27,25 +27,25 @@ class `E2E-Func-Array-UNSHIFT-Spec` : StringSpec({
         row(
             "UNSHIFT ([1], 1, true)",
             UNSHIFT(ARRAY(1.aql), 1.aql, true.aql),
-            listOf(1L)
+            listOf(1)
         ),
         row(
             "UNSHIFT ([1], 2, true)",
             UNSHIFT(ARRAY(1.aql), 2.aql, true.aql),
-            listOf(2L, 1L)
+            listOf(2, 1)
         ),
         row(
             "UNSHIFT ([1, 1], 2, true)",
             UNSHIFT(ARRAY(1.aql, 1.aql), 2.aql, true.aql),
-            listOf(2L, 1L, 1L)
+            listOf(2, 1, 1)
         ),
         row(
             "UNSHIFT ([1, 1, 2], 2, true)",
             UNSHIFT(ARRAY(1.aql, 1.aql, 2.aql), 2.aql, true.aql),
-            listOf(1L, 1L, 2L)
+            listOf(1, 1, 2)
         )
     )
-    
+
     for ((description, expression, expected) in cases) {
 
         "$description - direct return" {

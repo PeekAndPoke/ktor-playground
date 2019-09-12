@@ -22,7 +22,7 @@ class `E2E-Func-Array-NTH-Spec` : StringSpec({
         row(
             "NTH ([1], 0)",
             NTH(ARRAY(1.aql), 0.aql),
-            1L
+            1
         ),
         row(
             "NTH ([1], -1)",
@@ -37,12 +37,12 @@ class `E2E-Func-Array-NTH-Spec` : StringSpec({
         row(
             "NTH ([1, 2], 0)",
             NTH(ARRAY(1.aql, 2.aql), 0.aql),
-            1L
+            1
         ),
         row(
             "NTH ([1, 2], 1)",
             NTH(ARRAY(1.aql, 2.aql), 1.aql),
-            2L
+            2
         ),
         row(
             "NTH ([1, 2], 2)",

@@ -22,20 +22,20 @@ class `E2E-Func-Array-UNION_DISTINCT-Spec` : StringSpec({
         row(
             "UNION_DISTINCT ([1], [])",
             UNION_DISTINCT(ARRAY(1.aql), ARRAY()),
-            listOf(1L)
+            listOf(1)
         ),
         row(
             "UNION_DISTINCT ([1, 2], [2, 3])",
             UNION_DISTINCT(ARRAY(1.aql, 2.aql), ARRAY(2.aql, 3.aql)),
-            listOf(3L, 2L, 1L)
+            listOf(3, 2, 1)
         ),
         row(
             "UNION_DISTINCT ([1, 2], [2, 3], [3, 4])",
             UNION_DISTINCT(ARRAY(1.aql, 2.aql), ARRAY(2.aql, 3.aql), ARRAY(3.aql, 4.aql)),
-            listOf(4L, 3L, 2L, 1L)
+            listOf(4, 3, 2, 1)
         )
     )
-    
+
     for ((description, expression, expected) in cases) {
 
         "$description - direct return" {

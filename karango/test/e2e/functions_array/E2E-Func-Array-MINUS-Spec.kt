@@ -27,12 +27,12 @@ class `E2E-Func-Array-MINUS-Spec` : StringSpec({
         row(
             "MINUS ([1], [])",
             MINUS(ARRAY(1.aql), ARRAY()),
-            listOf(1L)
+            listOf(1)
         ),
         row(
             "MINUS ([1, 2], [2, 3])",
             MINUS(ARRAY(1.aql, 2.aql), ARRAY(2.aql, 3.aql)),
-            listOf(1L)
+            listOf(1)
         ),
         row(
             "MINUS ([1, 2], ['a', 'b'])",
@@ -45,7 +45,7 @@ class `E2E-Func-Array-MINUS-Spec` : StringSpec({
             listOf(2L)
         )
     )
-    
+
     for ((description, expression, expected) in cases) {
 
         "$description - direct return" {

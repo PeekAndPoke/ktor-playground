@@ -21,9 +21,9 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
         assertSoftly {
 
-            result.first() shouldBe listOf(1L, 2L, 3L, 4L, 5L, 6L)
+            result.first() shouldBe listOf(1, 2, 3, 4, 5, 6)
 
-            result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Number>"
+            result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Integer>"
         }
     }
 
@@ -31,7 +31,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
         val result = db.query {
             RETURN(
-                APPEND(ARRAY(1.aql, 2.aql, 3.aql), listOf(4.5, 5.5, 6.5).aql)
+                APPEND<Number>(ARRAY(1.aql, 2.aql, 3.aql), listOf(4.5, 5.5, 6.5).aql)
             )
         }
 
@@ -183,17 +183,17 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
         row(
             "APPEND ([1], [])",
             APPEND(ARRAY(1.aql), ARRAY()),
-            listOf(1L)
+            listOf(1)
         ),
         row(
             "APPEND ([], [1])",
             APPEND(ARRAY(), ARRAY(1.aql)),
-            listOf(1L)
+            listOf(1)
         ),
         row(
             "APPEND ([1,2,3], [4,5,6])",
             APPEND(ARRAY(1.aql, 2.aql, 3.aql), listOf(4, 5, 6).aql),
-            listOf(1L, 2L, 3L, 4L, 5L, 6L)
+            listOf(1, 2, 3, 4, 5, 6)
         ),
         row(
             "APPEND (['1'], ['2'])",
@@ -203,7 +203,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
         row(
             "APPEND ([1, 1, 2, 3], [3, 4, 5, 5], true)",
             APPEND(ARRAY(1.aql, 1.aql, 2.aql, 3.aql), ARRAY(3.aql, 4.aql, 5.aql, 5.aql), true.aql),
-            listOf(1L, 2L, 3L, 4L, 5L)
+            listOf(1, 2, 3, 4, 5)
         ),
         row(
             "APPEND (['1'], ['2'], true)",

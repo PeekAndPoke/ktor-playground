@@ -26,27 +26,27 @@ class `E2E-Func-Array-REMOVE_VALUE-Spec` : StringSpec({
         row(
             "REMOVE_VALUE ([1], 0)",
             REMOVE_VALUE(ARRAY(1.aql), 0.aql),
-            listOf(1L)
+            listOf(1)
         ),
         row(
             "REMOVE_VALUE ([1, 2], 1)",
             REMOVE_VALUE(ARRAY(1.aql, 2.aql), 1.aql),
-            listOf(2L)
+            listOf(2)
         ),
         row(
             "REMOVE_VALUE ([1, 2], 2)",
             REMOVE_VALUE(ARRAY(1.aql, 2.aql), 2.aql),
-            listOf(1L)
+            listOf(1)
         ),
         row(
             "REMOVE_VALUE ([1, 1, 2], 1, 1)",
             REMOVE_VALUE(ARRAY(1.aql, 1.aql, 2.aql), 1.aql, 1.aql),
-            listOf(1L, 2L)
+            listOf(1, 2)
         ),
         row(
             "REMOVE_VALUE ([1, 1, 2], 1, 2)",
             REMOVE_VALUE(ARRAY(1.aql, 1.aql, 2.aql), 1.aql, 2.aql),
-            listOf(2L)
+            listOf(2)
         )
     )
 

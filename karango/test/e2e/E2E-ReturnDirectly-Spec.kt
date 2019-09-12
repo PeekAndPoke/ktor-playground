@@ -108,15 +108,15 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
             }
 
             withClue("Query-result") {
-                result.toList() shouldBe listOf(listOf(1L, 2L))
+                result.toList() shouldBe listOf(listOf(1, 2))
             }
 
             withClue("TypeRef for deserialization") {
-                result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Number>"
+                result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Integer>"
             }
 
             withClue("TypeRef of TerminalExpr") {
-                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.List<java.lang.Number>>"
+                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.List<java.lang.Integer>>"
             }
         }
     }
@@ -143,15 +143,15 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
             }
 
             withClue("Query-result") {
-                result.toList() shouldBe listOf(mapOf("a" to 1L, "b" to 2L))
+                result.toList() shouldBe listOf(mapOf("a" to 1, "b" to 2))
             }
 
             withClue("TypeRef for deserialization") {
-                result.query.ret.innerType().toString() shouldBe "java.util.Map<java.lang.String, java.lang.Number>"
+                result.query.ret.innerType().toString() shouldBe "java.util.Map<java.lang.String, java.lang.Integer>"
             }
 
             withClue("TypeRef of TerminalExpr") {
-                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.Map<java.lang.String, java.lang.Number>>"
+                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.Map<java.lang.String, java.lang.Integer>>"
             }
         }
     }
@@ -183,12 +183,12 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.innerType().toString() shouldBe "class java.lang.Number"
+                result.query.ret.innerType().toString() shouldBe "class java.lang.Double"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.getType().toString() shouldBe "java.util.List<java.lang.Number>"
+                result.query.ret.getType().toString() shouldBe "java.util.List<java.lang.Double>"
             }
         }
     }
@@ -215,17 +215,17 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
             }
 
             withClue("Query-result") {
-                result.toList() shouldBe listOf(1234L)
+                result.toList() shouldBe listOf(1234)
             }
 
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.innerType().toString() shouldBe "class java.lang.Number"
+                result.query.ret.innerType().toString() shouldBe "class java.lang.Integer"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.getType().toString() shouldBe "java.util.List<java.lang.Number>"
+                result.query.ret.getType().toString() shouldBe "java.util.List<java.lang.Integer>"
             }
         }
     }
@@ -257,12 +257,12 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.innerType().toString() shouldBe "class java.lang.Number"
+                result.query.ret.innerType().toString() shouldBe "class java.lang.Long"
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.getType().toString() shouldBe "java.util.List<java.lang.Number>"
+                result.query.ret.getType().toString() shouldBe "java.util.List<java.lang.Long>"
             }
         }
     }

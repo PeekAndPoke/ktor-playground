@@ -22,15 +22,15 @@ class `E2E-Func-Array-LAST-Spec` : StringSpec({
         row(
             "LAST ([1])",
             LAST(ARRAY(1.aql)),
-            1L
+            1
         ),
         row(
             "LAST ([1, 2])",
             LAST(ARRAY(1.aql, 2.aql)),
-            2L
+            2
         )
     )
-    
+
     for ((description, expression, expected) in cases) {
 
         "$description - direct return" {
