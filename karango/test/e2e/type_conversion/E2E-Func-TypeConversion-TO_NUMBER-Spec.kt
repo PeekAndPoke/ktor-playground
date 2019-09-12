@@ -65,9 +65,9 @@ class `E2E-Func-TypeConversion-TO_NUMBER-Spec` : StringSpec({
         row("TO_NUMBER(false)", false, 0.0),
         row("TO_NUMBER(true)", true, 1.0),
 
-        row("TO_NUMBER(0)", 0, 0.0),
-        row("TO_NUMBER(1)", 1, 1.0),
-        row("TO_NUMBER(-1)", -1, -1.0),
+//        row("TO_NUMBER(0)", 0, 0.0),
+//        row("TO_NUMBER(1)", 1, 1.0),
+//        row("TO_NUMBER(-1)", -1, -1.0),
 
         row("TO_NUMBER(0.0)", 0.0, 0.0),
         row("TO_NUMBER(0.1)", 0.1, 0.1),

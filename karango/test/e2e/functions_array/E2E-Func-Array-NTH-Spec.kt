@@ -16,7 +16,7 @@ class `E2E-Func-Array-NTH-Spec` : StringSpec({
     val cases = listOf(
         row(
             "NTH ([], 0)",
-            NTH(ARRAY<Any>(), 0.aql),
+            NTH(ARRAY(), 0.aql),
             null
         ),
         row(
@@ -50,7 +50,7 @@ class `E2E-Func-Array-NTH-Spec` : StringSpec({
             null
         )
     )
-    
+
     for ((description, expression, expected) in cases) {
 
         "$description - direct return" {

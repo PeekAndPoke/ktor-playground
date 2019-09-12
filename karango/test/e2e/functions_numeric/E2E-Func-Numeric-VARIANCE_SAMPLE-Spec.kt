@@ -71,7 +71,7 @@ class `E2E-Func-Numeric-VARIANCE_SAMPLE-Spec` : StringSpec({
         ),
         row(
             "VARIANCE_SAMPLE( [ 1, 3, 6, 5, 2.0 ] ) - ARRAY",
-            VARIANCE_SAMPLE(ARRAY(1.aql, 3.aql, 6.aql, 5.aql, 2.0.aql)),
+            VARIANCE_SAMPLE(ARRAY<Number>(1.aql, 3.aql, 6.aql, 5.aql, 2.0.aql)),
             4.300000000000001
         ),
         row(

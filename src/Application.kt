@@ -311,7 +311,7 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-        logger.debug("Service injection into call attributes took ${ns / 1_000_000.0} ms")
+//        logger.debug("Service injection into call attributes took ${ns / 1_000_000.0} ms")
     }
 
     routing {

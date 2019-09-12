@@ -5,7 +5,7 @@ Running ArangoDB in docker container
 ```bash
 sudo docker run --name "karango" -e ARANGO_ROOT_PASSWORD= -p 8529:8529 -d arangodb 
 sleep 30
-docker exec -t karango arangosh --server.username=root --server.password= --javascript.execute-string="db._createDatabase('kotlindev')"
+sudo docker exec -t karango arangosh --server.username=root --server.password= --javascript.execute-string="db._createDatabase('kotlindev')"
 
 ```
 
@@ -16,6 +16,15 @@ docker exec -t karango arangosh --server.username=root --server.password= --java
 
 ( ) remove dependency to me.eugeniomarletti.kotlin.processing
 
+( ) Ref for List<T>
+
+( ) Journal
+
+( ) E2E-Tests
+  ( ) DbEntityCollection ... storing, finding etc...
+  ( ) Ref ... storing Ref and join queries
+  ( ) Timestamped behaviour
+  ( ) UserRecord behaviour
 
 
 # DONE

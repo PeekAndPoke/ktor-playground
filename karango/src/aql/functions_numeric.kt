@@ -289,7 +289,6 @@ fun <T : Number> STDDEV(value: Expression<List<T>>) = AqlFunc.STDDEV.nullableNum
 @KarangoFuncMarker
 fun <T : Number> SUM(numArray: Expression<List<T>>) = AqlFunc.SUM.numberCall(numArray)
 
-
 /**
  * Return the tangent of value.
  *

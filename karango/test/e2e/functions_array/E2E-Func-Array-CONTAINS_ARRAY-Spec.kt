@@ -15,7 +15,7 @@ class `E2E-Func-Array-CONTAINS_ARRAY-Spec` : StringSpec({
     val cases = listOf(
         row(
             "CONTAINS_ARRAY ([], 0)",
-            CONTAINS_ARRAY(ARRAY<Number>(), 0.aql),
+            CONTAINS_ARRAY(ARRAY(), 0.aql),
             false
         ),
         row(

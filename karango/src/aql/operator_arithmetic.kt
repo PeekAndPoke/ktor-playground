@@ -3,15 +3,15 @@ package de.peekandpoke.karango.aql
 enum class ArithmeticOperator(val op: String) {
     PLUS("+"),
     MINUS("-"),
-    MUL("*"),
+    TIMES("*"),
     DIV("/"),
     REM("%"),
 }
 
 internal class ArithmeticExpression<L, R>(
-    private val left: Expression<L>,
-    private val op: ArithmeticOperator,
-    private val right: Expression<R>
+    internal val left: Expression<L>,
+    internal val op: ArithmeticOperator,
+    internal val right: Expression<R>
 ) : Expression<Number> {
 
     override fun getType() = TypeRef.Number
@@ -29,7 +29,7 @@ operator fun <L, R> Expression<L>.minus(right: Expression<R>): Expression<Number
 operator fun <L> Expression<L>.minus(right: Number): Expression<Number> = this - right.aql()
 operator fun <R> Number.minus(right: Expression<R>): Expression<Number> = this.aql() - right
 
-operator fun <L, R> Expression<L>.times(right: Expression<R>): Expression<Number> = ArithmeticExpression(this, ArithmeticOperator.MUL, right)
+operator fun <L, R> Expression<L>.times(right: Expression<R>): Expression<Number> = ArithmeticExpression(this, ArithmeticOperator.TIMES, right)
 operator fun <L> Expression<L>.times(right: Number): Expression<Number> = this * right.aql()
 operator fun <R> Number.times(right: Expression<R>): Expression<Number> = this.aql() * right
 

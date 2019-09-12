@@ -47,6 +47,9 @@ interface Expression<T> : Printable {
     fun getType(): TypeRef<T>
 }
 
+/**
+ * Sometimes it might be necessary to change the type of an expression
+ */
 inline fun <reified R : Any> Expression<*>.AS() : Expression<R> = TypeCastExpression(type(), this)
 
 /**
@@ -88,9 +91,10 @@ internal class RootExpression<T>(private val stmts: List<Statement>, private val
     override fun printAql(p: AqlPrinter) = p.append(stmts).append(ret)
 
     companion object {
-        fun <T> from(builder: AqlBuilder, builderFun: AqlBuilder.() -> TerminalExpr<T>) : RootExpression<T> {
+        fun <T> from(builderFun: AqlBuilder.() -> TerminalExpr<T>) : RootExpression<T> {
 
-            val result : TerminalExpr<T> = builderFun(builder)
+            val builder = AqlBuilder()
+            val result : TerminalExpr<T> = builder.builderFun()
 
             return RootExpression(builder.stmts, result)
         }

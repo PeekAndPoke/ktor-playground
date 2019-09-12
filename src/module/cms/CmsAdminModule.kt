@@ -9,6 +9,7 @@ import de.peekandpoke.module.cms.views.pages
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
+import io.ktor.application.feature
 import io.ktor.html.respondHtmlTemplate
 import io.ktor.http.HttpStatusCode
 import io.ktor.locations.KtorExperimentalLocationsAPI
@@ -16,6 +17,7 @@ import io.ktor.locations.Location
 import io.ktor.locations.get
 import io.ktor.response.respondRedirect
 import io.ktor.routing.Route
+import io.ktor.routing.Routing
 import io.ktor.routing.route
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.pipeline.PipelineContext
@@ -66,6 +68,17 @@ class CmsAdminModule(app: Application) : Module(app) {
         route(this@CmsAdminModule.mountPoint) {
 
             get<Index> {
+
+                fun printRoutes(routes: List<Route>) {
+                    routes.forEach {
+                        println(it)
+                        println(it.attributes.allKeys)
+                        printRoutes(it.children)
+                    }
+                }
+
+                printRoutes(application.feature(Routing).children)
+
                 respond {
                     index()
                 }

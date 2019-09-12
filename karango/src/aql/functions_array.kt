@@ -98,7 +98,7 @@ fun <T> FLATTEN(anyArray: Expression<List<T>>) = AqlFunc.FLATTEN.arrayCall(type<
  * See https://docs.arangodb.com/current/AQL/Functions/Array.html#flatten
  */
 @KarangoFuncMarker
-fun <T> FLATTEN(anyArray: Expression<List<T>>, depth: Expression<Number>) = AqlFunc.FLATTEN.arrayCall(type<List<Any>>(), anyArray, depth)
+fun <T, N : Number> FLATTEN(anyArray: Expression<List<T>>, depth: Expression<N>) = AqlFunc.FLATTEN.arrayCall(type<List<Any>>(), anyArray, depth)
 
 /**
  * Return the intersection of all arrays specified. The result is an array of values that occur in all arguments.
@@ -140,7 +140,7 @@ inline fun <reified T : Any> MINUS(array1: Expression<out List<T>>, array2: Expr
  * See https://docs.arangodb.com/current/AQL/Functions/Array.html#nth
  */
 @KarangoFuncMarker
-fun <T> NTH(anyArray: Expression<List<T>>, position: Expression<Number>) = AqlFunc.NTH.nullableCall<T>(anyArray.getType().down(), anyArray, position)
+fun <T, N : Number> NTH(anyArray: Expression<List<T>>, position: Expression<N>) = AqlFunc.NTH.nullableCall<T>(anyArray.getType().down(), anyArray, position)
 
 /**
  * Return the values that occur only once across all arrays specified.
@@ -202,7 +202,7 @@ inline fun <reified T> PUSH(anyArray: Expression<out List<T>>, value: Expression
  * See https://docs.arangodb.com/current/AQL/Functions/Array.html#remove_nth
  */
 @KarangoFuncMarker
-fun <T> REMOVE_NTH(anyArray: Expression<List<T>>, position: Expression<Number>) = AqlFunc.REMOVE_NTH.arrayCall(anyArray.getType(), anyArray, position)
+fun <T, N : Number> REMOVE_NTH(anyArray: Expression<List<T>>, position: Expression<N>) = AqlFunc.REMOVE_NTH.arrayCall(anyArray.getType(), anyArray, position)
 
 /**
  * Remove the element at value from the anyArray.
@@ -218,7 +218,7 @@ fun <T> REMOVE_VALUE(anyArray: Expression<List<T>>, value: Expression<T>) = AqlF
  * See https://docs.arangodb.com/current/AQL/Functions/Array.html#remove_value
  */
 @KarangoFuncMarker
-fun <T> REMOVE_VALUE(anyArray: Expression<List<T>>, value: Expression<T>, limit: Expression<Number>) =
+fun <T, N : Number> REMOVE_VALUE(anyArray: Expression<List<T>>, value: Expression<T>, limit: Expression<N>) =
     AqlFunc.REMOVE_VALUE.arrayCall(anyArray.getType(), anyArray, value, limit)
 
 /**
@@ -252,7 +252,7 @@ fun <T> SHIFT(anyArray: Expression<List<T>>) = AqlFunc.SHIFT.arrayCall(anyArray.
  * See https://docs.arangodb.com/current/AQL/Functions/Array.html#slice
  */
 @KarangoFuncMarker
-fun <T> SLICE(anyArray: Expression<List<T>>, start: Expression<Number>) =
+fun <T, N : Number> SLICE(anyArray: Expression<List<T>>, start: Expression<N>) =
     AqlFunc.SLICE.arrayCall(anyArray.getType(), anyArray, start)
 
 /**
@@ -261,7 +261,7 @@ fun <T> SLICE(anyArray: Expression<List<T>>, start: Expression<Number>) =
  * See https://docs.arangodb.com/current/AQL/Functions/Array.html#slice
  */
 @KarangoFuncMarker
-fun <T> SLICE(anyArray: Expression<List<T>>, start: Expression<Number>, length: Expression<Number>) =
+fun <T, NS : Number, NL : Number> SLICE(anyArray: Expression<List<T>>, start: Expression<NS>, length: Expression<NL>) =
     AqlFunc.SLICE.arrayCall(anyArray.getType(), anyArray, start, length)
 
 /**

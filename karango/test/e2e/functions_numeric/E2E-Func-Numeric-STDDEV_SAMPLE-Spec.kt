@@ -25,7 +25,7 @@ class `E2E-Func-Numeric-STDDEV_SAMPLE-Spec` : StringSpec({
             )
         }
 
-        result.first() shouldBe 10.0
+        result.first() shouldBe 10L
     }
 
     "STDDEV_SAMPLE from multiple objects" {

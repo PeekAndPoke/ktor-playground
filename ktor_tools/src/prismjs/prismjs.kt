@@ -10,7 +10,7 @@ enum class Lang {
 
 fun FlowContent.prism(language: Lang, code: () -> String) {
     pre {
-        code(classes = "highlight language-kotlin") {
+        code(classes = "highlight language-${language.toString().toLowerCase()}") {
             +code()
         }
     }

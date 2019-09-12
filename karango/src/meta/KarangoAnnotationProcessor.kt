@@ -3,6 +3,7 @@ package de.peekandpoke.karango.meta
 import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.asClassName
 import de.peekandpoke.karango.Karango
+import de.peekandpoke.karango.Ref
 import de.peekandpoke.ultra.meta.ProcessorUtils
 import me.eugeniomarletti.kotlin.processing.KotlinAbstractProcessor
 import java.io.File
@@ -102,10 +103,19 @@ open class KarangoAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
             .filter { !it.simpleName.contains("${"$"}delegate") }
             .forEach {
 
-                val type = it.asKotlinClassName()
+                val type = when {
+                    // References are just strings
+                    it.getAnnotation(Ref::class.java) != null -> "String"
+
+                    // otherwise we take the original type
+                    else -> it.asKotlinClassName()
+                }
+
                 val prop = it.simpleName
 
                 codeBlocks.add("//// $prop ".padEnd(160, '/'))
+
+                codeBlocks.add("//// annotations: ${it.annotationMirrors.map { ann -> ann.toString() }}")
 
                 codeBlocks.add(
                     """

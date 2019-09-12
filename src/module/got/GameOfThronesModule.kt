@@ -54,9 +54,11 @@ class GameOfThronesModule(app: Application) : Module(app) {
 
             get<GetCharacters> { p ->
 
-                val result = database.characters.findAllPaged(p.page, p.epp)
+                val withActors = database.characters.findAllWithActor()
+                println(withActors.query)
+                println(withActors.toList().joinToString("\n"))
 
-                logger.info("${result.timeMs} vs ${result.stats.executionTime}")
+                val result = database.characters.findAllPaged(p.page, p.epp)
 
                 val list = result.toList()
 

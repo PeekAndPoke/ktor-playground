@@ -25,7 +25,7 @@ class `E2E-Func-Numeric-MEDIAN-Spec` : StringSpec({
             )
         }
 
-        result.first() shouldBe 20.0
+        result.first() shouldBe 20L
     }
 
     "MEDIAN from multiple objects" {

@@ -29,31 +29,21 @@ val <T> Expression<T>.aql: Nothing
  * Usage:
  *
  * 1.aql("name-in-query")
+ *
  * "string".aql()
+ *
  * true.aql()
+ *
  * Obj().aql()
  */
 @Suppress("UNCHECKED_CAST")
 @KarangoInputMarker
-inline fun <reified T> T.aql(name: String = "v"): Expression<T> = when {
+inline fun <reified T> T.aql(name: String = "v"): Expression<T> = when (this) {
     // guard, so we do not wrap an Expression again
-    this is Expression<*> -> this as Expression<T>
+    is Expression<*> -> this as Expression<T>
     // otherwise we create a value expression
     else -> Value(type(), this, name)
 }
-
-/**
- * Shorthand for converting numerical values into AQL expression
- *
- * (This is a workaround for the Kotlin compiler, as it sometimes 1.aql or similar correctly)
- *
- * Usage:
- *
- * 1.aql()
- * 1.1.aql("name-in-query")
- */
-@KarangoInputMarker
-fun Number.aql(name: String = "v"): Expression<Number> = aql<Number>(name)
 
 /**
  * Shorthand for converting any object into an AQL expression without specifying a name
@@ -70,25 +60,13 @@ inline val <reified T> T.aql: Expression<T>
     get() = this.aql()
 
 /**
- * Shorthand for converting numerical values into AQL expression
- *
- * (This is a workaround for the Kotlin compiler, as it sometimes 1.aql or similar correctly)
- *
- * Usage:
- *
- * 1.aql
- * 1.1.aql
- */
-@KarangoInputMarker
-inline val Number.aql: Expression<Number>
-    get() = this.aql()
-
-/**
  * Helper to make a "null" AQL expression
  *
  * Usage:
  *
  * null.aql()
+ *
+ * null.aql("some name")
  */
 @Suppress("unused")
 @KarangoInputMarker
@@ -101,7 +79,6 @@ fun Nothing?.aql(name: String = "v"): Expression<Any?> = NullValue(name)
  *
  * null.aql
  */
-@Suppress("unused")
 @KarangoInputMarker
 val Nothing?.aql: Expression<Any?>
     get() = this.aql()

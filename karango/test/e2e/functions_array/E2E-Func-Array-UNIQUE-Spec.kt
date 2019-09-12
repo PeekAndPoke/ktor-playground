@@ -5,7 +5,7 @@ import de.peekandpoke.karango.aql.UNIQUE
 import de.peekandpoke.karango.aql.aql
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue
-import io.kotlintest.shouldBe
+import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 
@@ -21,7 +21,7 @@ class `E2E-Func-Array-UNIQUE-Spec` : StringSpec({
         row(
             "UNIQUE ( [ 8, 8, 4, 4, 2, 2, 10, 6 ] )",
             UNIQUE(listOf(8, 8, 4, 4, 2, 2, 10, 6).aql),
-            listOf(6, 10, 2, 4, 8)
+            listOf(2, 4, 6, 8, 10)
         )
     )
 
@@ -34,7 +34,7 @@ class `E2E-Func-Array-UNIQUE-Spec` : StringSpec({
             }
 
             withClue(expression, expected) {
-                result.toList() shouldBe listOf(expected)
+                result.first() shouldContainExactlyInAnyOrder expected
             }
         }
 
@@ -47,7 +47,7 @@ class `E2E-Func-Array-UNIQUE-Spec` : StringSpec({
             }
 
             withClue(expression, expected) {
-                result.toList() shouldBe listOf(expected)
+                result.first() shouldContainExactlyInAnyOrder expected
             }
         }
     }

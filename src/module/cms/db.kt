@@ -18,7 +18,7 @@ val CmsPages = EntityCollection<CmsPage>("cms_pages", type())
 
 class CmsPagesCollection(db: Db) : DbEntityCollection<CmsPage>(db, CmsPages) {
 
-    fun findAllSorted(): Cursor<CmsPage> = db.query {
+    fun findAllSorted(): Cursor<CmsPage> = query {
 
         FOR(coll) { page ->
             SORT(page.name)
@@ -26,7 +26,8 @@ class CmsPagesCollection(db: Db) : DbEntityCollection<CmsPage>(db, CmsPages) {
         }
     }
 
-    fun findBySlug(path: String): CmsPage? = db.queryFirst {
+    fun findBySlug(path: String): CmsPage? = queryFirst {
+
         FOR(coll) { page ->
             FILTER(page.slug EQ path)
             RETURN(page)

@@ -74,7 +74,7 @@ fun installData() {
         val data = LET("data") {
             listOf(
                 Character(name = "Robert", surname = "Baratheon", alive = false, traits = listOf("A", "H", "C"), actor = markAddy),
-                Character(name = "Jaime", surname = "Lannister", alive = true, age = 36, traits = listOf("A", "F", "B")),
+                Character(name = "Jaime", surname = "Lannister", alive = true, age = 36, traits = listOf("A", "F", "B"), actor = markAddy),
                 Character(name = "Eddard", surname = "Stark", alive = true, age = 47, traits = listOf("D", "H", "C"), actor = seanBean),
                 Character(name = "Catelyn", surname = "Stark", alive = true, age = 40, traits = listOf("D", "H", "C")),
                 Character(name = "Cersei", surname = "Lannister", alive = true, age = 36, traits = listOf("H", "E", "F")),
@@ -159,7 +159,7 @@ fun findStarks() {
 fun findBranStarkV1() {
 
     // to do what we want to do, we need the ID of Bran Stark
-    val bransId = characters.findOne { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }.id
+    val bransId = characters.findFirst { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }.id
 
     println("==========================================================================================================================")
     println("Find Bran Stark by ID with an explicit query on the db object")
@@ -176,7 +176,7 @@ fun findBranStarkV1() {
 fun findBranStarkV2() {
 
     // to do what we want to do, we need the ID of Bran Stark
-    val bransId = characters.findOne { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }.id
+    val bransId = characters.findFirst { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }.id
 
     println("==========================================================================================================================")
     println("Find Bran Stark by ID using our collection class")
@@ -191,9 +191,9 @@ fun findBranStarkV2() {
 fun findThreeCharactersByIdV1() {
 
     // to do what we want to do, we need the ID of Bran Stark
-    val bransId = characters.findOne { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }.id
-    val aryasId = characters.findOne { t -> FILTER((t.name EQ "Arya") AND (t.surname EQ "Stark")) }.id
-    val tyrionsId = characters.findOne { t -> FILTER((t.name EQ "Tyrion") AND (t.surname EQ "Lannister")) }.id
+    val bransId = characters.findFirst { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }.id
+    val aryasId = characters.findFirst { t -> FILTER((t.name EQ "Arya") AND (t.surname EQ "Stark")) }.id
+    val tyrionsId = characters.findFirst { t -> FILTER((t.name EQ "Tyrion") AND (t.surname EQ "Lannister")) }.id
 
     println("==========================================================================================================================")
     println("Find Arya, Bran and Tyrion at once by their IDs using our collection class")
@@ -206,9 +206,9 @@ fun findThreeCharactersByIdV1() {
 fun findThreeCharactersByIdV2() {
 
     // to do what we want to do, we need the ID of Bran Stark
-    val bransId = characters.findOne { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }.id
-    val aryasId = characters.findOne { t -> FILTER((t.name EQ "Arya") AND (t.surname EQ "Stark")) }.id
-    val tyrionsId = characters.findOne { t -> FILTER((t.name EQ "Tyrion") AND (t.surname EQ "Lannister")) }.id
+    val bransId = characters.findFirst { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }.id
+    val aryasId = characters.findFirst { t -> FILTER((t.name EQ "Arya") AND (t.surname EQ "Stark")) }.id
+    val tyrionsId = characters.findFirst { t -> FILTER((t.name EQ "Tyrion") AND (t.surname EQ "Lannister")) }.id
 
     println("==========================================================================================================================")
     println("Find Arya, Bran and Tyrion at once by their IDs using the db object")
@@ -226,7 +226,7 @@ fun findThreeCharactersByIdV2() {
 
 fun updateNedStarksAliveness() {
 
-    val ned = characters.findOne { t -> FILTER((t.name EQ "Eddard") AND (t.surname EQ "Stark")) }!!
+    val ned = characters.findFirst { t -> FILTER((t.name EQ "Eddard") AND (t.surname EQ "Stark")) }!!
 
     println("==========================================================================================================================")
     println("Spoiler Alert! Ned died... So we need to update his aliveness using the collection object")

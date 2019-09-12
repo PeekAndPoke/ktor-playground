@@ -1,10 +1,15 @@
 package de.peekandpoke.karango
 
 import com.arangodb.*
+import com.arangodb.entity.AqlExecutionExplainEntity
 import com.arangodb.entity.CollectionType
+import com.arangodb.model.AqlQueryExplainOptions
 import com.arangodb.model.AqlQueryOptions
 import com.arangodb.model.CollectionCreateOptions
-import com.fasterxml.jackson.databind.*
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.InjectableValues
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.convertValue
@@ -26,17 +31,17 @@ class Db(val arangoDb: ArangoDatabase, private val settings: Settings) {
         /**
          * Creates a Db with default setup
          */
-        fun default(user: String, pass: String, host: String, port: Int, database: String, builder: Builder.() -> Unit): Db {
+        fun default(user: String, pass: String, host: String, port: Int, database: String, builder: Builder.() -> Unit = {}): Db {
 
-            val velocyJack = VelocyJack().apply {
-                configure { mapper ->
-                    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                    mapper.configure(MapperFeature.USE_ANNOTATIONS, true)
-                }
-            }
+//            val velocyJack = VelocyJack().apply {
+//                configure { mapper ->
+//                    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+//                    mapper.configure(MapperFeature.USE_ANNOTATIONS, true)
+//                }
+//            }
 
             val arango = ArangoDB.Builder()
-                .serializer(velocyJack)
+//                .serializer(velocyJack)
                 .user(user).password(pass)
                 .host(host, port)
                 .build()
@@ -129,6 +134,13 @@ class Db(val arangoDb: ArangoDatabase, private val settings: Settings) {
     }
 
     /**
+     * Return a new Db instance while changing its settings.
+     *
+     * The 'builder' can create new Settings which will be used for the new Db instance
+     */
+    fun customize(builder: (Settings) -> Settings): Db = Db(arangoDb, builder(settings))
+
+    /**
      * Get a list of all registered entity collections
      */
     fun getEntityCollections(): List<DbEntityCollection<*>> = entityCollections.values.toList()
@@ -160,7 +172,7 @@ class Db(val arangoDb: ArangoDatabase, private val settings: Settings) {
     /**
      * Executes the query created by the given builder and returns a list of results
      */
-    fun <T> query(builder: AqlBuilder.() -> TerminalExpr<T>): Cursor<T> = query(deserializer, de.peekandpoke.karango.query(builder))
+    fun <T> query(builder: AqlBuilder.() -> TerminalExpr<T>): Cursor<T> = query(de.peekandpoke.karango.query(builder))
 
     /**
      * Executes the query created by the given builder and returns the first result or null
@@ -168,11 +180,9 @@ class Db(val arangoDb: ArangoDatabase, private val settings: Settings) {
     fun <T> queryFirst(builder: AqlBuilder.() -> TerminalExpr<T>): T? = query(builder).firstOrNull()
 
     /**
-     * Return a new Db instance while changing its settings.
-     *
-     * The 'builder' can create new Settings which will be used for the new Db instance
+     * Explains the query created by the given builder and returns a list of results
      */
-    fun customize(builder: (Settings) -> Settings): Db = Db(arangoDb, builder(settings))
+    fun <T> explain(builder: AqlBuilder.() -> TerminalExpr<T>): AqlExecutionExplainEntity = explain(de.peekandpoke.karango.query(builder))
 
     /**
      * Creates all collections that are not yet present in the database
@@ -215,10 +225,10 @@ class Db(val arangoDb: ArangoDatabase, private val settings: Settings) {
     /**
      * Performs the query
      */
-    private fun <T> query(deserializer: ObjectMapper, query: TypedQuery<T>): Cursor<T> {
+    private fun <T> query(query: TypedQuery<T>): Cursor<T> {
 
         val options = AqlQueryOptions().count(true)
-        val mapped = serializer.convertValue<Map<String, Any>>(query.vars)
+        val params = serializer.convertValue<Map<String, Any>>(query.vars)
 
         lateinit var result: ArangoCursor<*>
 
@@ -228,21 +238,28 @@ class Db(val arangoDb: ArangoDatabase, private val settings: Settings) {
 
         val time = measureTimeMillis {
             try {
-                result = arangoDb.query(query.aql, mapped, options, Object::class.java)
+                result = arangoDb.query(query.aql, params, options, Object::class.java)
             } catch (e: ArangoDBException) {
-                throw KarangoException("Error while querying '${e.message}':\n\n${query.aql}\nwith params\n\n$mapped", e)
+                throw KarangoException("Error while querying '${e.message}':\n\n${query.aql}\nwith params\n\n$params", e)
             }
         }
 
         return CursorImpl(result, query, time, deserializer)
     }
 
+    private fun explain(query: TypedQuery<*>): AqlExecutionExplainEntity {
+
+        val options = AqlQueryExplainOptions()
+        val params = serializer.convertValue<Map<String, Any>>(query.vars)
+
+        return arangoDb.explainQuery(query.aql, params, options)
+    }
 }
 
 /**
  * Base class for all entity collections
  */
-open class DbEntityCollection<T : Entity>(val db: Db, val coll: IEntityCollection<T>) {
+open class DbEntityCollection<T : Entity>(private val db: Db, val coll: IEntityCollection<T>) {
 
     /**
      * The name of the collection (the same as the collection name in the database itself)
@@ -253,6 +270,11 @@ open class DbEntityCollection<T : Entity>(val db: Db, val coll: IEntityCollectio
      * The underlying low-level arango collection
      */
     val arangoColl: ArangoCollection = db.arangoDb.collection(name)
+
+    /**
+     * Get the database that the collection is associated with
+     */
+    fun getDb() = db
 
     /**
      * Save or update the given object.
@@ -281,6 +303,21 @@ open class DbEntityCollection<T : Entity>(val db: Db, val coll: IEntityCollectio
     }
 
     /**
+     * Performs a query and returns a list of results
+     */
+    fun <T> query(builder: AqlBuilder.() -> TerminalExpr<T>): Cursor<T> = db.query(builder)
+
+    /**
+     * Performs a query and returns the first result or null
+     */
+    fun <T> queryFirst(builder: AqlBuilder.() -> TerminalExpr<T>): T? = db.queryFirst(builder)
+
+    /**
+     * Explains the query created by the builder
+     */
+    fun <T> explain(builder: AqlBuilder.() -> TerminalExpr<T>) = db.explain(builder)
+
+    /**
      * Finds all in the collection
      */
     fun findAll(): Cursor<T> = db.query {
@@ -302,7 +339,7 @@ open class DbEntityCollection<T : Entity>(val db: Db, val coll: IEntityCollectio
     /**
      * Shorthand method for easier FIND queries for the first result
      */
-    fun findOne(builder: ForLoop.(Iter<T>) -> Unit): T? = db.queryFirst {
+    fun findFirst(builder: ForLoop.(Iter<T>) -> Unit): T? = db.queryFirst {
         FOR(coll) { t ->
             builder(t)
             LIMIT(1)

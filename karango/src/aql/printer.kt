@@ -16,17 +16,17 @@ class AqlPrinter {
 
         /**
          * Returns the raw text query, by replacing the parameters (like @my_param) with actual values.
-         * 
+         *
          * This is a debugging helper and used in the unit tests.
          */
         val raw : String get() {
-            
+
             var result = query
-            
-            vars.forEach { key, value -> 
-                result = result.replace("@$key", toJsonMapper.writeValueAsString(value)) 
+
+            vars.forEach { key, value ->
+                result = result.replace("@$key", toJsonMapper.writeValueAsString(value))
             }
-            
+
             return result
         }
     }
@@ -63,7 +63,7 @@ class AqlPrinter {
 
     fun name(name: String) = append(name.toName())
 
-    fun value(expr: Expression<*>, value: Any) = value(if (expr is Aliased) expr.getAlias() else "v", value)
+    fun value(expr: Expression<*>, value: Any?) = value(if (expr is Aliased) expr.getAlias() else "v", value)
 
     fun value(name: String, value: Any?) = apply {
 

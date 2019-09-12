@@ -36,8 +36,7 @@ repositories {
     maven { url 'https://dl.bintray.com/peekandpoke/maven' }
 }
 
-def arangodb_driver_version = "5.0.4"
-def arangodb_velocypack_version = "0.1.3"
+def arangodb_driver_version = "6.2.0"
 def google_auto_version = "1.0-rc4"
 
 dependencies {
@@ -45,10 +44,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     compile("com.arangodb:arangodb-java-driver:$arangodb_driver_version")
-    compile("com.arangodb:jackson-dataformat-velocypack:$arangodb_velocypack_version") {
-        // Remove deps to outdadted vulnerable jackson
-        exclude group: "com.fasterxml.jackson.core"
-    }
+
     compile("com.fasterxml.jackson.core:jackson-databind:$jackson_version")
     compile "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"
     compile "com.fasterxml.jackson.module:jackson-module-parameter-names:$jackson_version"

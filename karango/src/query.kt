@@ -10,8 +10,8 @@ data class TypedQuery<T>(val ret: TerminalExpr<T>, val aql: String, val vars: Ma
 
 fun <T> query(builder: AqlBuilder.() -> TerminalExpr<T>): TypedQuery<T> {
 
-    val root = RootExpression.from(AqlBuilder(), builder)
-    
+    val root = RootExpression.from(builder)
+
     val query = AqlPrinter().append(root).build()
 
     return TypedQuery(root, query.query, query.vars)

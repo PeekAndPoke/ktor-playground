@@ -77,7 +77,7 @@ class `E2E-Func-Numeric-SUM-Spec` : StringSpec({
         row(
             "SUM( [1.5, 2, 3, 4] ) - ARRAY",
             SUM(
-                ARRAY(1.5.aql, 2.aql, 3.aql, 4.aql)
+                ARRAY<Number>(1.5.aql, 2.aql, 3.aql, 4.aql)
             ),
             10.5
         ),
