@@ -1,8 +1,6 @@
 package de.peekandpoke.karango.e2e.functions_string
 
-import de.peekandpoke.karango.aql.CONCAT
-import de.peekandpoke.karango.aql.CONTAINS
-import de.peekandpoke.karango.aql.aql
+import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue
 import io.kotlintest.shouldBe

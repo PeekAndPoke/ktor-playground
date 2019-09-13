@@ -24,14 +24,11 @@ open class EntityCollection<T>(name: String, type: TypeRef<List<T>>) :
 abstract class EdgeCollection<T>(name: String, type: TypeRef<List<T>>) :
     Collection<T>(name, type), IEdgeCollection<T>
 
-@Suppress("unused")
 inline val <reified T: Entity> Expression<T>._id
     inline get() = PropertyPath.start(this).append<String, String>("_id")
 
-@Suppress("unused")
 inline val <reified T: Entity> Expression<T>._key
     inline get() = PropertyPath.start(this).append<String, String>("_key")
 
-@Suppress("unused")
 inline val <reified T: Entity> Expression<T>._rev
     inline get() = PropertyPath.start(this).append<String, String>("_rev")

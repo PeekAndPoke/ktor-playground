@@ -21,11 +21,15 @@ class CursorImpl<T>(
 
     private val iterator = It(arangoCursor, query.ret.innerType(), mapper)
 
-    class It<T>(private val inner: ArangoIterator<*>, private val type: TypeRef<T>, private val mapper: ObjectMapper) : Iterator<T> {
+    class It<X>(
+        private val inner: ArangoIterator<*>,
+        private val type: TypeRef<X>,
+        private val mapper: ObjectMapper
+    ) : Iterator<X> {
 
         override fun hasNext(): Boolean = inner.hasNext()
 
-        override fun next(): T = mapper.convertValue(inner.next(), type)
+        override fun next(): X = mapper.convertValue(inner.next(), type)
     }
 
     override val stats: CursorEntity.Stats get() = arangoCursor.stats

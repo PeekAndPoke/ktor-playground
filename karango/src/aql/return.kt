@@ -1,6 +1,12 @@
+@file:Suppress("FunctionName")
+
 package de.peekandpoke.karango.aql
 
-class Return<T>(private val expr: Expression<T>) : TerminalExpr<T> {
+@Suppress("unused")
+@KarangoTerminalFuncMarker
+fun <R> RETURN(ret: Expression<R>): TerminalExpr<R> = Return(ret)
+
+internal class Return<T>(private val expr: Expression<T>) : TerminalExpr<T> {
 
     override fun innerType() = expr.getType()
 

@@ -1,8 +1,6 @@
 package de.peekandpoke.karango.e2e.functions_numeric
 
-import de.peekandpoke.karango.aql.RANGE
-import de.peekandpoke.karango.aql.TerminalExpr
-import de.peekandpoke.karango.aql.aql
+import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue
 import io.kotlintest.shouldBe
@@ -46,7 +44,7 @@ class `E2E-Func-Numeric-RANGE-Spec` : StringSpec({
 
             val result = db.query {
                 @Suppress("UNCHECKED_CAST")
-                RETURN(expression) as TerminalExpr<List<Number>> // Don't do this at home... just a workaround for the different return types 
+                RETURN(expression) as TerminalExpr<List<Number>> // Don't do this at home... just a workaround for the different return types
             }
 
             withClue(expression, expected) {
@@ -60,7 +58,7 @@ class `E2E-Func-Numeric-RANGE-Spec` : StringSpec({
                 val l = LET("l", expression)
 
                 @Suppress("UNCHECKED_CAST")
-                RETURN(l) as TerminalExpr<List<Number>>  // Don't do this at home... just a workaround for the different return types 
+                RETURN(l) as TerminalExpr<List<Number>>  // Don't do this at home... just a workaround for the different return types
             }
 
             withClue(expression, expected) {

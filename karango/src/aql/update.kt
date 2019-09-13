@@ -1,7 +1,32 @@
+@file:Suppress("FunctionName")
+
 package de.peekandpoke.karango.aql
 
 import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.ICollection
+
+
+// TODO: UPDATE
+@Suppress("unused")
+@KarangoTerminalFuncMarker
+fun <T : Entity, D : ICollection<T>> StatementBuilder.UPDATE(entity: T, col: D, builder: KeyValueBuilder<T>.(Expression<T>) -> Unit): TerminalExpr<Any> =
+    UpdateDocument(
+        entity,
+        col,
+        KeyValueBuilder<T>().apply { builder(ExpressionImpl(col.getAlias(), col.getType().down())) }
+    )
+
+@Suppress("FunctionName")
+@KarangoDslMarker
+class KeyValueBuilder<T : Entity> {
+
+    // TODO: is this one still needed? For Update queries?
+
+//    val pairs = mutableListOf<Pair<PropertyPath<*>, Any>>()
+//
+//    infix fun <X> PropertyPath<X>.with(value: X) = apply { pairs.add(Pair(this, value as Any)) }
+}
+
 
 class UpdateDocument<T : Entity>(
     private val entity: T,

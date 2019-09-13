@@ -3,6 +3,7 @@ package de.peekandpoke.karango_ktor
 import de.peekandpoke.karango.*
 import de.peekandpoke.karango.aql.EQ
 import de.peekandpoke.karango.aql.FOR
+import de.peekandpoke.karango.aql.RETURN
 import io.ktor.features.DataConversion
 import io.ktor.features.NotFoundException
 import io.ktor.util.KtorExperimentalAPI

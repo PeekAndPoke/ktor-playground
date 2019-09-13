@@ -2,6 +2,7 @@ package de.peekandpoke.karango.e2e
 
 import de.peekandpoke.karango.aql.ARRAY
 import de.peekandpoke.karango.aql.OBJECT
+import de.peekandpoke.karango.aql.RETURN
 import de.peekandpoke.karango.aql.aql
 import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.withClue

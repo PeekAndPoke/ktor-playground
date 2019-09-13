@@ -59,9 +59,7 @@ class GameOfThronesModule(app: Application) : Module(app) {
                 println(withActors.toList().joinToString("\n"))
 
                 val result = database.characters.findAllPaged(p.page, p.epp)
-
                 val list = result.toList()
-
                 val flashEntries = flashSession.pull()
 
                 call.respondHtmlTemplate(MainTemplate(call)) {

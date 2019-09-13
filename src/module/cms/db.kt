@@ -4,9 +4,7 @@ import de.peekandpoke.karango.Cursor
 import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.DbEntityCollection
 import de.peekandpoke.karango.EntityCollection
-import de.peekandpoke.karango.aql.EQ
-import de.peekandpoke.karango.aql.FOR
-import de.peekandpoke.karango.aql.type
+import de.peekandpoke.karango.aql.*
 
 fun Db.Builder.registerCmsCollections() {
     addEntityCollection { db -> CmsPagesCollection(db) }
@@ -21,7 +19,7 @@ class CmsPagesCollection(db: Db) : DbEntityCollection<CmsPage>(db, CmsPages) {
     fun findAllSorted(): Cursor<CmsPage> = query {
 
         FOR(coll) { page ->
-            SORT(page.name)
+            SORT(page.name.ASC)
             RETURN(page)
         }
     }

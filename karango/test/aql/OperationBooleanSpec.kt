@@ -91,6 +91,11 @@ class OperationBooleanSpec : StringSpec({
         // NOT Operation
         row("NOT", true.aql.NOT(), "NOT(true)"),
 
+        // ALL, NONE, ANY Operations
+        row("ALL", ARRAY(1.aql, 2.aql, 3.aql) ALL EQ(1.aql), "[1, 2, 3] ALL == 1"),
+        row("NONE", ARRAY(1.aql, 2.aql, 3.aql) NONE EQ(1.aql), "[1, 2, 3] NONE == 1"),
+        row("ANY", ARRAY(1.aql, 2.aql, 3.aql) ANY EQ(1.aql), "[1, 2, 3] ANY == 1"),
+
         // Combinations
         row("a AND b EQ c", true.aql AND (false.aql EQ false), "(true) AND (false == false)"),
         row("a AND b OR c", true.aql AND false.aql OR false, "((true) AND (false)) OR (false)")
@@ -98,10 +103,9 @@ class OperationBooleanSpec : StringSpec({
 
     for ((description, expression, printed) in samples) {
 
-        "operation $description" {
+        "operation $description ($printed)" {
 
-            AqlPrinter().append(expression).build().raw shouldBe printed
+            expression.printRawQuery() shouldBe printed
         }
     }
-
 })

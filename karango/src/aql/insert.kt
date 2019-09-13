@@ -5,18 +5,19 @@ package de.peekandpoke.karango.aql
 import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.ICollection
 
-@KarangoFuncMarker
-fun <T> INSERT(what: Expression<T>) = InsertPreStage(what)
+@Suppress("unused")
+@KarangoTerminalFuncMarker
+fun <T> StatementBuilder.INSERT(what: Expression<T>) = InsertPreStage(what)
 
-@KarangoFuncMarker
+@KarangoTerminalFuncMarker
 infix fun <T> InsertPreStage<T>.INTO(collection: ICollection<T>) = InsertInto(what, collection)
 
 class InsertPreStage<T> internal constructor(val what: Expression<T>)
 
-@KarangoFuncMarker
+@KarangoTerminalFuncMarker
 fun <T: Entity> INSERT(entity: T) = InsertPreStageEntity(entity)
 
-@KarangoFuncMarker
+@KarangoTerminalFuncMarker
 infix fun <T : Entity> InsertPreStageEntity<T>.INTO(collection: ICollection<T>) = InsertInto(entity, collection)
 
 class InsertPreStageEntity<T: Entity> internal constructor(val entity: T)

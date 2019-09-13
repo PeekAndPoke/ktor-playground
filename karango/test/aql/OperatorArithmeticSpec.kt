@@ -76,13 +76,11 @@ class OperatorArithmeticSpec : StringSpec({
     "Printing arithmetic expressions must work" {
 
         val source = "a".aql + 10.aql
-        val result = AqlPrinter().append(source).build()
+        val result = source.print()
 
         assertSoftly {
             result.query shouldBe "(@v_1 + @v_2)"
             result.raw shouldBe "(\"a\" + 10)"
         }
-
     }
-
 })

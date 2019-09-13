@@ -1,13 +1,13 @@
 package de.peekandpoke.karango.aql
 
-import de.peekandpoke.karango.Entity
-import de.peekandpoke.karango.ICollection
-
 @DslMarker
 annotation class KarangoDslMarker
 
 @DslMarker
 annotation class KarangoFuncMarker
+
+@DslMarker
+annotation class KarangoTerminalFuncMarker
 
 @DslMarker
 annotation class KarangoInputMarker
@@ -48,9 +48,13 @@ interface Expression<T> : Printable {
 }
 
 /**
+ * Casts the expression to another type
+ *
  * Sometimes it might be necessary to change the type of an expression
  */
-inline fun <reified R : Any> Expression<*>.AS() : Expression<R> = TypeCastExpression(type(), this)
+@Suppress("FunctionName")
+@KarangoTypeConversionMarker
+inline fun <reified R : Any> Expression<*>.AS(): Expression<R> = TypeCastExpression(type(), this)
 
 /**
  * Base interface for all terminal Expressions.
@@ -91,17 +95,21 @@ internal class RootExpression<T>(private val stmts: List<Statement>, private val
     override fun printAql(p: AqlPrinter) = p.append(stmts).append(ret)
 
     companion object {
-        fun <T> from(builderFun: AqlBuilder.() -> TerminalExpr<T>) : RootExpression<T> {
+        fun <T> from(builderFun: AqlBuilder.() -> TerminalExpr<T>): RootExpression<T> {
 
             val builder = AqlBuilder()
-            val result : TerminalExpr<T> = builder.builderFun()
+            val result: TerminalExpr<T> = builder.builderFun()
 
             return RootExpression(builder.stmts, result)
         }
     }
 }
 
+/**
+ * Internal expression representing a type cast
+ */
 class TypeCastExpression<T>(private val type: TypeRef<T>, private val wrapped: Expression<*>) : Expression<T> {
+
     override fun getType() = type
 
     override fun printAql(p: AqlPrinter) = wrapped.printAql(p)
@@ -110,42 +118,10 @@ class TypeCastExpression<T>(private val type: TypeRef<T>, private val wrapped: E
 @Suppress("FunctionName")
 @KarangoDslMarker
 class AqlBuilder internal constructor() : StatementBuilder {
-
     override val stmts = mutableListOf<Statement>()
-
-    @KarangoDslMarker
-    fun <T> LET(name: String, value: Expression<T>) = LetExpr(name, value).addStmt().toExpression()
-
-    @KarangoDslMarker
-    fun LET(name: String, @Suppress("UNUSED_PARAMETER") value: Nothing?) = LET(name, NullValue())
-
-    @KarangoDslMarker
-    inline fun <reified T> LET(name: String, value: T) = Let(name, value, type()).addStmt().toExpression()
-
-    @KarangoDslMarker
-    inline fun <reified T> LET(name: String, builder: () -> T) = Let(name, builder(), type()).addStmt().toExpression()
-
-    @KarangoDslMarker
-    fun <T> RETURN(expr: Expression<T>): TerminalExpr<T> = Return(expr)
-
-    // TODO: UPDATE
-    fun <T : Entity, D : ICollection<T>> UPDATE(entity: T, col: D, builder: KeyValueBuilder<T>.(Expression<T>) -> Unit): TerminalExpr<Any> =
-        UpdateDocument(
-            entity,
-            col,
-            KeyValueBuilder<T>().apply { builder(ExpressionImpl(col.getAlias(), col.getType().down())) }
-        )
 }
 
 @Suppress("FunctionName")
-@KarangoDslMarker
-class KeyValueBuilder<T : Entity> {
-
-//    val pairs = mutableListOf<Pair<PropertyPath<*>, Any>>()
-//
-//    infix fun <X> PropertyPath<X>.with(value: X) = apply { pairs.add(Pair(this, value as Any)) }
-}
-
 interface StatementBuilder {
 
     val stmts: MutableList<Statement>

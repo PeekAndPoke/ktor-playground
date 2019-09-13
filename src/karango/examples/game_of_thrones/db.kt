@@ -3,10 +3,7 @@ package de.peekandpoke.karango.examples.game_of_thrones
 import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.DbEntityCollection
 import de.peekandpoke.karango.EntityCollection
-import de.peekandpoke.karango.aql.Direction
-import de.peekandpoke.karango.aql.EQ
-import de.peekandpoke.karango.aql.FOR
-import de.peekandpoke.karango.aql.type
+import de.peekandpoke.karango.aql.*
 
 fun Db.Builder.registerGotCollections() {
     addEntityCollection { db -> CharactersCollection(db) }
@@ -26,7 +23,6 @@ class CharactersCollection(db: Db) : DbEntityCollection<Character>(db, Character
             RETURN(character)
         }
     }
-
 
     fun findAllPaged(page: Int, epp: Int, direction: Direction = Direction.ASC) = query {
         FOR(Characters) { c ->

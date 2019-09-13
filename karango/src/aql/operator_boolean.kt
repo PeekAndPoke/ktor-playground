@@ -31,18 +31,20 @@ typealias PartialBooleanExpression<T> = (Expression<T>) -> Expression<Boolean>
 data class ArrayOpExpr<T>(val expr: Expression<List<T>>, val op: ArrayOperator, private val type: TypeRef<T>) : Expression<T>, Aliased {
 
     override fun getAlias() = if (expr is Aliased) expr.getAlias() + "_${op.op}" else "v"
+
     override fun getType() = type
+
     override fun printAql(p: AqlPrinter) = p.append(expr).append(" ${op.op}")
 }
 
-inline infix fun <reified T> Expression<List<T>>.ANY(partial: PartialBooleanExpression<T>)
-        : Expression<Boolean> = partial(ArrayOpExpr(this, ArrayOperator.ANY, type()))
+inline infix fun <reified T> Expression<List<T>>.ANY(partial: PartialBooleanExpression<T>): Expression<Boolean> =
+    partial(ArrayOpExpr(this, ArrayOperator.ANY, type()))
 
-inline infix fun <reified T> Expression<List<T>>.NONE(partial: PartialBooleanExpression<T>)
-        : Expression<Boolean> = partial(ArrayOpExpr(this, ArrayOperator.NONE, type()))
+inline infix fun <reified T> Expression<List<T>>.NONE(partial: PartialBooleanExpression<T>): Expression<Boolean> =
+    partial(ArrayOpExpr(this, ArrayOperator.NONE, type()))
 
-inline infix fun <reified T> Expression<List<T>>.ALL(partial: PartialBooleanExpression<T>)
-        : Expression<Boolean> = partial(ArrayOpExpr(this, ArrayOperator.ALL, type()))
+inline infix fun <reified T> Expression<List<T>>.ALL(partial: PartialBooleanExpression<T>): Expression<Boolean> =
+    partial(ArrayOpExpr(this, ArrayOperator.ALL, type()))
 
 
 fun <T> EQ(value: T?): PartialBooleanExpression<T> = { x -> x EQ value }
@@ -102,4 +104,3 @@ infix fun Expression<Boolean>.OR(value: Boolean): Expression<Boolean> = FilterLo
 infix fun Expression<Boolean>.OR(value: Expression<Boolean>): Expression<Boolean> = FilterLogic(this, LogicOperator.OR, value)
 
 fun Expression<Boolean>.NOT(): Expression<Boolean> = AqlFunc.NOT.boolCall(this)
-

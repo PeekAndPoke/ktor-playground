@@ -1,18 +1,20 @@
+@file:Suppress("FunctionName")
+
 package de.peekandpoke.karango.aql
 
 import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.ICollection
 
-@KarangoFuncMarker
-fun <T: Entity> UPSERT(entity: T) = UpsertPreStageEntity(entity)
+@Suppress("unused")
+@KarangoTerminalFuncMarker
+fun <T: Entity> StatementBuilder.UPSERT(entity: T) = UpsertPartial(entity)
 
-@KarangoFuncMarker
-infix fun <T : Entity> UpsertPreStageEntity<T>.INTO(collection: ICollection<T>) = UpsertInto(entity, collection)
+class UpsertPartial<T: Entity> internal constructor(val entity: T)
 
-class UpsertPreStageEntity<T: Entity> internal constructor(val entity: T)
+@KarangoTerminalFuncMarker
+infix fun <T : Entity> UpsertPartial<T>.INTO(collection: ICollection<T>): TerminalExpr<T> = UpsertInto(entity, collection)
 
-
-class UpsertInto<T : Entity>(private val entity: T, private val col: ICollection<T>) : TerminalExpr<T> {
+internal class UpsertInto<T : Entity>(private val entity: T, private val col: ICollection<T>) : TerminalExpr<T> {
 
     override fun innerType() = col.getType().down<T>()
 

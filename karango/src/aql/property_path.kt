@@ -30,7 +30,7 @@ data class PropertyPath<P, T>(private val previous: PropertyPath<*, *>?, private
         override fun printAql(p: AqlPrinter) = p.append(op)
     }
 
-    override fun getAlias() = this.toPrintableString()
+    override fun getAlias() = this.printQuery()
 
     override fun getType() = current.getType()
 
@@ -55,7 +55,7 @@ object `*` : ArrayExpansion
 
 interface ArrayContraction
 
-@Suppress("ClassName")
+@Suppress("ClassName", "unused")
 object `**` : ArrayContraction
 
 @Suppress("UNUSED_PARAMETER")
@@ -64,7 +64,5 @@ operator fun <F, L: List<F>, T> PropertyPath<L, List<T>>.get(`*`: ArrayExpansion
 @Suppress("UNUSED_PARAMETER")
 operator fun <F, T> PropertyPath<F, L2<T>>.get(`**`: ArrayContraction) = contract<L1<T>>()
 
-
 @Suppress("UNUSED_PARAMETER")
-// TODO: we need examples for this and Tests
 inline operator fun <reified T> Expression<List<T>>.get(`*`: ArrayExpansion) = start(this).expand<T>()

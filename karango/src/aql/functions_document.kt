@@ -10,6 +10,9 @@ import de.peekandpoke.karango.ICollection
 inline fun <reified T> DOCUMENT(id: String): Expression<T> =
     AqlFunc.DOCUMENT.call(type(), id.aql("id"))
 
+/**
+ * Get a single document by its full id and deserialize it to the given cls
+ */
 fun <T> DOCUMENT(cls: Class<T>, id: String) : Expression<T> =
         AqlFunc.DOCUMENT.call(cls.asTypeRef(), id.aql("id"))
 

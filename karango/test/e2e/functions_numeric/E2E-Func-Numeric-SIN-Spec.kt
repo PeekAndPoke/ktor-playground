@@ -1,8 +1,6 @@
 package de.peekandpoke.karango.e2e.functions_numeric
 
-import de.peekandpoke.karango.aql.RADIANS
-import de.peekandpoke.karango.aql.SIN
-import de.peekandpoke.karango.aql.aql
+import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue
 import io.kotlintest.shouldBe

@@ -1,5 +1,7 @@
 package de.peekandpoke.karango.e2e.functions_array
 
+import de.peekandpoke.karango.aql.LET
+import de.peekandpoke.karango.aql.RETURN
 import de.peekandpoke.karango.aql.SLICE
 import de.peekandpoke.karango.aql.aql
 import de.peekandpoke.karango.e2e.db

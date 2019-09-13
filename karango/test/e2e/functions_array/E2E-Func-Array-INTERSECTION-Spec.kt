@@ -1,9 +1,6 @@
 package de.peekandpoke.karango.e2e.functions_array
 
-import de.peekandpoke.karango.aql.ARRAY
-import de.peekandpoke.karango.aql.INTERSECTION
-import de.peekandpoke.karango.aql.TerminalExpr
-import de.peekandpoke.karango.aql.aql
+import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue
 import io.kotlintest.shouldBe

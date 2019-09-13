@@ -1,5 +1,7 @@
 package de.peekandpoke.karango.e2e.type_conversion
 
+import de.peekandpoke.karango.aql.LET
+import de.peekandpoke.karango.aql.RETURN
 import de.peekandpoke.karango.aql.TO_LIST
 import de.peekandpoke.karango.aql.aql
 import de.peekandpoke.karango.e2e.E2ePerson

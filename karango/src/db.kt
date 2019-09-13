@@ -15,6 +15,7 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.convertValue
 import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.jackson.KarangoDateTimeModule
+import de.peekandpoke.karango.jackson.RefCache
 import kotlin.reflect.KClass
 import kotlin.system.measureTimeMillis
 
@@ -33,15 +34,7 @@ class Db(val arangoDb: ArangoDatabase, private val settings: Settings) {
          */
         fun default(user: String, pass: String, host: String, port: Int, database: String, builder: Builder.() -> Unit = {}): Db {
 
-//            val velocyJack = VelocyJack().apply {
-//                configure { mapper ->
-//                    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-//                    mapper.configure(MapperFeature.USE_ANNOTATIONS, true)
-//                }
-//            }
-
             val arango = ArangoDB.Builder()
-//                .serializer(velocyJack)
                 .user(user).password(pass)
                 .host(host, port)
                 .build()
@@ -49,6 +42,30 @@ class Db(val arangoDb: ArangoDatabase, private val settings: Settings) {
             return Builder(arango.db(database)).apply(builder).build().apply {
                 ensureCollections()
             }
+        }
+
+        /**
+         * The object mapper used for serializing queries
+         */
+        private val serializer = ObjectMapper().apply {
+            registerModule(KotlinModule())
+            registerModule(Jdk8Module())
+            // custom
+            registerModule(KarangoDateTimeModule())
+
+            configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true)
+        }
+
+        /**
+         * The deserializer used for de-serializing results
+         */
+        private val deserializerBlueprint = ObjectMapper().apply {
+            registerModule(KotlinModule())
+            registerModule(Jdk8Module())
+            // custom
+            registerModule(KarangoDateTimeModule())
+
+            configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         }
     }
 
@@ -95,32 +112,6 @@ class Db(val arangoDb: ArangoDatabase, private val settings: Settings) {
                 onSaveHooks.toList()
             )
         )
-    }
-
-    /**
-     * The object mapper used for serializing queries
-     */
-    private val serializer = ObjectMapper().apply {
-        registerModule(KotlinModule())
-        registerModule(Jdk8Module())
-        // custom
-        registerModule(KarangoDateTimeModule())
-
-        configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true)
-    }
-
-    /**
-     * The deserializer used for deserializing results
-     */
-    private val deserializer = ObjectMapper().apply {
-        registerModule(KotlinModule())
-        registerModule(Jdk8Module())
-        // custom
-        registerModule(KarangoDateTimeModule())
-
-        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-
-        injectableValues = InjectableValues.Std().addValue("__db", this@Db)
     }
 
     private val entityCollections: MutableMap<KClass<out DbEntityCollection<*>>, DbEntityCollection<*>> = mutableMapOf()
@@ -244,7 +235,19 @@ class Db(val arangoDb: ArangoDatabase, private val settings: Settings) {
             }
         }
 
-        return CursorImpl(result, query, time, deserializer)
+        val values = InjectableValues.Std(
+            mapOf(
+                "db" to this,
+                "cache" to RefCache()
+            )
+        )
+
+        return CursorImpl(
+            result,
+            query,
+            time,
+            deserializerBlueprint.copy().apply { injectableValues = values }
+        )
     }
 
     private fun explain(query: TypedQuery<*>): AqlExecutionExplainEntity {

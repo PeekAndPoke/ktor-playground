@@ -1,8 +1,6 @@
 package de.peekandpoke.karango.e2e.type_checks
 
-import de.peekandpoke.karango.aql.ARRAY
-import de.peekandpoke.karango.aql.IS_DATESTRING
-import de.peekandpoke.karango.aql.aql
+import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.e2e.E2ePerson
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue

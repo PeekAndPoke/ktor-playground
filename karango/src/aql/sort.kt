@@ -1,7 +1,12 @@
 package de.peekandpoke.karango.aql
 
+@KarangoDslMarker
 val <T> Expression<T>.ASC: Sort get() = SortBy(this, Direction.ASC)
+
+@KarangoDslMarker
 val <T> Expression<T>.DESC: Sort get() = SortBy(this, Direction.DESC)
+
+@KarangoDslMarker
 fun <T> Expression<T>.sort(direction: Direction): Sort = SortBy(this, direction)
 
 interface Sort : Statement

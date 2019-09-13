@@ -1,6 +1,8 @@
 package de.peekandpoke.karango.e2e.functions_numeric
 
+import de.peekandpoke.karango.aql.LET
 import de.peekandpoke.karango.aql.MAX
+import de.peekandpoke.karango.aql.RETURN
 import de.peekandpoke.karango.aql.aql
 import de.peekandpoke.karango.e2e.db
 import de.peekandpoke.karango.e2e.withClue
@@ -16,7 +18,7 @@ class `E2E-Func-Numeric-MAX-Spec` : StringSpec({
             "MAX( [] )",
             MAX(listOf<Number>().aql),
             null
-        ),        
+        ),
         row(
             "MAX( [5, 9, -2, 1] )",
             MAX(listOf(5, 9, -2, 1).aql),

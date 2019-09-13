@@ -57,9 +57,6 @@ class ForLoop internal constructor() : StatementBuilder {
 
     @KarangoDslMarker
     fun LIMIT(offset: Int, limit: Int): Unit = run { OffsetAndLimit(offset, limit).addStmt() }
-
-    @KarangoDslMarker
-    fun <R> RETURN(ret: Expression<R>): TerminalExpr<R> = Return(ret)
 }
 
 internal class ForLoopExpr<T, R>(

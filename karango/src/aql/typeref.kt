@@ -8,8 +8,14 @@ import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
 
+/**
+ * Obtains a type reference from the context called in
+ */
 inline fun <reified T> type() = object : TypeRef<T>() {}
 
+/**
+ * Converts a Class into a type reference
+ */
 fun <T> Class<T>.asTypeRef(): TypeRef<T> = TypeRef(this)
 
 open class TypeRef<T> constructor(private val explicitType: Type? = null) : TypeReference<T>() {
