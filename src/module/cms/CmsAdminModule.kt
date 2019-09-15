@@ -27,6 +27,7 @@ import io.ultra.ktor_tools.bootstrap.success
 import io.ultra.ktor_tools.flashSession
 import io.ultra.ktor_tools.getOrPost
 import io.ultra.ktor_tools.logger.logger
+import java.time.ZoneId
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
@@ -111,6 +112,8 @@ class CmsAdminModule(app: Application) : Module(app) {
             }
 
             getOrPost<CreatePage> {
+
+                println(ZoneId.getAvailableZoneIds())
 
                 val page = CmsPage.empty()
 

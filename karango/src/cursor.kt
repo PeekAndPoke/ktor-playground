@@ -10,6 +10,7 @@ interface Cursor<T> : Iterable<T> {
     val query: TypedQuery<T>
     val timeMs: Long
     val stats: CursorEntity.Stats
+    val count: Int
 }
 
 class CursorImpl<T>(
@@ -31,6 +32,8 @@ class CursorImpl<T>(
 
         override fun next(): X = mapper.convertValue(inner.next(), type)
     }
+
+    override val count: Int = arangoCursor.count
 
     override val stats: CursorEntity.Stats get() = arangoCursor.stats
 

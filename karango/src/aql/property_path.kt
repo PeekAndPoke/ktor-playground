@@ -11,7 +11,7 @@ typealias L5<T> = List<List<List<List<List<T>>>>>
 data class PropertyPath<P, T>(private val previous: PropertyPath<*, *>?, private val current: Step<T>) : Expression<T>, Aliased {
 
     companion object {
-        inline fun <reified T> start(root: Expression<T>) = PropertyPath<T, T>(null, ExprStep(root))
+        fun <T> start(root: Expression<T>) = PropertyPath<T, T>(null, ExprStep(root))
     }
 
     abstract class Step<T>(private val type: TypeRef<T>) : Expression<T> {

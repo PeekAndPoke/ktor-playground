@@ -1,9 +1,6 @@
 package de.peekandpoke.karango.testdomain
 
-import de.peekandpoke.karango.Entity
-import de.peekandpoke.karango.EntityCollection
-import de.peekandpoke.karango.IEntityCollection
-import de.peekandpoke.karango.Karango
+import de.peekandpoke.karango.*
 import de.peekandpoke.karango.aql.type
 
 @Karango
@@ -21,11 +18,15 @@ data class TestPerson(
     val name: String,
     val details: TestPersonDetails = TestPersonDetails(""),
     val addresses: List<TestAddress>,
-    val books: List<TestBook> = listOf()
-)
+    val books: List<TestBook> = listOf(),
+    override val _id: String? = null,
+    override val _key: String? = null
+) : Entity
 
 val TestPersons : IEntityCollection<TestPerson> =
     object : EntityCollection<TestPerson>("test-persons", type()) {}
+
+class TestPersonsCollection(db: Db) : DbEntityCollection<TestPerson>(db, TestPersons)
 
 data class TestPersonDetails (
     val middleName: String

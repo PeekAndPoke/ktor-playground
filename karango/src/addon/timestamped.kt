@@ -1,11 +1,11 @@
 package de.peekandpoke.karango.addon
 
 import de.peekandpoke.karango.OnSaveHook
-import java.time.LocalDateTime
+import java.time.Instant
 
 data class Timestamps(
-    val createdAt: LocalDateTime?,
-    val updatedAt: LocalDateTime?
+    val createdAt: Instant?,
+    val updatedAt: Instant?
 )
 
 @Suppress("PropertyName")
@@ -26,7 +26,7 @@ class TimestampedOnSaveHook : OnSaveHook {
 
 private fun Timestamped.update() {
 
-    val now = LocalDateTime.now()
+    val now = Instant.now()
 
     val ts = when (val current = _ts) {
 

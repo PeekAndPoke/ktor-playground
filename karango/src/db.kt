@@ -223,7 +223,7 @@ class Db(val arangoDb: ArangoDatabase, private val settings: Settings) {
 
         lateinit var result: ArangoCursor<*>
 
-//        println(query)
+        println(query)
 //        println(query.ret.innerType())
 //        println(mapped)
 
@@ -231,7 +231,7 @@ class Db(val arangoDb: ArangoDatabase, private val settings: Settings) {
             try {
                 result = arangoDb.query(query.aql, params, options, Object::class.java)
             } catch (e: ArangoDBException) {
-                throw KarangoException("Error while querying '${e.message}':\n\n${query.aql}\nwith params\n\n$params", e)
+                throw KarangoQueryException(query, "Error while querying '${e.message}':\n\n${query.aql}\nwith params\n\n$params", e)
             }
         }
 
@@ -306,9 +306,14 @@ open class DbEntityCollection<T : Entity>(private val db: Db, val coll: IEntityC
     }
 
     /**
-     * Performs a query and returns a list of results
+     * Performs a query and returns a cursor of results
      */
     fun <T> query(builder: AqlBuilder.() -> TerminalExpr<T>): Cursor<T> = db.query(builder)
+
+    /**
+     * Performs a query and return a list of results
+     */
+    fun <T> queryList(builder: AqlBuilder.() -> TerminalExpr<T>): List<T> = query(builder).toList()
 
     /**
      * Performs a query and returns the first result or null
@@ -376,15 +381,51 @@ open class DbEntityCollection<T : Entity>(private val db: Db, val coll: IEntityC
      */
     fun count(): Long = db.query { RETURN(COUNT(coll)) }.map { it.toLong() }.first()
 
+    /**
+     * Removes the given entity
+     */
+    fun remove(entity: T): RemoveResult = remove(entity._id!!)
+
+    /**
+     * Remove the document with the given id or key
+     */
+    fun remove(idOrKey: String): RemoveResult = try {
+        RemoveResult.from(
+            db.query { REMOVE(idOrKey.ensureKey) IN coll }
+        )
+    } catch (e: KarangoQueryException) {
+        RemoveResult.from(e)
+    }
+
     // TODO: CREATE DSL
     /**
      * Remove all entries from the collection
      */
-    fun removeAll(): ArangoCursor<Any> =
-        arangoColl.db().query("FOR x IN $name REMOVE x IN $name", Any::class.java)
+    fun removeAll(): RemoveResult =
+        RemoveResult.from(
+            db.query {
+                FOR(coll) { c ->
+                    REMOVE(c._key) IN coll
+                }
+            }
+        )
 
     /**
      * Applies an plugin on an entity before it is saved
      */
     private fun onBeforeSave(obj: T): T = db.getOnSaveHooks().fold(obj, { acc, onSaveHook -> onSaveHook(acc) })
+}
+
+/**
+ * Remove result
+ *
+ * TODO: move to ultra.store-kore
+ */
+data class RemoveResult(val count: Int, val query: TypedQuery<*>) {
+
+    companion object {
+        fun from(e: KarangoQueryException) = RemoveResult(0, e.query)
+
+        fun from(cursor: Cursor<*>) = RemoveResult(cursor.count, cursor.query)
+    }
 }

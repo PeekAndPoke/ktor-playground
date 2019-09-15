@@ -1,3 +1,7 @@
 package de.peekandpoke.karango
 
-class KarangoException(message : String, cause: Throwable? = null) : Exception(message, cause)
+import com.arangodb.ArangoDBException
+
+class KarangoException(message : String, cause: Throwable? = null) : Throwable(message, cause)
+
+class KarangoQueryException(val query: TypedQuery<*>, message: String, override val cause: ArangoDBException): Throwable(message)
