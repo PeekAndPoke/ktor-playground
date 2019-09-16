@@ -1,13 +1,15 @@
 package de.peekandpoke.karango.aql
 
 import de.peekandpoke.karango.KarangoException
+import de.peekandpoke.karango.Stored
+import de.peekandpoke.karango.testdomain.TestPerson
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
 import java.io.Serializable
 
 class TypeRefSpec : StringSpec({
-    
+
     "TypeRef for String must be created correctly" {
 
         val result = type<String>()
@@ -44,23 +46,23 @@ class TypeRefSpec : StringSpec({
     }
 
     "Downing a type with no type parameters must throw an exception" {
-        
-        shouldThrow<KarangoException> { 
+
+        shouldThrow<KarangoException> {
             type<String>().down<String>()
         }
     }
-    
+
     "Downing a type with more than one type parameters must throw an exception" {
 
         shouldThrow<KarangoException> {
             type<Map<String, String>>().down<String>()
         }
     }
-    
+
     "TypeRef must convert Serializable to Object" {
-        
+
         val result = type<Serializable>()
-        
+
         result.toString() shouldBe "class java.lang.Object"
     }
 
@@ -104,5 +106,12 @@ class TypeRefSpec : StringSpec({
         val result = type<Map<Map<Serializable, Serializable>, Serializable>>()
 
         result.toString() shouldBe "java.util.Map<java.util.Map<java.lang.Object, java.lang.Object>, java.lang.Object>"
+    }
+
+    "TypeRef downed and then wrapped with [Stored]" {
+
+        val result = type<List<TestPerson>>().down<Any>().wrapWith<Stored<TestPerson>>(Stored::class.java)
+
+        result.toString() shouldBe "de.peekandpoke.karango.Stored<class de.peekandpoke.karango.testdomain.TestPerson>"
     }
 })

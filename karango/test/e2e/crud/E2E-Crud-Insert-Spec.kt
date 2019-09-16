@@ -3,9 +3,7 @@ package de.peekandpoke.karango.e2e.crud
 import de.peekandpoke.karango.aql.FOR
 import de.peekandpoke.karango.aql.INSERT
 import de.peekandpoke.karango.aql.LET
-import de.peekandpoke.karango.testdomain.TestPersons
-import de.peekandpoke.karango.testdomain.database
-import de.peekandpoke.karango.testdomain.testPersons
+import de.peekandpoke.karango.testdomain.*
 import io.kotlintest.assertSoftly
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe

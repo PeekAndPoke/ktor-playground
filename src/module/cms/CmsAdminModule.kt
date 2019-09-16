@@ -1,5 +1,6 @@
 package de.peekandpoke.module.cms
 
+import de.peekandpoke.karango.Stored
 import de.peekandpoke.karango_ktor.database
 import de.peekandpoke.module.cms.forms.PageForm
 import de.peekandpoke.module.cms.views.Template
@@ -46,7 +47,7 @@ class CmsAdminModule(app: Application) : Module(app) {
     class Pages
 
     @Location("/pages/{page}/edit")
-    class EditPage(val page: CmsPage)
+    class EditPage(val page: Stored<CmsPage>)
 
     @Location("/pages/create")
     class CreatePage
@@ -54,7 +55,7 @@ class CmsAdminModule(app: Application) : Module(app) {
     inner class LinkTo : LinkGenerator(mountPoint, application) {
         fun index() = linkTo(Index())
         fun pages() = linkTo(Pages())
-        fun editPage(page: CmsPage) = linkTo(EditPage(page))
+        fun editPage(page: Stored<CmsPage>) = linkTo(EditPage(page))
         fun createPage() = linkTo(CreatePage())
     }
 
@@ -93,7 +94,7 @@ class CmsAdminModule(app: Application) : Module(app) {
 
             getOrPost<EditPage> { data ->
 
-                val form = PageForm(data.page.mutator())
+                val form = PageForm(data.page.value.mutator())
 
                 if (form.submit(call)) {
 
@@ -107,7 +108,7 @@ class CmsAdminModule(app: Application) : Module(app) {
                 }
 
                 respond {
-                    editPage(data.page, form)
+                    editPage(data.page.value, form)
                 }
             }
 

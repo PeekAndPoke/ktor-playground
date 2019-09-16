@@ -1,11 +1,11 @@
 package de.peekandpoke.karango.examples.game_of_thrones
 
 import de.peekandpoke.karango.Db
+import de.peekandpoke.karango.Stored
 import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.examples.printDivider
 import de.peekandpoke.karango.examples.printQueryResult
 import de.peekandpoke.karango.examples.runDemo
-import de.peekandpoke.karango.id
 
 private val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev") {
     registerGotCollections()
@@ -128,18 +128,20 @@ fun installData() {
 private fun printCharacter(idx: Int, it: Character) =
     "  ${idx + 1}. ${it.name} ${it.surname} - age ${it.age} - ${if (it.alive) "alive" else "gone"} - actor: ${it.actor}"
 
+private fun printCharacter(idx: Int, it: Stored<Character>) = printCharacter(idx, it.value)
+
 fun findBaratheons() {
     println("==========================================================================================================================")
     println("Find all Baratheons using our collection class")
 
-    val result = characters.find { c ->
-        //        FILTER { c.surname EQ "Baratheon" }
-
-        FILTER(c.surname EQ "Baratheon")
+    val result = characters.find {
+        FOR(Characters) { c ->
+            FILTER(c.surname EQ "Baratheon")
+            RETURN(c)
+        }
     }
 
     printQueryResult(result, ::printCharacter)
-
 }
 
 fun findStarks() {
@@ -159,7 +161,7 @@ fun findStarks() {
 fun findBranStarkV1() {
 
     // to do what we want to do, we need the ID of Bran Stark
-    val bransId = characters.findFirst { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }.id
+    val bransId = characters.findFirstByNameAndSurname("Bran", "Stark")!!._id
 
     println("==========================================================================================================================")
     println("Find Bran Stark by ID with an explicit query on the db object")
@@ -176,7 +178,7 @@ fun findBranStarkV1() {
 fun findBranStarkV2() {
 
     // to do what we want to do, we need the ID of Bran Stark
-    val bransId = characters.findFirst { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }.id
+    val bransId = characters.findFirstByNameAndSurname("Bran", "Stark")!!._id
 
     println("==========================================================================================================================")
     println("Find Bran Stark by ID using our collection class")
@@ -191,14 +193,14 @@ fun findBranStarkV2() {
 fun findThreeCharactersByIdV1() {
 
     // to do what we want to do, we need the ID of Bran Stark
-    val bransId = characters.findFirst { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }.id
-    val aryasId = characters.findFirst { t -> FILTER((t.name EQ "Arya") AND (t.surname EQ "Stark")) }.id
-    val tyrionsId = characters.findFirst { t -> FILTER((t.name EQ "Tyrion") AND (t.surname EQ "Lannister")) }.id
+    val bransId = characters.findFirstByNameAndSurname("Bran", "Stark")!!._id
+    val aryasId = characters.findFirstByNameAndSurname("Arya", "Stark")!!._id
+    val tyrionsId = characters.findFirstByNameAndSurname("Tyrion", "Lannister")!!._id
 
     println("==========================================================================================================================")
     println("Find Arya, Bran and Tyrion at once by their IDs using our collection class")
 
-    val result = characters.findByIds(aryasId, bransId, tyrionsId)
+    val result = characters.findByKeys(aryasId, bransId, tyrionsId)
 
     printQueryResult(result, ::printCharacter)
 }
@@ -206,9 +208,9 @@ fun findThreeCharactersByIdV1() {
 fun findThreeCharactersByIdV2() {
 
     // to do what we want to do, we need the ID of Bran Stark
-    val bransId = characters.findFirst { t -> FILTER((t.name EQ "Bran") AND (t.surname EQ "Stark")) }.id
-    val aryasId = characters.findFirst { t -> FILTER((t.name EQ "Arya") AND (t.surname EQ "Stark")) }.id
-    val tyrionsId = characters.findFirst { t -> FILTER((t.name EQ "Tyrion") AND (t.surname EQ "Lannister")) }.id
+    val bransId = characters.findFirstByNameAndSurname("Bran", "Stark")!!._id
+    val aryasId = characters.findFirstByNameAndSurname("Arya", "Stark")!!._id
+    val tyrionsId = characters.findFirstByNameAndSurname("Tyrion", "Lannister")!!._id
 
     println("==========================================================================================================================")
     println("Find Arya, Bran and Tyrion at once by their IDs using the db object")
@@ -226,15 +228,15 @@ fun findThreeCharactersByIdV2() {
 
 fun updateNedStarksAliveness() {
 
-    val ned = characters.findFirst { t -> FILTER((t.name EQ "Eddard") AND (t.surname EQ "Stark")) }!!
+//    val ned = characters.findFirstByNameAndSurname("Eddard", "Stark")!!
+//
+//    println("==========================================================================================================================")
+//    println("Spoiler Alert! Ned died... So we need to update his aliveness using the collection object")
 
-    println("==========================================================================================================================")
-    println("Spoiler Alert! Ned died... So we need to update his aliveness using the collection object")
-
-    val result = characters.update(ned) { t ->
-        //        t.alive with false
-//        "hair" with "black"
-    }
-
-    printQueryResult(result) { i, x -> "$i. $x" }
+//    val result = characters.update(ned) { t ->
+//        //        t.alive with false
+////        "hair" with "black"
+//    }
+//
+//    printQueryResult(result) { i, x -> "$i. $x" }
 }

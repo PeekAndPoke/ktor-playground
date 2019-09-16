@@ -1,9 +1,7 @@
 package de.peekandpoke.module.got
 
-import de.peekandpoke.karango.examples.game_of_thrones.Character
-import de.peekandpoke.karango.examples.game_of_thrones.actors
-import de.peekandpoke.karango.examples.game_of_thrones.characters
-import de.peekandpoke.karango.examples.game_of_thrones.mutator
+import de.peekandpoke.karango.Stored
+import de.peekandpoke.karango.examples.game_of_thrones.*
 import de.peekandpoke.karango_ktor.database
 import de.peekandpoke.resources.MainTemplate
 import de.peekandpoke.resources.WELCOME
@@ -39,11 +37,11 @@ class GameOfThronesModule(app: Application) : Module(app) {
     internal class GetCharacters(val page: Int = 1, val epp: Int = 100)
 
     @Location("/characters/{character}")
-    internal class GetCharacter(val character: Character)
+    internal class GetCharacter(val character: Stored<Character>)
 
     inner class LinkTo : LinkGenerator(config.mountPoint, application) {
         fun getCharacters() = linkTo(GetCharacters())
-        fun getCharacterByKey(character: Character) = linkTo(GetCharacter(character))
+        fun getCharacterByKey(character: Stored<Character>) = linkTo(GetCharacter(character))
     }
 
     private val linkTo = LinkTo()
@@ -54,13 +52,30 @@ class GameOfThronesModule(app: Application) : Module(app) {
 
             get<GetCharacters> { p ->
 
-                val withActors = database.characters.findAllWithActor()
-                println(withActors.query)
-                println(withActors.toList().joinToString("\n"))
+//                val savedCharacters: Cursor<Stored<Character>> = database.actors.query {
+//                    FOR(Characters) { c ->
+//                        RETURN(c.AS<Stored<Character>>())
+//                    }
+//                }
+//                println(savedCharacters.firstOrNull())
+//
+//                val savedActors: Cursor<Stored<Actor>> = database.actors.query {
+//                    FOR(Actors) { c ->
+//                        RETURN(c.AS<Stored<Actor>>())
+//                    }
+//                }
+//                println(savedActors.firstOrNull())
+//
+//                val withActors = database.characters.findAllWithActor()
+//                println(withActors.query)
+//                println(withActors.toList().joinToString("\n"))
 
                 val result = database.characters.findAllPaged(p.page, p.epp)
                 val list = result.toList()
                 val flashEntries = flashSession.pull()
+
+                println("-------------------------------------------------------------------------")
+                println(result.query.ret.getType())
 
                 call.respondHtmlTemplate(MainTemplate(call)) {
 
@@ -98,7 +113,7 @@ class GameOfThronesModule(app: Application) : Module(app) {
 
             getOrPost<GetCharacter> { data ->
 
-                val form = CharacterForm(data.character.mutator())
+                val form = CharacterForm(data.character.value.mutator())
 
                 if (form.submit(call)) {
 

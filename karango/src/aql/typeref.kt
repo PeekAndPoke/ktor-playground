@@ -55,16 +55,6 @@ open class TypeRef<T> constructor(private val explicitType: Type? = null) : Type
     private val resultingType: Type by lazy { tree.type }
 
     /**
-     * Converts to type to a java class
-     */
-    fun toClass(): Class<T> {
-        val rawInnerType = (resultingType as ParameterizedType).rawType
-
-        @Suppress("UNCHECKED_CAST")
-        return (rawInnerType as Class<T>)
-    }
-
-    /**
      * Get the type.
      *
      * When have the type set explicitly through the constructor, we will return this one.
@@ -126,6 +116,13 @@ open class TypeRef<T> constructor(private val explicitType: Type? = null) : Type
         )
     }
 
+    fun <X> wrapWith(cls: Class<*>): TypeRef<X> {
+
+        return TypeRef(
+            ParameterizedTypeImpl.make(cls, arrayOf(tree.type), null)
+        )
+    }
+
     /**
      * Create a class object from the a type
      */
@@ -154,15 +151,13 @@ open class TypeRef<T> constructor(private val explicitType: Type? = null) : Type
 
         }.map { buildTree(it) }
 
+        val childTypes = children.map { it.type }.toTypedArray()
+
         val fixedType = when {
 
             t.typeName == Serializable::class.qualifiedName -> kotlin.Any::class.java
 
-            t is ParameterizedType -> ParameterizedTypeImpl.make(
-                t.toClass(),
-                children.map { it.type }.toTypedArray(),
-                null
-            )
+            t is ParameterizedType -> ParameterizedTypeImpl.make(t.toClass(), childTypes, null)
 
             else -> t
         }

@@ -23,6 +23,11 @@ data class TestPerson(
     override val _key: String? = null
 ) : Entity
 
+val Stored<TestPerson>.name get() = value.name
+val Stored<TestPerson>.details get() = value.details
+val Stored<TestPerson>.addresses get() = value.addresses
+val Stored<TestPerson>.books get() = value.books
+
 val TestPersons : IEntityCollection<TestPerson> =
     object : EntityCollection<TestPerson>("test-persons", type()) {}
 

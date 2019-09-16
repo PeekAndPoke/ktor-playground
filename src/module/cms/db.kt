@@ -1,9 +1,6 @@
 package de.peekandpoke.module.cms
 
-import de.peekandpoke.karango.Cursor
-import de.peekandpoke.karango.Db
-import de.peekandpoke.karango.DbEntityCollection
-import de.peekandpoke.karango.EntityCollection
+import de.peekandpoke.karango.*
 import de.peekandpoke.karango.aql.*
 
 fun Db.Builder.registerCmsCollections() {
@@ -16,7 +13,7 @@ val CmsPages = EntityCollection<CmsPage>("cms_pages", type())
 
 class CmsPagesCollection(db: Db) : DbEntityCollection<CmsPage>(db, CmsPages) {
 
-    fun findAllSorted(): Cursor<CmsPage> = query {
+    fun findAllSorted(): Cursor<Stored<CmsPage>> = find {
 
         FOR(coll) { page ->
             SORT(page.name.ASC)
@@ -24,7 +21,7 @@ class CmsPagesCollection(db: Db) : DbEntityCollection<CmsPage>(db, CmsPages) {
         }
     }
 
-    fun findBySlug(path: String): CmsPage? = queryFirst {
+    fun findBySlug(path: String): Stored<CmsPage>? = findFirst {
 
         FOR(coll) { page ->
             FILTER(page.slug EQ path)

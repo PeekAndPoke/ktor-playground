@@ -14,7 +14,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.convertValue
 import de.peekandpoke.karango.aql.*
-import de.peekandpoke.karango.jackson.KarangoDateTimeModule
+import de.peekandpoke.karango.jackson.KarangoJacksonModule
 import de.peekandpoke.karango.jackson.RefCache
 import kotlin.reflect.KClass
 import kotlin.system.measureTimeMillis
@@ -51,7 +51,7 @@ class Db(val arangoDb: ArangoDatabase, private val settings: Settings) {
             registerModule(KotlinModule())
             registerModule(Jdk8Module())
             // custom
-            registerModule(KarangoDateTimeModule())
+            registerModule(KarangoJacksonModule())
 
             configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true)
         }
@@ -63,7 +63,7 @@ class Db(val arangoDb: ArangoDatabase, private val settings: Settings) {
             registerModule(KotlinModule())
             registerModule(Jdk8Module())
             // custom
-            registerModule(KarangoDateTimeModule())
+            registerModule(KarangoJacksonModule())
 
             configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         }
@@ -235,18 +235,19 @@ class Db(val arangoDb: ArangoDatabase, private val settings: Settings) {
             }
         }
 
-        val values = InjectableValues.Std(
-            mapOf(
-                "db" to this,
-                "cache" to RefCache()
-            )
-        )
-
         return CursorImpl(
             result,
             query,
             time,
-            deserializerBlueprint.copy().apply { injectableValues = values }
+            deserializerBlueprint.copy().apply {
+                injectableValues = InjectableValues.Std(
+                    mapOf(
+                        "mapper" to this@apply,
+                        "db" to this@Db,
+                        "cache" to RefCache()
+                    )
+                )
+            }
         )
     }
 
@@ -280,6 +281,13 @@ open class DbEntityCollection<T : Entity>(private val db: Db, val coll: IEntityC
     fun getDb() = db
 
     /**
+     * Cast a terminal expr to a [Stored] entity.
+     *
+     * This is used to tell the deserialization, that we actually want [Stored] entities to be returned
+     */
+    private fun TerminalExpr<T>.cast() : TerminalExpr<Stored<T>> = AS(coll.getType().down<T>().wrapWith<Stored<T>>(Stored::class.java).up())
+
+    /**
      * Save or update the given object.
      *
      * When the _id of the object is null an INSERT is tried.
@@ -306,75 +314,66 @@ open class DbEntityCollection<T : Entity>(private val db: Db, val coll: IEntityC
     }
 
     /**
+     * Finds all return them as [Stored] entities
+     */
+    fun findAll(): Cursor<Stored<T>> = find {
+        FOR(coll) {
+            RETURN(it)
+        }
+    }
+
+    /**
+     * Returns all results as [Stored] entities
+     */
+    fun find(builder: AqlBuilder.() -> TerminalExpr<T>): Cursor<Stored<T>> = db.query {
+        builder().cast()
+    }
+
+    /**
+     * Returns the first result as [Stored] entity
+     */
+    fun findFirst(builder: AqlBuilder.() -> TerminalExpr<T>): Stored<T>? = db.queryFirst { builder().cast() }
+
+    /**
+     * Find multiple by key and returns them as [Stored] entities
+     */
+    fun findByKeys(vararg keys: String): Cursor<Stored<T>> = db.query {
+
+        val params = keys.filter { it.startsWith(coll.getAlias()) }
+
+        FOR(DOCUMENT(coll, params.map { it.ensureKey })) { d ->
+            RETURN(d)
+        }.cast()
+    }
+
+    /**
+     * Find one by key and return it as [Stored] entity
+     */
+    fun findByKey(key: String): Stored<T>? = db.queryFirst {
+        RETURN(
+            DOCUMENT(coll, key.ensureKey)
+        ).cast()
+    }
+
+    /**
      * Performs a query and returns a cursor of results
      */
-    fun <T> query(builder: AqlBuilder.() -> TerminalExpr<T>): Cursor<T> = db.query(builder)
+    fun <X> query(builder: AqlBuilder.() -> TerminalExpr<X>): Cursor<X> = db.query(builder)
 
     /**
      * Performs a query and return a list of results
      */
-    fun <T> queryList(builder: AqlBuilder.() -> TerminalExpr<T>): List<T> = query(builder).toList()
+    fun <X> queryList(builder: AqlBuilder.() -> TerminalExpr<X>): List<X> = query(builder).toList()
 
     /**
      * Performs a query and returns the first result or null
      */
-    fun <T> queryFirst(builder: AqlBuilder.() -> TerminalExpr<T>): T? = db.queryFirst(builder)
+    fun <X> queryFirst(builder: AqlBuilder.() -> TerminalExpr<X>): X? = db.queryFirst(builder)
 
     /**
      * Explains the query created by the builder
      */
-    fun <T> explain(builder: AqlBuilder.() -> TerminalExpr<T>) = db.explain(builder)
-
-    /**
-     * Finds all in the collection
-     */
-    fun findAll(): Cursor<T> = db.query {
-        FOR(coll) { page ->
-            RETURN(page)
-        }
-    }
-
-    /**
-     * Shorthand method for easier FIND queries
-     */
-    fun find(builder: ForLoop.(Iter<T>) -> Unit): Cursor<T> = db.query {
-        FOR(coll) { t ->
-            builder(t)
-            RETURN(t)
-        }
-    }
-
-    /**
-     * Shorthand method for easier FIND queries for the first result
-     */
-    fun findFirst(builder: ForLoop.(Iter<T>) -> Unit): T? = db.queryFirst {
-        FOR(coll) { t ->
-            builder(t)
-            LIMIT(1)
-            RETURN(t)
-        }
-    }
-
-    /**
-     * Find all entries by the given keys
-     */
-    fun findByIds(vararg keys: String) = db.query {
-
-        val params = keys.filter { it.startsWith(coll.getAlias()) }
-
-        FOR(DOCUMENT(coll, params)) { d ->
-            RETURN(d)
-        }
-    }
-
-    /**
-     * Find first entry by key
-     */
-    fun findByKey(key: String): T? = db.queryFirst {
-        RETURN(
-            DOCUMENT(coll, key.ensureKey)
-        )
-    }
+    fun <X> explain(builder: AqlBuilder.() -> TerminalExpr<X>) = db.explain(builder)
 
     /**
      * Get the number of entries in the collection

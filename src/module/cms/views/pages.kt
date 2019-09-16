@@ -1,5 +1,6 @@
 package de.peekandpoke.module.cms.views
 
+import de.peekandpoke.karango.Stored
 import de.peekandpoke.module.cms.CmsPage
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.util.KtorExperimentalAPI
@@ -8,7 +9,7 @@ import kotlinx.html.*
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
-internal fun Template.pages(pages: List<CmsPage>) {
+internal fun Template.pages(pages: List<Stored<CmsPage>>) {
 
     activeMenu = MenuEntries.PAGES
 
@@ -37,16 +38,16 @@ internal fun Template.pages(pages: List<CmsPage>) {
                 pages.forEach {
                     tr {
                         td {
-                            a(href = linkTo.editPage(it)) { +it.name }
+                            a(href = linkTo.editPage(it)) { +it.value.name }
                         }
                         td {
-                            +(it._ts?.createdAt?.toString() ?: "n/a")
+                            +(it.value._ts?.createdAt?.toString() ?: "n/a")
                         }
                         td {
-                            +(it._ts?.updatedAt?.toString() ?: "n/a")
+                            +(it.value._ts?.updatedAt?.toString() ?: "n/a")
                         }
                         td {
-                            +(it._userRecord?.user ?: "n/a")
+                            +(it.value._userRecord?.user ?: "n/a")
                         }
                     }
                 }

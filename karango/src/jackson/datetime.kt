@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
-import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import java.time.Instant
 import java.time.LocalDateTime
@@ -14,23 +13,6 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 private val utc = ZoneId.of("UTC")
-
-class KarangoDateTimeModule : SimpleModule() {
-
-    init {
-        // LocalDateTime
-        addSerializer(LocalDateTime::class.java, LocalDateTimeSerializer())
-        addDeserializer(LocalDateTime::class.java, LocalDateTimeDeserializer())
-
-        // Instant
-        addSerializer(Instant::class.java, InstantSerializer())
-        addDeserializer(Instant::class.java, InstantDeserializer())
-
-        // ZonedDateTime
-        addSerializer(ZonedDateTime::class.java, ZonedDateTimeSerializer())
-        addDeserializer(ZonedDateTime::class.java, ZonedDateTimeDeserializer())
-    }
-}
 
 class LocalDateTimeSerializer : StdSerializer<LocalDateTime>(LocalDateTime::class.java) {
     override fun serialize(value: LocalDateTime?, gen: JsonGenerator, provider: SerializerProvider?) {

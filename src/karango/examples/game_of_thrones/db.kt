@@ -24,7 +24,7 @@ class CharactersCollection(db: Db) : DbEntityCollection<Character>(db, Character
         }
     }
 
-    fun findAllPaged(page: Int, epp: Int, direction: Direction = Direction.ASC) = query {
+    fun findAllPaged(page: Int, epp: Int, direction: Direction = Direction.ASC) = find {
         FOR(Characters) { c ->
             SORT(c.name, direction)
             LIMIT((page - 1) * epp, epp)
@@ -32,7 +32,16 @@ class CharactersCollection(db: Db) : DbEntityCollection<Character>(db, Character
         }
     }
 
-    fun findAllWithActor() = query { findAllWithActorQuery }
+    fun findFirstByNameAndSurname(name: String, surname: String) = findFirst {
+        FOR(coll) { c ->
+            FILTER(c.name EQ name)
+            FILTER(c.surname EQ surname)
+            LIMIT(1)
+            RETURN(c)
+        }
+    }
+
+    fun findAllWithActor() = find { findAllWithActorQuery }
 
     fun explainFindAllWithActor() = explain { findAllWithActorQuery }
 }

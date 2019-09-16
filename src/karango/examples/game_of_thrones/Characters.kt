@@ -3,6 +3,7 @@ package de.peekandpoke.karango.examples.game_of_thrones
 import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.Karango
 import de.peekandpoke.karango.Ref
+import de.peekandpoke.karango.Stored
 import de.peekandpoke.ultra.mutator.Mutable
 
 @Karango
@@ -23,3 +24,14 @@ data class Character(
 
     val fullName by lazy { listOfNotNull(name, surname).joinToString(" ") }
 }
+
+val Stored<Character>.name get() = value.name
+val Stored<Character>.surname get() = value.surname
+val Stored<Character>.alive get() = value.alive
+val Stored<Character>.age get() = value.age
+val Stored<Character>.traits get() = value.traits
+val Stored<Character>.actor get() = value.actor
+val Stored<Character>.house get() = value.house
+val Stored<Character>.fullName get() = value.fullName
+
+fun Stored<Character>.mutate(mutation: CharacterMutator.() -> Unit) = copy(value = value.mutate(mutation))

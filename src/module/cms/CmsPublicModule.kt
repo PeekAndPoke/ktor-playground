@@ -31,7 +31,7 @@ class CmsPublicModule(app: Application) : Module(app) {
             val page = database.cmsPages.findBySlug(path) ?: throw NotFoundException("Cms page '$path' not found")
 
             call.respondText(ContentType.Text.Html, HttpStatusCode.OK) {
-                page.markup
+                page.value.markup
             }
         }
     }

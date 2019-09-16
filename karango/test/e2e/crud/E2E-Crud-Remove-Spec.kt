@@ -2,6 +2,7 @@ package de.peekandpoke.karango.e2e.crud
 
 import de.peekandpoke.karango.id
 import de.peekandpoke.karango.testdomain.database
+import de.peekandpoke.karango.testdomain.name
 import de.peekandpoke.karango.testdomain.testPersons
 import io.kotlintest.assertSoftly
 import io.kotlintest.shouldBe

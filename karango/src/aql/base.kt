@@ -72,6 +72,15 @@ interface TerminalExpr<T> : Expression<List<T>> {
 }
 
 /**
+ * Casts the expression to another type
+ *
+ * Sometimes it might be necessary to change the type of an expression
+ */
+@Suppress("FunctionName")
+@KarangoTypeConversionMarker
+inline fun <reified R : Any> TerminalExpr<*>.AS(type: TypeRef<List<R>>): TerminalExpr<R> = TerminalTypeCastExpression(type, this)
+
+/**
  * Expression impl for internal usage
  */
 internal class ExpressionImpl<T>(private val name: String, private val type: TypeRef<T>) : Expression<T> {
@@ -109,6 +118,18 @@ internal class RootExpression<T>(private val stmts: List<Statement>, private val
  * Internal expression representing a type cast
  */
 class TypeCastExpression<T>(private val type: TypeRef<T>, private val wrapped: Expression<*>) : Expression<T> {
+
+    override fun getType() = type
+
+    override fun printAql(p: AqlPrinter) = wrapped.printAql(p)
+}
+
+/**
+ * Internal expression representing a type cast
+ */
+class TerminalTypeCastExpression<T>(private val type: TypeRef<List<T>>, private val wrapped: TerminalExpr<*>) : TerminalExpr<T> {
+
+    override fun innerType() = type.down<T>()
 
     override fun getType() = type
 
