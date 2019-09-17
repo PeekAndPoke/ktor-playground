@@ -15,7 +15,7 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.convertValue
 import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.jackson.KarangoJacksonModule
-import de.peekandpoke.karango.jackson.RefCache
+import de.peekandpoke.ultra.vault.RefCache
 import kotlin.reflect.KClass
 import kotlin.system.measureTimeMillis
 
@@ -34,10 +34,7 @@ class Db(val arangoDb: ArangoDatabase, private val settings: Settings) {
          */
         fun default(user: String, pass: String, host: String, port: Int, database: String, builder: Builder.() -> Unit = {}): Db {
 
-            val arango = ArangoDB.Builder()
-                .user(user).password(pass)
-                .host(host, port)
-                .build()
+            val arango = ArangoDB.Builder().user(user).password(pass).host(host, port).build()
 
             return Builder(arango.db(database)).apply(builder).build().apply {
                 ensureCollections()
@@ -285,7 +282,7 @@ open class DbEntityCollection<T : Entity>(private val db: Db, val coll: IEntityC
      *
      * This is used to tell the deserialization, that we actually want [Stored] entities to be returned
      */
-    private fun TerminalExpr<T>.cast() : TerminalExpr<Stored<T>> = AS(coll.getType().down<T>().wrapWith<Stored<T>>(Stored::class.java).up())
+    private fun TerminalExpr<T>.cast() : TerminalExpr<Stored<T>> = AS(coll.getType().down<T>().wrapWith<Stored<T>>().up())
 
     /**
      * Save or update the given object.

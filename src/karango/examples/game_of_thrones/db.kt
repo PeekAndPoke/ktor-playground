@@ -1,8 +1,6 @@
 package de.peekandpoke.karango.examples.game_of_thrones
 
-import de.peekandpoke.karango.Db
-import de.peekandpoke.karango.DbEntityCollection
-import de.peekandpoke.karango.EntityCollection
+import de.peekandpoke.karango.*
 import de.peekandpoke.karango.aql.*
 
 fun Db.Builder.registerGotCollections() {
@@ -51,3 +49,5 @@ internal val Db.actors get() = getEntityCollection<ActorsCollection>()
 val Actors = EntityCollection<Actor>("got_actors", type())
 
 class ActorsCollection(db: Db) : DbEntityCollection<Actor>(db, Actors)
+
+class ActorsRepository(driver: KarangoDriver): EntityRepository<Actor>(driver, Actors)

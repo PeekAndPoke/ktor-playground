@@ -1,11 +1,16 @@
 package de.peekandpoke
 
+import com.arangodb.ArangoDB
+import com.arangodb.ArangoDatabase
 import com.fasterxml.jackson.databind.SerializationFeature
 import de.peekandpoke.karango.Db
+import de.peekandpoke.karango.KarangoDriver
 import de.peekandpoke.karango.addon.TimestampedOnSaveHook
 import de.peekandpoke.karango.addon.UserRecord
 import de.peekandpoke.karango.addon.UserRecordOnSaveHook
+import de.peekandpoke.karango.examples.game_of_thrones.ActorsRepository
 import de.peekandpoke.karango.examples.game_of_thrones.registerGotCollections
+import de.peekandpoke.karango.karangoDefaultDriver
 import de.peekandpoke.karango_ktor.add
 import de.peekandpoke.karango_ktor.provide
 import de.peekandpoke.module.cms.cmsAdmin
@@ -15,6 +20,7 @@ import de.peekandpoke.module.got.gameOfThrones
 import de.peekandpoke.module.semanticui.semanticUi
 import de.peekandpoke.resources.Translations
 import de.peekandpoke.test_module.TestModule
+import de.peekandpoke.ultra.vault.Vault
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCallPipeline
 import io.ktor.application.call
@@ -54,6 +60,30 @@ import kotlin.collections.set
 import kotlin.system.measureNanoTime
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+
+private val arangoDb: ArangoDB =
+    ArangoDB.Builder().user("root").password("").host("localhost", 8529).build()
+
+private val arangoDatabase: ArangoDatabase = arangoDb.db("kotlindev")
+
+private val databaseBlueprint: Vault.Blueprint = Vault.create {
+
+    add { drivers -> ActorsRepository(drivers.get(karangoDefaultDriver)) }
+}
+
+private val database = databaseBlueprint.with(
+    karangoDefaultDriver to KarangoDriver(
+        arangoDb = arangoDatabase,
+        onSaveHooks = listOf(
+            TimestampedOnSaveHook()
+        )
+    )
+)
+
+val x = println(
+    database.getRepository<ActorsRepository>().findAll().toList()
+)
+
 
 private val db: Db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev") {
 
@@ -316,7 +346,7 @@ fun Application.module(testing: Boolean = false) {
 
     routing {
 
-//        trace { application.log.trace(it.buildText()) }
+        //        trace { application.log.trace(it.buildText()) }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //  Common area

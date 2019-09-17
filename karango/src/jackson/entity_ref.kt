@@ -10,6 +10,7 @@ import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.aql.DOCUMENT
 import de.peekandpoke.karango.aql.RETURN
+import de.peekandpoke.ultra.vault.RefCache
 
 /**
  * Created by gerk on 23.05.19 09:58
@@ -25,7 +26,7 @@ internal class EntityRefDeserializer @JvmOverloads constructor(
     private val db: Db? = null,
     private val cache: RefCache? = null,
     type: Class<*>? = null
-) : StdDeserializer<Entity>(type), ContextualDeserializer {
+) : StdDeserializer<Any>(type), ContextualDeserializer {
 
     override fun createContextual(ctxt: DeserializationContext, property: BeanProperty): JsonDeserializer<*> {
 
@@ -40,7 +41,7 @@ internal class EntityRefDeserializer @JvmOverloads constructor(
         return false
     }
 
-    override fun deserialize(jp: JsonParser, ctxt: DeserializationContext): Entity? {
+    override fun deserialize(jp: JsonParser, ctxt: DeserializationContext): Any? {
 
         if (db == null || cache == null) {
             return null
@@ -62,6 +63,3 @@ internal class EntityRefDeserializer @JvmOverloads constructor(
     }
 }
 
-internal class RefCache {
-    val entries = mutableMapOf<String, Entity?>()
-}

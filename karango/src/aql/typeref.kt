@@ -116,12 +116,21 @@ open class TypeRef<T> constructor(private val explicitType: Type? = null) : Type
         )
     }
 
-    fun <X> wrapWith(cls: Class<*>): TypeRef<X> {
+    /**
+     * Wraps the current type with the given type.
+     *
+     * The given type must be a parameterized type with on type parameter.
+     */
+    fun <X> wrapWith(cls: Class<X>): TypeRef<X> = TypeRef(
+        ParameterizedTypeImpl.make(cls, arrayOf(tree.type), null)
+    )
 
-        return TypeRef(
-            ParameterizedTypeImpl.make(cls, arrayOf(tree.type), null)
-        )
-    }
+    /**
+     * Wraps the current type with the given type.
+     *
+     * The given type must be a parameterized type with on type parameter.
+     */
+    inline fun <reified X> wrapWith(): TypeRef<X> = wrapWith(X::class.java)
 
     /**
      * Create a class object from the a type

@@ -110,8 +110,15 @@ class TypeRefSpec : StringSpec({
 
     "TypeRef downed and then wrapped with [Stored]" {
 
-        val result = type<List<TestPerson>>().down<Any>().wrapWith<Stored<TestPerson>>(Stored::class.java)
+        val result = type<List<TestPerson>>().down<Any>().wrapWith(Stored::class.java)
 
-        result.toString() shouldBe "de.peekandpoke.karango.Stored<class de.peekandpoke.karango.testdomain.TestPerson>"
+        result.toString() shouldBe "de.peekandpoke.karango.Stored<de.peekandpoke.karango.testdomain.TestPerson>"
+    }
+
+    "TypeRef downed and then wrapped with [Stored] via inline reified wrapWith()" {
+
+        val result = type<List<TestPerson>>().down<Any>().wrapWith<Stored<*>>()
+
+        result.toString() shouldBe "de.peekandpoke.karango.Stored<de.peekandpoke.karango.testdomain.TestPerson>"
     }
 })

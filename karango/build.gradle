@@ -53,6 +53,8 @@ dependencies {
 
     compile "de.peekandpoke.ultra:meta:$ultra_version"
 
+    compile project(":vault")
+
     ////  code generation  //////////////////////////////////////////////////////////////////////////////////////
 
     implementation "com.google.auto.service:auto-service:$google_auto_version"

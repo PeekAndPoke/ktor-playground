@@ -20,6 +20,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/test_module/ktor-playground.test_module.iml" filepath="$PROJECT_DIR$/.idea/modules/test_module/ktor-playground.test_module.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/test_module/ktor-playground.test_module.main.iml" filepath="$PROJECT_DIR$/.idea/modules/test_module/ktor-playground.test_module.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/test_module/ktor-playground.test_module.test.iml" filepath="$PROJECT_DIR$/.idea/modules/test_module/ktor-playground.test_module.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/vault/ktor-playground.vault.iml" filepath="$PROJECT_DIR$/.idea/modules/vault/ktor-playground.vault.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/vault/ktor-playground.vault.main.iml" filepath="$PROJECT_DIR$/.idea/modules/vault/ktor-playground.vault.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/vault/ktor-playground.vault.test.iml" filepath="$PROJECT_DIR$/.idea/modules/vault/ktor-playground.vault.test.iml" />
     </modules>
   </component>
 </project>
