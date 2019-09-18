@@ -12,6 +12,7 @@ import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
 
+@Suppress("unused")
 @AutoService(Processor::class)
 open class KarangoAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
 

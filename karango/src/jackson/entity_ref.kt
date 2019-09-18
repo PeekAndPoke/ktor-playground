@@ -2,28 +2,29 @@ package de.peekandpoke.karango.jackson
 
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.databind.*
+import com.fasterxml.jackson.databind.BeanProperty
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonDeserializer
+import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
-import de.peekandpoke.karango.Db
-import de.peekandpoke.karango.Entity
-import de.peekandpoke.karango.aql.DOCUMENT
-import de.peekandpoke.karango.aql.RETURN
+import de.peekandpoke.ultra.vault.Database
 import de.peekandpoke.ultra.vault.RefCache
 
 /**
- * Created by gerk on 23.05.19 09:58
+ * TODO: fix me
  */
-internal class EntityRefSerializer : StdSerializer<Entity>(Entity::class.java) {
+internal class EntityRefSerializer : StdSerializer<Any>(Any::class.java) {
 
-    override fun serialize(value: Entity, jgen: JsonGenerator, provider: SerializerProvider) {
-        jgen.writeString(value._id)
+    override fun serialize(value: Any, jgen: JsonGenerator, provider: SerializerProvider) {
+        jgen.writeNull()
+//        jgen.writeString(value._id)
     }
 }
 
 internal class EntityRefDeserializer @JvmOverloads constructor(
-    private val db: Db? = null,
+    private val db: Database? = null,
     private val cache: RefCache? = null,
     type: Class<*>? = null
 ) : StdDeserializer<Any>(type), ContextualDeserializer {
@@ -31,7 +32,7 @@ internal class EntityRefDeserializer @JvmOverloads constructor(
     override fun createContextual(ctxt: DeserializationContext, property: BeanProperty): JsonDeserializer<*> {
 
         return EntityRefDeserializer(
-            ctxt.findInjectableValue("db", null, null) as Db,
+            ctxt.findInjectableValue("database", null, null) as Database,
             ctxt.findInjectableValue("cache", null, null) as RefCache,
             property.type?.rawClass
         )
@@ -43,23 +44,25 @@ internal class EntityRefDeserializer @JvmOverloads constructor(
 
     override fun deserialize(jp: JsonParser, ctxt: DeserializationContext): Any? {
 
-        if (db == null || cache == null) {
-            return null
-        }
+        return null
 
-        val node: JsonNode = jp.codec.readTree(jp)
-
-        val id: String = node.textValue() ?: return null
-
-        return cache.entries.getOrPut(id) {
-
-            @Suppress("UNCHECKED_CAST")
-            db.queryFirst {
-                RETURN(
-                    DOCUMENT(_valueClass as Class<Entity>, id)
-                )
-            }
-        }
+//        if (db == null || cache == null) {
+//            return null
+//        }
+//
+//        val node: JsonNode = jp.codec.readTree(jp)
+//
+//        val id: String = node.textValue() ?: return null
+//
+//        return cache.entries.getOrPut(id) {
+//
+//            @Suppress("UNCHECKED_CAST")
+//            db.queryFirst {
+//                RETURN(
+//                    DOCUMENT(_valueClass as Class<Entity>, id)
+//                )
+//            }
+//        }
     }
 }
 

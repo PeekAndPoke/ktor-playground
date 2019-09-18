@@ -1,15 +1,26 @@
 package de.peekandpoke.karango.examples.game_of_thrones
 
-import de.peekandpoke.karango.Db
+import com.arangodb.ArangoDB
+import com.arangodb.ArangoDatabase
+import de.peekandpoke.karango.KarangoDriver
 import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.examples.printDivider
 import de.peekandpoke.karango.examples.printQueryResult
 import de.peekandpoke.karango.examples.runDemo
+import de.peekandpoke.karango.karangoDefaultDriver
 import de.peekandpoke.ultra.vault.Stored
+import de.peekandpoke.ultra.vault.Vault
 
-private val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev") {
+private val arangoDb: ArangoDB = ArangoDB.Builder().user("root").password("").host("localhost", 8529).build()
+private val arangoDatabase: ArangoDatabase = arangoDb.db("kotlindev")
+
+private val databaseBlueprint: Vault.Blueprint = Vault.create {
     registerGotCollections()
 }
+
+private val db = databaseBlueprint.with(
+    karangoDefaultDriver to KarangoDriver(arangoDatabase)
+)
 
 private val characters = db.characters
 private val actors = db.actors
@@ -28,8 +39,7 @@ fun main() {
             ::findStarks,
             ::findBranStarkV1,
             ::findBranStarkV2,
-            ::findThreeCharactersByIdV1,
-            ::findThreeCharactersByIdV2,
+            ::findThreeCharactersByIds,
             ::updateNedStarksAliveness
         )
     }
@@ -69,13 +79,13 @@ fun installData() {
 
     println(seanBean)
 
-    db.query {
+    characters.query {
 
         val data = LET("data") {
             listOf(
-                Character(name = "Robert", surname = "Baratheon", alive = false, traits = listOf("A", "H", "C"), actor = markAddy),
-                Character(name = "Jaime", surname = "Lannister", alive = true, age = 36, traits = listOf("A", "F", "B"), actor = markAddy),
-                Character(name = "Eddard", surname = "Stark", alive = true, age = 47, traits = listOf("D", "H", "C"), actor = seanBean),
+                Character(name = "Robert", surname = "Baratheon", alive = false, traits = listOf("A", "H", "C"), actor = markAddy.value),
+                Character(name = "Jaime", surname = "Lannister", alive = true, age = 36, traits = listOf("A", "F", "B"), actor = markAddy.value),
+                Character(name = "Eddard", surname = "Stark", alive = true, age = 47, traits = listOf("D", "H", "C"), actor = seanBean.value),
                 Character(name = "Catelyn", surname = "Stark", alive = true, age = 40, traits = listOf("D", "H", "C")),
                 Character(name = "Cersei", surname = "Lannister", alive = true, age = 36, traits = listOf("H", "E", "F")),
                 Character(name = "Daenerys", surname = "Targaryen", alive = true, age = 16, traits = listOf("D", "H", "C")),
@@ -148,7 +158,7 @@ fun findStarks() {
     println("==========================================================================================================================")
     println("Find all Starks with an explicit query on the db object")
 
-    val result = db.query {
+    val result = characters.find {
         FOR(Characters) { c ->
             FILTER(c.surname EQ "Stark")
             RETURN(c)
@@ -166,8 +176,8 @@ fun findBranStarkV1() {
     println("==========================================================================================================================")
     println("Find Bran Stark by ID with an explicit query on the db object")
 
-    val result = db.query {
-        RETURN<Character>(
+    val result = characters.find {
+        RETURN(
             DOCUMENT(bransId)
         )
     }
@@ -183,14 +193,14 @@ fun findBranStarkV2() {
     println("==========================================================================================================================")
     println("Find Bran Stark by ID using our collection class")
 
-    val result = characters.findByKey(bransId)!!
+    val result = characters.findById(bransId)!!
 
     println()
     println(printCharacter(0, result))
     println()
 }
 
-fun findThreeCharactersByIdV1() {
+fun findThreeCharactersByIds() {
 
     // to do what we want to do, we need the ID of Bran Stark
     val bransId = characters.findFirstByNameAndSurname("Bran", "Stark")!!._id
@@ -200,31 +210,10 @@ fun findThreeCharactersByIdV1() {
     println("==========================================================================================================================")
     println("Find Arya, Bran and Tyrion at once by their IDs using our collection class")
 
-    val result = characters.findByKeys(aryasId, bransId, tyrionsId)
+    val result = characters.findByIds(aryasId, bransId, tyrionsId)
 
     printQueryResult(result, ::printCharacter)
 }
-
-fun findThreeCharactersByIdV2() {
-
-    // to do what we want to do, we need the ID of Bran Stark
-    val bransId = characters.findFirstByNameAndSurname("Bran", "Stark")!!._id
-    val aryasId = characters.findFirstByNameAndSurname("Arya", "Stark")!!._id
-    val tyrionsId = characters.findFirstByNameAndSurname("Tyrion", "Lannister")!!._id
-
-    println("==========================================================================================================================")
-    println("Find Arya, Bran and Tyrion at once by their IDs using the db object")
-
-    val result = db.query {
-
-        FOR(DOCUMENT<Character>(aryasId, bransId, tyrionsId)) { c ->
-            RETURN(c)
-        }
-    }
-
-    printQueryResult(result, ::printCharacter)
-}
-
 
 fun updateNedStarksAliveness() {
 

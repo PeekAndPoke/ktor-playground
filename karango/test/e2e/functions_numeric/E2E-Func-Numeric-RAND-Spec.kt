@@ -2,7 +2,7 @@ package de.peekandpoke.karango.e2e.functions_numeric
 
 import de.peekandpoke.karango.aql.RAND
 import de.peekandpoke.karango.aql.RETURN
-import de.peekandpoke.karango.e2e.db
+import de.peekandpoke.karango.e2e.driver
 import io.kotlintest.matchers.doubles.shouldBeBetween
 import io.kotlintest.specs.StringSpec
 
@@ -13,7 +13,7 @@ class `E2E-Func-Numeric-RAND-Spec` : StringSpec({
 
         repeat(10) {
 
-            val result = db.query {
+            val result = driver.query {
                 RETURN(
                     RAND()
                 )

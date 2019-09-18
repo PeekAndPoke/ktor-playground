@@ -13,7 +13,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
     "APPEND must return the correct typeref for two int-arrays" {
 
-        val result = db.query {
+        val result = driver.query {
             RETURN(
                 APPEND(ARRAY(1.aql, 2.aql, 3.aql), ARRAY(4.aql, 5.aql, 6.aql))
             )
@@ -29,7 +29,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
     "APPEND must return the correct typeref for int-arrays and double-array" {
 
-        val result = db.query {
+        val result = driver.query {
             RETURN(
                 APPEND<Number>(ARRAY(1.aql, 2.aql, 3.aql), listOf(4.5, 5.5, 6.5).aql)
             )
@@ -45,7 +45,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
     "APPEND must return the correct typeref for incompatible arrays" {
 
-        val result: Cursor<List<Any>> = db.query {
+        val result: Cursor<List<Any>> = driver.query {
             RETURN(
                 APPEND<Any>(ARRAY(1.aql), ARRAY("a".aql))
             )
@@ -61,7 +61,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
     "APPEND must return the correct typeref for incompatible arrays, with unique parameter given" {
 
-        val result = db.query {
+        val result = driver.query {
             RETURN(
                 APPEND<Any>(ARRAY(1.aql, 1.aql), ARRAY("a".aql, "a".aql), true.aql)
             )
@@ -77,7 +77,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
     "APPEND two compatible arrays extracted from objects" {
 
-        val result = db.query {
+        val result = driver.query {
 
             val a = LET("a") {
                 listOf(
@@ -110,7 +110,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
     "APPEND two in-compatible arrays extracted from objects" {
 
-        val result = db.query {
+        val result = driver.query {
 
             val a = LET("a") {
                 listOf(
@@ -144,7 +144,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
     "APPEND two in-compatible arrays extracted from objects ... array contraction" {
 
-        val result = db.query {
+        val result = driver.query {
 
             val a = LET("a") {
                 listOf(
@@ -216,7 +216,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
         "$description - direct return" {
 
-            val result = db.query {
+            val result = driver.query {
                 @Suppress("UNCHECKED_CAST")
                 RETURN(expression) as TerminalExpr<Any>
             }
@@ -228,7 +228,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
         "$description - return from LET" {
 
-            val result = db.query {
+            val result = driver.query {
                 val l = LET("l", expression)
 
                 @Suppress("UNCHECKED_CAST")

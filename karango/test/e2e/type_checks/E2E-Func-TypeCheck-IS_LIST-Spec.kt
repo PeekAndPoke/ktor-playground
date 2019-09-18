@@ -2,7 +2,7 @@ package de.peekandpoke.karango.e2e.type_checks
 
 import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.e2e.E2ePerson
-import de.peekandpoke.karango.e2e.db
+import de.peekandpoke.karango.e2e.driver
 import de.peekandpoke.karango.e2e.withClue
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
@@ -68,7 +68,7 @@ class `E2E-Func-TypeCheck-IS_LIST-Spec` : StringSpec({
 
         "$description - direct return" {
 
-            val result = db.query {
+            val result = driver.query {
                 RETURN(expression)
             }
 
@@ -79,7 +79,7 @@ class `E2E-Func-TypeCheck-IS_LIST-Spec` : StringSpec({
 
         "$description - return from LET" {
 
-            val result = db.query {
+            val result = driver.query {
                 val l = LET("l", expression)
 
                 RETURN(l)

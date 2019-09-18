@@ -4,7 +4,7 @@ import de.peekandpoke.karango.aql.LET
 import de.peekandpoke.karango.aql.RANDOM_TOKEN
 import de.peekandpoke.karango.aql.RETURN
 import de.peekandpoke.karango.aql.aql
-import de.peekandpoke.karango.e2e.db
+import de.peekandpoke.karango.e2e.driver
 import de.peekandpoke.karango.e2e.withClue
 import io.kotlintest.matchers.string.shouldMatch
 import io.kotlintest.shouldBe
@@ -32,7 +32,7 @@ class `E2E-Func-String-RANDOM_TOKEN-Spec` : StringSpec({
         "$description - direct return" {
 
             repeat(10) {
-                val result = db.query {
+                val result = driver.query {
                     RETURN(expression)
                 }
 
@@ -47,7 +47,7 @@ class `E2E-Func-String-RANDOM_TOKEN-Spec` : StringSpec({
 
         "$description - return from LET" {
 
-            val result = db.query {
+            val result = driver.query {
                 val l = LET("l", expression)
 
                 RETURN(l)

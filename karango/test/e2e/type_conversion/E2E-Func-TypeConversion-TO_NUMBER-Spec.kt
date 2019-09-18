@@ -5,7 +5,7 @@ import de.peekandpoke.karango.aql.RETURN
 import de.peekandpoke.karango.aql.TO_NUMBER
 import de.peekandpoke.karango.aql.aql
 import de.peekandpoke.karango.e2e.E2ePerson
-import de.peekandpoke.karango.e2e.db
+import de.peekandpoke.karango.e2e.driver
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
@@ -16,7 +16,7 @@ class `E2E-Func-TypeConversion-TO_NUMBER-Spec` : StringSpec({
 
     "TO_NUMBER conversion of 'null' directly" {
 
-        val result = db.query {
+        val result = driver.query {
             RETURN(
                 TO_NUMBER(null.aql())
             )
@@ -24,7 +24,7 @@ class `E2E-Func-TypeConversion-TO_NUMBER-Spec` : StringSpec({
 
         result.toList() shouldBe listOf(0.0)
 
-        val result2 = db.query {
+        val result2 = driver.query {
             RETURN(
                 TO_NUMBER(null.aql)
             )
@@ -35,7 +35,7 @@ class `E2E-Func-TypeConversion-TO_NUMBER-Spec` : StringSpec({
 
     "TO_NUMBER conversion of 'null' from LET" {
 
-        val result = db.query {
+        val result = driver.query {
             val l = LET("l", null)
             RETURN(
                 TO_NUMBER(l)
@@ -44,7 +44,7 @@ class `E2E-Func-TypeConversion-TO_NUMBER-Spec` : StringSpec({
 
         result.toList() shouldBe listOf(0.0)
 
-        val result2 = db.query {
+        val result2 = driver.query {
             val l = LET("l", null.aql())
             RETURN(
                 TO_NUMBER(l)
@@ -53,7 +53,7 @@ class `E2E-Func-TypeConversion-TO_NUMBER-Spec` : StringSpec({
 
         result2.toList() shouldBe listOf(0.0)
 
-        val result3 = db.query {
+        val result3 = driver.query {
             val l = LET("l", null.aql)
             RETURN(
                 TO_NUMBER(l)
@@ -98,13 +98,13 @@ class `E2E-Func-TypeConversion-TO_NUMBER-Spec` : StringSpec({
 
         "$description - return directly" {
 
-            val result = db.query {
+            val result = driver.query {
                 RETURN(
                     TO_NUMBER(expression.aql())
                 )
             }
 
-            val result2 = db.query {
+            val result2 = driver.query {
                 RETURN(
                     TO_NUMBER(expression.aql)
                 )
@@ -121,7 +121,7 @@ class `E2E-Func-TypeConversion-TO_NUMBER-Spec` : StringSpec({
 
         "$description - return from LET" {
 
-            val result = db.query {
+            val result = driver.query {
                 val l = LET("l", expression)
 
                 RETURN(TO_NUMBER(l))
@@ -137,7 +137,7 @@ class `E2E-Func-TypeConversion-TO_NUMBER-Spec` : StringSpec({
 
         "$description - return from LET Expression" {
 
-            val result = db.query {
+            val result = driver.query {
                 val l = LET("l", expression.aql())
 
                 RETURN(
@@ -145,7 +145,7 @@ class `E2E-Func-TypeConversion-TO_NUMBER-Spec` : StringSpec({
                 )
             }
 
-            val result2 = db.query {
+            val result2 = driver.query {
                 val l = LET("l", expression.aql)
 
                 RETURN(
@@ -153,7 +153,7 @@ class `E2E-Func-TypeConversion-TO_NUMBER-Spec` : StringSpec({
                 )
             }
 
-            val result3 = db.query {
+            val result3 = driver.query {
                 val l = LET("l", expression.aql)
 
                 RETURN(

@@ -11,7 +11,7 @@ class `E2E-Arithmetics-Spec` : StringSpec({
 
     "Multiple arithmetic operations at once" {
 
-        val result = db.query {
+        val result = driver.query {
             val a = LET("a", 10)
             val b = LET("b", 20)
             val c = LET("c", 2)
@@ -44,7 +44,7 @@ class `E2E-Arithmetics-Spec` : StringSpec({
 
     "Adding two Integer expressions" {
 
-        val result = db.query {
+        val result = driver.query {
             val a = LET("a", 10)
             val b = LET("b", 20)
             RETURN(a + b)
@@ -73,7 +73,7 @@ class `E2E-Arithmetics-Spec` : StringSpec({
 
     "Adding an Integer expression with a scalar" {
 
-        val result = db.query {
+        val result = driver.query {
             val a = LET("a", 10)
             RETURN(a + 1.23)
         }
@@ -100,7 +100,7 @@ class `E2E-Arithmetics-Spec` : StringSpec({
 
     "Adding a scalar with an Integer expression" {
 
-        val result = db.query {
+        val result = driver.query {
             val a = LET("a", 10)
             RETURN(1.23 + a)
         }
@@ -127,7 +127,7 @@ class `E2E-Arithmetics-Spec` : StringSpec({
 
     "Subtracting two Integers expressions" {
 
-        val result = db.query {
+        val result = driver.query {
             val a = LET("a", 10)
             val b = LET("b", 20)
             RETURN(a - b)
@@ -156,7 +156,7 @@ class `E2E-Arithmetics-Spec` : StringSpec({
 
     "Subtracting an Integer expression with a scalar" {
 
-        val result = db.query {
+        val result = driver.query {
             val a = LET("a", 10)
             RETURN(a - 1.23)
         }
@@ -183,7 +183,7 @@ class `E2E-Arithmetics-Spec` : StringSpec({
 
     "Subtracting a scalar with an Integer expression" {
 
-        val result = db.query {
+        val result = driver.query {
             val a = LET("a", 10)
             RETURN(1.23 - a)
         }
@@ -210,7 +210,7 @@ class `E2E-Arithmetics-Spec` : StringSpec({
 
     "Multiplying two Integer expressions" {
 
-        val result = db.query {
+        val result = driver.query {
             val a = LET("a", 10)
             val b = LET("b", 20)
             RETURN(a * b)
@@ -239,7 +239,7 @@ class `E2E-Arithmetics-Spec` : StringSpec({
 
     "Multiplying an Integer expression with a scalar" {
 
-        val result = db.query {
+        val result = driver.query {
             val a = LET("a", 10)
             RETURN(a * 1.23)
         }
@@ -266,7 +266,7 @@ class `E2E-Arithmetics-Spec` : StringSpec({
 
     "Multiplying a scalar with an Integer expression" {
 
-        val result = db.query {
+        val result = driver.query {
             val a = LET("a", 10)
             RETURN(1.23 * a)
         }
@@ -293,7 +293,7 @@ class `E2E-Arithmetics-Spec` : StringSpec({
 
     "Dividing two Integer expressions" {
 
-        val result = db.query {
+        val result = driver.query {
             val a = LET("a", 10)
             val b = LET("b", 20)
             RETURN(a / b)
@@ -322,7 +322,7 @@ class `E2E-Arithmetics-Spec` : StringSpec({
 
     "Dividing an Integer expression with a scalar" {
 
-        val result = db.query {
+        val result = driver.query {
             val a = LET("a", 10)
             RETURN(a / 2.5)
         }
@@ -349,7 +349,7 @@ class `E2E-Arithmetics-Spec` : StringSpec({
 
     "Dividing a scalar with an Integer expression" {
 
-        val result = db.query {
+        val result = driver.query {
             val a = LET("a", 10)
             RETURN(33 / a)
         }
@@ -376,7 +376,7 @@ class `E2E-Arithmetics-Spec` : StringSpec({
 
     "Division remainder of two Integer expressions" {
 
-        val result = db.query {
+        val result = driver.query {
             val a = LET("a", 10)
             val b = LET("b", 20)
             RETURN(a % b)
@@ -405,7 +405,7 @@ class `E2E-Arithmetics-Spec` : StringSpec({
 
     "Division remainder of an Integer expression and a scalar" {
 
-        val result = db.query {
+        val result = driver.query {
             val a = LET("a", 10)
             RETURN(a % 3)
         }
@@ -432,7 +432,7 @@ class `E2E-Arithmetics-Spec` : StringSpec({
 
     "Division remainder of a scalar and an Integer expression" {
 
-        val result = db.query {
+        val result = driver.query {
             val a = LET("a", 10)
             RETURN(33 % a)
         }

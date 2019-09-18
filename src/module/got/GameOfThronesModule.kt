@@ -113,7 +113,7 @@ class GameOfThronesModule(app: Application) : Module(app) {
 
             getOrPost<GetCharacter> { data ->
 
-                val form = CharacterForm(data.character.value.mutator())
+                val form = CharacterForm(data.character._id, data.character.value.mutator())
 
                 if (form.submit(call)) {
 

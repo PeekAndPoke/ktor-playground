@@ -1,25 +1,24 @@
 package de.peekandpoke.module.cms
 
-import de.peekandpoke.karango.Cursor
-import de.peekandpoke.karango.Db
-import de.peekandpoke.karango.DbEntityCollection
-import de.peekandpoke.karango.EntityCollection
+import de.peekandpoke.karango.*
 import de.peekandpoke.karango.aql.ASC
 import de.peekandpoke.karango.aql.EQ
 import de.peekandpoke.karango.aql.FOR
 import de.peekandpoke.karango.aql.RETURN
+import de.peekandpoke.ultra.vault.Database
 import de.peekandpoke.ultra.vault.Stored
+import de.peekandpoke.ultra.vault.Vault
 import de.peekandpoke.ultra.vault.type
 
-fun Db.Builder.registerCmsCollections() {
-    addEntityCollection { db -> CmsPagesCollection(db) }
+fun Vault.Builder.registerCmsCollections() {
+    add { CmsPagesRepository(it.get(karangoDefaultDriver)) }
 }
 
-internal val Db.cmsPages get() = getEntityCollection<CmsPagesCollection>()
+internal val Database.cmsPages get() = getRepository<CmsPagesRepository>()
 
 val CmsPages = EntityCollection<CmsPage>("cms_pages", type())
 
-class CmsPagesCollection(db: Db) : DbEntityCollection<CmsPage>(db, CmsPages) {
+class CmsPagesRepository(driver: KarangoDriver) : EntityRepository<CmsPage>(driver, CmsPages) {
 
     fun findAllSorted(): Cursor<Stored<CmsPage>> = find {
 

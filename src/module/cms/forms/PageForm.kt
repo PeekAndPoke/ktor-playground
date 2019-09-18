@@ -7,7 +7,7 @@ import io.ultra.ktor_tools.formidable.MutatorForm
 import io.ultra.ktor_tools.formidable.acceptsNonBlank
 import io.ultra.ktor_tools.formidable.field
 
-class PageForm(target: CmsPageMutator, parent: Form? = null) : MutatorForm<CmsPage>(target, "page[${target._id}]", parent) {
+class PageForm(id: String, target: CmsPageMutator, parent: Form? = null) : MutatorForm<CmsPage>(target, "page[${id}]", parent) {
 
     val name = field(target::name).acceptsNonBlank()
 

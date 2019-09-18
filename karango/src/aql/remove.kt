@@ -2,19 +2,20 @@
 
 package de.peekandpoke.karango.aql
 
-import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.ICollection
+import de.peekandpoke.ultra.vault.Stored
 
 @Suppress("unused")
 @KarangoTerminalFuncMarker
-fun StatementBuilder.REMOVE(what: String) = REMOVE(what.aql)
+fun REMOVE(what: String) = REMOVE(what.aql)
 
 @Suppress("unused")
 @KarangoTerminalFuncMarker
-fun StatementBuilder.REMOVE(what: Expression<String>) = RemovePreStage(what)
+fun REMOVE(what: Expression<String>) = RemovePreStage(what)
 
+@Suppress("unused")
 @KarangoTerminalFuncMarker
-fun <T : Entity> REMOVE(entity: T) = RemovePreStage(entity._id?.ensureKey.aql)
+fun <T> REMOVE(entity: Stored<T>) = RemovePreStage(entity._id.ensureKey.aql)
 
 @KarangoDslMarker
 class RemovePreStage internal constructor(private val what: Expression<*>) {

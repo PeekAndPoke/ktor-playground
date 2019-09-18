@@ -3,8 +3,8 @@ package de.peekandpoke.karango.e2e.crud
 import de.peekandpoke.karango.aql.FOR
 import de.peekandpoke.karango.aql.INSERT
 import de.peekandpoke.karango.aql.LET
+import de.peekandpoke.karango.e2e.database
 import de.peekandpoke.karango.testdomain.TestPersons
-import de.peekandpoke.karango.testdomain.database
 import de.peekandpoke.karango.testdomain.testPersons
 import io.kotlintest.assertSoftly
 import io.kotlintest.shouldBe
@@ -34,13 +34,13 @@ class `E2E-Crud-Insert-Spec` : StringSpec({
             // check that things where saved correctly
             jonSaved._id shouldNotBe null
             jonSaved._key shouldNotBe null
-            jonSaved.name shouldBe JonBonJovi.name
-            jonSaved.details shouldBe JonBonJovi.details
+            jonSaved.value.name shouldBe JonBonJovi.name
+            jonSaved.value.details shouldBe JonBonJovi.details
 
             edgarSaved._id shouldNotBe null
             edgarSaved._key shouldNotBe null
-            edgarSaved.name shouldBe EdgarAllanPoe.name
-            edgarSaved.details shouldBe EdgarAllanPoe.details
+            edgarSaved.value.name shouldBe EdgarAllanPoe.name
+            edgarSaved.value.details shouldBe EdgarAllanPoe.details
 
             // check that things where reloaded correctly
             reloaded.size shouldBe 2
@@ -65,7 +65,7 @@ class `E2E-Crud-Insert-Spec` : StringSpec({
         }
 
         // insert data
-        val (jonSaved, edgarSaved) = coll.queryList {
+        val (jonSaved, edgarSaved) = coll.findList {
             val docs = LET("docs", listOf(JonBonJovi, EdgarAllanPoe))
 
             FOR(docs) { doc ->
@@ -82,13 +82,13 @@ class `E2E-Crud-Insert-Spec` : StringSpec({
             // check that things where saved correctly
             jonSaved._id shouldNotBe null
             jonSaved._key shouldNotBe null
-            jonSaved.name shouldBe JonBonJovi.name
-            jonSaved.details shouldBe JonBonJovi.details
+            jonSaved.value.name shouldBe JonBonJovi.name
+            jonSaved.value.details shouldBe JonBonJovi.details
 
             edgarSaved._id shouldNotBe null
             edgarSaved._key shouldNotBe null
-            edgarSaved.name shouldBe EdgarAllanPoe.name
-            edgarSaved.details shouldBe EdgarAllanPoe.details
+            edgarSaved.value.name shouldBe EdgarAllanPoe.name
+            edgarSaved.value.details shouldBe EdgarAllanPoe.details
 
             // check that things where reloaded correctly
             reloaded.size shouldBe 2

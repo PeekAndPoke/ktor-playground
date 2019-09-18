@@ -5,19 +5,20 @@ import de.peekandpoke.karango.aql.Direction
 import de.peekandpoke.karango.aql.EQ
 import de.peekandpoke.karango.aql.FOR
 import de.peekandpoke.karango.aql.RETURN
+import de.peekandpoke.ultra.vault.Database
+import de.peekandpoke.ultra.vault.Vault
 import de.peekandpoke.ultra.vault.type
 
-fun Db.Builder.registerGotCollections() {
-    addEntityCollection { db -> CharactersCollection(db) }
-    addEntityCollection { db -> ActorsCollection(db) }
+fun Vault.Builder.registerGotCollections() {
+    add { CharactersRepository(it.get(karangoDefaultDriver)) }
+    add { ActorsRepository(it.get(karangoDefaultDriver)) }
 }
 
-
-internal val Db.characters get() = getEntityCollection<CharactersCollection>()
+internal val Database.characters get() = getRepository<CharactersRepository>()
 
 val Characters = EntityCollection<Character>("got_characters", type())
 
-class CharactersCollection(db: Db) : DbEntityCollection<Character>(db, Characters) {
+class CharactersRepository(driver: KarangoDriver) : EntityRepository<Character>(driver, Characters) {
 
     private val findAllWithActorQuery = FOR(coll) { character ->
         FOR(Actors) { actor ->
@@ -45,13 +46,11 @@ class CharactersCollection(db: Db) : DbEntityCollection<Character>(db, Character
 
     fun findAllWithActor() = find { findAllWithActorQuery }
 
-    fun explainFindAllWithActor() = explain { findAllWithActorQuery }
+//    fun explainFindAllWithActor() = explain { findAllWithActorQuery }
 }
 
-internal val Db.actors get() = getEntityCollection<ActorsCollection>()
+internal val Database.actors get() = getRepository<ActorsRepository>()
 
 val Actors = EntityCollection<Actor>("got_actors", type())
 
-class ActorsCollection(db: Db) : DbEntityCollection<Actor>(db, Actors)
-
-class ActorsRepository(driver: KarangoDriver): EntityRepository<Actor>(driver, Actors)
+class ActorsRepository(driver: KarangoDriver) : EntityRepository<Actor>(driver, Actors)

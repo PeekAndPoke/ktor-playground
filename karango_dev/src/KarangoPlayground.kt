@@ -1,18 +1,29 @@
 package de.peekandpoke.karango_dev
 
-import de.peekandpoke.karango.Db
+import com.arangodb.ArangoDB
+import com.arangodb.ArangoDatabase
+import de.peekandpoke.karango.KarangoDriver
 import de.peekandpoke.karango.aql.*
+import de.peekandpoke.karango.karangoDefaultDriver
 import de.peekandpoke.karango_dev.domain.*
 import de.peekandpoke.ultra.mutator.Frozen
 import de.peekandpoke.ultra.mutator.Mutable
+import de.peekandpoke.ultra.vault.Vault
 import kotlin.system.measureTimeMillis
 
 
-private val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev") {
-    addEntityCollection { db -> PersonsCollection(db) }
+private val arangoDb: ArangoDB = ArangoDB.Builder().user("root").password("").host("localhost", 8529).build()
+private val arangoDatabase: ArangoDatabase = arangoDb.db("kotlindev")
+
+private val databaseBlueprint: Vault.Blueprint = Vault.create {
+    add { PersonsRepository(it.get(karangoDefaultDriver)) }
 }
 
-private val persons = db.getEntityCollection<PersonsCollection>()
+private val db = databaseBlueprint.with(
+    karangoDefaultDriver to KarangoDriver(arangoDatabase)
+)
+
+private val persons = db.getRepository<PersonsRepository>()
 
 @Mutable
 data class FrozenAddress(val city: String, val zip: String)
@@ -160,7 +171,7 @@ fun y() {
 
 //    val addresses = db.collection(Address.)
 
-    exampleReturningFromScalarLet(db)
+    exampleReturningFromScalarLet()
 //    exampleReturningFromIterableLet(db)
 
     persons.removeAll()
@@ -174,7 +185,7 @@ fun y() {
     for (y in 1..10) {
         val timeAll = measureTimeMillis {
 
-            val result = db.query {
+            val result = persons.query {
 
                 val str = LET("str", "Karsten")
 
@@ -219,12 +230,12 @@ fun y() {
     println(persons.count())
 }
 
-fun exampleReturningFromScalarLet(db: Db) {
+fun exampleReturningFromScalarLet() {
 
     println("/////////////////////////////////////////////////////////////////////////////////////////////////////////")
     println("//  EXAMPLE: Returning a scalar value that was sent in via LET")
 
-    val result = db.query {
+    val result = persons.query {
         val let = LET("let", "TEST")
 
         RETURN(let)
@@ -236,12 +247,12 @@ fun exampleReturningFromScalarLet(db: Db) {
     println()
 }
 
-fun exampleReturningFromIterableLet(db: Db) {
+fun exampleReturningFromIterableLet() {
 
     println("/////////////////////////////////////////////////////////////////////////////////////////////////////////")
     println("//  EXAMPLE: Returning iterable values that where sent in via LET")
 
-    val result = db.query {
+    val result = persons.query {
         val let = LET("let") {
             listOf(
                 Author("first", "last"),
@@ -289,7 +300,7 @@ fun exampleInsertFromLet() {
     }.flatten()
 
 
-    val result = db.query {
+    val result = persons.query {
         val objs = LET("objs") { personInserts }
 
         FOR(objs) { o ->

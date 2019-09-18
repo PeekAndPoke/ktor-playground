@@ -1,14 +1,30 @@
 package de.peekandpoke.karango.e2e
 
-import de.peekandpoke.karango.Db
+import com.arangodb.ArangoDB
+import com.arangodb.ArangoDatabase
 import de.peekandpoke.karango.Karango
+import de.peekandpoke.karango.KarangoDriver
 import de.peekandpoke.karango.aql.Expression
 import de.peekandpoke.karango.aql.print
+import de.peekandpoke.karango.karangoDefaultDriver
+import de.peekandpoke.karango.testdomain.TestPersonsRepository
 import de.peekandpoke.ultra.common.surround
+import de.peekandpoke.ultra.vault.Vault
 import io.kotlintest.TestContext
 import io.kotlintest.matchers.withClue
 
-val db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "_system")
+private val arangoDb: ArangoDB = ArangoDB.Builder().user("root").password("").host("localhost", 8529).build()
+private val arangoDatabase: ArangoDatabase = arangoDb.db("_system")
+
+val driver = KarangoDriver(arangoDatabase)
+
+private val databaseBlueprint: Vault.Blueprint = Vault.create {
+    add { TestPersonsRepository(it.get(karangoDefaultDriver)) }
+}
+
+val database = databaseBlueprint.with(
+    karangoDefaultDriver to KarangoDriver(arangoDatabase)
+)
 
 @Karango
 data class E2ePerson(val name: String, val age: Int)

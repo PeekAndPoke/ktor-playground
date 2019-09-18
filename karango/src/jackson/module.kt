@@ -10,7 +10,7 @@ class KarangoJacksonModule : SimpleModule() {
 
     init {
         // SavedEntity
-        addDeserializer(Stored::class.java, SavedEntityDeserializer())
+        addDeserializer(Stored::class.java, StoredDeserializer())
 
         // LocalDateTime
         addSerializer(LocalDateTime::class.java, LocalDateTimeSerializer())

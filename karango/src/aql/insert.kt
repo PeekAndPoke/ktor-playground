@@ -2,7 +2,6 @@
 
 package de.peekandpoke.karango.aql
 
-import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.ICollection
 import de.peekandpoke.ultra.vault.TypeRef
 
@@ -11,7 +10,7 @@ import de.peekandpoke.ultra.vault.TypeRef
 fun <T> StatementBuilder.INSERT(what: Expression<T>) = InsertPreStage(what)
 
 @KarangoTerminalFuncMarker
-fun <T: Entity> INSERT(entity: T) = InsertPreStage(Value(TypeRef(entity::class.java), entity))
+fun <T : Any> INSERT(entity: T) = InsertPreStage(Value(TypeRef(entity::class.java), entity))
 
 @KarangoDslMarker
 class InsertPreStage<T> internal constructor(private val what: Expression<T>) {

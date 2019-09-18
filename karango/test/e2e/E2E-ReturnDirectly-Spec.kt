@@ -15,7 +15,7 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
     "Directly returning a String" {
 
-        val result = db.query {
+        val result = driver.query {
             RETURN(
                 "string".aql("ret")
             )
@@ -52,7 +52,7 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
     "Directly returning a List<String>" {
 
-        val result = db.query {
+        val result = driver.query {
             RETURN(
                 listOf("s1", "s2").aql()
             )
@@ -89,7 +89,7 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
     "Directly returning a List<Integer> created with ARRAY()" {
 
-        val result = db.query {
+        val result = driver.query {
             RETURN(
                 ARRAY(1.aql, 2.aql)
             )
@@ -124,7 +124,7 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
     "Directly returning a Map<String, Integer> created with OBJECT()" {
 
-        val result = db.query {
+        val result = driver.query {
             RETURN(
                 OBJECT("a".aql to 1.aql, "b".aql to 2.aql)
             )
@@ -159,7 +159,7 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
     "Directly returning a Double" {
 
-        val result = db.query {
+        val result = driver.query {
             RETURN(
                 12.34.aql()
             )
@@ -196,7 +196,7 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
     "Directly returning an Integer" {
 
-        val result = db.query {
+        val result = driver.query {
             RETURN(
                 1234.aql()
             )
@@ -233,7 +233,7 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
     "Directly returning a Long" {
 
-        val result = db.query {
+        val result = driver.query {
             RETURN(
                 1234L.aql()
             )
@@ -270,7 +270,7 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
     "Directly returning a List<Double>" {
 
-        val result = db.query {
+        val result = driver.query {
             RETURN(
                 listOf(1.0, 2.5).aql()
             )
@@ -307,7 +307,7 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
     "Directly returning a List of mixed numeric values" {
 
-        val result = db.query {
+        val result = driver.query {
             RETURN(
                 listOf(0L, 1f, 2.5).aql()
             )
@@ -344,7 +344,7 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
     "Directly returning a List of mixed numeric values declared as List<Number>" {
 
-        val result = db.query {
+        val result = driver.query {
             RETURN(
                 listOf<Number>(0L, 1f, 2.5).aql()
             )
@@ -383,7 +383,7 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
 
         val data = E2ePerson("Eddard", 42)
 
-        val result = db.query {
+        val result = driver.query {
             RETURN(
                 data.aql()
             )
@@ -425,7 +425,7 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
             E2ePerson("John", 22)
         )
 
-        val result = db.query {
+        val result = driver.query {
             RETURN(
                 data.aql()
             )
@@ -467,7 +467,7 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
             "b" to E2ePerson("John", 22)
         )
 
-        val result = db.query {
+        val result = driver.query {
             RETURN(
                 data.aql()
             )
@@ -511,7 +511,7 @@ class `E2E-ReturnDirectly-Spec` : StringSpec({
             "b" to listOf()
         )
 
-        val result = db.query {
+        val result = driver.query {
             RETURN(
                 data.aql()
             )

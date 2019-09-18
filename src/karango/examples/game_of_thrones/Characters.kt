@@ -1,6 +1,5 @@
 package de.peekandpoke.karango.examples.game_of_thrones
 
-import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.Karango
 import de.peekandpoke.karango.Ref
 import de.peekandpoke.ultra.mutator.Mutable
@@ -15,13 +14,8 @@ data class Character(
     val age: Int? = null,
     val traits: List<String>,
     @Ref val actor: Actor? = null,
-    val house: House? = null,
-    override val _id: String? = null,
-    override val _key: String? = null
-) : Entity {
-
-//    fun fullName() = listOfNotNull(name, surname).joinToString(" ")
-
+    val house: House? = null
+) {
     val fullName by lazy { listOfNotNull(name, surname).joinToString(" ") }
 }
 

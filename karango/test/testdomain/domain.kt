@@ -1,32 +1,32 @@
 package de.peekandpoke.karango.testdomain
 
-import de.peekandpoke.karango.*
+import de.peekandpoke.karango.EntityCollection
+import de.peekandpoke.karango.EntityRepository
+import de.peekandpoke.karango.Karango
+import de.peekandpoke.karango.KarangoDriver
+import de.peekandpoke.ultra.vault.Database
 import de.peekandpoke.ultra.vault.type
 
 @Karango
 data class TestName(
-    val name: String,
-    override val _id: String = "",
-    override val _key: String = ""
-) : Entity
+    val name: String
+)
 
-val TestNames: IEntityCollection<TestName> =
-    object : EntityCollection<TestName>("test-names", type()) {}
+val TestNames = EntityCollection<TestName>("test-names", type())
 
 @Karango
 data class TestPerson(
     val name: String,
     val details: TestPersonDetails = TestPersonDetails(""),
     val addresses: List<TestAddress>,
-    val books: List<TestBook> = listOf(),
-    override val _id: String? = null,
-    override val _key: String? = null
-) : Entity
+    val books: List<TestBook> = listOf()
+)
 
-val TestPersons: IEntityCollection<TestPerson> =
-    object : EntityCollection<TestPerson>("test-persons", type()) {}
+val TestPersons = EntityCollection<TestPerson>("test-persons", type())
 
-class TestPersonsCollection(db: Db) : DbEntityCollection<TestPerson>(db, TestPersons)
+class TestPersonsRepository(driver: KarangoDriver) : EntityRepository<TestPerson>(driver, TestPersons)
+
+val Database.testPersons get() = getRepository<TestPersonsRepository>()
 
 data class TestPersonDetails(
     val middleName: String

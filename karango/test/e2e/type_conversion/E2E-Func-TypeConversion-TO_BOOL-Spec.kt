@@ -5,7 +5,7 @@ import de.peekandpoke.karango.aql.RETURN
 import de.peekandpoke.karango.aql.TO_BOOL
 import de.peekandpoke.karango.aql.aql
 import de.peekandpoke.karango.e2e.E2ePerson
-import de.peekandpoke.karango.e2e.db
+import de.peekandpoke.karango.e2e.driver
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
@@ -16,7 +16,7 @@ class `E2E-Func-TypeConversion-TO_BOOL-Spec` : StringSpec({
 
     "TO_BOOL conversion of 'null' directly" {
 
-        val result = db.query {
+        val result = driver.query {
             RETURN(
                 TO_BOOL(null.aql())
             )
@@ -24,7 +24,7 @@ class `E2E-Func-TypeConversion-TO_BOOL-Spec` : StringSpec({
 
         result.toList() shouldBe listOf(false)
 
-        val result2 = db.query {
+        val result2 = driver.query {
             RETURN(
                 TO_BOOL(null.aql)
             )
@@ -35,7 +35,7 @@ class `E2E-Func-TypeConversion-TO_BOOL-Spec` : StringSpec({
 
     "TO_BOOL conversion of 'null' from LET" {
 
-        val result = db.query {
+        val result = driver.query {
             val l = LET("l", null)
 
             RETURN(
@@ -45,7 +45,7 @@ class `E2E-Func-TypeConversion-TO_BOOL-Spec` : StringSpec({
 
         result.toList() shouldBe listOf(false)
 
-        val result2 = db.query {
+        val result2 = driver.query {
             val l = LET("l", null.aql())
 
             RETURN(
@@ -55,7 +55,7 @@ class `E2E-Func-TypeConversion-TO_BOOL-Spec` : StringSpec({
 
         result2.toList() shouldBe listOf(false)
 
-        val result3 = db.query {
+        val result3 = driver.query {
             val l = LET("l", null.aql)
 
             RETURN(
@@ -98,13 +98,13 @@ class `E2E-Func-TypeConversion-TO_BOOL-Spec` : StringSpec({
 
         "$description - return directly" {
 
-            val result = db.query {
+            val result = driver.query {
                 RETURN(
                     TO_BOOL(expression.aql())
                 )
             }
 
-            val result2 = db.query {
+            val result2 = driver.query {
                 RETURN(
                     TO_BOOL(expression.aql)
                 )
@@ -121,7 +121,7 @@ class `E2E-Func-TypeConversion-TO_BOOL-Spec` : StringSpec({
 
         "$description - return from LET" {
 
-            val result = db.query {
+            val result = driver.query {
                 val l = LET("l", expression)
 
                 RETURN(TO_BOOL(l))
@@ -137,7 +137,7 @@ class `E2E-Func-TypeConversion-TO_BOOL-Spec` : StringSpec({
 
         "$description - return from LET Expression" {
 
-            val result = db.query {
+            val result = driver.query {
                 val l = LET("l", expression.aql())
 
                 RETURN(
@@ -145,7 +145,7 @@ class `E2E-Func-TypeConversion-TO_BOOL-Spec` : StringSpec({
                 )
             }
 
-            val result2 = db.query {
+            val result2 = driver.query {
                 val l = LET("l", expression.aql)
 
                 RETURN(
@@ -153,7 +153,7 @@ class `E2E-Func-TypeConversion-TO_BOOL-Spec` : StringSpec({
                 )
             }
 
-            val result3 = db.query {
+            val result3 = driver.query {
                 val l = LET("l", expression.aql)
 
                 RETURN(

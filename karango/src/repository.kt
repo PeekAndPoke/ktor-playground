@@ -3,7 +3,9 @@ package de.peekandpoke.karango
 import com.arangodb.ArangoCursor
 import com.arangodb.ArangoDBException
 import com.arangodb.ArangoDatabase
+import com.arangodb.entity.CollectionType
 import com.arangodb.model.AqlQueryOptions
+import com.arangodb.model.CollectionCreateOptions
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.InjectableValues
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -29,9 +31,11 @@ class KarangoDriver(
      * The object mapper used for serializing queries
      */
     private val serializer = ObjectMapper().apply {
+        // default modules
         registerModule(KotlinModule())
         registerModule(Jdk8Module())
-        // custom
+
+        // custom modules
         registerModule(KarangoJacksonModule())
 
         // serialization features
@@ -40,6 +44,23 @@ class KarangoDriver(
         // deserialization features
         configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
+
+    fun ensureEntityCollection(
+        name: String,
+        options: CollectionCreateOptions = CollectionCreateOptions().type(CollectionType.DOCUMENT)
+    ) {
+
+        val arangoColl = arangoDb.collection(name)
+
+        if (!arangoColl.exists()) {
+            arangoDb.createCollection(name, options)
+        }
+    }
+
+    /**
+     * Performs a query and returns a cursor of results
+     */
+    fun <X> query(builder: AqlBuilder.() -> TerminalExpr<X>): Cursor<X> = query(de.peekandpoke.karango.query(builder))
 
     /**
      * Performs the query
@@ -80,10 +101,71 @@ class KarangoDriver(
     }
 }
 
-abstract class EntityRepository<T>(
+abstract class EntityRepository<T : Any>(
     private val driver: KarangoDriver,
-    private val coll: IEntityCollection<T>
-) : Repository {
+    protected val coll: IEntityCollection<T>
+) : Repository<T> {
+
+    override val storedType by lazy { coll.getType().down<T>() }
+
+    override fun ensure() {
+        driver.ensureEntityCollection(coll.getAlias())
+    }
+
+    /**
+     * Get the number of entries in the collection
+     */
+    fun count(): Long = queryFirst { RETURN(COUNT(coll)) }!!.toLong()
+
+    /**
+     * Save or update the given object.
+     *
+     * When the _id of the object is null an INSERT is tried.
+     * Otherwise an UPSERT is tried.
+     *
+     * Returns the saved version of the input
+     */
+    fun save(obj: T): Stored<T> = onBeforeSave(obj).let {
+        findFirst {
+            INSERT(it) INTO coll
+        }!!
+    }
+
+    /**
+     * TODO: implement me with UPSERT
+     */
+    private fun onBeforeSave(obj: T) = obj
+
+    fun save(stored: Stored<T>): Stored<T> {
+        TODO("implement me with UPSERT")
+    }
+
+    /**
+     * Removes the given entity
+     */
+    fun remove(entity: Stored<T>): RemoveResult = remove(entity._id)
+
+    /**
+     * Remove the document with the given id or key
+     */
+    fun remove(idOrKey: String): RemoveResult = try {
+        RemoveResult.from(
+            query { REMOVE(idOrKey.ensureKey) IN coll }
+        )
+    } catch (e: KarangoQueryException) {
+        RemoveResult.from(e)
+    }
+
+    /**
+     * Remove all entries from the collection
+     */
+    fun removeAll() = RemoveResult.from(
+        query {
+            FOR(coll) { c ->
+                REMOVE(c._key) IN coll
+            }
+        }
+    )
 
     /**
      * Finds all return them as [Stored] entities
@@ -102,29 +184,32 @@ abstract class EntityRepository<T>(
     }
 
     /**
+     * Returns all results as [Stored] entities
+     */
+    fun findList(builder: AqlBuilder.() -> TerminalExpr<T>): List<Stored<T>> = find(builder).toList()
+
+    /**
      * Returns the first result as [Stored] entity
      */
     fun findFirst(builder: AqlBuilder.() -> TerminalExpr<T>): Stored<T>? = queryFirst { builder().cast() }
 
     /**
-     * Find multiple by key and returns them as [Stored] entities
+     * Find one by id or key and return it as [Stored] entity
      */
-    fun findByKeys(vararg keys: String): Cursor<Stored<T>> = query {
-
-        val params = keys.filter { it.startsWith(coll.getAlias()) }
-
-        FOR(DOCUMENT(coll, params.map { it.ensureKey })) { d ->
-            RETURN(d)
-        }.cast()
+    override fun findById(id: String) = queryFirst {
+        RETURN(
+            DOCUMENT(coll, id.ensureKey)
+        ).cast()
     }
 
     /**
-     * Find one by key and return it as [Stored] entity
+     * Find multiple by id or key and returns them as [Stored] entities
      */
-    fun findByKey(key: String): Stored<T>? = queryFirst {
-        RETURN(
-            DOCUMENT(coll, key.ensureKey)
-        ).cast()
+    fun findByIds(vararg ids: String): Cursor<Stored<T>> = query {
+
+        FOR(DOCUMENT(coll, ids.map { it.ensureKey })) { d ->
+            RETURN(d)
+        }.cast()
     }
 
     /**
@@ -135,7 +220,7 @@ abstract class EntityRepository<T>(
     /**
      * Performs a query and returns a cursor of results
      */
-    fun <X> query(builder: AqlBuilder.() -> TerminalExpr<X>): Cursor<X> = query(de.peekandpoke.karango.query(builder))
+    fun <X> query(builder: AqlBuilder.() -> TerminalExpr<X>): Cursor<X> = driver.query(builder)
 
     /**
      * Performs a query and return a list of results
@@ -145,7 +230,7 @@ abstract class EntityRepository<T>(
     /**
      * Performs a query and returns the first result or null
      */
-    fun <X> queryFirst(builder: AqlBuilder.() -> TerminalExpr<X>): X? = queryFirst(builder)
+    fun <X> queryFirst(builder: AqlBuilder.() -> TerminalExpr<X>): X? = query(builder).firstOrNull()
 
     /**
      * Cast a terminal expr to a [Stored] entity.

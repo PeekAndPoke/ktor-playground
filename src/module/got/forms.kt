@@ -7,13 +7,13 @@ import de.peekandpoke.karango.examples.game_of_thrones.CharacterMutator
 import io.ultra.ktor_tools.formidable.*
 
 
-class ActorForm(target: ActorMutator, parent: Form? = null) : MutatorForm<Actor>(target, "actor[${target._id}]", parent) {
+class ActorForm(id: String, target: ActorMutator, parent: Form? = null) : MutatorForm<Actor>(target, "actor[${id}]", parent) {
 
     val name = field(target::name)
     val age = field(target::age).resultingInRange(0 .. 200)
 }
 
-class CharacterForm(target: CharacterMutator, parent: Form? = null) : MutatorForm<Character>(target, "character[${target._id}]", parent) {
+class CharacterForm(id: String, target: CharacterMutator, parent: Form? = null) : MutatorForm<Character>(target, "character[${id}]", parent) {
 
     val name = field(target::name)
     val surname = field(target::surname)
@@ -21,5 +21,6 @@ class CharacterForm(target: CharacterMutator, parent: Form? = null) : MutatorFor
 
     val alive = field(target::alive).withOptions(true to "alive", false to "dead")
 
-    val actor = target.actor?.let { add(ActorForm(it, this)) }
+    // TODO: fix me (the "unknown")
+    val actor = target.actor?.let { add(ActorForm("unknown", it, this)) }
 }

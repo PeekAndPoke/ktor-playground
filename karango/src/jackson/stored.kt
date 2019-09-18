@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.deser.ContextualDeserializer
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import de.peekandpoke.ultra.vault.Stored
 
-class SavedEntityDeserializer(
+class StoredDeserializer(
     private val type: JavaType? = null,
     private val mapper: ObjectMapper? = null
 ) : StdDeserializer<Stored<*>>(Stored::class.java), ContextualDeserializer {
@@ -19,7 +19,7 @@ class SavedEntityDeserializer(
 //        println(ctxt.contextualType)
 //        println(property?.member?.type)
 
-        return SavedEntityDeserializer(
+        return StoredDeserializer(
             ctxt.contextualType,
             ctxt.findInjectableValue("mapper", null, null) as ObjectMapper
         )

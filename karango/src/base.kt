@@ -2,10 +2,7 @@
 
 package de.peekandpoke.karango
 
-import de.peekandpoke.karango.aql.Aliased
-import de.peekandpoke.karango.aql.AqlPrinter
-import de.peekandpoke.karango.aql.Expression
-import de.peekandpoke.karango.aql.PropertyPath
+import de.peekandpoke.karango.aql.*
 import de.peekandpoke.ultra.vault.TypeRef
 
 interface ICollection<T> : Expression<List<T>>, Aliased
@@ -22,17 +19,12 @@ abstract class Collection<T>(private val name_: String, private val type: TypeRe
     override fun printAql(p: AqlPrinter) = p.name(name_)
 }
 
-open class EntityCollection<T>(name: String, type: TypeRef<List<T>>) :
-    Collection<T>(name, type), IEntityCollection<T>
+class EntityCollection<T>(name: String, type: TypeRef<List<T>>) : Collection<T>(name, type), IEntityCollection<T>
 
-abstract class EdgeCollection<T>(name: String, type: TypeRef<List<T>>) :
-    Collection<T>(name, type), IEdgeCollection<T>
+class EdgeCollection<T>(name: String, type: TypeRef<List<T>>) : Collection<T>(name, type), IEdgeCollection<T>
 
-inline val <T: Entity> Expression<T>._id
-    inline get() = PropertyPath.start(this).append<String, String>("_id")
+inline val <T> Iter<T>._id inline get() = PropertyPath.start(this).append<String, String>("_id")
 
-inline val <T: Entity> Expression<T>._key
-    inline get() = PropertyPath.start(this).append<String, String>("_key")
+inline val <T> Iter<T>._key inline get() = PropertyPath.start(this).append<String, String>("_key")
 
-inline val <T: Entity> Expression<T>._rev
-    inline get() = PropertyPath.start(this).append<String, String>("_rev")
+inline val <T> Iter<T>._rev inline get() = PropertyPath.start(this).append<String, String>("_rev")

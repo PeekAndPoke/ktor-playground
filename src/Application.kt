@@ -3,12 +3,10 @@ package de.peekandpoke
 import com.arangodb.ArangoDB
 import com.arangodb.ArangoDatabase
 import com.fasterxml.jackson.databind.SerializationFeature
-import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.KarangoDriver
 import de.peekandpoke.karango.addon.TimestampedOnSaveHook
 import de.peekandpoke.karango.addon.UserRecord
 import de.peekandpoke.karango.addon.UserRecordOnSaveHook
-import de.peekandpoke.karango.examples.game_of_thrones.ActorsRepository
 import de.peekandpoke.karango.examples.game_of_thrones.registerGotCollections
 import de.peekandpoke.karango.karangoDefaultDriver
 import de.peekandpoke.karango_ktor.add
@@ -58,37 +56,21 @@ import kotlin.system.measureNanoTime
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-private val arangoDb: ArangoDB =
-    ArangoDB.Builder().user("root").password("").host("localhost", 8529).build()
+private val arangoDb: ArangoDB = ArangoDB.Builder().user("root").password("").host("localhost", 8529).build()
 
 private val arangoDatabase: ArangoDatabase = arangoDb.db("kotlindev")
 
 private val databaseBlueprint: Vault.Blueprint = Vault.create {
 
-    add { drivers -> ActorsRepository(drivers.get(karangoDefaultDriver)) }
-}
-
-private val database = databaseBlueprint.with(
-    karangoDefaultDriver to KarangoDriver(
-        arangoDb = arangoDatabase,
-        onSaveHooks = listOf(
-            TimestampedOnSaveHook()
-        )
-    )
-)
-
-val x = println(
-    database.getRepository<ActorsRepository>().findAll().toList()
-)
-
-
-private val db: Db = Db.default(user = "root", pass = "", host = "localhost", port = 8529, database = "kotlindev") {
-
-    addOnSaveHook { TimestampedOnSaveHook() }
-
-    registerCmsCollections()
     registerGotCollections()
+    registerCmsCollections()
+
 }
+
+// ensure all repositories exist
+private val database = databaseBlueprint.with(
+    karangoDefaultDriver to KarangoDriver(arangoDb = arangoDatabase)
+).apply { ensureRepositories() }
 
 val Meta = object : AppMeta() {}
 
@@ -190,7 +172,7 @@ fun Application.module(testing: Boolean = false) {
     }
 
     install(DataConversion) {
-        add(db, log)
+        add(database, log)
     }
 
     install(DefaultHeaders) {
@@ -323,18 +305,20 @@ fun Application.module(testing: Boolean = false) {
                 // The web resources
                 provide(WebResources)
                 // A customized version of the database, with a hook for UserRecords
-                provide(db.customize {
-                    it.copy(
-                        onSaveHooks = it.onSaveHooks.plus {
+                provide(databaseBlueprint.with(
+                    karangoDefaultDriver to KarangoDriver(
+                        arangoDb = arangoDatabase,
+                        onSaveHooks = listOf(
+                            TimestampedOnSaveHook(),
                             UserRecordOnSaveHook {
                                 UserRecord(
                                     call.sessions.get<UserSession>()?.userId ?: "anonymous",
                                     call.request.origin.remoteHost
                                 )
                             }
-                        }
+                        )
                     )
-                })
+                ))
             }
         }
 

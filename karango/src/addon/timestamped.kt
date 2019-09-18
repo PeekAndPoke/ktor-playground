@@ -1,6 +1,6 @@
 package de.peekandpoke.karango.addon
 
-import de.peekandpoke.karango.OnSaveHook
+import de.peekandpoke.ultra.vault.OnSaveHook
 import java.time.Instant
 
 data class Timestamps(

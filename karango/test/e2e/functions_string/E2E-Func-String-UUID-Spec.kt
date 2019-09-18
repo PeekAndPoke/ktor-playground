@@ -3,7 +3,7 @@ package de.peekandpoke.karango.e2e.functions_string
 import de.peekandpoke.karango.aql.LET
 import de.peekandpoke.karango.aql.RETURN
 import de.peekandpoke.karango.aql.UUID
-import de.peekandpoke.karango.e2e.db
+import de.peekandpoke.karango.e2e.driver
 import de.peekandpoke.karango.e2e.withClue
 import io.kotlintest.matchers.string.shouldMatch
 import io.kotlintest.specs.StringSpec
@@ -25,7 +25,7 @@ class `E2E-Func-String-UUID-Spec` : StringSpec({
         "$description - direct return" {
 
             repeat(10) {
-                val result = db.query {
+                val result = driver.query {
                     RETURN(expression)
                 }
 
@@ -37,7 +37,7 @@ class `E2E-Func-String-UUID-Spec` : StringSpec({
 
         "$description - return from LET" {
 
-            val result = db.query {
+            val result = driver.query {
                 val l = LET("l", expression)
 
                 RETURN(l)

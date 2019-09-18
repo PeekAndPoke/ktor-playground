@@ -94,13 +94,13 @@ class CmsAdminModule(app: Application) : Module(app) {
 
             getOrPost<EditPage> { data ->
 
-                val form = PageForm(data.page.value.mutator())
+                val form = PageForm(data.page._id, data.page.value.mutator())
 
                 if (form.submit(call)) {
 
                     if (form.isModified) {
                         val saved = database.cmsPages.save(form.result)
-                        logger.info("Updated page in database '${saved.name}'")
+                        logger.info("Updated page in database '${saved.value.name}'")
                         flashSession.success("Page ${form.result.name} was saved")
                     }
 
@@ -108,7 +108,7 @@ class CmsAdminModule(app: Application) : Module(app) {
                 }
 
                 respond {
-                    editPage(data.page.value, form)
+                    editPage(false, form)
                 }
             }
 
@@ -118,13 +118,13 @@ class CmsAdminModule(app: Application) : Module(app) {
 
                 val page = CmsPage.empty()
 
-                val form = PageForm(page.mutator())
+                val form = PageForm("new", page.mutator())
 
                 if (form.submit(call)) {
 
                     if (form.isModified) {
                         val saved = database.cmsPages.save(form.result)
-                        logger.info("Updated page in database '${saved.name}'")
+                        logger.info("Updated page in database '${saved.value.name}'")
                         flashSession.success("Page ${form.result.name} was created")
                     }
 
@@ -132,7 +132,7 @@ class CmsAdminModule(app: Application) : Module(app) {
                 }
 
                 respond {
-                    editPage(page, form)
+                    editPage(true, form)
                 }
 
             }

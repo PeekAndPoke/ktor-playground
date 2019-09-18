@@ -2,20 +2,20 @@ package de.peekandpoke.ultra.vault
 
 interface Vault {
 
-    class Builder() {
+    class Builder {
 
-        private val repositories: MutableMap<Class<*>, (DriverRegistry) -> Repository> = mutableMapOf()
+        private val repositories: MutableMap<Class<*>, (DriverRegistry) -> Repository<*>> = mutableMapOf()
 
         internal fun build() = Blueprint(repositories.toMap())
 
-        inline fun <reified T: Repository> add(noinline provider: (DriverRegistry) -> T) = add(T::class.java, provider)
+        inline fun <reified T : Repository<*>> add(noinline provider: (DriverRegistry) -> T) = add(T::class.java, provider)
 
-        fun <T: Repository> add(cls: Class<T>, provider: (DriverRegistry) -> T) = apply {
+        fun <T : Repository<*>> add(cls: Class<T>, provider: (DriverRegistry) -> T) = apply {
             repositories[cls] = provider
         }
     }
 
-    class Blueprint internal constructor(private val repositories: Map<Class<*>, (DriverRegistry) -> Repository>) {
+    class Blueprint internal constructor(private val repositories: Map<Class<*>, (DriverRegistry) -> Repository<*>>) {
 
         fun with(drivers: DriverRegistry) = Database(
             repositories.map { (cls, repo) -> cls to repo(drivers) }.toMap()
@@ -29,7 +29,18 @@ interface Vault {
     }
 }
 
-interface Repository
+interface Repository<T> {
+    val storedType: TypeRef<T>
+
+    /**
+     * Ensures that the repository is set up properly
+     *
+     * e.g. creating a database collection, ensuring indexes, ...
+     */
+    fun ensure()
+
+    fun findById(id: String): Stored<T>?
+}
 
 interface Driver
 
@@ -45,15 +56,22 @@ class DriverRegistry(vararg drivers: Pair<Key<Driver>, Driver>) {
     }
 }
 
-class Database(private val repositories: Map<Class<*>, Repository>) {
+class Database(private val repositories: Map<Class<*>, Repository<*>>) {
 
-    fun <T : Repository> getRepository(cls: Class<T>): T {
+    fun getRepositories() = repositories.values
+
+    fun ensureRepositories() {
+
+        repositories.values.forEach { it.ensure() }
+    }
+
+    fun <T : Repository<*>> getRepository(cls: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
         return repositories[cls] as T?
             ?: throw VaultException("No repository of class '$cls' is registered.")
     }
 
-    inline fun <reified T : Repository> getRepository() = getRepository(T::class.java)
+    inline fun <reified T : Repository<*>> getRepository() = getRepository(T::class.java)
 }
 
 

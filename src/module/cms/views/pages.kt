@@ -27,6 +27,7 @@ internal fun Template.pages(pages: List<Stored<CmsPage>>) {
         ui.celled.table Table {
             thead {
                 tr {
+                    th { +"Id" }
                     th { +"Name" }
                     th { +"Created at" }
                     th { +"Updated at" }
@@ -37,6 +38,9 @@ internal fun Template.pages(pages: List<Stored<CmsPage>>) {
             tbody {
                 pages.forEach {
                     tr {
+                        td {
+                            a(href = linkTo.editPage(it)) { +it._id }
+                        }
                         td {
                             a(href = linkTo.editPage(it)) { +it.value.name }
                         }

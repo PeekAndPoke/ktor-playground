@@ -4,7 +4,7 @@ import de.peekandpoke.karango.aql.LET
 import de.peekandpoke.karango.aql.RETURN
 import de.peekandpoke.karango.aql.REVERSE
 import de.peekandpoke.karango.aql.aql
-import de.peekandpoke.karango.e2e.db
+import de.peekandpoke.karango.e2e.driver
 import de.peekandpoke.karango.e2e.withClue
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
@@ -41,7 +41,7 @@ class `E2E-Func-String-REVERSE-Spec` : StringSpec({
         "$description - direct return" {
 
             repeat(10) {
-                val result = db.query {
+                val result = driver.query {
                     RETURN(expression)
                 }
 
@@ -53,7 +53,7 @@ class `E2E-Func-String-REVERSE-Spec` : StringSpec({
 
         "$description - return from LET" {
 
-            val result = db.query {
+            val result = driver.query {
                 val l = LET("l", expression)
 
                 RETURN(l)

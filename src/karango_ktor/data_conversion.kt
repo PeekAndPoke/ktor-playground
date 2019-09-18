@@ -1,7 +1,7 @@
 package de.peekandpoke.karango_ktor
 
-import de.peekandpoke.karango.Db
 import de.peekandpoke.karango.aql.replaceHiddenFieldWith
+import de.peekandpoke.ultra.vault.Database
 import de.peekandpoke.ultra.vault.Stored
 import de.peekandpoke.ultra.vault.TypeRef
 import io.ktor.features.DataConversion
@@ -14,6 +14,8 @@ import java.lang.reflect.Type
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
+
+// TODO: move this class to ktor_tools
 
 // TODO: we need to get rid of this mess
 //   Method 1: Let TypeRef only produce a tree with Class entries instead of ParameterizedTypeImpl
@@ -58,7 +60,7 @@ internal class BetterMap(private val wrapped: MutableMap<Type, ConversionService
 }
 
 @KtorExperimentalAPI
-fun DataConversion.Configuration.add(db: Db, logger: Logger) {
+fun DataConversion.Configuration.add(db: Database, logger: Logger) {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // replace the internal "converters" map with our implementation
@@ -68,15 +70,15 @@ fun DataConversion.Configuration.add(db: Db, logger: Logger) {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // codec for each database table
 
-    db.getEntityCollections().forEach {
+    db.getRepositories().forEach {
 
-        val storedType = it.coll.getType().down<Any>().wrapWith(Stored::class.java).type
+        val storedType = it.storedType.wrapWith(Stored::class.java).type
 
         logger.info("Setting up converter for type '$storedType'")
 
         converters[storedType] = object : ConversionService {
             override fun fromValues(values: List<String>, type: Type): Any? {
-                return it.findByKey(values.first()) ?: throw NotFoundException("No '${type}' found for $values")
+                return it.findById(values.first()) ?: throw NotFoundException("No '${type}' found for $values")
             }
 
             override fun toValues(value: Any?): List<String> {

@@ -13,7 +13,7 @@ class `E2E-ReturnFromLet-Spec` : StringSpec({
 
     "Returning a String defined by LET" {
 
-        val result = db.query {
+        val result = driver.query {
             val a = LET("a", "string")
             RETURN(a)
         }
@@ -50,7 +50,7 @@ class `E2E-ReturnFromLet-Spec` : StringSpec({
 
     "Returning a List<String> defined by LET" {
 
-        val result = db.query {
+        val result = driver.query {
             val a = LET("a") { listOf("s1", "s2") }
             RETURN(a)
         }
@@ -87,7 +87,7 @@ class `E2E-ReturnFromLet-Spec` : StringSpec({
 
     "Returning a Map<String, String> defined by LET" {
 
-        val result: Cursor<Map<String, String>> = db.query {
+        val result: Cursor<Map<String, String>> = driver.query {
             val a = LET("a") { mapOf("s1" to "s2") }
             RETURN(a)
         }
@@ -131,7 +131,7 @@ class `E2E-ReturnFromLet-Spec` : StringSpec({
             mapOf("s3" to 3)
         )
 
-        val result: Cursor<List<Map<String, Int>>> = db.query {
+        val result: Cursor<List<Map<String, Int>>> = driver.query {
             val a = LET("a", input)
             RETURN(a)
         }

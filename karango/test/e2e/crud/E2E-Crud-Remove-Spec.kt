@@ -1,7 +1,6 @@
 package de.peekandpoke.karango.e2e.crud
 
-import de.peekandpoke.karango.id
-import de.peekandpoke.karango.testdomain.database
+import de.peekandpoke.karango.e2e.database
 import de.peekandpoke.karango.testdomain.testPersons
 import io.kotlintest.assertSoftly
 import io.kotlintest.shouldBe
@@ -37,8 +36,8 @@ class `E2E-Crud-Remove-Spec` : StringSpec({
             // check reloaded
             allReloaded.size shouldBe 2
 
-            edgarReloaded._id shouldBe edgarSaved.id
-            heinzReloaded._id shouldBe heinzSaved.id
+            edgarReloaded._id shouldBe edgarSaved._id
+            heinzReloaded._id shouldBe heinzSaved._id
         }
     }
 
@@ -55,7 +54,7 @@ class `E2E-Crud-Remove-Spec` : StringSpec({
         val heinzSaved = coll.save(HeinzRudolfKunze)
 
         // remove on entry
-        val removeResult = coll.remove(jonSaved._id!!)
+        val removeResult = coll.remove(jonSaved._id)
 
         // reload all remaining
         val allReloaded = coll.findAll().toList().sortedBy { it.value.name }
@@ -69,8 +68,8 @@ class `E2E-Crud-Remove-Spec` : StringSpec({
             // check reloaded
             allReloaded.size shouldBe 2
 
-            edgarReloaded._id shouldBe edgarSaved.id
-            heinzReloaded._id shouldBe heinzSaved.id
+            edgarReloaded._id shouldBe edgarSaved._id
+            heinzReloaded._id shouldBe heinzSaved._id
         }
     }
 

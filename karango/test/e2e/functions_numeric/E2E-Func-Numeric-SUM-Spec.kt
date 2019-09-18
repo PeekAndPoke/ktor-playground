@@ -3,7 +3,7 @@ package de.peekandpoke.karango.e2e.functions_numeric
 import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.e2e.E2ePerson
 import de.peekandpoke.karango.e2e.age
-import de.peekandpoke.karango.e2e.db
+import de.peekandpoke.karango.e2e.driver
 import de.peekandpoke.karango.e2e.withClue
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
@@ -14,7 +14,7 @@ class `E2E-Func-Numeric-SUM-Spec` : StringSpec({
 
     "SUM from multiple LETs" {
 
-        val result = db.query {
+        val result = driver.query {
             val a = LET("a", 10.aql)
             val b = LET("b", 20.aql)
 
@@ -30,7 +30,7 @@ class `E2E-Func-Numeric-SUM-Spec` : StringSpec({
 
     "SUM from multiple objects" {
 
-        val result = db.query {
+        val result = driver.query {
             val persons = LET("persons") {
                 listOf(
                     E2ePerson("a", 10),
@@ -101,7 +101,7 @@ class `E2E-Func-Numeric-SUM-Spec` : StringSpec({
 
         "$description - direct return" {
 
-            val result = db.query {
+            val result = driver.query {
                 RETURN(expression)
             }
 
@@ -112,7 +112,7 @@ class `E2E-Func-Numeric-SUM-Spec` : StringSpec({
 
         "$description - return from LET" {
 
-            val result = db.query {
+            val result = driver.query {
                 val l = LET("l", expression)
 
                 RETURN(l)
