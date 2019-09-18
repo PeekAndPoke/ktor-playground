@@ -14,7 +14,7 @@ class StoredDeserializer(
     override fun createContextual(ctxt: DeserializationContext, property: BeanProperty?): JsonDeserializer<*> {
 
 //        println("----------------------------------------------------------------------------------------------")
-//        println("CREATING SavedEntityDeserializer for ${ctxt.contextualType}")
+//        println("CREATING ${this::class.java.simpleName} for ${ctxt.contextualType}")
 //
 //        println(ctxt.contextualType)
 //        println(property?.member?.type)

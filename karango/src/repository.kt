@@ -21,7 +21,7 @@ import kotlin.system.measureTimeMillis
 val karangoDefaultDriver = Key<KarangoDriver>("karango_default_driver")
 
 class KarangoDriver(
-//    private val database: Database,
+    private val database: Database,
     private val arangoDb: ArangoDatabase,
     private val onSaveHooks: List<OnSaveHook> = listOf(),
     private val refCache: RefCache = RefCache()
@@ -43,6 +43,14 @@ class KarangoDriver(
 
         // deserialization features
         configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+
+        injectableValues = InjectableValues.Std(
+            mapOf(
+                "database" to database,
+                "mapper" to this,
+                "cache" to refCache
+            )
+        )
     }
 
     fun ensureEntityCollection(
@@ -84,20 +92,7 @@ class KarangoDriver(
             }
         }
 
-        return CursorImpl(
-            result,
-            query,
-            time,
-            serializer.copy().apply {
-                injectableValues = InjectableValues.Std(
-                    mapOf(
-                        "mapper" to this@apply,
-//                        "database" to database,
-                        "cache" to refCache
-                    )
-                )
-            }
-        )
+        return CursorImpl(result, query, time, serializer)
     }
 }
 

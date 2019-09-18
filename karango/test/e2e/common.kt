@@ -16,15 +16,20 @@ import io.kotlintest.matchers.withClue
 private val arangoDb: ArangoDB = ArangoDB.Builder().user("root").password("").host("localhost", 8529).build()
 private val arangoDatabase: ArangoDatabase = arangoDb.db("_system")
 
-val driver = KarangoDriver(arangoDatabase)
+lateinit var driver: KarangoDriver
 
-private val databaseBlueprint: Vault.Blueprint = Vault.create {
+private val databaseBlueprint: Vault.Blueprint = Vault.setup {
     add { TestPersonsRepository(it.get(karangoDefaultDriver)) }
 }
 
-val database = databaseBlueprint.with(
-    karangoDefaultDriver to KarangoDriver(arangoDatabase)
-)
+val database = databaseBlueprint.with { database ->
+
+    driver = KarangoDriver(database, arangoDatabase)
+
+    listOf(
+        karangoDefaultDriver to driver
+    )
+}
 
 @Karango
 data class E2ePerson(val name: String, val age: Int)

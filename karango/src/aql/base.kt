@@ -1,7 +1,6 @@
 package de.peekandpoke.karango.aql
 
 import de.peekandpoke.ultra.vault.TypeRef
-import de.peekandpoke.ultra.vault.type
 
 @DslMarker
 annotation class KarangoDslMarker
@@ -49,15 +48,6 @@ interface Expression<T> : Printable {
      */
     fun getType(): TypeRef<T>
 }
-
-/**
- * Casts the expression to another type
- *
- * Sometimes it might be necessary to change the type of an expression
- */
-@Suppress("FunctionName")
-@KarangoTypeConversionMarker
-inline fun <reified R : Any> Expression<*>.AS(): Expression<R> = TypeCastExpression(type(), this)
 
 /**
  * Base interface for all terminal Expressions.

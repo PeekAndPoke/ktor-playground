@@ -15,17 +15,20 @@ interface Vault {
         }
     }
 
-    class Blueprint internal constructor(private val repositories: Map<Class<*>, (DriverRegistry) -> Repository<*>>) {
+    class Blueprint internal constructor(private val repos: Map<Class<*>, (DriverRegistry) -> Repository<*>>) {
 
-        fun with(drivers: DriverRegistry) = Database(
-            repositories.map { (cls, repo) -> cls to repo(drivers) }.toMap()
-        )
+        fun with(builder: (Database) -> List<Pair<Key<Driver>, Driver>>) = Database().apply {
 
-        fun with(vararg drivers: Pair<Key<Driver>, Driver>) = with(DriverRegistry(*drivers))
+            with(DriverRegistry(builder(this))) {
+                repositories.putAll(
+                    repos.map { (cls, repo) -> cls to repo(this) }.toMap()
+                )
+            }
+        }
     }
 
     companion object {
-        fun create(builder: Builder.() -> Unit) = Builder().apply(builder).build()
+        fun setup(builder: Builder.() -> Unit) = Builder().apply(builder).build()
     }
 }
 
@@ -44,9 +47,9 @@ interface Repository<T> {
 
 interface Driver
 
-class DriverRegistry(vararg drivers: Pair<Key<Driver>, Driver>) {
+class DriverRegistry(drivers: List<Pair<Key<Driver>, Driver>>) {
 
-    private val drivers: Map<Key<Driver>, Driver> = mutableMapOf(*drivers)
+    private val drivers: Map<Key<Driver>, Driver> = mutableMapOf(*drivers.toTypedArray())
 
     fun <T : Driver> get(key: Key<T>): T {
 
@@ -56,7 +59,9 @@ class DriverRegistry(vararg drivers: Pair<Key<Driver>, Driver>) {
     }
 }
 
-class Database(private val repositories: Map<Class<*>, Repository<*>>) {
+class Database internal constructor() {
+
+    internal val repositories: MutableMap<Class<*>, Repository<*>> = mutableMapOf()
 
     fun getRepositories() = repositories.values
 

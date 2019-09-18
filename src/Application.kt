@@ -60,17 +60,19 @@ private val arangoDb: ArangoDB = ArangoDB.Builder().user("root").password("").ho
 
 private val arangoDatabase: ArangoDatabase = arangoDb.db("kotlindev")
 
-private val databaseBlueprint: Vault.Blueprint = Vault.create {
-
+private val databaseBlueprint: Vault.Blueprint = Vault.setup {
     registerGotCollections()
     registerCmsCollections()
-
 }
 
 // ensure all repositories exist
-private val database = databaseBlueprint.with(
-    karangoDefaultDriver to KarangoDriver(arangoDb = arangoDatabase)
-).apply { ensureRepositories() }
+private val database = databaseBlueprint.with { database ->
+    listOf(
+        karangoDefaultDriver to KarangoDriver(database = database, arangoDb = arangoDatabase)
+    )
+}.apply {
+    ensureRepositories()
+}
 
 val Meta = object : AppMeta() {}
 
@@ -305,20 +307,23 @@ fun Application.module(testing: Boolean = false) {
                 // The web resources
                 provide(WebResources)
                 // A customized version of the database, with a hook for UserRecords
-                provide(databaseBlueprint.with(
-                    karangoDefaultDriver to KarangoDriver(
-                        arangoDb = arangoDatabase,
-                        onSaveHooks = listOf(
-                            TimestampedOnSaveHook(),
-                            UserRecordOnSaveHook {
-                                UserRecord(
-                                    call.sessions.get<UserSession>()?.userId ?: "anonymous",
-                                    call.request.origin.remoteHost
-                                )
-                            }
+                provide(databaseBlueprint.with { database ->
+                    listOf(
+                        karangoDefaultDriver to KarangoDriver(
+                            database = database,
+                            arangoDb = arangoDatabase,
+                            onSaveHooks = listOf(
+                                TimestampedOnSaveHook(),
+                                UserRecordOnSaveHook {
+                                    UserRecord(
+                                        call.sessions.get<UserSession>()?.userId ?: "anonymous",
+                                        call.request.origin.remoteHost
+                                    )
+                                }
+                            )
                         )
                     )
-                ))
+                })
             }
         }
 

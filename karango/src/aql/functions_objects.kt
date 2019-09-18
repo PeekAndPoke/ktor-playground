@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package de.peekandpoke.karango.aql
 
 import de.peekandpoke.ultra.vault.type

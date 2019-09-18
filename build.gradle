@@ -91,7 +91,7 @@ dependencies {
 
 kapt {
     includeCompileClasspath = false
-    useBuildCache = true
+    useBuildCache = false
 }
 
 test {

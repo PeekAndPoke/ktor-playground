@@ -11,17 +11,18 @@ import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.vault.Vault
 import kotlin.system.measureTimeMillis
 
-
 private val arangoDb: ArangoDB = ArangoDB.Builder().user("root").password("").host("localhost", 8529).build()
 private val arangoDatabase: ArangoDatabase = arangoDb.db("kotlindev")
 
-private val databaseBlueprint: Vault.Blueprint = Vault.create {
+private val databaseBlueprint: Vault.Blueprint = Vault.setup {
     add { PersonsRepository(it.get(karangoDefaultDriver)) }
 }
 
-private val db = databaseBlueprint.with(
-    karangoDefaultDriver to KarangoDriver(arangoDatabase)
-)
+private val db = databaseBlueprint.with { database ->
+    listOf(
+        karangoDefaultDriver to KarangoDriver(database, arangoDatabase)
+    )
+}
 
 private val persons = db.getRepository<PersonsRepository>()
 

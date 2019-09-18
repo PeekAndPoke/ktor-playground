@@ -67,11 +67,14 @@ open class KarangoAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
         )
 
         val all = pool.asSequence().filterIsInstance<TypeElement>()
+            .distinct()
             // Black list some packages
             .filter { !it.fqn.startsWith("java.") }
             .filter { !it.fqn.startsWith("javax.") }
             .filter { !it.fqn.startsWith("kotlin.") }
-            .distinct().toList()
+            // Black list all generic types
+            .filter { it.typeParameters.size == 0 }
+            .toList()
 
         logNote("all types for karango: $all")
 
