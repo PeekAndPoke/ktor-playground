@@ -1,10 +1,10 @@
 package de.peekandpoke.module.got
 
-import de.peekandpoke.karango.Stored
 import de.peekandpoke.karango.examples.game_of_thrones.*
 import de.peekandpoke.karango_ktor.database
 import de.peekandpoke.resources.MainTemplate
 import de.peekandpoke.resources.WELCOME
+import de.peekandpoke.ultra.vault.Stored
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.html.respondHtmlTemplate

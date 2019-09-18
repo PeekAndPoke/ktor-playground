@@ -3,6 +3,9 @@
 package de.peekandpoke.karango.aql
 
 import de.peekandpoke.karango.ICollection
+import de.peekandpoke.ultra.vault.TypeRef
+import de.peekandpoke.ultra.vault.asTypeRef
+import de.peekandpoke.ultra.vault.type
 
 /**
  * Get a single document by its full id.

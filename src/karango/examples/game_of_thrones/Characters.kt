@@ -3,8 +3,8 @@ package de.peekandpoke.karango.examples.game_of_thrones
 import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.Karango
 import de.peekandpoke.karango.Ref
-import de.peekandpoke.karango.Stored
 import de.peekandpoke.ultra.mutator.Mutable
+import de.peekandpoke.ultra.vault.Stored
 
 @Karango
 @Mutable

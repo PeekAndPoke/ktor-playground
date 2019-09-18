@@ -21,10 +21,7 @@ import de.peekandpoke.module.semanticui.semanticUi
 import de.peekandpoke.resources.Translations
 import de.peekandpoke.test_module.TestModule
 import de.peekandpoke.ultra.vault.Vault
-import io.ktor.application.Application
-import io.ktor.application.ApplicationCallPipeline
-import io.ktor.application.call
-import io.ktor.application.install
+import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.features.*
 import io.ktor.html.respondHtml
@@ -193,11 +190,11 @@ fun Application.module(testing: Boolean = false) {
     }
 
     install(DataConversion) {
-        add(db)
+        add(db, log)
     }
 
     install(DefaultHeaders) {
-        header("X-Engine", "Ktor") // will send this header with each response
+        //        header("X-Engine", "Ktor") // will send this header with each response
     }
 
     install(HSTS) {
@@ -341,7 +338,7 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-//        logger.debug("Service injection into call attributes took ${ns / 1_000_000.0} ms")
+        logger.debug("Service injection into call attributes took ${ns / 1_000_000.0} ms")
     }
 
     routing {

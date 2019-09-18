@@ -1,7 +1,7 @@
 package de.peekandpoke.karango.testdomain
 
 import de.peekandpoke.karango.*
-import de.peekandpoke.karango.aql.type
+import de.peekandpoke.ultra.vault.type
 
 @Karango
 data class TestName(
@@ -10,7 +10,7 @@ data class TestName(
     override val _key: String = ""
 ) : Entity
 
-val TestNames : IEntityCollection<TestName> =
+val TestNames: IEntityCollection<TestName> =
     object : EntityCollection<TestName>("test-names", type()) {}
 
 @Karango
@@ -23,17 +23,12 @@ data class TestPerson(
     override val _key: String? = null
 ) : Entity
 
-val Stored<TestPerson>.name get() = value.name
-val Stored<TestPerson>.details get() = value.details
-val Stored<TestPerson>.addresses get() = value.addresses
-val Stored<TestPerson>.books get() = value.books
-
-val TestPersons : IEntityCollection<TestPerson> =
+val TestPersons: IEntityCollection<TestPerson> =
     object : EntityCollection<TestPerson>("test-persons", type()) {}
 
 class TestPersonsCollection(db: Db) : DbEntityCollection<TestPerson>(db, TestPersons)
 
-data class TestPersonDetails (
+data class TestPersonDetails(
     val middleName: String
 )
 

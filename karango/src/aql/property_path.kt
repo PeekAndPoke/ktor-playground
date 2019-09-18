@@ -1,6 +1,8 @@
 package de.peekandpoke.karango.aql
 
 import de.peekandpoke.karango.aql.PropertyPath.Companion.start
+import de.peekandpoke.ultra.vault.TypeRef
+import de.peekandpoke.ultra.vault.type
 
 typealias L1<T> = List<T>
 typealias L2<T> = List<List<T>>

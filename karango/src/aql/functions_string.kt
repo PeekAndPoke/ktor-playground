@@ -2,9 +2,11 @@
 
 package de.peekandpoke.karango.aql
 
+import de.peekandpoke.ultra.vault.type
+
 /**
  * Return the number of characters in value (not byte length).
- * 
+ *
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#charlength
  */
 @KarangoFuncMarker
@@ -12,7 +14,7 @@ fun CHAR_LENGTH(expr: Expression<String>) = AqlFunc.CHAR_LENGTH.numberCall(expr)
 
 /**
  * Concatenate the values passed as value1 to valueN.
- * 
+ *
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#concat
  */
 @KarangoInputMarker
@@ -45,7 +47,7 @@ fun ENCODE_URI_COMPONENT(value: Expression<String>) = AqlFunc.ENCODE_URI_COMPONE
 
 /**
  * Determine the character length of a string.
- * 
+ *
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#count
  */
 @KarangoInputMarker
@@ -53,7 +55,7 @@ fun COUNT(expr: Expression<String>) = AqlFunc.COUNT.numberCall(expr)
 
 /**
  * Return the position of the first occurrence of the string search inside the string text. Positions start at 0.
- * 
+ *
  * https://docs.arangodb.com/current/AQL/Functions/String.html#findfirst
  */
 @KarangoInputMarker
@@ -157,7 +159,7 @@ fun LIKE(text: Expression<String>, search: Expression<String>) = AqlFunc.LIKE.bo
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#like
  */
 @KarangoInputMarker
-fun LIKE(text: Expression<String>, search: Expression<String>, caseInsensitive: Expression<Boolean>) = 
+fun LIKE(text: Expression<String>, search: Expression<String>, caseInsensitive: Expression<Boolean>) =
     AqlFunc.LIKE.boolCall(text, search, caseInsensitive)
 
 /**
@@ -186,7 +188,7 @@ fun LTRIM(subject: Expression<String>, chars: Expression<String>) = AqlFunc.LTRI
 
 /**
  * Calculate the MD5 checksum for text and return it in a hexadecimal string representation.
- * 
+ *
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#md5
  */
 @KarangoInputMarker
@@ -206,7 +208,7 @@ fun <T: Number> RANDOM_TOKEN(length: Expression<T>) = AqlFunc.RANDOM_TOKEN.strin
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#regexmatches
  */
 @KarangoInputMarker
-fun REGEX_MATCHES(text: Expression<String>, regex: Expression<String>) = 
+fun REGEX_MATCHES(text: Expression<String>, regex: Expression<String>) =
     AqlFunc.REGEX_MATCHES.nullableArrayCall(type<List<String>?>(), text, regex)
 
 /**
@@ -220,7 +222,7 @@ fun REGEX_MATCHES(text: Expression<String>, regex: Expression<String>, caseInsen
 
 /**
  * Return the reverse of the string value.
- * 
+ *
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#reverse
  */
 @KarangoInputMarker
@@ -269,10 +271,10 @@ fun SHA512(expr: Expression<String>) = AqlFunc.SHA512.stringCall(expr)
 /**
  * Split the given string value into a list of strings, using the separator.
  *
- * See https://docs.arangodb.com/current/AQL/Functions/String.html#split  
+ * See https://docs.arangodb.com/current/AQL/Functions/String.html#split
  */
 @KarangoInputMarker
-fun SPLIT(value: Expression<String>, separator: Expression<String>)  
+fun SPLIT(value: Expression<String>, separator: Expression<String>)
         = AqlFunc.SPLIT.arrayCall(type<List<String>>(), value, separator)
 
 /**
@@ -306,7 +308,7 @@ fun <T: Number> SPLIT(value: Expression<String>, separator: Expression<List<Stri
 
 /**
  * Return the soundex fingerprint of value.
- * 
+ *
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#soundex
  */
 @KarangoInputMarker
@@ -326,7 +328,7 @@ fun <T: Number> SUBSTRING(value: Expression<String>, offset: Expression<T>) = Aq
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#substring
  */
 @KarangoInputMarker
-fun <T1: Number, T2: Number> SUBSTRING(value: Expression<String>, offset: Expression<T1>, length: Expression<T2>) = 
+fun <T1: Number, T2: Number> SUBSTRING(value: Expression<String>, offset: Expression<T1>, length: Expression<T2>) =
     AqlFunc.SUBSTRING.stringCall(value, offset, length)
 
 /**

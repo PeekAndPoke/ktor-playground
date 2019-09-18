@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
-import de.peekandpoke.karango.Stored
+import de.peekandpoke.ultra.vault.Stored
 
 class SavedEntityDeserializer(
     private val type: JavaType? = null,

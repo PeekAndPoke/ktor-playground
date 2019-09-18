@@ -1,12 +1,12 @@
 package de.peekandpoke.module.cms
 
-import de.peekandpoke.karango.Stored
 import de.peekandpoke.karango_ktor.database
 import de.peekandpoke.module.cms.forms.PageForm
 import de.peekandpoke.module.cms.views.Template
 import de.peekandpoke.module.cms.views.editPage
 import de.peekandpoke.module.cms.views.index
 import de.peekandpoke.module.cms.views.pages
+import de.peekandpoke.ultra.vault.Stored
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call

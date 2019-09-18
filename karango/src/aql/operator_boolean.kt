@@ -2,6 +2,9 @@
 
 package de.peekandpoke.karango.aql
 
+import de.peekandpoke.ultra.vault.TypeRef
+import de.peekandpoke.ultra.vault.type
+
 enum class BooleanOperator(val op: String) {
     EQ("=="),
     NE("!="),

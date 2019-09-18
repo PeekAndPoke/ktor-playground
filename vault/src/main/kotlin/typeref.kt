@@ -1,7 +1,6 @@
-package de.peekandpoke.karango.aql
+package de.peekandpoke.ultra.vault
 
 import com.fasterxml.jackson.core.type.TypeReference
-import de.peekandpoke.karango.KarangoException
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl
 import java.io.Serializable
 import java.lang.reflect.ParameterizedType
@@ -100,11 +99,11 @@ open class TypeRef<T> constructor(private val explicitType: Type? = null) : Type
     fun <X> down(): TypeRef<X> {
 
         if (tree.children.isEmpty()) {
-            throw KarangoException("Cannot go down the tree, as the root has no children: \n$tree")
+            throw VaultException("Cannot go down the tree, as the root has no children: \n$tree")
         }
 
         if (tree.children.size > 1) {
-            throw KarangoException("Cannot go down the tree, as the root has more than one child: \n$tree")
+            throw VaultException("Cannot go down the tree, as the root has more than one child: \n$tree")
         }
 
         return TypeRef(

@@ -2,7 +2,7 @@ package de.peekandpoke.karango.examples.movies_and_actors
 
 import de.peekandpoke.karango.Edge
 import de.peekandpoke.karango.EdgeCollection
-import de.peekandpoke.karango.aql.type
+import de.peekandpoke.ultra.vault.type
 
 inline val ActsIn.Companion.Collection inline get() = ActsInCollection
 

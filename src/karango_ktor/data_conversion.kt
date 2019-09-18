@@ -1,28 +1,18 @@
 package de.peekandpoke.karango_ktor
 
 import de.peekandpoke.karango.Db
-import de.peekandpoke.karango.Stored
-import de.peekandpoke.karango.aql.TypeRef
 import de.peekandpoke.karango.aql.replaceHiddenFieldWith
+import de.peekandpoke.ultra.vault.Stored
+import de.peekandpoke.ultra.vault.TypeRef
 import io.ktor.features.DataConversion
 import io.ktor.features.NotFoundException
 import io.ktor.util.ConversionService
 import io.ktor.util.KtorExperimentalAPI
+import org.slf4j.Logger
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
-import kotlin.collections.List
-import kotlin.collections.MutableMap
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.emptyList
-import kotlin.collections.filter
-import kotlin.collections.first
-import kotlin.collections.firstOrNull
-import kotlin.collections.forEach
-import kotlin.collections.getOrPut
-import kotlin.collections.listOf
-import kotlin.collections.map
-import kotlin.collections.mutableMapOf
 import kotlin.collections.set
 
 // TODO: we need to get rid of this mess
@@ -68,7 +58,7 @@ internal class BetterMap(private val wrapped: MutableMap<Type, ConversionService
 }
 
 @KtorExperimentalAPI
-fun DataConversion.Configuration.add(db: Db) {
+fun DataConversion.Configuration.add(db: Db, logger: Logger) {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // replace the internal "converters" map with our implementation
@@ -80,11 +70,11 @@ fun DataConversion.Configuration.add(db: Db) {
 
     db.getEntityCollections().forEach {
 
-        val kStoredClass = it.coll.getType().down<Any>().wrapWith<Stored<*>>(Stored::class.java).type
+        val storedType = it.coll.getType().down<Any>().wrapWith(Stored::class.java).type
 
-        println(kStoredClass)
+        logger.info("Setting up converter for type '$storedType'")
 
-        converters[kStoredClass] = object : ConversionService {
+        converters[storedType] = object : ConversionService {
             override fun fromValues(values: List<String>, type: Type): Any? {
                 return it.findByKey(values.first()) ?: throw NotFoundException("No '${type}' found for $values")
             }

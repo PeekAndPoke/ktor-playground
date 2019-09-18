@@ -20,13 +20,24 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 group 'ktor-playground'
 version '0.0.1'
 
-dependencies {
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-
-    compile("com.fasterxml.jackson.core:jackson-databind:$jackson_version")
-}
-
 repositories {
     mavenCentral()
     jcenter()
+}
+
+dependencies {
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    api "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+    compile("com.fasterxml.jackson.core:jackson-databind:$jackson_version")
+
+    ////  tests  ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    testCompile "ch.qos.logback:logback-classic:$logback_version"
+    testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.2.1'
+
+}
+
+test {
+    useJUnitPlatform()
 }

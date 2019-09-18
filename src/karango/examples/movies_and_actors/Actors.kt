@@ -4,8 +4,8 @@ import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.EntityCollection
 import de.peekandpoke.karango.Karango
 import de.peekandpoke.karango.WithRev
-import de.peekandpoke.karango.aql.type
 import de.peekandpoke.ultra.mutator.Mutable
+import de.peekandpoke.ultra.vault.type
 
 @Karango
 @Mutable

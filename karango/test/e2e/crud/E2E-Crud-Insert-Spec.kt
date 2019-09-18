@@ -3,7 +3,9 @@ package de.peekandpoke.karango.e2e.crud
 import de.peekandpoke.karango.aql.FOR
 import de.peekandpoke.karango.aql.INSERT
 import de.peekandpoke.karango.aql.LET
-import de.peekandpoke.karango.testdomain.*
+import de.peekandpoke.karango.testdomain.TestPersons
+import de.peekandpoke.karango.testdomain.database
+import de.peekandpoke.karango.testdomain.testPersons
 import io.kotlintest.assertSoftly
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
@@ -20,11 +22,11 @@ class `E2E-Crud-Insert-Spec` : StringSpec({
         }
 
         // create some entries
-        val jonSaved =  coll.save(JonBonJovi)
+        val jonSaved = coll.save(JonBonJovi)
         val edgarSaved = coll.save(EdgarAllanPoe)
 
         // reload them
-        val reloaded = coll.findAll().toList().sortedBy { it.name }
+        val reloaded = coll.findAll().toList().sortedBy { it.value.name }
         val (edgarReloaded, jonReloaded) = reloaded
 
         assertSoftly {
@@ -45,13 +47,13 @@ class `E2E-Crud-Insert-Spec` : StringSpec({
 
             jonReloaded._id shouldNotBe null
             jonReloaded._key shouldNotBe null
-            jonReloaded.name shouldBe JonBonJovi.name
-            jonReloaded.details shouldBe JonBonJovi.details
+            jonReloaded.value.name shouldBe JonBonJovi.name
+            jonReloaded.value.details shouldBe JonBonJovi.details
 
             edgarReloaded._id shouldNotBe null
             edgarReloaded._key shouldNotBe null
-            edgarReloaded.name shouldBe EdgarAllanPoe.name
-            edgarReloaded.details shouldBe EdgarAllanPoe.details
+            edgarReloaded.value.name shouldBe EdgarAllanPoe.name
+            edgarReloaded.value.details shouldBe EdgarAllanPoe.details
         }
     }
 
@@ -67,12 +69,12 @@ class `E2E-Crud-Insert-Spec` : StringSpec({
             val docs = LET("docs", listOf(JonBonJovi, EdgarAllanPoe))
 
             FOR(docs) { doc ->
-                INSERT(doc) INTO(TestPersons)
+                INSERT(doc) INTO TestPersons
             }
         }
 
         // reload them
-        val reloaded = coll.findAll().toList().sortedBy { it.name }
+        val reloaded = coll.findAll().toList().sortedBy { it.value.name }
         val (edgarReloaded, jonReloaded) = reloaded
 
         assertSoftly {
@@ -93,13 +95,13 @@ class `E2E-Crud-Insert-Spec` : StringSpec({
 
             jonReloaded._id shouldNotBe null
             jonReloaded._key shouldNotBe null
-            jonReloaded.name shouldBe JonBonJovi.name
-            jonReloaded.details shouldBe JonBonJovi.details
+            jonReloaded.value.name shouldBe JonBonJovi.name
+            jonReloaded.value.details shouldBe JonBonJovi.details
 
             edgarReloaded._id shouldNotBe null
             edgarReloaded._key shouldNotBe null
-            edgarReloaded.name shouldBe EdgarAllanPoe.name
-            edgarReloaded.details shouldBe EdgarAllanPoe.details
+            edgarReloaded.value.name shouldBe EdgarAllanPoe.name
+            edgarReloaded.value.details shouldBe EdgarAllanPoe.details
         }
     }
 

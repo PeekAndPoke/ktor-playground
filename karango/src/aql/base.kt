@@ -1,5 +1,8 @@
 package de.peekandpoke.karango.aql
 
+import de.peekandpoke.ultra.vault.TypeRef
+import de.peekandpoke.ultra.vault.type
+
 @DslMarker
 annotation class KarangoDslMarker
 

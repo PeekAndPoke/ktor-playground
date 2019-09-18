@@ -4,6 +4,7 @@ package de.peekandpoke.karango.aql
 
 import de.peekandpoke.karango.Entity
 import de.peekandpoke.karango.ICollection
+import de.peekandpoke.ultra.vault.TypeRef
 
 @Suppress("unused")
 @KarangoTerminalFuncMarker

@@ -2,6 +2,8 @@
 
 package de.peekandpoke.karango.aql
 
+import de.peekandpoke.ultra.vault.TypeRef
+
 data class Filter(private val predicate: Expression<Boolean>) : Statement {
     override fun printAql(p: AqlPrinter) = p.append("FILTER ").append(predicate).appendLine()
 }

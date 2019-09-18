@@ -1,12 +1,11 @@
-package de.peekandpoke.karango.aql
+package de.peekandpoke.ultra.vault
 
-import de.peekandpoke.karango.KarangoException
-import de.peekandpoke.karango.Stored
-import de.peekandpoke.karango.testdomain.TestPerson
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
 import java.io.Serializable
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 class TypeRefSpec : StringSpec({
 
@@ -47,14 +46,14 @@ class TypeRefSpec : StringSpec({
 
     "Downing a type with no type parameters must throw an exception" {
 
-        shouldThrow<KarangoException> {
+        shouldThrow<VaultException> {
             type<String>().down<String>()
         }
     }
 
     "Downing a type with more than one type parameters must throw an exception" {
 
-        shouldThrow<KarangoException> {
+        shouldThrow<VaultException> {
             type<Map<String, String>>().down<String>()
         }
     }
@@ -110,15 +109,15 @@ class TypeRefSpec : StringSpec({
 
     "TypeRef downed and then wrapped with [Stored]" {
 
-        val result = type<List<TestPerson>>().down<Any>().wrapWith(Stored::class.java)
+        val result = type<List<LocalDateTime>>().down<Any>().wrapWith(Stored::class.java)
 
-        result.toString() shouldBe "de.peekandpoke.karango.Stored<de.peekandpoke.karango.testdomain.TestPerson>"
+        result.toString() shouldBe "de.peekandpoke.ultra.vault.Stored<java.time.LocalDateTime>"
     }
 
     "TypeRef downed and then wrapped with [Stored] via inline reified wrapWith()" {
 
-        val result = type<List<TestPerson>>().down<Any>().wrapWith<Stored<*>>()
+        val result = type<List<ZonedDateTime>>().down<Any>().wrapWith<Stored<*>>()
 
-        result.toString() shouldBe "de.peekandpoke.karango.Stored<de.peekandpoke.karango.testdomain.TestPerson>"
+        result.toString() shouldBe "de.peekandpoke.ultra.vault.Stored<java.time.ZonedDateTime>"
     }
 })

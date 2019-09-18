@@ -2,13 +2,6 @@ package de.peekandpoke.karango
 
 import com.fasterxml.jackson.annotation.JsonInclude
 
-data class Stored<T>(
-    val _id: String,
-    val _key: String,
-    val _rev: String,
-    val value: T
-)
-
 @Suppress("PropertyName")
 interface Entity {
     @get:JsonInclude(JsonInclude.Include.NON_EMPTY)

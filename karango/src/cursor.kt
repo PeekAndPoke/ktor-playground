@@ -4,7 +4,7 @@ import com.arangodb.ArangoCursor
 import com.arangodb.ArangoIterator
 import com.arangodb.entity.CursorEntity
 import com.fasterxml.jackson.databind.ObjectMapper
-import de.peekandpoke.karango.aql.TypeRef
+import de.peekandpoke.ultra.vault.TypeRef
 
 interface Cursor<T> : Iterable<T> {
     val query: TypedQuery<T>

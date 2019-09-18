@@ -2,6 +2,8 @@
 
 package de.peekandpoke.karango.aql
 
+import de.peekandpoke.ultra.vault.type
+
 enum class PercentileMethod(val method: String) {
     @KarangoInputMarker
     RANK("rank"),

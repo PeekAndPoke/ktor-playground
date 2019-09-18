@@ -2,6 +2,9 @@
 
 package de.peekandpoke.karango.aql
 
+import de.peekandpoke.ultra.vault.TypeRef
+import de.peekandpoke.ultra.vault.type
+
 @KarangoDslMarker
 fun <T> StatementBuilder.LET(name: String, value: Expression<T>): Expression<T> = LetExpr(name, value).addStmt().toExpression()
 

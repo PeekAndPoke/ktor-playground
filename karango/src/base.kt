@@ -2,7 +2,11 @@
 
 package de.peekandpoke.karango
 
-import de.peekandpoke.karango.aql.*
+import de.peekandpoke.karango.aql.Aliased
+import de.peekandpoke.karango.aql.AqlPrinter
+import de.peekandpoke.karango.aql.Expression
+import de.peekandpoke.karango.aql.PropertyPath
+import de.peekandpoke.ultra.vault.TypeRef
 
 interface ICollection<T> : Expression<List<T>>, Aliased
 

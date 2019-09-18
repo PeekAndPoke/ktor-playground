@@ -1,5 +1,7 @@
 package de.peekandpoke.karango.aql
 
+import de.peekandpoke.ultra.vault.TypeRef
+
 enum class ArithmeticOperator(val op: String) {
     PLUS("+"),
     MINUS("-"),

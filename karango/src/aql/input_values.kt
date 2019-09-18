@@ -2,6 +2,9 @@
 
 package de.peekandpoke.karango.aql
 
+import de.peekandpoke.ultra.vault.TypeRef
+import de.peekandpoke.ultra.vault.type
+
 /**
  * Guard function to prevent calls to .aql() on existing Expressions
  */

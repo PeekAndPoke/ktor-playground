@@ -1,7 +1,7 @@
 package de.peekandpoke.karango.jackson
 
 import com.fasterxml.jackson.databind.module.SimpleModule
-import de.peekandpoke.karango.Stored
+import de.peekandpoke.ultra.vault.Stored
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -25,4 +25,3 @@ class KarangoJacksonModule : SimpleModule() {
         addDeserializer(ZonedDateTime::class.java, ZonedDateTimeDeserializer())
     }
 }
-

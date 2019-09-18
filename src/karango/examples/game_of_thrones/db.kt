@@ -1,7 +1,11 @@
 package de.peekandpoke.karango.examples.game_of_thrones
 
 import de.peekandpoke.karango.*
-import de.peekandpoke.karango.aql.*
+import de.peekandpoke.karango.aql.Direction
+import de.peekandpoke.karango.aql.EQ
+import de.peekandpoke.karango.aql.FOR
+import de.peekandpoke.karango.aql.RETURN
+import de.peekandpoke.ultra.vault.type
 
 fun Db.Builder.registerGotCollections() {
     addEntityCollection { db -> CharactersCollection(db) }

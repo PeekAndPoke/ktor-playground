@@ -2,6 +2,8 @@
 
 package de.peekandpoke.karango.aql
 
+import de.peekandpoke.ultra.vault.type
+
 /**
  * Add all elements of an array to another array. All values are added at the end of the array (right side).
  *
