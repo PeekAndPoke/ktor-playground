@@ -102,7 +102,9 @@ class GameOfThronesModule(app: Application) : Module(app) {
 
                                         it.age?.let { span { +"Age: $it " } }
 
-                                        it.actor?.let { span { +"(Actor: ${it.name} ${it.surname} Age: ${it.age}) " } }
+                                        it.actor?.value?.let {
+                                            span { +"(Actor: ${it.name} ${it.surname} Age: ${it.age}) " }
+                                        }
                                     }
                                 }
                             }
@@ -119,7 +121,7 @@ class GameOfThronesModule(app: Application) : Module(app) {
 
                     if (form.isModified) {
 
-                        val savedActor = form.result.actor?.let { database.actors.save(it) }
+                        val savedActor = form.result.actor?.let { database.actors.save(it.asStored) }
                         val saved = database.characters.save(form.result)
 
                         logger.info("Updated character in database: $saved, $savedActor")
@@ -160,19 +162,20 @@ class GameOfThronesModule(app: Application) : Module(app) {
                                     }
                                 }
 
-                                form.actor?.let { actorForm ->
-                                    h4 { +"Edit Actor ${data.character.actor?.name}" }
-
-                                    row {
-                                        col_md_3 {
-                                            textInput(t, actorForm.name, label = "Name")
-                                        }
-
-                                        col_md_3 {
-                                            numberInput(t, actorForm.age, label = "Age")
-                                        }
-                                    }
-                                }
+                                // TODO: fixme
+//                                form.actor?.let { actorForm ->
+//                                    h4 { +"Edit Actor ${data.character.actor?.value?.name}" }
+//
+//                                    row {
+//                                        col_md_3 {
+//                                            textInput(t, actorForm.name, label = "Name")
+//                                        }
+//
+//                                        col_md_3 {
+//                                            numberInput(t, actorForm.age, label = "Age")
+//                                        }
+//                                    }
+//                                }
 
                                 submit { +"Submit" }
                             }

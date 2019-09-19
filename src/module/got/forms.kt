@@ -22,5 +22,5 @@ class CharacterForm(id: String, target: CharacterMutator, parent: Form? = null) 
     val alive = field(target::alive).withOptions(true to "alive", false to "dead")
 
     // TODO: fix me (the "unknown")
-    val actor = target.actor?.let { add(ActorForm("unknown", it, this)) }
+//    val actor = target.actor?.let { add(ActorForm("unknown", it, this)) }
 }

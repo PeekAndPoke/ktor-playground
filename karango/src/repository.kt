@@ -101,10 +101,12 @@ abstract class EntityRepository<T : Any>(
     protected val coll: IEntityCollection<T>
 ) : Repository<T> {
 
+    override val name = coll.getAlias()
+
     override val storedType by lazy { coll.getType().down<T>() }
 
     override fun ensure() {
-        driver.ensureEntityCollection(coll.getAlias())
+        driver.ensureEntityCollection(name)
     }
 
     /**

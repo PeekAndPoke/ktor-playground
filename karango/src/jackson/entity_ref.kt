@@ -7,20 +7,20 @@ import com.fasterxml.jackson.databind.deser.ContextualDeserializer
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import de.peekandpoke.ultra.vault.Database
+import de.peekandpoke.ultra.vault.Ref
 import de.peekandpoke.ultra.vault.RefCache
-import de.peekandpoke.ultra.vault.Stored
 
 /**
  * TODO: fix me
  */
-internal class EntityRefSerializer : StdSerializer<Any>(Any::class.java) {
+internal class EntityRefSerializer : StdSerializer<Ref<*>>(Ref::class.java) {
 
-    override fun serialize(value: Any, jgen: JsonGenerator, provider: SerializerProvider) {
+    override fun serialize(value: Ref<*>?, gen: JsonGenerator, provider: SerializerProvider) {
 
-        if (value is Stored<*>) {
-            jgen.writeString(value._id)
+        if (value == null) {
+            gen.writeNull()
         } else {
-            jgen.writeNull()
+            gen.writeString(value._id)
         }
     }
 }
@@ -29,7 +29,7 @@ internal class EntityRefDeserializer @JvmOverloads constructor(
     private val db: Database? = null,
     private val cache: RefCache? = null,
     type: Class<*>? = null
-) : StdDeserializer<Any>(type), ContextualDeserializer {
+) : StdDeserializer<Ref<*>>(type), ContextualDeserializer {
 
     override fun createContextual(ctxt: DeserializationContext, property: BeanProperty?): JsonDeserializer<*> {
 
@@ -47,7 +47,7 @@ internal class EntityRefDeserializer @JvmOverloads constructor(
         return false
     }
 
-    override fun deserialize(jp: JsonParser, ctxt: DeserializationContext): Any? {
+    override fun deserialize(jp: JsonParser, ctxt: DeserializationContext): Ref<*>? {
 
         if (db == null || cache == null) {
             return null
@@ -55,18 +55,12 @@ internal class EntityRefDeserializer @JvmOverloads constructor(
 
         val node: JsonNode = jp.codec.readTree(jp)
 
-        val id: String = node.textValue() ?: return null
+        val id = node.textValue() ?: return null
+
+        val coll = id.split("/").first()
 
         return cache.entries.getOrPut(id) {
-
-            null
-
-//            @Suppress("UNCHECKED_CAST")
-//            db.queryFirst {
-//                RETURN(
-//                    DOCUMENT(_valueClass as Class<Entity>, id)
-//                )
-//            }
+            db.getRepository(coll)?.findById(id)?.asRef
         }
     }
 }

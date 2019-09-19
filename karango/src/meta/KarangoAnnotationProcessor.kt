@@ -3,8 +3,8 @@ package de.peekandpoke.karango.meta
 import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.asClassName
 import de.peekandpoke.karango.Karango
-import de.peekandpoke.karango.Ref
 import de.peekandpoke.ultra.meta.ProcessorUtils
+import de.peekandpoke.ultra.vault.Ref
 import me.eugeniomarletti.kotlin.processing.KotlinAbstractProcessor
 import java.io.File
 import javax.annotation.processing.Processor
@@ -108,8 +108,8 @@ open class KarangoAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtil
             .forEach {
 
                 val type = when {
-                    // References are just strings
-                    it.getAnnotation(Ref::class.java) != null -> "String"
+                    // References are treated as just strings
+                    it.fqn.startsWith(Ref::class.java.canonicalName) -> "kotlin.String"
 
                     // otherwise we take the original type
                     else -> it.asKotlinClassName()

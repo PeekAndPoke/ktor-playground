@@ -85,9 +85,9 @@ fun installData() {
 
         val data = LET("data") {
             listOf(
-                Character(name = "Robert", surname = "Baratheon", alive = false, traits = listOf("A", "H", "C"), actor = markAddy.value),
-                Character(name = "Jaime", surname = "Lannister", alive = true, age = 36, traits = listOf("A", "F", "B"), actor = markAddy.value),
-                Character(name = "Eddard", surname = "Stark", alive = true, age = 47, traits = listOf("D", "H", "C"), actor = seanBean.value),
+                Character(name = "Robert", surname = "Baratheon", alive = false, traits = listOf("A", "H", "C"), actor = markAddy.asRef),
+                Character(name = "Jaime", surname = "Lannister", alive = true, age = 36, traits = listOf("A", "F", "B"), actor = markAddy.asRef),
+                Character(name = "Eddard", surname = "Stark", alive = true, age = 47, traits = listOf("D", "H", "C"), actor = seanBean.asRef),
                 Character(name = "Catelyn", surname = "Stark", alive = true, age = 40, traits = listOf("D", "H", "C")),
                 Character(name = "Cersei", surname = "Lannister", alive = true, age = 36, traits = listOf("H", "E", "F")),
                 Character(name = "Daenerys", surname = "Targaryen", alive = true, age = 16, traits = listOf("D", "H", "C")),

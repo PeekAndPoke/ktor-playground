@@ -33,6 +33,17 @@ interface Vault {
 }
 
 interface Repository<T> {
+
+    /**
+     * The name of the repository
+     */
+    val name: String
+
+    /**
+     * The type of the entities stored in the repository.
+     *
+     * This is needed for deserialization
+     */
     val storedType: TypeRef<T>
 
     /**
@@ -63,10 +74,11 @@ class Database internal constructor() {
 
     internal val repositories: MutableMap<Class<*>, Repository<*>> = mutableMapOf()
 
+    private val repositoriesByName: MutableMap<String, Repository<*>?> = mutableMapOf()
+
     fun getRepositories() = repositories.values
 
     fun ensureRepositories() {
-
         repositories.values.forEach { it.ensure() }
     }
 
@@ -77,6 +89,13 @@ class Database internal constructor() {
     }
 
     inline fun <reified T : Repository<*>> getRepository() = getRepository(T::class.java)
+
+    fun getRepository(name: String): Repository<*>? {
+
+        return repositoriesByName.getOrPut(name) {
+            repositories.values.firstOrNull { it.name == name }
+        }
+    }
 }
 
 
@@ -88,5 +107,5 @@ class Key<out T>(val name: String) {
 }
 
 class RefCache {
-    val entries = mutableMapOf<String, Any?>()
+    val entries = mutableMapOf<String, Ref<*>?>()
 }
