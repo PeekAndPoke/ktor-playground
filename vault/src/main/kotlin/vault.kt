@@ -106,6 +106,31 @@ class Key<out T>(val name: String) {
         "Key: $name"
 }
 
-class RefCache {
-    val entries = mutableMapOf<String, Ref<*>?>()
+interface EntityCache {
+    fun <T> getOrPut(id: String, builder: () -> T?): T?
+}
+
+class NullEntityCache : EntityCache {
+    override fun <T> getOrPut(id: String, builder: () -> T?): T? = builder()
+}
+
+class DefaultEntityCache : EntityCache {
+
+    private val entries = mutableMapOf<String, Any?>()
+
+    override fun <T> getOrPut(id: String, builder: () -> T?): T? {
+
+        if (entries.contains(id)) {
+            println("RefCache HIT $id")
+
+            @Suppress("UNCHECKED_CAST")
+            return entries[id] as T
+        }
+
+        println("RefCache MISS $id")
+
+        return builder().apply {
+            entries[id] = this
+        }
+    }
 }

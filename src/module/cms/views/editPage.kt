@@ -1,6 +1,6 @@
 package de.peekandpoke.module.cms.views
 
-import de.peekandpoke.module.cms.forms.PageForm
+import de.peekandpoke.module.cms.forms.CmsPageForm
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.util.KtorExperimentalAPI
 import io.ultra.ktor_tools.bootstrap.textArea
@@ -12,7 +12,7 @@ import kotlinx.html.h1
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
-internal fun Template.editPage(create: Boolean, form: PageForm) {
+internal fun Template.editPage(create: Boolean, form: CmsPageForm) {
 
     activeMenu = MenuEntries.PAGES
 

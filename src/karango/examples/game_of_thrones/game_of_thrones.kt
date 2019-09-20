@@ -76,8 +76,8 @@ fun installData() {
     println("==========================================================================================================================")
     println("Inserting all characters using a LET statement")
 
-    val markAddy = actors.save(Actor("Mark", "Addy"))
-    val seanBean = actors.save(Actor("Sean", "Bean"))
+    val markAddy = actors.save(Actor("Mark", "Addy", 50))
+    val seanBean = actors.save(Actor("Sean", "Bean", 55))
 
     println(seanBean)
 

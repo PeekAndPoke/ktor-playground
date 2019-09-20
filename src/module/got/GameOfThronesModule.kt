@@ -20,7 +20,6 @@ import io.ultra.ktor_tools.architecture.Module
 import io.ultra.ktor_tools.bootstrap.*
 import io.ultra.ktor_tools.flashSession
 import io.ultra.ktor_tools.getOrPost
-import io.ultra.ktor_tools.logger.logger
 import kotlinx.html.*
 
 @KtorExperimentalAPI
@@ -52,7 +51,7 @@ class GameOfThronesModule(app: Application) : Module(app) {
 
             get<GetCharacters> { p ->
 
-//                val savedCharacters: Cursor<Stored<Character>> = database.actors.query {
+                //                val savedCharacters: Cursor<Stored<Character>> = database.actors.query {
 //                    FOR(Characters) { c ->
 //                        RETURN(c.AS<Stored<Character>>())
 //                    }
@@ -115,18 +114,17 @@ class GameOfThronesModule(app: Application) : Module(app) {
 
             getOrPost<GetCharacter> { data ->
 
-                val form = CharacterForm(data.character._id, data.character.value.mutator())
+                val form = CharacterForm.of(data.character)
+
+                println(data.character)
 
                 if (form.submit(call)) {
-
                     if (form.isModified) {
 
-                        val savedActor = form.result.actor?.let { database.actors.save(it.asStored) }
+                        form.result.value.actor?.let { database.actors.save(it.asStored) }
                         val saved = database.characters.save(form.result)
 
-                        logger.info("Updated character in database: $saved, $savedActor")
-
-                        flashSession.success("Character ${form.result.fullName} was saved")
+                        flashSession.success("Character ${saved.value.fullName} was saved")
                     }
 
                     return@getOrPost call.respondRedirect(linkTo.getCharacters())
@@ -162,20 +160,23 @@ class GameOfThronesModule(app: Application) : Module(app) {
                                     }
                                 }
 
-                                // TODO: fixme
-//                                form.actor?.let { actorForm ->
-//                                    h4 { +"Edit Actor ${data.character.actor?.value?.name}" }
-//
-//                                    row {
-//                                        col_md_3 {
-//                                            textInput(t, actorForm.name, label = "Name")
-//                                        }
-//
-//                                        col_md_3 {
-//                                            numberInput(t, actorForm.age, label = "Age")
-//                                        }
-//                                    }
-//                                }
+                                form.actor?.let { actorForm ->
+                                    h4 { +"Edit Actor ${data.character.actor?.value?.name}" }
+
+                                    row {
+                                        col_md_3 {
+                                            textInput(t, actorForm.name, label = "Name")
+                                        }
+
+                                        col_md_3 {
+                                            textInput(t, actorForm.surname, label = "Surname")
+                                        }
+
+                                        col_md_3 {
+                                            numberInput(t, actorForm.age, label = "Age")
+                                        }
+                                    }
+                                }
 
                                 submit { +"Submit" }
                             }

@@ -7,8 +7,8 @@ import com.fasterxml.jackson.databind.deser.ContextualDeserializer
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import de.peekandpoke.ultra.vault.Database
+import de.peekandpoke.ultra.vault.EntityCache
 import de.peekandpoke.ultra.vault.Ref
-import de.peekandpoke.ultra.vault.RefCache
 
 /**
  * TODO: fix me
@@ -27,20 +27,19 @@ internal class EntityRefSerializer : StdSerializer<Ref<*>>(Ref::class.java) {
 
 internal class EntityRefDeserializer @JvmOverloads constructor(
     private val db: Database? = null,
-    private val cache: RefCache? = null,
+    private val cache: EntityCache? = null,
     type: Class<*>? = null
 ) : StdDeserializer<Ref<*>>(type), ContextualDeserializer {
 
     override fun createContextual(ctxt: DeserializationContext, property: BeanProperty?): JsonDeserializer<*> {
 
-        println("-----------------------------------------------------------------------------------------------")
-        println("Ref for prop: ${property?.name} -> ${property?.type}")
+//        println("-----------------------------------------------------------------------------------------------")
+//        println("Ref for prop: ${property?.name} -> ${property?.type}")
 
-        return EntityRefDeserializer(
-            ctxt.findInjectableValue("database", null, null) as Database,
-            ctxt.findInjectableValue("cache", null, null) as RefCache,
-            property?.type?.rawClass
-        )
+        val db = ctxt.findInjectableValue("database", null, null) as Database
+        val cache = ctxt.findInjectableValue("entityCache", null, null) as EntityCache
+
+        return EntityRefDeserializer(db, cache, property?.type?.rawClass)
     }
 
     override fun isCachable(): Boolean {
@@ -59,9 +58,7 @@ internal class EntityRefDeserializer @JvmOverloads constructor(
 
         val coll = id.split("/").first()
 
-        return cache.entries.getOrPut(id) {
-            db.getRepository(coll)?.findById(id)?.asRef
-        }
+        return cache.getOrPut(id) { db.getRepository(coll)?.findById(id) }?.asRef
     }
 }
 

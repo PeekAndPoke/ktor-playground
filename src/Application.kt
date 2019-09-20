@@ -300,6 +300,8 @@ fun Application.module(testing: Boolean = false) {
 
         val ns = measureNanoTime {
 
+            logger.info(call.attributes.allKeys.toString())
+
             // via the calls attributes we provide the following things
             with(call.attributes) {
                 // The i18n based on the choosen language

@@ -44,6 +44,14 @@ Dependencies: none
   - ( ) are all dependencies present for all services
   - ( ) detect cyclic dependencies
 
+## CULO - Custom Locations Server
+
+Idea: The locations service also handles the parameter conversion.
+      The Parameter conversion needs to access the call, in order to 
+      access the injected attributes. This is currently not possible
+
+Dependencis: RECO
+
 ## INCO- Insight Collectors
 
 Idea: Collect insights about code execution, e.g. db-queries, request-details, etc for display in DEBA

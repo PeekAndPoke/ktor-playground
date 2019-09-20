@@ -58,6 +58,7 @@ dependencies {
     compile "de.peekandpoke.ultra:mutator:$ultra_version"
     kapt "de.peekandpoke.ultra:mutator:$ultra_version"
 
+    compile project(":vault")
     compile project(":polyglot")
 
     ////  tests  ////////////////////////////////////////////////////////////////////////////////////////////////

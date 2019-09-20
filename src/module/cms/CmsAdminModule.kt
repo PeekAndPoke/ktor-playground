@@ -1,11 +1,12 @@
 package de.peekandpoke.module.cms
 
 import de.peekandpoke.karango_ktor.database
-import de.peekandpoke.module.cms.forms.PageForm
+import de.peekandpoke.module.cms.forms.CmsPageForm
 import de.peekandpoke.module.cms.views.Template
 import de.peekandpoke.module.cms.views.editPage
 import de.peekandpoke.module.cms.views.index
 import de.peekandpoke.module.cms.views.pages
+import de.peekandpoke.ultra.vault.New
 import de.peekandpoke.ultra.vault.Stored
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
@@ -28,7 +29,6 @@ import io.ultra.ktor_tools.bootstrap.success
 import io.ultra.ktor_tools.flashSession
 import io.ultra.ktor_tools.getOrPost
 import io.ultra.ktor_tools.logger.logger
-import java.time.ZoneId
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
@@ -94,38 +94,32 @@ class CmsAdminModule(app: Application) : Module(app) {
 
             getOrPost<EditPage> { data ->
 
-                val form = PageForm(data.page._id, data.page.value.mutator())
+                val form = CmsPageForm.of(data.page)
 
                 if (form.submit(call)) {
-
                     if (form.isModified) {
                         val saved = database.cmsPages.save(form.result)
-                        logger.info("Updated page in database '${saved.value.name}'")
-                        flashSession.success("Page ${form.result.name} was saved")
+                        flashSession.success("Page ${saved.value.name} was saved")
                     }
 
                     return@getOrPost call.respondRedirect(linkTo.pages())
                 }
 
-                respond {
-                    editPage(false, form)
-                }
+                respond { editPage(false, form) }
             }
 
             getOrPost<CreatePage> {
 
-                println(ZoneId.getAvailableZoneIds())
+                val page = New(CmsPage.empty())
 
-                val page = CmsPage.empty()
-
-                val form = PageForm("new", page.mutator())
+                val form = CmsPageForm.of(page)
 
                 if (form.submit(call)) {
 
                     if (form.isModified) {
                         val saved = database.cmsPages.save(form.result)
                         logger.info("Updated page in database '${saved.value.name}'")
-                        flashSession.success("Page ${form.result.name} was created")
+                        flashSession.success("Page ${form.result.value.name} was created")
                     }
 
                     return@getOrPost call.respondRedirect(linkTo.pages())

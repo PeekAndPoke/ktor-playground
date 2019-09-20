@@ -24,7 +24,7 @@ class KarangoDriver(
     private val database: Database,
     private val arangoDb: ArangoDatabase,
     private val onSaveHooks: List<OnSaveHook> = listOf(),
-    private val refCache: RefCache = RefCache()
+    private val entityCache: EntityCache = NullEntityCache()
 ) : Driver {
 
     /**
@@ -48,7 +48,7 @@ class KarangoDriver(
             mapOf(
                 "database" to database,
                 "mapper" to this,
-                "cache" to refCache
+                "entityCache" to entityCache
             )
         )
     }
@@ -80,7 +80,7 @@ class KarangoDriver(
 
         lateinit var result: ArangoCursor<*>
 
-        println(query)
+//        println(query)
 //        println(query.ret.innerType())
 //        println(mapped)
 
@@ -115,12 +115,9 @@ abstract class EntityRepository<T : Any>(
     fun count(): Long = queryFirst { RETURN(COUNT(coll)) }!!.toLong()
 
     /**
-     * Save or update the given object.
+     * Inserts the given object into the database and returns the saved version
      *
-     * When the _id of the object is null an INSERT is tried.
-     * Otherwise an UPSERT is tried.
-     *
-     * Returns the saved version of the input
+     * TODO: apply onSaveHooks
      */
     fun save(obj: T): Stored<T> = onBeforeSave(obj).let {
         findFirst {
@@ -133,8 +130,15 @@ abstract class EntityRepository<T : Any>(
      */
     private fun onBeforeSave(obj: T) = obj
 
-    fun save(stored: Stored<T>): Stored<T> {
-        TODO("implement me with UPSERT")
+    /**
+     * Updates the given obj in the database and returns the saved version
+     *
+     * TODO: apply onSaveHooks
+     */
+    fun save(stored: Storable<T>): Stored<T> = let {
+        findFirst {
+            UPSERT(stored) INTO coll
+        }!!
     }
 
     /**

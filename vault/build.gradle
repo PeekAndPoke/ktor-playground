@@ -10,6 +10,7 @@ buildscript {
 }
 
 apply plugin: 'kotlin'
+apply plugin: 'kotlin-kapt'
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
@@ -23,6 +24,9 @@ version '0.0.1'
 repositories {
     mavenCentral()
     jcenter()
+
+    // my stuff
+    maven { url 'https://dl.bintray.com/peekandpoke/maven' }
 }
 
 dependencies {
@@ -30,6 +34,9 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     compile("com.fasterxml.jackson.core:jackson-databind:$jackson_version")
+
+    compile "de.peekandpoke.ultra:mutator:$ultra_version"
+    kapt "de.peekandpoke.ultra:mutator:$ultra_version"
 
     ////  tests  ////////////////////////////////////////////////////////////////////////////////////////////////
 

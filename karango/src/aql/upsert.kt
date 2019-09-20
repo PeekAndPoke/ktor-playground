@@ -3,18 +3,18 @@
 package de.peekandpoke.karango.aql
 
 import de.peekandpoke.karango.ICollection
-import de.peekandpoke.ultra.vault.Stored
+import de.peekandpoke.ultra.vault.Storable
 
 @Suppress("unused")
 @KarangoTerminalFuncMarker
-fun <T> StatementBuilder.UPSERT(entity: Stored<T>) = UpsertPartial(entity)
+fun <T> StatementBuilder.UPSERT(entity: Storable<T>) = UpsertPartial(entity)
 
-class UpsertPartial<T> internal constructor(val entity: Stored<T>)
+class UpsertPartial<T> internal constructor(val entity: Storable<T>)
 
 @KarangoTerminalFuncMarker
 infix fun <T> UpsertPartial<T>.INTO(collection: ICollection<T>): TerminalExpr<T> = UpsertInto(entity, collection)
 
-internal class UpsertInto<T>(private val entity: Stored<T>, private val col: ICollection<T>) : TerminalExpr<T> {
+internal class UpsertInto<T>(private val entity: Storable<T>, private val col: ICollection<T>) : TerminalExpr<T> {
 
     override fun innerType() = col.getType().down<T>()
 
@@ -25,8 +25,8 @@ internal class UpsertInto<T>(private val entity: Stored<T>, private val col: ICo
         with(p) {
             append("UPSERT { _key: \"").append(entity._key).append("\" }").appendLine()
             indent {
-                append("INSERT ").value("v", entity).appendLine()
-                append("UPDATE ").value("v", entity).append(" IN ").append(col.getAlias()).appendLine()
+                append("INSERT ").value("v", entity.value).appendLine()
+                append("UPDATE ").value("v", entity.value).append(" IN ").append(col.getAlias()).appendLine()
                 append("RETURN NEW").appendLine()
             }
         }
