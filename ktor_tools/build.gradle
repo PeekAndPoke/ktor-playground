@@ -55,6 +55,7 @@ dependencies {
     // webjars
     compile 'org.webjars:webjars-locator-core:0.37'
 
+    compile "de.peekandpoke.ultra:kontainer:$ultra_version"
     compile "de.peekandpoke.ultra:mutator:$ultra_version"
     kapt "de.peekandpoke.ultra:mutator:$ultra_version"
 

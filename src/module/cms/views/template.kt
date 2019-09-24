@@ -1,13 +1,11 @@
 package de.peekandpoke.module.cms.views
 
-import de.peekandpoke.module.cms.CmsAdminModule
+import de.peekandpoke.module.cms.CmsAdminRoutes
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.html.Placeholder
 import io.ktor.html.Template
 import io.ktor.html.insert
-import io.ktor.locations.KtorExperimentalLocationsAPI
-import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.pipeline.PipelineContext
 import io.ultra.ktor_tools.flashSession
 import io.ultra.ktor_tools.resources.css
@@ -22,10 +20,8 @@ enum class MenuEntries {
     PAGES
 }
 
-@KtorExperimentalAPI
-@KtorExperimentalLocationsAPI
 internal class Template constructor(
-    val linkTo: CmsAdminModule.LinkTo,
+    val routes: CmsAdminRoutes,
     pipeline: PipelineContext<Unit, ApplicationCall>
 ) : Template<HTML> {
 
@@ -73,9 +69,9 @@ internal class Template constructor(
 
             ui.sidebar.vertical.left.inverted.violet.menu.visible.fixed {
 
-                ui.item.given(activeMenu == MenuEntries.HOME) { active } A { href = linkTo.index(); +"Overview" }
+                ui.item.given(activeMenu == MenuEntries.HOME) { active } A { href = routes.index; +"Overview" }
 
-                ui.item.given(activeMenu == MenuEntries.PAGES) { active } A { href = linkTo.pages(); +"Pages" }
+                ui.item.given(activeMenu == MenuEntries.PAGES) { active } A { href = routes.pages; +"Pages" }
             }
 
             ui.pusher.padded.right {

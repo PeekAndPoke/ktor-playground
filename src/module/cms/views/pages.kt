@@ -18,11 +18,10 @@ internal fun Template.pages(pages: List<Stored<CmsPage>>) {
             +"Pages"
 
             ui.right.floated.basic.primary.button A {
-                href = linkTo.createPage()
+                href = routes.createPage
                 +"Create Page"
             }
         }
-
 
         ui.celled.table Table {
             thead {
@@ -39,10 +38,10 @@ internal fun Template.pages(pages: List<Stored<CmsPage>>) {
                 pages.forEach {
                     tr {
                         td {
-                            a(href = linkTo.editPage(it)) { +it._id }
+                            a(href = routes.editPage(it)) { +it._id }
                         }
                         td {
-                            a(href = linkTo.editPage(it)) { +it.value.name }
+                            a(href = routes.editPage(it)) { +it.value.name }
                         }
                         td {
                             +(it.value._ts?.createdAt?.toString() ?: "n/a")

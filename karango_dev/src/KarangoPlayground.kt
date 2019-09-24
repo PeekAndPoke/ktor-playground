@@ -19,7 +19,7 @@ private val databaseBlueprint: Vault.Blueprint = Vault.setup {
 }
 
 private val db = databaseBlueprint.with { database ->
-    listOf(
+    mapOf(
         karangoDefaultDriver to KarangoDriver(database, arangoDatabase)
     )
 }

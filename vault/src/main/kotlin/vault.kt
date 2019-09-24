@@ -1,5 +1,8 @@
 package de.peekandpoke.ultra.vault
 
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
+
 interface Vault {
 
     class Builder {
@@ -17,7 +20,9 @@ interface Vault {
 
     class Blueprint internal constructor(private val repos: Map<Class<*>, (DriverRegistry) -> Repository<*>>) {
 
-        fun with(builder: (Database) -> List<Pair<Key<Driver>, Driver>>) = Database().apply {
+        private val sharedTypeLookup: MutableMap<Type, Class<Repository<*>>?> = mutableMapOf()
+
+        fun with(builder: (Database) -> Map<Key<Driver>, Driver>) = Database(sharedTypeLookup).apply {
 
             with(DriverRegistry(builder(this))) {
                 repositories.putAll(
@@ -53,14 +58,21 @@ interface Repository<T> {
      */
     fun ensure()
 
+    /**
+     * Checks whether the repository stores the given cls
+     */
+    fun stores(type: Type): Boolean = when (storedType.type) {
+        is ParameterizedType -> (storedType.type as ParameterizedType).rawType == type
+
+        else -> storedType == type
+    }
+
     fun findById(id: String): Stored<T>?
 }
 
 interface Driver
 
-class DriverRegistry(drivers: List<Pair<Key<Driver>, Driver>>) {
-
-    private val drivers: Map<Key<Driver>, Driver> = mutableMapOf(*drivers.toTypedArray())
+class DriverRegistry(private val drivers: Map<Key<Driver>, Driver>) {
 
     fun <T : Driver> get(key: Key<T>): T {
 
@@ -70,7 +82,7 @@ class DriverRegistry(drivers: List<Pair<Key<Driver>, Driver>>) {
     }
 }
 
-class Database internal constructor() {
+class Database internal constructor(private val typeLookup: MutableMap<Type, Class<Repository<*>>?>) {
 
     internal val repositories: MutableMap<Class<*>, Repository<*>> = mutableMapOf()
 
@@ -80,6 +92,31 @@ class Database internal constructor() {
 
     fun ensureRepositories() {
         repositories.values.forEach { it.ensure() }
+    }
+
+
+    fun <T> hasRepositoryStoring(type: Class<T>): Boolean {
+        // todo put some caching in place
+        return null != typeLookup.getOrPut(type) {
+            @Suppress("UNCHECKED_CAST")
+            repositories.values.firstOrNull { it.stores(type) }?.let { it::class.java as Class<Repository<*>> }
+        }
+    }
+
+    fun <T> getRepositoryStoring(type: Class<T>): Repository<T> {
+
+        val cls = typeLookup.getOrPut(type) {
+            @Suppress("UNCHECKED_CAST")
+            repositories.values.firstOrNull { it.stores(type) }?.let { it::class.java as Class<Repository<*>> }
+        }
+
+        if (cls != null) {
+            @Suppress("UNCHECKED_CAST")
+            return getRepository(cls) as Repository<T>
+        }
+
+        // TODO: use customer exception
+        error("No repository stores the type '$type'")
     }
 
     fun <T : Repository<*>> getRepository(cls: Class<T>): T {

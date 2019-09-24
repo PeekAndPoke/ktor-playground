@@ -6,130 +6,112 @@ import de.peekandpoke.module.cms.views.Template
 import de.peekandpoke.module.cms.views.editPage
 import de.peekandpoke.module.cms.views.index
 import de.peekandpoke.module.cms.views.pages
+import de.peekandpoke.ultra.kontainer.module
 import de.peekandpoke.ultra.vault.New
 import de.peekandpoke.ultra.vault.Stored
-import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
-import io.ktor.application.feature
 import io.ktor.html.respondHtmlTemplate
 import io.ktor.http.HttpStatusCode
-import io.ktor.locations.KtorExperimentalLocationsAPI
-import io.ktor.locations.Location
-import io.ktor.locations.get
 import io.ktor.response.respondRedirect
 import io.ktor.routing.Route
-import io.ktor.routing.Routing
-import io.ktor.routing.route
-import io.ktor.util.KtorExperimentalAPI
+import io.ktor.routing.get
 import io.ktor.util.pipeline.PipelineContext
-import io.ultra.ktor_tools.architecture.LinkGenerator
-import io.ultra.ktor_tools.architecture.Module
+import io.ultra.ktor_tools.ParamConversionService
+import io.ultra.ktor_tools.Routes
 import io.ultra.ktor_tools.bootstrap.success
 import io.ultra.ktor_tools.flashSession
 import io.ultra.ktor_tools.getOrPost
 import io.ultra.ktor_tools.logger.logger
 
-@KtorExperimentalAPI
-@KtorExperimentalLocationsAPI
-fun Application.cmsAdmin() = CmsAdminModule(this)
+val CmsAdminModule = module {
+    config("cmsAdminMountPoint", "/cms")
 
-@KtorExperimentalAPI
-@KtorExperimentalLocationsAPI
-class CmsAdminModule(app: Application) : Module(app) {
+    singleton<CmsAdminRoutes>()
+    singleton<CmsAdmin>()
+}
 
-    val mountPoint = "/cms"
+class CmsAdminRoutes(converter: ParamConversionService, cmsAdminMountPoint: String) : Routes(converter, cmsAdminMountPoint) {
 
-    @Location("")
-    class Index
+    val index = route("")
 
-    @Location("/pages")
-    class Pages
+    val pages = route("/pages")
 
-    @Location("/pages/{page}/edit")
-    class EditPage(val page: Stored<CmsPage>)
+    data class EditPage(val page: Stored<CmsPage>)
 
-    @Location("/pages/create")
-    class CreatePage
+    val editPage = route<EditPage>("/pages/{page}/edit")
+    fun editPage(page: Stored<CmsPage>) = editPage(EditPage(page))
 
-    inner class LinkTo : LinkGenerator(mountPoint, application) {
-        fun index() = linkTo(Index())
-        fun pages() = linkTo(Pages())
-        fun editPage(page: Stored<CmsPage>) = linkTo(EditPage(page))
-        fun createPage() = linkTo(CreatePage())
-    }
+    val createPage = route("/pages/create")
+}
 
-    val linkTo = LinkTo()
+class CmsAdmin(val routes: CmsAdminRoutes) {
 
     private suspend fun PipelineContext<Unit, ApplicationCall>.respond(status: HttpStatusCode = HttpStatusCode.OK, body: Template.() -> Unit) {
-        call.respondHtmlTemplate(Template(linkTo, this), status, body)
+        call.respondHtmlTemplate(Template(routes, this), status, body)
     }
 
-    override fun mount(mountPoint: Route) = with(mountPoint) {
+    fun mount(route: Route) = with(route) {
 
-        route(this@CmsAdminModule.mountPoint) {
+        get(routes.index) {
 
-            get<Index> {
-
-                fun printRoutes(routes: List<Route>) {
-                    routes.forEach {
-                        println(it)
-                        println(it.attributes.allKeys)
-                        printRoutes(it.children)
-                    }
-                }
-
-                printRoutes(application.feature(Routing).children)
-
-                respond {
-                    index()
+            fun printRoutes(routes: List<Route>) {
+                routes.forEach {
+                    println(it)
+                    println(it.attributes.allKeys)
+                    printRoutes(it.children)
                 }
             }
 
-            get<Pages> {
-                respond {
-                    pages(database.cmsPages.findAllSorted().toList())
-                }
-            }
-
-            getOrPost<EditPage> { data ->
-
-                val form = CmsPageForm.of(data.page)
-
-                if (form.submit(call)) {
-                    if (form.isModified) {
-                        val saved = database.cmsPages.save(form.result)
-                        flashSession.success("Page ${saved.value.name} was saved")
-                    }
-
-                    return@getOrPost call.respondRedirect(linkTo.pages())
-                }
-
-                respond { editPage(false, form) }
-            }
-
-            getOrPost<CreatePage> {
-
-                val page = New(CmsPage.empty())
-
-                val form = CmsPageForm.of(page)
-
-                if (form.submit(call)) {
-
-                    if (form.isModified) {
-                        val saved = database.cmsPages.save(form.result)
-                        logger.info("Updated page in database '${saved.value.name}'")
-                        flashSession.success("Page ${form.result.value.name} was created")
-                    }
-
-                    return@getOrPost call.respondRedirect(linkTo.pages())
-                }
-
-                respond {
-                    editPage(true, form)
-                }
-
+            respond {
+                index()
             }
         }
+
+        get(routes.pages) {
+            respond {
+                pages(database.cmsPages.findAllSorted().toList())
+            }
+        }
+
+        getOrPost(routes.editPage) { data ->
+
+            val form = CmsPageForm.of(data.page)
+
+            if (form.submit(call)) {
+                if (form.isModified) {
+                    val saved = database.cmsPages.save(form.result)
+                    flashSession.success("Page ${saved.value.name} was saved")
+                }
+
+                return@getOrPost call.respondRedirect(routes.pages)
+            }
+
+            respond { editPage(false, form) }
+        }
+
+        getOrPost(routes.createPage) {
+
+            val page = New(CmsPage.empty())
+
+            val form = CmsPageForm.of(page)
+
+            if (form.submit(call)) {
+
+                if (form.isModified) {
+                    val saved = database.cmsPages.save(form.result)
+                    logger.info("Updated page in database '${saved.value.name}'")
+                    flashSession.success("Page ${form.result.value.name} was created")
+                }
+
+                return@getOrPost call.respondRedirect(routes.pages)
+            }
+
+            respond {
+                editPage(true, form)
+            }
+
+        }
+
     }
 }

@@ -11,13 +11,17 @@ import de.peekandpoke.karango.examples.game_of_thrones.registerGotCollections
 import de.peekandpoke.karango.karangoDefaultDriver
 import de.peekandpoke.karango_ktor.add
 import de.peekandpoke.karango_ktor.provide
-import de.peekandpoke.module.cms.cmsAdmin
+import de.peekandpoke.module.cms.CmsAdmin
+import de.peekandpoke.module.cms.CmsAdminModule
 import de.peekandpoke.module.cms.cmsPublic
 import de.peekandpoke.module.cms.registerCmsCollections
 import de.peekandpoke.module.got.gameOfThrones
 import de.peekandpoke.module.semanticui.semanticUi
 import de.peekandpoke.resources.Translations
 import de.peekandpoke.test_module.TestModule
+import de.peekandpoke.ultra.kontainer.kontainer
+import de.peekandpoke.ultra.vault.Database
+import de.peekandpoke.ultra.vault.Stored
 import de.peekandpoke.ultra.vault.Vault
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -43,12 +47,17 @@ import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.getDigestFunction
 import io.ktor.util.hex
 import io.ultra.ktor_tools.FlashSession
+import io.ultra.ktor_tools.KontainerKey
+import io.ultra.ktor_tools.ParamConversionService
+import io.ultra.ktor_tools.ParamConverter
 import io.ultra.ktor_tools.logger.logger
 import io.ultra.ktor_tools.resources.AppMeta
 import io.ultra.ktor_tools.resources.BetterWebjars
 import io.ultra.ktor_tools.resources.provide
 import io.ultra.ktor_tools.resources.webResources
 import kotlinx.html.*
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
 import java.time.Duration
 import java.util.*
 import kotlin.collections.set
@@ -67,9 +76,7 @@ private val databaseBlueprint: Vault.Blueprint = Vault.setup {
 
 // ensure all repositories exist
 private val database = databaseBlueprint.with { database ->
-    listOf(
-        karangoDefaultDriver to KarangoDriver(database = database, arangoDb = arangoDatabase)
-    )
+    mapOf(karangoDefaultDriver to KarangoDriver(database = database, arangoDb = arangoDatabase))
 }.apply {
     ensureRepositories()
 }
@@ -111,17 +118,61 @@ val WebResources = webResources(Meta) {
     }
 }
 
+
+val kontainerBlueprint = kontainer {
+
+    // database ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    instance(databaseBlueprint)
+
+    singleton<ParamConversionService>()
+
+    singleton { blueprint: Vault.Blueprint ->
+        blueprint.with { database ->
+            mapOf(karangoDefaultDriver to KarangoDriver(database = database, arangoDb = arangoDatabase))
+        }
+    }
+
+    singleton<DbParamConverter>()
+
+    // modules ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    module(CmsAdminModule)
+}
+
+class DbParamConverter(private val db: Database) : ParamConverter {
+
+    override fun canHandle(type: Type): Boolean {
+        return type is ParameterizedType && type.rawType == Stored::class.java
+    }
+
+    override fun toUri(value: Any, type: Type): String {
+        return (value as Stored<*>)._key
+    }
+
+    override fun fromUri(value: String, type: Type): Stored<Any> {
+
+        val innerCls = (type as ParameterizedType).actualTypeArguments[0]
+
+        @Suppress("UNCHECKED_CAST")
+        return db.getRepositoryStoring(innerCls as Class<*>).findById(value) as Stored<Any>
+    }
+}
+
+
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
 @kotlin.jvm.JvmOverloads
 @Suppress("unused", "UNUSED_PARAMETER") // Referenced in application.conf
 fun Application.module(testing: Boolean = false) {
 
+    val initKontainer = kontainerBlueprint.useWith()
+
     val gameOfThronesModule = gameOfThrones()
 
     val semanticUiModule = semanticUi()
 
-    val cmsAdminModule = cmsAdmin()
+    val cmsAdmin = initKontainer.get(CmsAdmin::class)
     val cmsPublicModule = cmsPublic()
 
     install(Locations) {
@@ -304,13 +355,16 @@ fun Application.module(testing: Boolean = false) {
 
             // via the calls attributes we provide the following things
             with(call.attributes) {
-                // The i18n based on the choosen language
+
+                put(KontainerKey, kontainerBlueprint.useWith())
+
+                // The i18n based on the chosen language
                 provide(Translations.withLocale("en"))
                 // The web resources
                 provide(WebResources)
                 // A customized version of the database, with a hook for UserRecords
                 provide(databaseBlueprint.with { database ->
-                    listOf(
+                    mapOf(
                         karangoDefaultDriver to KarangoDriver(
                             database = database,
                             arangoDb = arangoDatabase,
@@ -402,7 +456,7 @@ fun Application.module(testing: Boolean = false) {
                                 a(href = semanticUiModule.linkTo.index()) { +"Semantic UI demo" }
                             }
                             li {
-                                a(href = cmsAdminModule.linkTo.index()) { +"Mini CMS" }
+                                a(href = cmsAdmin.routes.index) { +"Mini CMS" }
                             }
                         }
                     }
@@ -410,19 +464,8 @@ fun Application.module(testing: Boolean = false) {
             }
 
             authenticate(authName) {
-
                 semanticUiModule.mount(this)
-                cmsAdminModule.mount(this)
-
-                get("/admin") {
-                    call.respondHtml {
-                        body {
-                            div {
-                                +"Admin area"
-                            }
-                        }
-                    }
-                }
+                cmsAdmin.mount(this)
             }
         }
     }
