@@ -104,14 +104,16 @@ val kontainerBlueprint = kontainer {
     // functionality modules /////////////////////////////////////////////////////////////////////////////////////////////
 
     module(KtorFX)
-    instance(WebResources) // We re-define the web resource
-    dynamic(I18n::class)   // Redefine the i18n as a dynamic service, so we are forced to inject it with user language
+    // We re-define the web resource
+    instance(WebResources)
+    // Redefine the i18n as a dynamic service, so we can inject it with user language for each request
+    dynamic(I18n::class, Translations.withLocale("en"))
 
     // database drivers
 
     instance(arangoDatabase)
     singleton(KarangoDriver::class)
-    dynamic(EntityCache::class)
+    dynamic(EntityCache::class, NullEntityCache())
 
     // application modules ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -123,12 +125,7 @@ val kontainerBlueprint = kontainer {
     module(CmsPublicModule)
 }
 
-fun initKontainer() = kontainerBlueprint.useWith(
-    // default language
-    Translations.withLocale("en"),
-    // Entity cache
-    NullEntityCache()
-)
+fun initKontainer() = kontainerBlueprint.useWith()
 
 fun requestContainer() = kontainerBlueprint.useWith(
     // default language
