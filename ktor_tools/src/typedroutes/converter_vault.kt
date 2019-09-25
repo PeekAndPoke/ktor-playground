@@ -14,17 +14,17 @@ class IncomingVaultConverter(private val db: Database) : IncomingParamConverter 
 
     override fun convert(value: String, type: Type): Stored<Any> {
 
-        val innerCls = (type as ParameterizedType).actualTypeArguments[0]
+        val innerCls = (type as ParameterizedType).actualTypeArguments[0] as Class<*>
 
         @Suppress("UNCHECKED_CAST")
-        return db.getRepositoryStoring(innerCls as Class<*>).findById(value) as Stored<Any>
+        return db.getRepositoryStoring(innerCls).findById(value) as Stored<Any>
     }
 }
 
 class OutgoingVaultConverter : OutgoingParamConverter {
 
     override fun canHandle(type: Type): Boolean {
-        return type is ParameterizedType && (type.rawType as Class<*>).isAssignableFrom(Storable::class.java)
+        return type is ParameterizedType && Storable::class.java.isAssignableFrom((type.rawType as Class<*>))
     }
 
     override fun convert(value: Any, type: Type): String {

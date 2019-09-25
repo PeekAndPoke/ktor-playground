@@ -19,10 +19,16 @@ import io.ultra.ktor_tools.typedroutes.getOrPost
 import kotlinx.html.*
 
 val GameOfThronesModule = module {
+    // config
     config("gotMountPoint", "/game-of-thrones")
 
+    // application
     singleton(GameOfThronesRoutes::class)
     singleton(GameOfThrones::class)
+
+    // database
+    singleton(CharactersRepository::class)
+    singleton(ActorsRepository::class)
 }
 
 class GameOfThronesRoutes(converter: OutgoingConverter, gotMountPoint: String) : Routes(converter, gotMountPoint) {

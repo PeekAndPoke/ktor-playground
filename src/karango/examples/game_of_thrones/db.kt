@@ -1,18 +1,15 @@
 package de.peekandpoke.karango.examples.game_of_thrones
 
-import de.peekandpoke.karango.*
+import de.peekandpoke.karango.EntityCollection
+import de.peekandpoke.karango.EntityRepository
+import de.peekandpoke.karango.KarangoDriver
+import de.peekandpoke.karango._id
 import de.peekandpoke.karango.aql.Direction
 import de.peekandpoke.karango.aql.EQ
 import de.peekandpoke.karango.aql.FOR
 import de.peekandpoke.karango.aql.RETURN
 import de.peekandpoke.ultra.vault.Database
-import de.peekandpoke.ultra.vault.Vault
 import de.peekandpoke.ultra.vault.type
-
-fun Vault.Builder.registerGotCollections() {
-    add { CharactersRepository(it.get(karangoDefaultDriver)) }
-    add { ActorsRepository(it.get(karangoDefaultDriver)) }
-}
 
 internal val Database.characters get() = getRepository<CharactersRepository>()
 

@@ -25,10 +25,15 @@ import io.ultra.ktor_tools.typedroutes.Routes
 import io.ultra.ktor_tools.typedroutes.getOrPost
 
 val CmsAdminModule = module {
+    // config
     config("cmsAdminMountPoint", "/cms")
 
+    // application
     singleton(CmsAdminRoutes::class)
     singleton(CmsAdmin::class)
+
+    // database
+    singleton(CmsPagesRepository::class)
 }
 
 class CmsAdminRoutes(converter: OutgoingConverter, cmsAdminMountPoint: String) : Routes(converter, cmsAdminMountPoint) {

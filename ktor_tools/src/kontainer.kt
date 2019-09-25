@@ -3,6 +3,7 @@ package io.ultra.ktor_tools
 import de.peekandpoke.ultra.kontainer.Kontainer
 import de.peekandpoke.ultra.kontainer.module
 import de.peekandpoke.ultra.vault.Database
+import de.peekandpoke.ultra.vault.SharedRepoClassLookup
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.util.AttributeKey
@@ -22,7 +23,8 @@ val KtorFX = module {
 
     // database ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    dynamic(Database::class)
+    singleton(SharedRepoClassLookup::class)
+    singleton(Database::class)
 
     // data conversion for routing ////////////////////////////////////////////////////////////////////////////
 

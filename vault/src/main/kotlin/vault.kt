@@ -1,5 +1,6 @@
 package de.peekandpoke.ultra.vault
 
+import de.peekandpoke.ultra.common.SimpleLazy
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
@@ -7,29 +8,64 @@ interface Vault {
 
     class Builder {
 
-        private val repositories: MutableMap<Class<*>, (DriverRegistry) -> Repository<*>> = mutableMapOf()
+        private val repositories: MutableMap<Class<Repository<*>>, (DriverRegistry) -> Repository<*>> = mutableMapOf()
 
-        internal fun build() = Blueprint(repositories.toMap())
+        internal fun build() = Blueprint(listOf(
+            object : RepoProvider() {
+                init {
+                    repositories.forEach { (k, v) -> add(k, v) }
+                }
+            }
+        ))
 
         inline fun <reified T : Repository<*>> add(noinline provider: (DriverRegistry) -> T) = add(T::class.java, provider)
 
-        fun <T : Repository<*>> add(cls: Class<T>, provider: (DriverRegistry) -> T) = apply {
-            repositories[cls] = provider
+        fun add(cls: Class<*>, provider: (DriverRegistry) -> Repository<*>) = apply {
+            @Suppress("UNCHECKED_CAST")
+            repositories[cls as Class<Repository<*>>] = provider
         }
     }
 
-    class Blueprint internal constructor(private val repos: Map<Class<*>, (DriverRegistry) -> Repository<*>>) {
+    abstract class RepoProvider {
+        private val repos: MutableMap<Class<*>, (DriverRegistry) -> Repository<*>> = mutableMapOf()
 
-        private val sharedTypeLookup: MutableMap<Type, Class<Repository<*>>?> = mutableMapOf()
+        fun all(): Map<Class<*>, (DriverRegistry) -> Repository<*>> = repos.toMap()
 
-        fun with(builder: (Database) -> Map<Key<Driver>, Driver>) = Database(sharedTypeLookup).apply {
-
-            with(DriverRegistry(builder(this))) {
-                repositories.putAll(
-                    repos.map { (cls, repo) -> cls to repo(this) }.toMap()
-                )
-            }
+        fun <T : Repository<*>> add(cls: Class<T>, provider: (DriverRegistry) -> T) {
+            repos[cls] = provider
         }
+    }
+
+    class Blueprint(providers: List<RepoProvider>) {
+
+        private val sharedTypeLookup = SharedRepoClassLookup()
+
+        // merge all into a single map
+        private val repos: Map<Class<*>, (DriverRegistry) -> Repository<*>> =
+            providers.fold(mutableMapOf()) { acc, v -> acc.apply { putAll(v.all()) } }
+
+        fun with(builder: (Database) -> Map<Key<Driver>, Driver>): Database {
+
+            lateinit var database: Database
+
+            val lazy = SimpleLazy {
+                val drivers = DriverRegistry(builder(database))
+                repos.map { (_, repo) -> repo(drivers) }.toList()
+            }
+
+            database = Database(lazy, sharedTypeLookup)
+
+            return database
+        }
+
+//        fun with(builder: (Database) -> Map<Key<Driver>, Driver>) = Database(sharedTypeLookup).apply {
+//
+//            with(DriverRegistry(builder(this))) {
+//                repositories.putAll(
+//                    repos.map { (cls, repo) -> cls to repo(this) }.toMap()
+//                )
+//            }
+//        }
     }
 
     companion object {
@@ -82,11 +118,22 @@ class DriverRegistry(private val drivers: Map<Key<Driver>, Driver>) {
     }
 }
 
-class Database internal constructor(private val typeLookup: MutableMap<Type, Class<Repository<*>>?>) {
+class SharedRepoClassLookup {
 
-    internal val repositories: MutableMap<Class<*>, Repository<*>> = mutableMapOf()
+    private val typeLookup = mutableMapOf<Type, Class<out Repository<*>>?>()
 
-    private val repositoriesByName: MutableMap<String, Repository<*>?> = mutableMapOf()
+    private val nameLookup = mutableMapOf<String, Class<out Repository<*>>?>()
+
+    fun getOrPut(type: Type, defaultValue: () -> Class<out Repository<*>>?) = typeLookup.getOrPut(type, defaultValue)
+
+    fun getOrPut(name: String, defaultValue: () -> Class<out Repository<*>>?) = nameLookup.getOrPut(name, defaultValue)
+}
+
+class Database(repositories: Lazy<List<Repository<*>>>, private val repoClassLookup: SharedRepoClassLookup) {
+
+    private val repositories: Map<Class<out Repository<*>>, Repository<*>> by lazy {
+        repositories.value.map { it::class.java to it }.toMap()
+    }
 
     fun getRepositories() = repositories.values
 
@@ -97,7 +144,7 @@ class Database internal constructor(private val typeLookup: MutableMap<Type, Cla
 
     fun <T> hasRepositoryStoring(type: Class<T>): Boolean {
         // todo put some caching in place
-        return null != typeLookup.getOrPut(type) {
+        return null != repoClassLookup.getOrPut(type) {
             @Suppress("UNCHECKED_CAST")
             repositories.values.firstOrNull { it.stores(type) }?.let { it::class.java as Class<Repository<*>> }
         }
@@ -105,9 +152,8 @@ class Database internal constructor(private val typeLookup: MutableMap<Type, Cla
 
     fun <T> getRepositoryStoring(type: Class<T>): Repository<T> {
 
-        val cls = typeLookup.getOrPut(type) {
-            @Suppress("UNCHECKED_CAST")
-            repositories.values.firstOrNull { it.stores(type) }?.let { it::class.java as Class<Repository<*>> }
+        val cls = repoClassLookup.getOrPut(type) {
+            repositories.values.firstOrNull { it.stores(type) }?.let { it::class.java }
         }
 
         if (cls != null) {
@@ -128,10 +174,16 @@ class Database internal constructor(private val typeLookup: MutableMap<Type, Cla
     inline fun <reified T : Repository<*>> getRepository() = getRepository(T::class.java)
 
     fun getRepository(name: String): Repository<*>? {
-
-        return repositoriesByName.getOrPut(name) {
-            repositories.values.firstOrNull { it.name == name }
+        val cls = repoClassLookup.getOrPut(name) {
+            repositories.values.firstOrNull { it.name == name }?.let { it::class.java }
         }
+
+        if (cls != null) {
+            return getRepository(cls)
+        }
+
+        // TODO: use customer exception
+        error("No repository with name '$name' was found")
     }
 }
 

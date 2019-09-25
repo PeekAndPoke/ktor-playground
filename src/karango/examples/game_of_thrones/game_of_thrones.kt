@@ -15,7 +15,8 @@ private val arangoDb: ArangoDB = ArangoDB.Builder().user("root").password("").ho
 private val arangoDatabase: ArangoDatabase = arangoDb.db("kotlindev")
 
 private val databaseBlueprint: Vault.Blueprint = Vault.setup {
-    registerGotCollections()
+    add { CharactersRepository(it.get(karangoDefaultDriver)) }
+    add { ActorsRepository(it.get(karangoDefaultDriver)) }
 }
 
 private val db = databaseBlueprint.with { database ->

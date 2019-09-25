@@ -4,12 +4,10 @@ import com.arangodb.ArangoDB
 import com.arangodb.ArangoDatabase
 import com.fasterxml.jackson.databind.SerializationFeature
 import de.peekandpoke.karango.KarangoDriver
-import de.peekandpoke.karango.addon.TimestampedOnSaveHook
-import de.peekandpoke.karango.addon.UserRecord
-import de.peekandpoke.karango.addon.UserRecordOnSaveHook
-import de.peekandpoke.karango.examples.game_of_thrones.registerGotCollections
-import de.peekandpoke.karango.karangoDefaultDriver
-import de.peekandpoke.module.cms.*
+import de.peekandpoke.module.cms.CmsAdmin
+import de.peekandpoke.module.cms.CmsAdminModule
+import de.peekandpoke.module.cms.CmsPublic
+import de.peekandpoke.module.cms.CmsPublicModule
 import de.peekandpoke.module.got.GameOfThrones
 import de.peekandpoke.module.got.GameOfThronesModule
 import de.peekandpoke.module.semanticui.SemanticUi
@@ -17,11 +15,10 @@ import de.peekandpoke.module.semanticui.SemanticUiModule
 import de.peekandpoke.resources.Translations
 import de.peekandpoke.ultra.kontainer.kontainer
 import de.peekandpoke.ultra.vault.Database
-import de.peekandpoke.ultra.vault.Vault
-import io.ktor.application.Application
-import io.ktor.application.ApplicationCallPipeline
-import io.ktor.application.call
-import io.ktor.application.install
+import de.peekandpoke.ultra.vault.DefaultEntityCache
+import de.peekandpoke.ultra.vault.EntityCache
+import de.peekandpoke.ultra.vault.NullEntityCache
+import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.features.*
 import io.ktor.html.respondHtml
@@ -37,7 +34,9 @@ import io.ktor.response.respond
 import io.ktor.routing.get
 import io.ktor.routing.host
 import io.ktor.routing.routing
-import io.ktor.sessions.*
+import io.ktor.sessions.SessionTransportTransformerMessageAuthentication
+import io.ktor.sessions.Sessions
+import io.ktor.sessions.cookie
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.getDigestFunction
 import io.ktor.util.hex
@@ -61,11 +60,6 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 private val arangoDb: ArangoDB = ArangoDB.Builder().user("root").password("").host("localhost", 8529).build()
 
 private val arangoDatabase: ArangoDatabase = arangoDb.db("kotlindev")
-
-private val databaseBlueprint: Vault.Blueprint = Vault.setup {
-    registerGotCollections()
-    registerCmsCollections()
-}
 
 val Meta = object : AppMeta() {}
 
@@ -113,6 +107,12 @@ val kontainerBlueprint = kontainer {
     instance(WebResources) // We re-define the web resource
     dynamic(I18n::class)   // Redefine the i18n as a dynamic service, so we are forced to inject it with user language
 
+    // database drivers
+
+    instance(arangoDatabase)
+    singleton(KarangoDriver::class)
+    dynamic(EntityCache::class)
+
     // application modules ///////////////////////////////////////////////////////////////////////////////////////////////
 
     module(GameOfThronesModule)
@@ -123,21 +123,26 @@ val kontainerBlueprint = kontainer {
     module(CmsPublicModule)
 }
 
+fun initKontainer() = kontainerBlueprint.useWith(
+    // default language
+    Translations.withLocale("en"),
+    // Entity cache
+    NullEntityCache()
+)
+
+fun requestContainer() = kontainerBlueprint.useWith(
+    // default language
+    Translations.withLocale("en"),
+    // Entity cache
+    DefaultEntityCache()
+)
+
 @KtorExperimentalAPI
 @kotlin.jvm.JvmOverloads
 @Suppress("unused", "UNUSED_PARAMETER") // Referenced in application.conf
 fun Application.module(testing: Boolean = false) {
 
-    val initKontainer = kontainerBlueprint.useWith(
-        // default language
-        Translations.withLocale("en"),
-        // default database
-        databaseBlueprint.with { database ->
-            mapOf(
-                karangoDefaultDriver to KarangoDriver(database = database, arangoDb = arangoDatabase)
-            )
-        }
-    )
+    val initKontainer = initKontainer()
 
     // Ensure all database repositories are set up properly
     initKontainer.get(Database::class).ensureRepositories()
@@ -149,6 +154,10 @@ fun Application.module(testing: Boolean = false) {
 
     val cmsAdmin = initKontainer.get(CmsAdmin::class)
     val cmsPublic = initKontainer.get(CmsPublic::class)
+
+    environment.monitor.subscribe(ApplicationStopped) {
+        arangoDb.shutdown()
+    }
 
     install(Sessions) {
         cookie<UserSession>("user") {
@@ -325,30 +334,8 @@ fun Application.module(testing: Boolean = false) {
 
             // via the calls attributes we provide the following things
             with(call.attributes) {
-
                 // inject a fresh Kontainer into each call
-                provide(kontainerBlueprint.useWith(
-                    // inject the i18n based on user language
-                    Translations.withLocale("en"),
-                    // inject the database
-                    databaseBlueprint.with { database ->
-                        mapOf(
-                            karangoDefaultDriver to KarangoDriver(
-                                database = database,
-                                arangoDb = arangoDatabase,
-                                onSaveHooks = listOf(
-                                    TimestampedOnSaveHook(),
-                                    UserRecordOnSaveHook {
-                                        UserRecord(
-                                            call.sessions.get<UserSession>()?.userId ?: "anonymous",
-                                            call.request.origin.remoteHost
-                                        )
-                                    }
-                                )
-                            )
-                        )
-                    }
-                ))
+                provide(requestContainer())
             }
         }
 
