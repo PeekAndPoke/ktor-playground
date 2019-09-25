@@ -4,25 +4,18 @@ import io.ktor.application.ApplicationCall
 import io.ktor.html.Placeholder
 import io.ktor.html.Template
 import io.ktor.html.insert
-import io.ktor.locations.KtorExperimentalLocationsAPI
-import io.ktor.util.KtorExperimentalAPI
 import io.ultra.ktor_tools.resources.css
-import io.ultra.ktor_tools.resources.iocTranslations
-import io.ultra.ktor_tools.resources.iocWebResources
 import io.ultra.ktor_tools.resources.js
 import io.ultra.ktor_tools.semanticui.ui
+import io.ultra.ktor_tools.webResources
 import kotlinx.html.*
 
-@KtorExperimentalAPI
-@KtorExperimentalLocationsAPI
-internal class Template constructor(private val linkTo: SemanticUiModule.LinkTo, call: ApplicationCall) : Template<HTML> {
+internal class Template constructor(private val routes: SemanticUiRoutes, call: ApplicationCall) : Template<HTML> {
 
-    val t = call.iocTranslations
-    private val webResources = call.iocWebResources
+    private val webResources = call.webResources
 
     val pageTitle = Placeholder<HEAD>()
     val content = Placeholder<FlowContent>()
-
 
     init {
         pageTitle {
@@ -57,13 +50,13 @@ internal class Template constructor(private val linkTo: SemanticUiModule.LinkTo,
 
             ui.sidebar.vertical.left.inverted.menu.visible.fixed {
 
-                ui.item A { href = linkTo.index(); +"Semantic UI" }
+                ui.item A { href = routes.index; +"Semantic UI" }
 
-                ui.item A { href = linkTo.playground(); +"Playground" }
+                ui.item A { href = routes.playground; +"Playground" }
 
-                ui.item A { href = linkTo.buttons(); +"Buttons" }
+                ui.item A { href = routes.buttons; +"Buttons" }
 
-                ui.item A { href = linkTo.icons(); +"Icons" }
+                ui.item A { href = routes.icons; +"Icons" }
             }
 
             ui.pusher.padded.right {

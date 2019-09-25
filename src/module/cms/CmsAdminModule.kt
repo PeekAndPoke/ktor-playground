@@ -1,6 +1,5 @@
 package de.peekandpoke.module.cms
 
-import de.peekandpoke.karango_ktor.database
 import de.peekandpoke.module.cms.forms.CmsPageForm
 import de.peekandpoke.module.cms.views.Template
 import de.peekandpoke.module.cms.views.editPage
@@ -17,21 +16,22 @@ import io.ktor.response.respondRedirect
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.util.pipeline.PipelineContext
-import io.ultra.ktor_tools.ParamConversionService
-import io.ultra.ktor_tools.Routes
 import io.ultra.ktor_tools.bootstrap.success
+import io.ultra.ktor_tools.database
 import io.ultra.ktor_tools.flashSession
-import io.ultra.ktor_tools.getOrPost
 import io.ultra.ktor_tools.logger.logger
+import io.ultra.ktor_tools.typedroutes.OutgoingConverter
+import io.ultra.ktor_tools.typedroutes.Routes
+import io.ultra.ktor_tools.typedroutes.getOrPost
 
 val CmsAdminModule = module {
     config("cmsAdminMountPoint", "/cms")
 
-    singleton<CmsAdminRoutes>()
-    singleton<CmsAdmin>()
+    singleton(CmsAdminRoutes::class)
+    singleton(CmsAdmin::class)
 }
 
-class CmsAdminRoutes(converter: ParamConversionService, cmsAdminMountPoint: String) : Routes(converter, cmsAdminMountPoint) {
+class CmsAdminRoutes(converter: OutgoingConverter, cmsAdminMountPoint: String) : Routes(converter, cmsAdminMountPoint) {
 
     val index = route("")
 
@@ -54,15 +54,6 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
     fun mount(route: Route) = with(route) {
 
         get(routes.index) {
-
-            fun printRoutes(routes: List<Route>) {
-                routes.forEach {
-                    println(it)
-                    println(it.attributes.allKeys)
-                    printRoutes(it.children)
-                }
-            }
-
             respond {
                 index()
             }

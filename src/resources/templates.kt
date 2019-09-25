@@ -4,13 +4,16 @@ import io.ktor.application.ApplicationCall
 import io.ktor.html.Placeholder
 import io.ktor.html.Template
 import io.ktor.html.insert
-import io.ultra.ktor_tools.resources.*
+import io.ultra.ktor_tools.i18n
+import io.ultra.ktor_tools.resources.css
+import io.ultra.ktor_tools.resources.js
+import io.ultra.ktor_tools.webResources
 import kotlinx.html.*
 
 class MainTemplate(call: ApplicationCall) : Template<HTML> {
 
-    val t = call.iocTranslations
-    private val webResources = call.iocWebResources["legacy"]
+    val t = call.i18n
+    private val webResources = call.webResources["legacy"]
 
     val pageTitle = Placeholder<HEAD>()
     val content = Placeholder<MAIN>()

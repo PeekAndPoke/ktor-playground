@@ -28,6 +28,10 @@ fun buildI18n(locale: String, fallbackLocale: String, vararg texts: TextsByLocal
 
 data class I18n(private val locale: String, private val fallbackLocale: String, private val texts: TextsByLocale) {
 
+    companion object {
+        fun empty() = I18n("en", "en", mapOf("en" to mapOf()))
+    }
+
     private val fallback = texts[fallbackLocale] ?: throw Exception("Fallback locale '$locale' is not present")
 
     private val primary = texts[locale] ?: fallback

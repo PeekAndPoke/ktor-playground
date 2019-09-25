@@ -4,76 +4,56 @@ import de.peekandpoke.module.semanticui.views.buttons
 import de.peekandpoke.module.semanticui.views.icons
 import de.peekandpoke.module.semanticui.views.index
 import de.peekandpoke.module.semanticui.views.playground
-import io.ktor.application.Application
+import de.peekandpoke.ultra.kontainer.module
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.html.respondHtmlTemplate
 import io.ktor.http.HttpStatusCode
-import io.ktor.locations.KtorExperimentalLocationsAPI
-import io.ktor.locations.Location
-import io.ktor.locations.get
 import io.ktor.routing.Route
-import io.ktor.routing.route
-import io.ktor.util.KtorExperimentalAPI
+import io.ktor.routing.get
 import io.ktor.util.pipeline.PipelineContext
-import io.ultra.ktor_tools.architecture.LinkGenerator
-import io.ultra.ktor_tools.architecture.Module
+import io.ultra.ktor_tools.typedroutes.OutgoingConverter
+import io.ultra.ktor_tools.typedroutes.Routes
 
-@KtorExperimentalAPI
-@KtorExperimentalLocationsAPI
-fun Application.semanticUi() = SemanticUiModule(this)
+val SemanticUiModule = module {
 
-@KtorExperimentalAPI
-@KtorExperimentalLocationsAPI
-class SemanticUiModule(app: Application) : Module(app) {
+    config("semanticUiMountPoint", "/semantic-ui")
 
-    val mountPoint = "/semantic-ui"
+    singleton(SemanticUiRoutes::class)
+    singleton(SemanticUi::class)
+}
 
-    @Location("")
-    class Index
+class SemanticUiRoutes(converter: OutgoingConverter, semanticUiMountPoint: String) : Routes(converter, semanticUiMountPoint) {
 
-    @Location("/buttons")
-    class Buttons
+    val index = route("")
+    val buttons = route("/buttons")
+    val icons = route("/icons")
+    val playground = route("/playground")
+}
 
-    @Location("/icons")
-    class Icons
+class SemanticUi(val routes: SemanticUiRoutes) {
 
-    @Location("/playground")
-    class Playground
-
-    inner class LinkTo : LinkGenerator(mountPoint, application) {
-        fun index() = linkTo(Index())
-        fun buttons() = linkTo(Buttons())
-        fun icons() = linkTo(Icons())
-        fun playground() = linkTo(Playground())
-    }
-
-    val linkTo = LinkTo()
 
     private suspend fun PipelineContext<Unit, ApplicationCall>.respond(status: HttpStatusCode = HttpStatusCode.OK, body: Template.() -> Unit) {
-        call.respondHtmlTemplate(Template(linkTo, call), status, body)
+        call.respondHtmlTemplate(Template(routes, call), status, body)
     }
 
-    override fun mount(mountPoint: Route) {
+    fun mount(route: Route) = with(route) {
 
-        mountPoint.route(this.mountPoint) {
+        get(routes.index) {
+            respond { index() }
+        }
 
-            get<Index> {
-                respond { index() }
-            }
+        get(routes.buttons) {
+            respond { buttons() }
+        }
 
-            get<Buttons> {
-                respond { buttons() }
-            }
+        get(routes.icons) {
+            respond { icons() }
+        }
 
-            get<Icons> {
-                respond { icons() }
-            }
-
-            get<Playground> {
-                respond { playground() }
-            }
+        get(routes.playground) {
+            respond { playground() }
         }
     }
-
 }

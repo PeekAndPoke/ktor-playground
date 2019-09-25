@@ -2,13 +2,9 @@ package de.peekandpoke.module.cms.views
 
 import de.peekandpoke.module.cms.CmsPage
 import de.peekandpoke.ultra.vault.Stored
-import io.ktor.locations.KtorExperimentalLocationsAPI
-import io.ktor.util.KtorExperimentalAPI
 import io.ultra.ktor_tools.semanticui.ui
 import kotlinx.html.*
 
-@KtorExperimentalAPI
-@KtorExperimentalLocationsAPI
 internal fun Template.pages(pages: List<Stored<CmsPage>>) {
 
     activeMenu = MenuEntries.PAGES

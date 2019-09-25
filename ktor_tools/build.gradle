@@ -45,7 +45,6 @@ dependencies {
 
     // include for server side
     implementation "io.ktor:ktor-server-core:$ktor_version"
-    implementation "io.ktor:ktor-locations:$ktor_version"
     implementation "io.ktor:ktor-html-builder:$ktor_version"
 
     // logging

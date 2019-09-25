@@ -6,7 +6,6 @@ import io.ktor.application.feature
 import io.ktor.auth.*
 import io.ktor.html.respondHtml
 import io.ktor.http.HttpMethod
-import io.ktor.locations.*
 import io.ktor.request.uri
 import io.ktor.response.respond
 import io.ktor.response.respondRedirect
@@ -16,24 +15,17 @@ import io.ktor.sessions.sessions
 import io.ktor.sessions.set
 import io.ktor.util.KtorExperimentalAPI
 import io.ultra.ktor_tools.resources.css
-import io.ultra.ktor_tools.resources.iocWebResources
 import io.ultra.ktor_tools.semanticui.ui
+import io.ultra.ktor_tools.webResources
 import kotlinx.html.*
 
-/**
- * Location for login a [userName] with a [password].
- */
-@KtorExperimentalLocationsAPI
-@Location("/login")
-data class Login(val userName: String = "", val password: String = "")
 
-/**
- * Register [Login] related routes and features.
- */
+private const val loginUri = "/login"
+private const val userField = "user"
+private const val passwordField = "password"
+
 @KtorExperimentalAPI
-@KtorExperimentalLocationsAPI
 fun Route.login(authName: String, users: UserHashedTableAuth) {
-
 
     /**
      * Installs the Authentication feature that handles the challenge and parsing and attaches a [UserIdPrincipal]
@@ -43,14 +35,14 @@ fun Route.login(authName: String, users: UserHashedTableAuth) {
 
         form(authName) {
 
-            userParamName = Login::userName.name
-            passwordParamName = Login::password.name
+            userParamName = userField
+            passwordParamName = passwordField
 
             challenge = FormAuthChallenge.Redirect {
                 // remember the url the was requested in a session
                 sessions.set(LoginSession(request.uri))
                 // redirect to the login page
-                url(Login(it?.name ?: "")) { parameters.clear() }
+                loginUri
             }
 
             validate {
@@ -68,10 +60,7 @@ fun Route.login(authName: String, users: UserHashedTableAuth) {
         call.respond("Logged out")
     }
 
-    /**
-     * For the [Login] route:
-     */
-    location<Login> {
+    route(loginUri) {
         /**
          * We have an authenticated POST handler, that would set a session when the [UserIdPrincipal] is set,
          * and would redirect to the originally requested page.
@@ -93,7 +82,7 @@ fun Route.login(authName: String, users: UserHashedTableAuth) {
          */
         method(HttpMethod.Get) {
 
-            handle<Login> {
+            handle {
 
                 if (call.sessions.get<UserSession>()?.userId != null) {
                     call.respondRedirect(
@@ -102,7 +91,7 @@ fun Route.login(authName: String, users: UserHashedTableAuth) {
                     return@handle
                 }
 
-                val webResources = call.iocWebResources
+                val webResources = call.webResources
 
                 call.respondHtml {
 
@@ -124,27 +113,17 @@ fun Route.login(authName: String, users: UserHashedTableAuth) {
                                     ui.sixteen.wide.tablet.six.wide.computer.column {
 
                                         ui.form Form {
-                                            action = call.url(Login()) { parameters.clear() }
+                                            action = loginUri
                                             method = FormMethod.post
 
                                             ui.field {
-                                                label {
-                                                    attributes["for"] = Login::userName.name
-                                                    +"User"
-                                                }
-                                                textInput {
-                                                    name = Login::userName.name
-                                                }
+                                                label { attributes["for"] = userField; +"User" }
+                                                textInput { name = userField }
                                             }
 
                                             ui.field {
-                                                label {
-                                                    attributes["for"] = Login::password.name
-                                                    +"Password"
-                                                }
-                                                textInput {
-                                                    name = Login::password.name
-                                                }
+                                                label { attributes["for"] = passwordField; +"Password" }
+                                                textInput { name = passwordField }
                                             }
 
                                             ui.wide.button Submit { +"Login" }

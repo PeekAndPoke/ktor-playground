@@ -1,13 +1,9 @@
 package de.peekandpoke.module.semanticui.views
 
 import de.peekandpoke.module.semanticui.Template
-import io.ktor.locations.KtorExperimentalLocationsAPI
-import io.ktor.util.KtorExperimentalAPI
 import io.ultra.ktor_tools.semanticui.ui
 import kotlinx.html.*
 
-@KtorExperimentalAPI
-@KtorExperimentalLocationsAPI
 internal fun Template.playground() {
 
     content {

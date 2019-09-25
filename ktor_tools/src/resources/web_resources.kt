@@ -3,11 +3,6 @@ package io.ultra.ktor_tools.resources
 import de.peekandpoke.ultra.common.base64
 import de.peekandpoke.ultra.common.md5
 import de.peekandpoke.ultra.common.sha384
-import io.ktor.application.ApplicationCall
-import io.ktor.application.call
-import io.ktor.util.AttributeKey
-import io.ktor.util.Attributes
-import io.ktor.util.pipeline.PipelineContext
 import kotlinx.html.FlowOrMetaDataContent
 import kotlinx.html.ScriptType
 import kotlinx.html.link
@@ -26,7 +21,7 @@ class WebResources(private val cacheBuster: CacheBuster) {
 
     private val groups = mutableMapOf<String, WebResourceGroup>()
 
-    fun group(name: String, builder: WebResourceGroup.Builder.() -> Unit): Unit {
+    fun group(name: String, builder: WebResourceGroup.Builder.() -> Unit) {
 
         WebResourceGroup.Builder(cacheBuster).apply(builder).build().apply {
             groups[name] = this
@@ -103,14 +98,3 @@ fun FlowOrMetaDataContent.js(group: WebResourceGroup) = group.js.forEach { js ->
         js.integrity?.let { integrity = it }
     }
 }
-
-// IOC //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-val iocWebResourcesKey = AttributeKey<WebResources>("web-resources")
-
-inline val ApplicationCall.iocWebResources get() = attributes[iocWebResourcesKey]
-
-inline val PipelineContext<Unit, ApplicationCall>.iocWebResources get() = call.iocWebResources
-
-fun Attributes.provide(value: WebResources) = put(iocWebResourcesKey, value)
-

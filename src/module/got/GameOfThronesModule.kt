@@ -1,57 +1,52 @@
 package de.peekandpoke.module.got
 
 import de.peekandpoke.karango.examples.game_of_thrones.*
-import de.peekandpoke.karango_ktor.database
 import de.peekandpoke.resources.MainTemplate
 import de.peekandpoke.resources.WELCOME
+import de.peekandpoke.ultra.kontainer.module
 import de.peekandpoke.ultra.vault.Stored
-import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.html.respondHtmlTemplate
-import io.ktor.locations.KtorExperimentalLocationsAPI
-import io.ktor.locations.Location
-import io.ktor.locations.get
 import io.ktor.response.respondRedirect
 import io.ktor.routing.Route
-import io.ktor.routing.route
-import io.ktor.util.KtorExperimentalAPI
-import io.ultra.ktor_tools.architecture.LinkGenerator
-import io.ultra.ktor_tools.architecture.Module
 import io.ultra.ktor_tools.bootstrap.*
+import io.ultra.ktor_tools.database
 import io.ultra.ktor_tools.flashSession
-import io.ultra.ktor_tools.getOrPost
+import io.ultra.ktor_tools.typedroutes.OutgoingConverter
+import io.ultra.ktor_tools.typedroutes.Routes
+import io.ultra.ktor_tools.typedroutes.get
+import io.ultra.ktor_tools.typedroutes.getOrPost
 import kotlinx.html.*
 
-@KtorExperimentalAPI
-@KtorExperimentalLocationsAPI
-fun Application.gameOfThrones() = GameOfThronesModule(this)
+val GameOfThronesModule = module {
+    config("gotMountPoint", "/game-of-thrones")
 
-@KtorExperimentalAPI
-@KtorExperimentalLocationsAPI
-class GameOfThronesModule(app: Application) : Module(app) {
+    singleton(GameOfThronesRoutes::class)
+    singleton(GameOfThrones::class)
+}
 
-    val config = GameOfThronesConfig.from(application.environment.config)
+class GameOfThronesRoutes(converter: OutgoingConverter, gotMountPoint: String) : Routes(converter, gotMountPoint) {
 
-    @Location("/characters")
-    internal class GetCharacters(val page: Int = 1, val epp: Int = 100)
+    //    data class GetCharacters(val page: Int, val epp: Int)
+    class GetCharacters
 
-    @Location("/characters/{character}")
-    internal class GetCharacter(val character: Stored<Character>)
+    val getCharacters = route<GetCharacters>("/characters")
+    //    fun getCharacters(page: Int = 1, epp: Int = 100) = getCharacters(GetCharacters(page, epp))
+    fun getCharacters(page: Int = 1, epp: Int = 100) = getCharacters(GetCharacters())
 
-    inner class LinkTo : LinkGenerator(config.mountPoint, application) {
-        fun getCharacters() = linkTo(GetCharacters())
-        fun getCharacterByKey(character: Stored<Character>) = linkTo(GetCharacter(character))
-    }
+    data class GetCharacter(val character: Stored<Character>)
 
-    private val linkTo = LinkTo()
+    val getCharacter = route<GetCharacter>("/characters/{character}")
+    fun getCharacter(character: Stored<Character>) = getCharacter(GetCharacter(character))
+}
 
-    override fun mount(mountPoint: Route) {
+class GameOfThrones(val routes: GameOfThronesRoutes) {
 
-        mountPoint.route(config.mountPoint) {
+    fun mount(route: Route) = with(route) {
 
-            get<GetCharacters> { p ->
+        get(routes.getCharacters) { p ->
 
-                //                val savedCharacters: Cursor<Stored<Character>> = database.actors.query {
+            //                val savedCharacters: Cursor<Stored<Character>> = database.actors.query {
 //                    FOR(Characters) { c ->
 //                        RETURN(c.AS<Stored<Character>>())
 //                    }
@@ -69,41 +64,42 @@ class GameOfThronesModule(app: Application) : Module(app) {
 //                println(withActors.query)
 //                println(withActors.toList().joinToString("\n"))
 
-                val result = database.characters.findAllPaged(p.page, p.epp)
-                val list = result.toList()
-                val flashEntries = flashSession.pull()
+//            val result = database.characters.findAllPaged(p.page, p.epp)
+            val result = database.characters.findAll()
 
-                println("-------------------------------------------------------------------------")
-                println(result.query.ret.getType())
+            val list = result.toList()
+            val flashEntries = flashSession.pull()
 
-                call.respondHtmlTemplate(MainTemplate(call)) {
+            println("-------------------------------------------------------------------------")
+            println(result.query.ret.getType())
 
-                    content {
-                        container_fluid {
+            call.respondHtmlTemplate(MainTemplate(call)) {
 
-                            flashEntries.takeIf { it.isNotEmpty() }?.let { entries ->
-                                div {
-                                    entries.forEach { entry -> div(classes = "alert alert-${entry.type}") { +entry.message } }
-                                }
+                content {
+                    container_fluid {
+
+                        flashEntries.takeIf { it.isNotEmpty() }?.let { entries ->
+                            div {
+                                entries.forEach { entry -> div(classes = "alert alert-${entry.type}") { +entry.message } }
                             }
+                        }
 
-                            h2 { +t.WELCOME() }
+                        h2 { +t.WELCOME() }
 
-                            h4 { +"List of Characters" }
+                        h4 { +"List of Characters" }
 
-                            ul {
-                                list.forEach {
+                        ul {
+                            list.forEach {
 
-                                    li {
-                                        a(href = linkTo.getCharacterByKey(it)) { +"${it.name} ${it.surname ?: ""} " }
+                                li {
+                                    a(href = routes.getCharacter(it)) { +"${it.name} ${it.surname ?: ""} " }
 
-                                        span { +"${if (it.alive) "alive" else "dead"} " }
+                                    span { +"${if (it.alive) "alive" else "dead"} " }
 
-                                        it.age?.let { span { +"Age: $it " } }
+                                    it.age?.let { span { +"Age: $it " } }
 
-                                        it.actor?.value?.let {
-                                            span { +"(Actor: ${it.name} ${it.surname} Age: ${it.age}) " }
-                                        }
+                                    it.actor?.value?.let {
+                                        span { +"(Actor: ${it.name} ${it.surname} Age: ${it.age}) " }
                                     }
                                 }
                             }
@@ -111,75 +107,75 @@ class GameOfThronesModule(app: Application) : Module(app) {
                     }
                 }
             }
+        }
 
-            getOrPost<GetCharacter> { data ->
+        getOrPost(routes.getCharacter) { data ->
 
-                val form = CharacterForm.of(data.character)
+            val form = CharacterForm.of(data.character)
 
-                println(data.character)
+            println(data.character)
 
-                if (form.submit(call)) {
-                    if (form.isModified) {
+            if (form.submit(call)) {
+                if (form.isModified) {
 
-                        form.result.value.actor?.let { database.actors.save(it.asStored) }
-                        val saved = database.characters.save(form.result)
+                    form.result.value.actor?.let { database.actors.save(it.asStored) }
+                    val saved = database.characters.save(form.result)
 
-                        flashSession.success("Character ${saved.value.fullName} was saved")
-                    }
-
-                    return@getOrPost call.respondRedirect(linkTo.getCharacters())
+                    flashSession.success("Character ${saved.value.fullName} was saved")
                 }
 
-                call.respondHtmlTemplate(MainTemplate(call)) {
+                return@getOrPost call.respondRedirect(routes.getCharacters())
+            }
 
-                    pageTitle {
-                        title { +"GoT Edit Character" }
-                    }
+            call.respondHtmlTemplate(MainTemplate(call)) {
 
-                    content {
-                        container_fluid {
+                pageTitle {
+                    title { +"GoT Edit Character" }
+                }
 
-                            h4 { +"Edit Character ${data.character.fullName}" }
+                content {
+                    container_fluid {
 
-                            form(method = FormMethod.post) {
+                        h4 { +"Edit Character ${data.character.fullName}" }
 
-                                form_group {
-                                    row {
-                                        col_md_3 {
-                                            textInput(t, form.name, label = "Name")
-                                        }
-                                        col_md_3 {
-                                            textInput(t, form.surname, label = "Surname")
-                                        }
-                                        col_md_3 {
-                                            textInput(t, form.age, label = "Age")
-                                        }
-                                        col_md_3 {
-                                            selectInput(t, form.alive, label = "Alive")
-                                        }
+                        form(method = FormMethod.post) {
+
+                            form_group {
+                                row {
+                                    col_md_3 {
+                                        textInput(t, form.name, label = "Name")
+                                    }
+                                    col_md_3 {
+                                        textInput(t, form.surname, label = "Surname")
+                                    }
+                                    col_md_3 {
+                                        textInput(t, form.age, label = "Age")
+                                    }
+                                    col_md_3 {
+                                        selectInput(t, form.alive, label = "Alive")
                                     }
                                 }
-
-                                form.actor?.let { actorForm ->
-                                    h4 { +"Edit Actor ${data.character.actor?.value?.name}" }
-
-                                    row {
-                                        col_md_3 {
-                                            textInput(t, actorForm.name, label = "Name")
-                                        }
-
-                                        col_md_3 {
-                                            textInput(t, actorForm.surname, label = "Surname")
-                                        }
-
-                                        col_md_3 {
-                                            numberInput(t, actorForm.age, label = "Age")
-                                        }
-                                    }
-                                }
-
-                                submit { +"Submit" }
                             }
+
+                            form.actor?.let { actorForm ->
+                                h4 { +"Edit Actor ${data.character.actor?.value?.name}" }
+
+                                row {
+                                    col_md_3 {
+                                        textInput(t, actorForm.name, label = "Name")
+                                    }
+
+                                    col_md_3 {
+                                        textInput(t, actorForm.surname, label = "Surname")
+                                    }
+
+                                    col_md_3 {
+                                        numberInput(t, actorForm.age, label = "Age")
+                                    }
+                                }
+                            }
+
+                            submit { +"Submit" }
                         }
                     }
                 }

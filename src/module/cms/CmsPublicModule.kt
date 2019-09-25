@@ -1,28 +1,25 @@
 package de.peekandpoke.module.cms
 
-import de.peekandpoke.karango_ktor.database
-import io.ktor.application.Application
+import de.peekandpoke.ultra.kontainer.module
 import io.ktor.application.call
 import io.ktor.features.NotFoundException
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
-import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.request.uri
 import io.ktor.response.respondText
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.util.KtorExperimentalAPI
-import io.ultra.ktor_tools.architecture.Module
+import io.ultra.ktor_tools.database
 
-@KtorExperimentalAPI
-@KtorExperimentalLocationsAPI
-fun Application.cmsPublic() = CmsPublicModule(this)
+val CmsPublicModule = module {
+    singleton(CmsPublic::class)
+}
 
-@KtorExperimentalAPI
-@KtorExperimentalLocationsAPI
-class CmsPublicModule(app: Application) : Module(app) {
+class CmsPublic {
 
-    override fun mount(mountPoint: Route) = with(mountPoint) {
+    @KtorExperimentalAPI
+    fun mount(mountPoint: Route) = with(mountPoint) {
 
         get("/*") {
 

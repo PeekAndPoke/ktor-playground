@@ -8,11 +8,11 @@ import io.ktor.html.Template
 import io.ktor.html.insert
 import io.ktor.util.pipeline.PipelineContext
 import io.ultra.ktor_tools.flashSession
+import io.ultra.ktor_tools.i18n
 import io.ultra.ktor_tools.resources.css
-import io.ultra.ktor_tools.resources.iocTranslations
-import io.ultra.ktor_tools.resources.iocWebResources
 import io.ultra.ktor_tools.resources.js
 import io.ultra.ktor_tools.semanticui.ui
+import io.ultra.ktor_tools.webResources
 import kotlinx.html.*
 
 enum class MenuEntries {
@@ -26,8 +26,8 @@ internal class Template constructor(
 ) : Template<HTML> {
 
     private val call = pipeline.call
-    val t = call.iocTranslations
-    private val webResources = call.iocWebResources
+    val t = call.i18n
+    private val webResources = call.webResources
     private val flashSessionEntries = pipeline.flashSession.pull()
 
     val pageTitle = Placeholder<HEAD>()

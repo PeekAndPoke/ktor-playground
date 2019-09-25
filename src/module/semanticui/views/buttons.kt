@@ -1,8 +1,6 @@
 package de.peekandpoke.module.semanticui.views
 
 import de.peekandpoke.module.semanticui.Template
-import io.ktor.locations.KtorExperimentalLocationsAPI
-import io.ktor.util.KtorExperimentalAPI
 import io.ultra.ktor_tools.prismjs.Lang
 import io.ultra.ktor_tools.prismjs.prism
 import io.ultra.ktor_tools.semanticui.icon
@@ -13,8 +11,6 @@ import kotlinx.html.h1
 import kotlinx.html.p
 
 @Suppress("DuplicatedCode")
-@KtorExperimentalAPI
-@KtorExperimentalLocationsAPI
 internal fun Template.buttons() {
 
     content {

@@ -9,21 +9,19 @@ import de.peekandpoke.karango.addon.UserRecord
 import de.peekandpoke.karango.addon.UserRecordOnSaveHook
 import de.peekandpoke.karango.examples.game_of_thrones.registerGotCollections
 import de.peekandpoke.karango.karangoDefaultDriver
-import de.peekandpoke.karango_ktor.add
-import de.peekandpoke.karango_ktor.provide
-import de.peekandpoke.module.cms.CmsAdmin
-import de.peekandpoke.module.cms.CmsAdminModule
-import de.peekandpoke.module.cms.cmsPublic
-import de.peekandpoke.module.cms.registerCmsCollections
-import de.peekandpoke.module.got.gameOfThrones
-import de.peekandpoke.module.semanticui.semanticUi
+import de.peekandpoke.module.cms.*
+import de.peekandpoke.module.got.GameOfThrones
+import de.peekandpoke.module.got.GameOfThronesModule
+import de.peekandpoke.module.semanticui.SemanticUi
+import de.peekandpoke.module.semanticui.SemanticUiModule
 import de.peekandpoke.resources.Translations
-import de.peekandpoke.test_module.TestModule
 import de.peekandpoke.ultra.kontainer.kontainer
 import de.peekandpoke.ultra.vault.Database
-import de.peekandpoke.ultra.vault.Stored
 import de.peekandpoke.ultra.vault.Vault
-import io.ktor.application.*
+import io.ktor.application.Application
+import io.ktor.application.ApplicationCallPipeline
+import io.ktor.application.call
+import io.ktor.application.install
 import io.ktor.auth.*
 import io.ktor.features.*
 import io.ktor.html.respondHtml
@@ -33,12 +31,9 @@ import io.ktor.http.content.resource
 import io.ktor.http.content.resources
 import io.ktor.http.content.static
 import io.ktor.jackson.jackson
-import io.ktor.locations.KtorExperimentalLocationsAPI
-import io.ktor.locations.Locations
 import io.ktor.request.httpMethod
 import io.ktor.request.uri
 import io.ktor.response.respond
-import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.host
 import io.ktor.routing.routing
@@ -48,16 +43,14 @@ import io.ktor.util.getDigestFunction
 import io.ktor.util.hex
 import io.ultra.ktor_tools.FlashSession
 import io.ultra.ktor_tools.KontainerKey
-import io.ultra.ktor_tools.ParamConversionService
-import io.ultra.ktor_tools.ParamConverter
+import io.ultra.ktor_tools.KtorFX
 import io.ultra.ktor_tools.logger.logger
+import io.ultra.ktor_tools.provide
 import io.ultra.ktor_tools.resources.AppMeta
 import io.ultra.ktor_tools.resources.BetterWebjars
-import io.ultra.ktor_tools.resources.provide
 import io.ultra.ktor_tools.resources.webResources
+import io.ultra.polyglot.I18n
 import kotlinx.html.*
-import java.lang.reflect.ParameterizedType
-import java.lang.reflect.Type
 import java.time.Duration
 import java.util.*
 import kotlin.collections.set
@@ -72,13 +65,6 @@ private val arangoDatabase: ArangoDatabase = arangoDb.db("kotlindev")
 private val databaseBlueprint: Vault.Blueprint = Vault.setup {
     registerGotCollections()
     registerCmsCollections()
-}
-
-// ensure all repositories exist
-private val database = databaseBlueprint.with { database ->
-    mapOf(karangoDefaultDriver to KarangoDriver(database = database, arangoDb = arangoDatabase))
-}.apply {
-    ensureRepositories()
 }
 
 val Meta = object : AppMeta() {}
@@ -121,62 +107,48 @@ val WebResources = webResources(Meta) {
 
 val kontainerBlueprint = kontainer {
 
-    // database ///////////////////////////////////////////////////////////////////////////////////////////////
+    // functionality modules /////////////////////////////////////////////////////////////////////////////////////////////
 
-    instance(databaseBlueprint)
+    module(KtorFX)
+    instance(WebResources) // We re-define the web resource
+    dynamic(I18n::class)   // Redefine the i18n as a dynamic service, so we are forced to inject it with user language
 
-    singleton<ParamConversionService>()
+    // application modules ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    singleton { blueprint: Vault.Blueprint ->
-        blueprint.with { database ->
-            mapOf(karangoDefaultDriver to KarangoDriver(database = database, arangoDb = arangoDatabase))
-        }
-    }
+    module(GameOfThronesModule)
 
-    singleton<DbParamConverter>()
-
-    // modules ///////////////////////////////////////////////////////////////////////////////////////////////
+    module(SemanticUiModule)
 
     module(CmsAdminModule)
+    module(CmsPublicModule)
 }
-
-class DbParamConverter(private val db: Database) : ParamConverter {
-
-    override fun canHandle(type: Type): Boolean {
-        return type is ParameterizedType && type.rawType == Stored::class.java
-    }
-
-    override fun toUri(value: Any, type: Type): String {
-        return (value as Stored<*>)._key
-    }
-
-    override fun fromUri(value: String, type: Type): Stored<Any> {
-
-        val innerCls = (type as ParameterizedType).actualTypeArguments[0]
-
-        @Suppress("UNCHECKED_CAST")
-        return db.getRepositoryStoring(innerCls as Class<*>).findById(value) as Stored<Any>
-    }
-}
-
 
 @KtorExperimentalAPI
-@KtorExperimentalLocationsAPI
 @kotlin.jvm.JvmOverloads
 @Suppress("unused", "UNUSED_PARAMETER") // Referenced in application.conf
 fun Application.module(testing: Boolean = false) {
 
-    val initKontainer = kontainerBlueprint.useWith()
+    val initKontainer = kontainerBlueprint.useWith(
+        // default language
+        Translations.withLocale("en"),
+        // default database
+        databaseBlueprint.with { database ->
+            mapOf(
+                karangoDefaultDriver to KarangoDriver(database = database, arangoDb = arangoDatabase)
+            )
+        }
+    )
 
-    val gameOfThronesModule = gameOfThrones()
+    // Ensure all database repositories are set up properly
+    initKontainer.get(Database::class).ensureRepositories()
 
-    val semanticUiModule = semanticUi()
+    // Get all application modules
+    val gameOfThrones = initKontainer.get(GameOfThrones::class)
+
+    val semanticUi = initKontainer.get(SemanticUi::class)
 
     val cmsAdmin = initKontainer.get(CmsAdmin::class)
-    val cmsPublicModule = cmsPublic()
-
-    install(Locations) {
-    }
+    val cmsPublic = initKontainer.get(CmsPublic::class)
 
     install(Sessions) {
         cookie<UserSession>("user") {
@@ -222,10 +194,6 @@ fun Application.module(testing: Boolean = false) {
         header("MyCustomHeader")
         allowCredentials = true
         anyHost() // @TODO: Don't do this in production if possible. Try to LIMIT it.
-    }
-
-    install(DataConversion) {
-        add(database, log)
     }
 
     install(DefaultHeaders) {
@@ -345,6 +313,8 @@ fun Application.module(testing: Boolean = false) {
         logger.attach("req.Id", requestId.toString()) {
             proceed()
         }
+
+        logger.debug(call.attributes[KontainerKey].dump())
     }
 
     intercept(ApplicationCallPipeline.Features) {
@@ -356,30 +326,29 @@ fun Application.module(testing: Boolean = false) {
             // via the calls attributes we provide the following things
             with(call.attributes) {
 
-                put(KontainerKey, kontainerBlueprint.useWith())
-
-                // The i18n based on the chosen language
-                provide(Translations.withLocale("en"))
-                // The web resources
-                provide(WebResources)
-                // A customized version of the database, with a hook for UserRecords
-                provide(databaseBlueprint.with { database ->
-                    mapOf(
-                        karangoDefaultDriver to KarangoDriver(
-                            database = database,
-                            arangoDb = arangoDatabase,
-                            onSaveHooks = listOf(
-                                TimestampedOnSaveHook(),
-                                UserRecordOnSaveHook {
-                                    UserRecord(
-                                        call.sessions.get<UserSession>()?.userId ?: "anonymous",
-                                        call.request.origin.remoteHost
-                                    )
-                                }
+                // inject a fresh Kontainer into each call
+                provide(kontainerBlueprint.useWith(
+                    // inject the i18n based on user language
+                    Translations.withLocale("en"),
+                    // inject the database
+                    databaseBlueprint.with { database ->
+                        mapOf(
+                            karangoDefaultDriver to KarangoDriver(
+                                database = database,
+                                arangoDb = arangoDatabase,
+                                onSaveHooks = listOf(
+                                    TimestampedOnSaveHook(),
+                                    UserRecordOnSaveHook {
+                                        UserRecord(
+                                            call.sessions.get<UserSession>()?.userId ?: "anonymous",
+                                            call.request.origin.remoteHost
+                                        )
+                                    }
+                                )
                             )
                         )
-                    )
-                })
+                    }
+                ))
             }
         }
 
@@ -407,20 +376,8 @@ fun Application.module(testing: Boolean = false) {
         /////
 
         host("www.*".toRegex()) {
-
-            get("/") {
-
-                val name = call.sessions.get<UserSession>()?.userId ?: "Stranger"
-
-                call.respondText("HELLO $name!", contentType = ContentType.Text.Plain)
-            }
-
-            get("/test") {
-                call.respondText(TestModule().doSomething(111).toString(), ContentType.Text.Html, HttpStatusCode.OK)
-            }
-
-            gameOfThronesModule.mount(this)
-            cmsPublicModule.mount(this)
+            gameOfThrones.mount(this)
+            cmsPublic.mount(this)
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -453,7 +410,7 @@ fun Application.module(testing: Boolean = false) {
                         }
                         ul {
                             li {
-                                a(href = semanticUiModule.linkTo.index()) { +"Semantic UI demo" }
+                                a(href = semanticUi.routes.index) { +"Semantic UI demo" }
                             }
                             li {
                                 a(href = cmsAdmin.routes.index) { +"Mini CMS" }
@@ -464,7 +421,7 @@ fun Application.module(testing: Boolean = false) {
             }
 
             authenticate(authName) {
-                semanticUiModule.mount(this)
+                semanticUi.mount(this)
                 cmsAdmin.mount(this)
             }
         }
