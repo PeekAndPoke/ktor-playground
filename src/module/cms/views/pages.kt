@@ -40,13 +40,13 @@ internal fun Template.pages(pages: List<Stored<CmsPage>>) {
                             a(href = routes.editPage(it)) { +it.value.name }
                         }
                         td {
-                            +(it.value._ts?.createdAt?.toString() ?: "n/a")
+                            +(it._meta?.ts?.createdAt?.toString() ?: "n/a")
                         }
                         td {
-                            +(it.value._ts?.updatedAt?.toString() ?: "n/a")
+                            +(it._meta?.ts?.updatedAt?.toString() ?: "n/a")
                         }
                         td {
-                            +(it.value._userRecord?.user ?: "n/a")
+                            +(it._meta?.user?.user ?: "n/a")
                         }
                     }
                 }

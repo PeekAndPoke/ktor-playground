@@ -1,4 +1,4 @@
-package de.peekandpoke.karango.jackson
+package de.peekandpoke.ultra.vault.jackson
 
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
@@ -10,9 +10,6 @@ import de.peekandpoke.ultra.vault.Database
 import de.peekandpoke.ultra.vault.EntityCache
 import de.peekandpoke.ultra.vault.Ref
 
-/**
- * TODO: fix me
- */
 internal class EntityRefSerializer : StdSerializer<Ref<*>>(Ref::class.java) {
 
     override fun serialize(value: Ref<*>?, gen: JsonGenerator, provider: SerializerProvider) {
@@ -61,4 +58,3 @@ internal class EntityRefDeserializer @JvmOverloads constructor(
         return cache.getOrPut(id) { db.getRepository(coll)?.findById(id) }?.asRef
     }
 }
-

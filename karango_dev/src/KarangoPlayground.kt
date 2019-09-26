@@ -2,8 +2,8 @@ package de.peekandpoke.karango_dev
 
 import com.arangodb.ArangoDB
 import com.arangodb.ArangoDatabase
-import de.peekandpoke.karango.KarangoDriver
 import de.peekandpoke.karango.aql.*
+import de.peekandpoke.karango.vault.KarangoDriver
 import de.peekandpoke.karango_dev.domain.*
 import de.peekandpoke.ultra.kontainer.kontainer
 import de.peekandpoke.ultra.mutator.Frozen

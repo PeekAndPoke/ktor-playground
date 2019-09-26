@@ -1,7 +1,6 @@
 package io.ultra.ktor_tools.formidable
 
 import de.peekandpoke.ultra.mutator.Mutator
-import de.peekandpoke.ultra.vault.New
 import de.peekandpoke.ultra.vault.Storable
 import io.ktor.application.ApplicationCall
 import io.ktor.http.HttpMethod
@@ -78,7 +77,5 @@ abstract class StorableForm<T : Any, M : Mutator<T>>(
 
 ) : MutatorFormBase<T, M>(mutator, name, parent) {
 
-    constructor(it: M, parent: Form? = null) : this(New(it.getInput()), it, parent)
-
-    val result: Storable<T> get() = stored.with(target.getResult())
+    val result: Storable<T> get() = stored.withValue(target.getResult())
 }

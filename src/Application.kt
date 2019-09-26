@@ -3,7 +3,7 @@ package de.peekandpoke
 import com.arangodb.ArangoDB
 import com.arangodb.ArangoDatabase
 import com.fasterxml.jackson.databind.SerializationFeature
-import de.peekandpoke.karango.KarangoDriver
+import de.peekandpoke.karango.vault.KarangoDriver
 import de.peekandpoke.module.cms.CmsAdmin
 import de.peekandpoke.module.cms.CmsAdminModule
 import de.peekandpoke.module.cms.CmsPublic

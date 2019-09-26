@@ -1,28 +1,38 @@
 package de.peekandpoke.ultra.vault.hooks
 
-import de.peekandpoke.ultra.vault.OnSaveHook
+import de.peekandpoke.ultra.vault.Repository
+import de.peekandpoke.ultra.vault.Storable
+import de.peekandpoke.ultra.vault.StorableMeta
+import kotlin.reflect.full.hasAnnotation
+
+/**
+ * Repository marker for recording [UserRecord]
+ *
+ * Use this annotation on your repo, to signal that [UserRecord] should be set
+ * in the meta data of a [Storable]
+ */
+@Target(AnnotationTarget.CLASS)
+annotation class WithUserRecord
 
 data class UserRecord(
     val user: String,
     val ip: String
 )
 
-@Suppress("PropertyName")
-interface WithUserRecord {
-    val _userRecord: UserRecord?
-}
-
 class UserRecordOnSaveHook(private val provider: UserRecordProvider) : OnSaveHook {
 
     val user by lazy { provider() }
 
-    override fun <T> invoke(obj: T): T {
+    @ExperimentalStdlibApi
+    override fun <R> apply(repo: Repository<R>, storable: Storable<R>): Storable<R> {
 
-        if (obj is WithUserRecord) {
-            obj.update(user)
+        if (!repo::class.hasAnnotation<WithUserRecord>()) {
+            return storable
         }
 
-        return obj
+        return storable.withMeta(
+            (storable._meta ?: StorableMeta()).copy(user = user)
+        )
     }
 }
 
@@ -36,12 +46,4 @@ class AnonymousUserRecordProvider : UserRecordProvider {
 
 class StaticUserRecordProvider(private val user: UserRecord) : UserRecordProvider {
     override fun invoke() = user
-}
-
-private fun WithUserRecord.update(user: UserRecord) {
-
-    val field = this.javaClass.declaredFields.first { it.name == ::_userRecord.name }
-
-    field.isAccessible = true
-    field.set(this, user)
 }

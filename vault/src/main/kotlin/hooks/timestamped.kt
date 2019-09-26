@@ -1,46 +1,59 @@
 package de.peekandpoke.ultra.vault.hooks
 
-import de.peekandpoke.ultra.vault.OnSaveHook
+import de.peekandpoke.ultra.vault.Repository
+import de.peekandpoke.ultra.vault.Storable
+import de.peekandpoke.ultra.vault.StorableMeta
 import java.time.Instant
+import kotlin.reflect.full.hasAnnotation
+
+/**
+ * Repository marker for recording [Timestamps]
+ *
+ * Use this annotation on your repo, to signal that [Timestamps] should be set
+ * in the meta data of a [Storable]
+ */
+@Target(AnnotationTarget.CLASS)
+annotation class WithTimestamps
 
 data class Timestamps(
     val createdAt: Instant?,
     val updatedAt: Instant?
 )
 
-@Suppress("PropertyName")
-interface Timestamped {
-    val _ts: Timestamps?
-}
-
 class TimestampedOnSaveHook : OnSaveHook {
-    override operator fun <T> invoke(obj: T): T {
+    @ExperimentalStdlibApi
+    override fun <R> apply(repo: Repository<R>, storable: Storable<R>): Storable<R> {
 
-        if (obj is Timestamped) {
-            obj.update()
+        if (!repo::class.hasAnnotation<WithTimestamps>()) {
+            return storable
         }
 
-        return obj
-    }
-}
-
-private fun Timestamped.update() {
-
-    val now = Instant.now()
-
-    val ts = when (val current = _ts) {
-
-        null -> Timestamps(now, now)
-
-        else -> current.copy(
-            createdAt = current.createdAt ?: now,
-            updatedAt = now
+        return storable.withMeta(
+            update(
+                storable._meta ?: StorableMeta()
+            )
         )
     }
 
-    val field = this.javaClass.declaredFields.first { it.name == ::_ts.name }
+    private fun update(meta: StorableMeta): StorableMeta {
 
-    field.isAccessible = true
-    field.set(this, ts)
+        val now = Instant.now()
+
+        return when (val current = meta.ts) {
+
+            null -> meta.copy(
+                ts = Timestamps(
+                    createdAt = now,
+                    updatedAt = now
+                )
+            )
+
+            else -> meta.copy(
+                ts = Timestamps(
+                    createdAt = current.createdAt ?: now,
+                    updatedAt = now
+                )
+            )
+        }
+    }
 }
-

@@ -7,6 +7,7 @@ import io.ktor.server.testing.withTestApplication
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@Suppress("EXPERIMENTAL_API_USAGE")
 class ApplicationTest {
     @Test
     fun testRoot() {

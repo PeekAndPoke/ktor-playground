@@ -1,13 +1,13 @@
 package de.peekandpoke.karango.examples.game_of_thrones
 
 import de.peekandpoke.karango.EntityCollection
-import de.peekandpoke.karango.EntityRepository
-import de.peekandpoke.karango.KarangoDriver
 import de.peekandpoke.karango._id
 import de.peekandpoke.karango.aql.Direction
 import de.peekandpoke.karango.aql.EQ
 import de.peekandpoke.karango.aql.FOR
 import de.peekandpoke.karango.aql.RETURN
+import de.peekandpoke.karango.vault.EntityRepository
+import de.peekandpoke.karango.vault.KarangoDriver
 import de.peekandpoke.ultra.vault.Database
 import de.peekandpoke.ultra.vault.type
 

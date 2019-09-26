@@ -1,98 +1,10 @@
-package de.peekandpoke.karango
+package de.peekandpoke.karango.vault
 
-import com.arangodb.ArangoCursor
-import com.arangodb.ArangoDBException
-import com.arangodb.ArangoDatabase
-import com.arangodb.entity.CollectionType
-import com.arangodb.model.AqlQueryOptions
-import com.arangodb.model.CollectionCreateOptions
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.InjectableValues
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.fasterxml.jackson.module.kotlin.convertValue
+import de.peekandpoke.karango.*
 import de.peekandpoke.karango.aql.*
-import de.peekandpoke.karango.jackson.KarangoJacksonModule
-import de.peekandpoke.ultra.vault.*
-import kotlin.system.measureTimeMillis
-
-class KarangoDriver(
-    private val database: Database,
-    private val arangoDb: ArangoDatabase,
-    private val onSaveHooks: List<OnSaveHook> = listOf(),
-    private val entityCache: EntityCache = NullEntityCache()
-) {
-
-    /**
-     * The object mapper used for serializing queries
-     */
-    private val serializer = ObjectMapper().apply {
-        // default modules
-        registerModule(KotlinModule())
-        registerModule(Jdk8Module())
-
-        // custom modules
-        registerModule(KarangoJacksonModule())
-
-        // serialization features
-        configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true)
-
-        // deserialization features
-        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-
-        injectableValues = InjectableValues.Std(
-            mapOf(
-                "database" to database,
-                "mapper" to this,
-                "entityCache" to entityCache
-            )
-        )
-    }
-
-    fun ensureEntityCollection(
-        name: String,
-        options: CollectionCreateOptions = CollectionCreateOptions().type(CollectionType.DOCUMENT)
-    ) {
-
-        val arangoColl = arangoDb.collection(name)
-
-        if (!arangoColl.exists()) {
-            arangoDb.createCollection(name, options)
-        }
-    }
-
-    /**
-     * Performs a query and returns a cursor of results
-     */
-    fun <X> query(builder: AqlBuilder.() -> TerminalExpr<X>): Cursor<X> = query(de.peekandpoke.karango.query(builder))
-
-    /**
-     * Performs the query
-     */
-    fun <T> query(query: TypedQuery<T>): Cursor<T> {
-
-        val options = AqlQueryOptions().count(true)
-        val params = serializer.convertValue<Map<String, Any>>(query.vars)
-
-        lateinit var result: ArangoCursor<*>
-
-//        println(query)
-//        println(query.ret.innerType())
-//        println(mapped)
-
-        val time = measureTimeMillis {
-            try {
-                result = arangoDb.query(query.aql, params, options, Object::class.java)
-            } catch (e: ArangoDBException) {
-                throw KarangoQueryException(query, "Error while querying '${e.message}':\n\n${query.aql}\nwith params\n\n$params", e)
-            }
-        }
-
-        return CursorImpl(result, query, time, serializer)
-    }
-}
+import de.peekandpoke.ultra.vault.Repository
+import de.peekandpoke.ultra.vault.Storable
+import de.peekandpoke.ultra.vault.Stored
 
 abstract class EntityRepository<T : Any>(
     private val driver: KarangoDriver,
@@ -133,9 +45,9 @@ abstract class EntityRepository<T : Any>(
      *
      * TODO: apply onSaveHooks
      */
-    fun save(stored: Storable<T>): Stored<T> = let {
+    fun save(stored: Storable<T>): Stored<T> = driver.applyOnSaveHooks(this, stored).let { modified ->
         findFirst {
-            UPSERT(stored) INTO coll
+            UPSERT(modified) INTO coll
         }!!
     }
 
@@ -238,5 +150,3 @@ abstract class EntityRepository<T : Any>(
      */
     private fun TerminalExpr<T>.cast(): TerminalExpr<Stored<T>> = AS(coll.getType().down<T>().wrapWith<Stored<T>>().up())
 }
-
-

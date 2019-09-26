@@ -25,8 +25,8 @@ internal class UpsertInto<T>(private val entity: Storable<T>, private val col: I
         with(p) {
             append("UPSERT { _key: \"").append(entity._key).append("\" }").appendLine()
             indent {
-                append("INSERT ").value("v", entity.value).appendLine()
-                append("UPDATE ").value("v", entity.value).append(" IN ").append(col.getAlias()).appendLine()
+                append("INSERT ").value("v", entity).appendLine()
+                append("UPDATE ").value("v", entity).append(" IN ").append(col.getAlias()).appendLine()
                 append("RETURN NEW").appendLine()
             }
         }

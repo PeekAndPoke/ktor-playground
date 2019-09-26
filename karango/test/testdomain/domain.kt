@@ -1,10 +1,12 @@
 package de.peekandpoke.karango.testdomain
 
 import de.peekandpoke.karango.EntityCollection
-import de.peekandpoke.karango.EntityRepository
 import de.peekandpoke.karango.Karango
-import de.peekandpoke.karango.KarangoDriver
+import de.peekandpoke.karango.vault.EntityRepository
+import de.peekandpoke.karango.vault.KarangoDriver
 import de.peekandpoke.ultra.vault.Database
+import de.peekandpoke.ultra.vault.hooks.WithTimestamps
+import de.peekandpoke.ultra.vault.hooks.WithUserRecord
 import de.peekandpoke.ultra.vault.type
 
 @Karango
@@ -24,6 +26,8 @@ data class TestPerson(
 
 val TestPersons = EntityCollection<TestPerson>("test-persons", type())
 
+@WithTimestamps
+@WithUserRecord
 class TestPersonsRepository(driver: KarangoDriver) : EntityRepository<TestPerson>(driver, TestPersons)
 
 val Database.testPersons get() = getRepository<TestPersonsRepository>()

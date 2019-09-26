@@ -3,16 +3,14 @@ package de.peekandpoke.karango.e2e
 import com.arangodb.ArangoDB
 import com.arangodb.ArangoDatabase
 import de.peekandpoke.karango.Karango
-import de.peekandpoke.karango.KarangoDriver
 import de.peekandpoke.karango.aql.Expression
 import de.peekandpoke.karango.aql.print
-import de.peekandpoke.karango.karangoDefaultDriver
 import de.peekandpoke.karango.testdomain.TestPersonsRepository
+import de.peekandpoke.karango.vault.KarangoDriver
 import de.peekandpoke.ultra.common.SimpleLazy
 import de.peekandpoke.ultra.common.surround
 import de.peekandpoke.ultra.vault.Database
 import de.peekandpoke.ultra.vault.SharedRepoClassLookup
-import de.peekandpoke.ultra.vault.Vault
 import io.kotlintest.TestContext
 import io.kotlintest.matchers.withClue
 
