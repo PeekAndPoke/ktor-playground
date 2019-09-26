@@ -14,11 +14,11 @@ class UpsertPartial<T> internal constructor(val entity: Storable<T>)
 @KarangoTerminalFuncMarker
 infix fun <T> UpsertPartial<T>.INTO(collection: ICollection<T>): TerminalExpr<T> = UpsertInto(entity, collection)
 
-internal class UpsertInto<T>(private val entity: Storable<T>, private val col: ICollection<T>) : TerminalExpr<T> {
+internal class UpsertInto<T>(private val entity: Storable<T>, private val coll: ICollection<T>) : TerminalExpr<T> {
 
-    override fun innerType() = col.getType().down<T>()
+    override fun innerType() = coll.getType().down<T>()
 
-    override fun getType() = col.getType()
+    override fun getType() = coll.getType()
 
     override fun printAql(p: AqlPrinter) {
 
@@ -26,7 +26,7 @@ internal class UpsertInto<T>(private val entity: Storable<T>, private val col: I
             append("UPSERT { _key: \"").append(entity._key).append("\" }").appendLine()
             indent {
                 append("INSERT ").value("v", entity).appendLine()
-                append("UPDATE ").value("v", entity).append(" IN ").append(col.getAlias()).appendLine()
+                append("UPDATE ").value("v", entity).append(" IN ").append(coll.getAlias()).appendLine()
                 append("RETURN NEW").appendLine()
             }
         }

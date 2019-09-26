@@ -3,6 +3,7 @@
 package de.peekandpoke.ultra.vault
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonUnwrapped
 import de.peekandpoke.ultra.vault.hooks.Timestamps
 import de.peekandpoke.ultra.vault.hooks.UserRecord
@@ -15,9 +16,16 @@ data class StorableMeta(
 sealed class Storable<T> {
     @get: JsonUnwrapped
     abstract val value: T
+
+    @get: JsonInclude(JsonInclude.Include.NON_EMPTY)
     abstract val _id: String
+
+    @get: JsonInclude(JsonInclude.Include.NON_EMPTY)
     abstract val _key: String
+
+    @get: JsonInclude(JsonInclude.Include.NON_EMPTY)
     abstract val _rev: String
+
     abstract val _meta: StorableMeta?
 
     abstract fun withValue(newValue: T): Storable<T>

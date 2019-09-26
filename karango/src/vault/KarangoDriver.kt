@@ -104,9 +104,6 @@ class KarangoDriver(
     }
 
     fun <X> applyOnSaveHooks(repo: Repository<X>, storable: Storable<X>): Storable<X> {
-
-        return onSaveHooks.fold(storable) { acc, hook ->
-            hook.apply(repo, acc)
-        }
+        return onSaveHooks.fold(storable) { acc, hook -> hook.apply(repo, acc) }
     }
 }

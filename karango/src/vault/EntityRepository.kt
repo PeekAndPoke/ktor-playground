@@ -2,19 +2,29 @@ package de.peekandpoke.karango.vault
 
 import de.peekandpoke.karango.*
 import de.peekandpoke.karango.aql.*
-import de.peekandpoke.ultra.vault.Repository
-import de.peekandpoke.ultra.vault.Storable
-import de.peekandpoke.ultra.vault.Stored
+import de.peekandpoke.ultra.vault.*
 
 abstract class EntityRepository<T : Any>(
     private val driver: KarangoDriver,
     protected val coll: IEntityCollection<T>
 ) : Repository<T> {
 
+    /**
+     * The name of the repository
+     */
     override val name = coll.getAlias()
 
-    override val storedType by lazy { coll.getType().down<T>() }
+    /**
+     * A reference to the type that is stored by the repository
+     */
+    override val storedType: TypeRef<T> by lazy { coll.getType().down<T>() }
 
+    /**
+     * Ensures that the repository is set up properly
+     *
+     * 1. Creates the collection in the database, if it does not exist yet
+     * 2. TODO: ensure indexes on the collection
+     */
     override fun ensure() {
         driver.ensureEntityCollection(name)
     }
@@ -25,27 +35,34 @@ abstract class EntityRepository<T : Any>(
     fun count(): Long = queryFirst { RETURN(COUNT(coll)) }!!.toLong()
 
     /**
-     * Inserts the given object into the database and returns the saved version
-     *
-     * TODO: apply onSaveHooks
+     * Saves the given storable and returns the saved version
      */
-    fun save(obj: T): Stored<T> = onBeforeSave(obj).let {
+    fun save(storable: Storable<T>): Stored<T> = when (storable) {
+        is New<T> -> save(storable)
+
+        is Stored<T> -> save(storable)
+
+        is Ref<T> -> save(storable.asStored)
+    }
+
+    /**
+     * Inserts the given object into the database and returns the saved version
+     */
+    fun save(new: T): Stored<T> = save(New(new))
+
+    /**
+     * Inserts the given object into the database and returns the saved version
+     */
+    fun save(new: New<T>): Stored<T> = driver.applyOnSaveHooks(this, new).let {
         findFirst {
             INSERT(it) INTO coll
         }!!
     }
 
     /**
-     * TODO: implement me with UPSERT
-     */
-    private fun onBeforeSave(obj: T) = obj
-
-    /**
      * Updates the given obj in the database and returns the saved version
-     *
-     * TODO: apply onSaveHooks
      */
-    fun save(stored: Storable<T>): Stored<T> = driver.applyOnSaveHooks(this, stored).let { modified ->
+    fun save(stored: Stored<T>): Stored<T> = driver.applyOnSaveHooks(this, stored).let { modified ->
         findFirst {
             UPSERT(modified) INTO coll
         }!!
