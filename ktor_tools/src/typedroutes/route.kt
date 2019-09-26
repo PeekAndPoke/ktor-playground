@@ -1,5 +1,6 @@
 package io.ultra.ktor_tools.typedroutes
 
+import de.peekandpoke.ultra.common.toUri
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.primaryConstructor
@@ -21,13 +22,11 @@ data class TypedRoute<T : Any>(val converter: OutgoingConverter, val type: KClas
             error("The route object '${type.qualifiedName}' must be a data class")
         }
 
-        if (type.primaryConstructor!!.parameters.any { it.isOptional }) {
-            error("The route object '${type.qualifiedName}' must not have optional parameters")
-        }
-
         // TODO: check that all parameters can be handled by the conversion service
 
+        // check that all non optional parameters are present in the route
         val missingInUri = type.primaryConstructor!!.parameters
+            .filter { !it.isOptional }
             .map { it.name }
             .filter { !parsedParams.contains(it) }
 
@@ -36,13 +35,26 @@ data class TypedRoute<T : Any>(val converter: OutgoingConverter, val type: KClas
         }
     }
 
-    operator fun invoke(obj: T) = type.primaryConstructor!!.parameters.fold(uri) { uri, it ->
-        uri.replace(
-            "{${it.name}}",
-            type.declaredMemberProperties.first { p -> p.name == it.name }.let {
-                converter.convert(it.get(obj)!!, it.returnType.javaType)
+    operator fun invoke(obj: T): String {
+
+        var result = uri
+
+        val queryParams = mutableMapOf<String, String>()
+
+        // replace route params or build up query parameters
+        type.declaredMemberProperties.forEach {
+
+            val converted = converter.convert(it.get(obj) ?: "", it.returnType.javaType)
+
+            if (parsedParams.contains(it.name)) {
+                result = result.replace("{${it.name}}", converted)
+            } else {
+                queryParams[it.name] = converted
             }
-        )
+        }
+
+        // finally append query params if there are any
+        return result.toUri(queryParams)
     }
 }
 

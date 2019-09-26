@@ -4,26 +4,33 @@ import com.arangodb.ArangoDB
 import com.arangodb.ArangoDatabase
 import de.peekandpoke.karango.KarangoDriver
 import de.peekandpoke.karango.aql.*
-import de.peekandpoke.karango.karangoDefaultDriver
 import de.peekandpoke.karango_dev.domain.*
+import de.peekandpoke.ultra.kontainer.kontainer
 import de.peekandpoke.ultra.mutator.Frozen
 import de.peekandpoke.ultra.mutator.Mutable
-import de.peekandpoke.ultra.vault.Vault
+import de.peekandpoke.ultra.vault.Database
+import de.peekandpoke.ultra.vault.EntityCache
+import de.peekandpoke.ultra.vault.NullEntityCache
+import de.peekandpoke.ultra.vault.SharedRepoClassLookup
 import kotlin.system.measureTimeMillis
 
 private val arangoDb: ArangoDB = ArangoDB.Builder().user("root").password("").host("localhost", 8529).build()
 private val arangoDatabase: ArangoDatabase = arangoDb.db("kotlindev")
 
-private val databaseBlueprint: Vault.Blueprint = Vault.setup {
-    add { PersonsRepository(it.get(karangoDefaultDriver)) }
-}
+val kontainer = kontainer {
 
-private val db = databaseBlueprint.with { database ->
-    mapOf(
-        karangoDefaultDriver to KarangoDriver(database, arangoDatabase)
-    )
-}
+    singleton(SharedRepoClassLookup::class)
+    singleton(Database::class)
+    dynamic(EntityCache::class) { NullEntityCache() }
 
+    instance(arangoDatabase)
+    singleton(KarangoDriver::class)
+
+    singleton(PersonsRepository::class)
+
+}.useWith()
+
+private val db = kontainer.get<Database>()
 private val persons = db.getRepository<PersonsRepository>()
 
 @Mutable

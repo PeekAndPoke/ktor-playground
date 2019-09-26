@@ -33,12 +33,10 @@ val GameOfThronesModule = module {
 
 class GameOfThronesRoutes(converter: OutgoingConverter, gotMountPoint: String) : Routes(converter, gotMountPoint) {
 
-    //    data class GetCharacters(val page: Int, val epp: Int)
-    class GetCharacters
+    data class GetCharacters(val page: Int = 1, val epp: Int = 100)
 
     val getCharacters = route<GetCharacters>("/characters")
-    //    fun getCharacters(page: Int = 1, epp: Int = 100) = getCharacters(GetCharacters(page, epp))
-    fun getCharacters(page: Int = 1, epp: Int = 100) = getCharacters(GetCharacters())
+    fun getCharacters(page: Int = 1, epp: Int = 100) = getCharacters(GetCharacters(page, epp))
 
     data class GetCharacter(val character: Stored<Character>)
 
@@ -70,14 +68,10 @@ class GameOfThrones(val routes: GameOfThronesRoutes) {
 //                println(withActors.query)
 //                println(withActors.toList().joinToString("\n"))
 
-//            val result = database.characters.findAllPaged(p.page, p.epp)
-            val result = database.characters.findAll()
+            val result = database.characters.findAllPaged(p.page, p.epp)
 
             val list = result.toList()
             val flashEntries = flashSession.pull()
-
-            println("-------------------------------------------------------------------------")
-            println(result.query.ret.getType())
 
             call.respondHtmlTemplate(MainTemplate(call)) {
 
@@ -93,6 +87,8 @@ class GameOfThrones(val routes: GameOfThronesRoutes) {
                         h2 { +t.WELCOME() }
 
                         h4 { +"List of Characters" }
+
+                        a { href = routes.getCharacters(10, 2); +"Paging" }
 
                         ul {
                             list.forEach {

@@ -15,9 +15,8 @@ import de.peekandpoke.module.semanticui.SemanticUiModule
 import de.peekandpoke.resources.Translations
 import de.peekandpoke.ultra.kontainer.kontainer
 import de.peekandpoke.ultra.vault.Database
-import de.peekandpoke.ultra.vault.DefaultEntityCache
-import de.peekandpoke.ultra.vault.EntityCache
-import de.peekandpoke.ultra.vault.NullEntityCache
+import de.peekandpoke.ultra.vault.hooks.StaticUserRecordProvider
+import de.peekandpoke.ultra.vault.hooks.UserRecord
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.features.*
@@ -34,9 +33,7 @@ import io.ktor.response.respond
 import io.ktor.routing.get
 import io.ktor.routing.host
 import io.ktor.routing.routing
-import io.ktor.sessions.SessionTransportTransformerMessageAuthentication
-import io.ktor.sessions.Sessions
-import io.ktor.sessions.cookie
+import io.ktor.sessions.*
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.getDigestFunction
 import io.ktor.util.hex
@@ -50,6 +47,7 @@ import io.ultra.ktor_tools.resources.BetterWebjars
 import io.ultra.ktor_tools.resources.webResources
 import io.ultra.polyglot.I18n
 import kotlinx.html.*
+import java.net.InetAddress
 import java.time.Duration
 import java.util.*
 import kotlin.collections.set
@@ -107,13 +105,12 @@ val kontainerBlueprint = kontainer {
     // We re-define the web resource
     instance(WebResources)
     // Redefine the i18n as a dynamic service, so we can inject it with user language for each request
-    dynamic(I18n::class, Translations.withLocale("en"))
+    dynamic(I18n::class) { Translations.withLocale("en") }
 
     // database drivers
 
     instance(arangoDatabase)
     singleton(KarangoDriver::class)
-    dynamic(EntityCache::class, NullEntityCache())
 
     // application modules ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -125,13 +122,18 @@ val kontainerBlueprint = kontainer {
     module(CmsPublicModule)
 }
 
-fun initKontainer() = kontainerBlueprint.useWith()
+fun systemKontainer() = kontainerBlueprint.useWith(
+    // user record provider
+    StaticUserRecordProvider(
+        UserRecord("system", InetAddress.getLocalHost().canonicalHostName)
+    )
+)
 
-fun requestContainer() = kontainerBlueprint.useWith(
+fun requestContainer(user: UserRecord) = kontainerBlueprint.useWith(
     // default language
     Translations.withLocale("en"),
-    // Entity cache
-    DefaultEntityCache()
+    // user record provider
+    StaticUserRecordProvider(user)
 )
 
 @KtorExperimentalAPI
@@ -139,7 +141,7 @@ fun requestContainer() = kontainerBlueprint.useWith(
 @Suppress("unused", "UNUSED_PARAMETER") // Referenced in application.conf
 fun Application.module(testing: Boolean = false) {
 
-    val initKontainer = initKontainer()
+    val initKontainer = systemKontainer()
 
     // Ensure all database repositories are set up properly
     initKontainer.get(Database::class).ensureRepositories()
@@ -327,12 +329,16 @@ fun Application.module(testing: Boolean = false) {
 
         val ns = measureNanoTime {
 
-            logger.info(call.attributes.allKeys.toString())
-
-            // via the calls attributes we provide the following things
             with(call.attributes) {
                 // inject a fresh Kontainer into each call
-                provide(requestContainer())
+                provide(
+                    requestContainer(
+                        UserRecord(
+                            call.sessions.get<UserSession>()?.userId ?: "anonymous",
+                            call.request.origin.remoteHost
+                        )
+                    )
+                )
             }
         }
 

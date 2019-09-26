@@ -1,6 +1,6 @@
 package io.ultra.ktor_tools.typedroutes
 
-import io.ktor.http.Parameters
+import io.ktor.application.ApplicationCall
 import java.lang.reflect.Type
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -12,13 +12,19 @@ class IncomingConverter(converters: List<IncomingParamConverter>) {
 
     private val converters = converters.plus(IncomingPrimitiveConverter())
 
-    fun convert(values: Parameters, type: KClass<*>): Any {
+    fun convert(call: ApplicationCall, type: KClass<*>): Any {
 
-        return type.primaryConstructor!!.callBy(
-            type.primaryConstructor!!.parameters.map {
-                it to convert(values[it.name!!]!!, it.type.javaType)
-            }.toMap()
-        )
+        val routeParams = call.parameters
+        val queryParams = call.request.queryParameters
+
+        // check if all non optional values are provided
+        val callParams = type.primaryConstructor!!.parameters
+            .map { it to (routeParams[it.name!!] ?: queryParams[it.name!!]) }
+            .filter { (_, v) -> v is String }
+            .map { (k, v) -> k to convert(v as String, k.type.javaType) }
+            .toMap()
+
+        return type.primaryConstructor!!.callBy(callParams)
     }
 
     private fun convert(value: String, type: Type): Any {

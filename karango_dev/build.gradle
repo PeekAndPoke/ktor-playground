@@ -39,6 +39,7 @@ dependencies {
 
     compile "ch.qos.logback:logback-classic:$logback_version"
 
+    compile "de.peekandpoke.ultra:kontainer:$ultra_version"
     compile "de.peekandpoke.ultra:mutator:$ultra_version"
     kapt "de.peekandpoke.ultra:mutator:$ultra_version"
 

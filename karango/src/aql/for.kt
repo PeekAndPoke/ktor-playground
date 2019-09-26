@@ -2,6 +2,8 @@
 
 package de.peekandpoke.karango.aql
 
+import de.peekandpoke.ultra.common.nthParamName
+
 @KarangoDslMarker
 fun FOR(iteratorName: String) = ForLoop.For(iteratorName)
 

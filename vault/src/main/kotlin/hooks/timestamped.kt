@@ -1,4 +1,4 @@
-package de.peekandpoke.karango.addon
+package de.peekandpoke.ultra.vault.hooks
 
 import de.peekandpoke.ultra.vault.OnSaveHook
 import java.time.Instant

@@ -18,14 +18,12 @@ import de.peekandpoke.karango.jackson.KarangoJacksonModule
 import de.peekandpoke.ultra.vault.*
 import kotlin.system.measureTimeMillis
 
-val karangoDefaultDriver = Key<KarangoDriver>("karango_default_driver")
-
 class KarangoDriver(
     private val database: Database,
     private val arangoDb: ArangoDatabase,
     private val onSaveHooks: List<OnSaveHook> = listOf(),
     private val entityCache: EntityCache = NullEntityCache()
-) : Driver {
+) {
 
     /**
      * The object mapper used for serializing queries

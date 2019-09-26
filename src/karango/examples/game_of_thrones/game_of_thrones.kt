@@ -7,23 +7,27 @@ import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.examples.printDivider
 import de.peekandpoke.karango.examples.printQueryResult
 import de.peekandpoke.karango.examples.runDemo
-import de.peekandpoke.karango.karangoDefaultDriver
-import de.peekandpoke.ultra.vault.Stored
-import de.peekandpoke.ultra.vault.Vault
+import de.peekandpoke.ultra.kontainer.kontainer
+import de.peekandpoke.ultra.vault.*
 
 private val arangoDb: ArangoDB = ArangoDB.Builder().user("root").password("").host("localhost", 8529).build()
 private val arangoDatabase: ArangoDatabase = arangoDb.db("kotlindev")
 
-private val databaseBlueprint: Vault.Blueprint = Vault.setup {
-    add { CharactersRepository(it.get(karangoDefaultDriver)) }
-    add { ActorsRepository(it.get(karangoDefaultDriver)) }
-}
+val kontainer = kontainer {
 
-private val db = databaseBlueprint.with { database ->
-    mapOf(
-        karangoDefaultDriver to KarangoDriver(database, arangoDatabase)
-    )
-}
+    singleton(SharedRepoClassLookup::class)
+    singleton(Database::class)
+    dynamic(EntityCache::class) { NullEntityCache() }
+
+    instance(arangoDatabase)
+    singleton(KarangoDriver::class)
+
+    singleton(CharactersRepository::class)
+    singleton(ActorsRepository::class)
+
+}.useWith()
+
+private val db = kontainer.get<Database>()
 
 private val characters = db.characters
 private val actors = db.actors

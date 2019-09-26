@@ -8,7 +8,10 @@ import de.peekandpoke.karango.aql.Expression
 import de.peekandpoke.karango.aql.print
 import de.peekandpoke.karango.karangoDefaultDriver
 import de.peekandpoke.karango.testdomain.TestPersonsRepository
+import de.peekandpoke.ultra.common.SimpleLazy
 import de.peekandpoke.ultra.common.surround
+import de.peekandpoke.ultra.vault.Database
+import de.peekandpoke.ultra.vault.SharedRepoClassLookup
 import de.peekandpoke.ultra.vault.Vault
 import io.kotlintest.TestContext
 import io.kotlintest.matchers.withClue
@@ -16,20 +19,26 @@ import io.kotlintest.matchers.withClue
 private val arangoDb: ArangoDB = ArangoDB.Builder().user("root").password("").host("localhost", 8529).build()
 private val arangoDatabase: ArangoDatabase = arangoDb.db("_system")
 
-lateinit var driver: KarangoDriver
+fun createDatabase(): Pair<Database, KarangoDriver> {
 
-private val databaseBlueprint: Vault.Blueprint = Vault.setup {
-    add { TestPersonsRepository(it.get(karangoDefaultDriver)) }
+    lateinit var db: Database
+    lateinit var driver: KarangoDriver
+
+    val repos = SimpleLazy {
+        listOf(
+            TestPersonsRepository(driver)
+        )
+    }
+
+    db = Database(repos, SharedRepoClassLookup())
+    driver = KarangoDriver(db, arangoDatabase)
+
+    return Pair(db, driver)
 }
 
-val database = databaseBlueprint.with { database ->
-
-    driver = KarangoDriver(database, arangoDatabase)
-
-    listOf(
-        karangoDefaultDriver to driver
-    )
-}
+private val dbAndDriver = createDatabase()
+val database: Database = dbAndDriver.first
+val driver: KarangoDriver = dbAndDriver.second
 
 @Karango
 data class E2ePerson(val name: String, val age: Int)

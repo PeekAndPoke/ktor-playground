@@ -1,11 +1,11 @@
 package de.peekandpoke.module.cms
 
 import de.peekandpoke.karango.Karango
-import de.peekandpoke.karango.addon.Timestamped
-import de.peekandpoke.karango.addon.Timestamps
-import de.peekandpoke.karango.addon.UserRecord
-import de.peekandpoke.karango.addon.WithUserRecord
 import de.peekandpoke.ultra.mutator.Mutable
+import de.peekandpoke.ultra.vault.hooks.Timestamped
+import de.peekandpoke.ultra.vault.hooks.Timestamps
+import de.peekandpoke.ultra.vault.hooks.UserRecord
+import de.peekandpoke.ultra.vault.hooks.WithUserRecord
 
 @Karango
 @Mutable

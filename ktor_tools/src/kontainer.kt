@@ -3,7 +3,13 @@ package io.ultra.ktor_tools
 import de.peekandpoke.ultra.kontainer.Kontainer
 import de.peekandpoke.ultra.kontainer.module
 import de.peekandpoke.ultra.vault.Database
+import de.peekandpoke.ultra.vault.DefaultEntityCache
+import de.peekandpoke.ultra.vault.EntityCache
 import de.peekandpoke.ultra.vault.SharedRepoClassLookup
+import de.peekandpoke.ultra.vault.hooks.AnonymousUserRecordProvider
+import de.peekandpoke.ultra.vault.hooks.TimestampedOnSaveHook
+import de.peekandpoke.ultra.vault.hooks.UserRecordOnSaveHook
+import de.peekandpoke.ultra.vault.hooks.UserRecordProvider
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.util.AttributeKey
@@ -25,6 +31,11 @@ val KtorFX = module {
 
     singleton(SharedRepoClassLookup::class)
     singleton(Database::class)
+    dynamic(EntityCache::class) { DefaultEntityCache() }
+
+    singleton(TimestampedOnSaveHook::class)
+    singleton(UserRecordOnSaveHook::class)
+    dynamic(UserRecordProvider::class) { AnonymousUserRecordProvider() }
 
     // data conversion for routing ////////////////////////////////////////////////////////////////////////////
 
