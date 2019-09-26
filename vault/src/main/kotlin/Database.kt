@@ -1,15 +1,20 @@
 package de.peekandpoke.ultra.vault
 
-class Database(repositories: Lazy<List<Repository<*>>>, private val repoClassLookup: SharedRepoClassLookup) {
+import de.peekandpoke.ultra.common.Lookup
 
-    private val repositories: Map<Class<out Repository<*>>, Repository<*>> by lazy {
-        repositories.value.map { it::class.java to it }.toMap()
-    }
+class Database(
+    private val repositories: Lookup<Repository<*>>,
+    private val repoClassLookup: SharedRepoClassLookup
+) {
 
-    fun getRepositories() = repositories.values
+//    private val repositories: Map<Class<out Repository<*>>, Repository<*>> by lazy {
+//        repositories.all().map { it::class.java to it }.toMap()
+//    }
+
+    fun getRepositories() = repositories.all()
 
     fun ensureRepositories() {
-        repositories.values.forEach { it.ensure() }
+        repositories.all().forEach { it.ensure() }
     }
 
 
@@ -17,14 +22,14 @@ class Database(repositories: Lazy<List<Repository<*>>>, private val repoClassLoo
         // todo put some caching in place
         return null != repoClassLookup.getOrPut(type) {
             @Suppress("UNCHECKED_CAST")
-            repositories.values.firstOrNull { it.stores(type) }?.let { it::class.java as Class<Repository<*>> }
+            repositories.all().firstOrNull { it.stores(type) }?.let { it::class.java as Class<Repository<*>> }
         }
     }
 
     fun <T> getRepositoryStoring(type: Class<T>): Repository<T> {
 
         val cls = repoClassLookup.getOrPut(type) {
-            repositories.values.firstOrNull { it.stores(type) }?.let { it::class.java }
+            repositories.all().firstOrNull { it.stores(type) }?.let { it::class.java }
         }
 
         if (cls != null) {
@@ -38,7 +43,7 @@ class Database(repositories: Lazy<List<Repository<*>>>, private val repoClassLoo
 
     fun <T : Repository<*>> getRepository(cls: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
-        return repositories[cls] as T?
+        return repositories.get(cls.kotlin) as T?
             ?: throw VaultException("No repository of class '$cls' is registered.")
     }
 
@@ -46,7 +51,7 @@ class Database(repositories: Lazy<List<Repository<*>>>, private val repoClassLoo
 
     fun getRepository(name: String): Repository<*>? {
         val cls = repoClassLookup.getOrPut(name) {
-            repositories.values.firstOrNull { it.name == name }?.let { it::class.java }
+            repositories.all().firstOrNull { it.name == name }?.let { it::class.java }
         }
 
         if (cls != null) {

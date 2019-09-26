@@ -7,9 +7,10 @@ import de.peekandpoke.karango.aql.Expression
 import de.peekandpoke.karango.aql.print
 import de.peekandpoke.karango.testdomain.TestPersonsRepository
 import de.peekandpoke.karango.vault.KarangoDriver
-import de.peekandpoke.ultra.common.SimpleLazy
+import de.peekandpoke.ultra.common.SimpleLookup
 import de.peekandpoke.ultra.common.surround
 import de.peekandpoke.ultra.vault.Database
+import de.peekandpoke.ultra.vault.Repository
 import de.peekandpoke.ultra.vault.SharedRepoClassLookup
 import io.kotlintest.TestContext
 import io.kotlintest.matchers.withClue
@@ -22,7 +23,7 @@ fun createDatabase(): Pair<Database, KarangoDriver> {
     lateinit var db: Database
     lateinit var driver: KarangoDriver
 
-    val repos = SimpleLazy {
+    val repos = SimpleLookup<Repository<*>> {
         listOf(
             TestPersonsRepository(driver)
         )
