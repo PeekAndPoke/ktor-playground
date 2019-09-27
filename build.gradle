@@ -79,7 +79,7 @@ dependencies {
     compile project(":test_module")
 
     compile project(":polyglot")
-    compile project(":ktor_tools")
+    compile project(":ktorfx")
 
     compile project(":karango")
     kapt project(":karango")

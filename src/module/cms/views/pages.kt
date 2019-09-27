@@ -24,6 +24,7 @@ internal fun Template.pages(pages: List<Stored<CmsPage>>) {
                 tr {
                     th { +"Id" }
                     th { +"Name" }
+                    th { +"Slug" }
                     th { +"Created at" }
                     th { +"Updated at" }
                     th { +"Last edit by" }
@@ -38,6 +39,9 @@ internal fun Template.pages(pages: List<Stored<CmsPage>>) {
                         }
                         td {
                             a(href = routes.editPage(it)) { +it.value.name }
+                        }
+                        td {
+                            a(href = routes.editPage(it)) { +it.value.slug }
                         }
                         td {
                             +(it._meta?.ts?.createdAt?.toString() ?: "n/a")

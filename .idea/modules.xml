@@ -9,9 +9,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/karango_dev/ktor-playground.karango_dev.iml" filepath="$PROJECT_DIR$/.idea/modules/karango_dev/ktor-playground.karango_dev.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/karango_dev/ktor-playground.karango_dev.main.iml" filepath="$PROJECT_DIR$/.idea/modules/karango_dev/ktor-playground.karango_dev.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/karango_dev/ktor-playground.karango_dev.test.iml" filepath="$PROJECT_DIR$/.idea/modules/karango_dev/ktor-playground.karango_dev.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktor_tools/ktor-playground.ktor_tools.iml" filepath="$PROJECT_DIR$/.idea/modules/ktor_tools/ktor-playground.ktor_tools.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktor_tools/ktor-playground.ktor_tools.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktor_tools/ktor-playground.ktor_tools.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktor_tools/ktor-playground.ktor_tools.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ktor_tools/ktor-playground.ktor_tools.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/ktor-playground.ktorfx.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/ktor-playground.ktorfx.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/ktor-playground.ktorfx.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/ktor-playground.ktorfx.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/ktor-playground.ktorfx.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/ktor-playground.ktorfx.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktor-playground.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktor-playground.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/polyglot/ktor-playground.polyglot.iml" filepath="$PROJECT_DIR$/.idea/modules/polyglot/ktor-playground.polyglot.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/polyglot/ktor-playground.polyglot.main.iml" filepath="$PROJECT_DIR$/.idea/modules/polyglot/ktor-playground.polyglot.main.iml" />
