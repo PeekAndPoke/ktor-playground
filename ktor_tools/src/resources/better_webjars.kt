@@ -28,7 +28,6 @@ import java.nio.file.Paths
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-@Suppress("KDocMissingDocumentation")
 @KtorExperimentalAPI
 class BetterWebjars(private val configuration: Configuration) {
 
@@ -100,7 +99,7 @@ class BetterWebjars(private val configuration: Configuration) {
     @KtorExperimentalAPI
     companion object Feature : ApplicationFeature<ApplicationCallPipeline, Configuration, BetterWebjars> {
 
-        override val key = AttributeKey<BetterWebjars>("Webjars")
+        override val key = AttributeKey<BetterWebjars>("BetterWebjars")
 
         override fun install(pipeline: ApplicationCallPipeline, configure: Configuration.() -> Unit): BetterWebjars {
 
