@@ -1,6 +1,8 @@
 package de.peekandpoke
 
+import de.peekandpoke.ktorfx.semanticui.semanticUi
 import de.peekandpoke.ktorfx.semanticui.ui
+import de.peekandpoke.ktorfx.webresources.css
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.application.feature
@@ -15,7 +17,6 @@ import io.ktor.sessions.get
 import io.ktor.sessions.sessions
 import io.ktor.sessions.set
 import io.ktor.util.KtorExperimentalAPI
-import io.ultra.ktor_tools.resources.css
 import io.ultra.ktor_tools.webResources
 import kotlinx.html.*
 
@@ -98,7 +99,7 @@ fun Route.login(authName: String, users: UserHashedTableAuth) {
                     head {
                         title { +"Admin area" }
 
-                        css(webResources[SemanticUiWebResources::class])
+                        css(webResources.semanticUi)
                     }
 
                     body {

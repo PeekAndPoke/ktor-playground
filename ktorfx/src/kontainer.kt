@@ -1,6 +1,9 @@
 package io.ultra.ktor_tools
 
-import de.peekandpoke.ultra.common.md5
+import de.peekandpoke.ktorfx.semanticui.KtorFX_SemanticUi
+import de.peekandpoke.ktorfx.webresources.CacheBuster
+import de.peekandpoke.ktorfx.webresources.KtorFX_WebResources
+import de.peekandpoke.ktorfx.webresources.WebResources
 import de.peekandpoke.ultra.kontainer.Kontainer
 import de.peekandpoke.ultra.kontainer.module
 import de.peekandpoke.ultra.vault.Database
@@ -16,14 +19,11 @@ import io.ktor.application.call
 import io.ktor.util.AttributeKey
 import io.ktor.util.Attributes
 import io.ktor.util.pipeline.PipelineContext
-import io.ultra.ktor_tools.resources.CacheBuster
-import io.ultra.ktor_tools.resources.WebResources
 import io.ultra.ktor_tools.typedroutes.IncomingConverter
 import io.ultra.ktor_tools.typedroutes.IncomingVaultConverter
 import io.ultra.ktor_tools.typedroutes.OutgoingConverter
 import io.ultra.ktor_tools.typedroutes.OutgoingVaultConverter
 import io.ultra.polyglot.I18n
-import java.time.Instant
 
 // Kontainer module
 
@@ -52,9 +52,8 @@ val KtorFX = module {
     // I18n (can be overwritten by re-defining the instance)
     instance(I18n.empty())
 
-    // WebResources and Cache Busting
-    instance(CacheBuster(Instant.now().toString().md5()))
-    singleton(WebResources::class)
+    module(KtorFX_SemanticUi)
+    module(KtorFX_WebResources)
 }
 
 // Registering the kontainer on call attributes

@@ -1,29 +1,32 @@
-package io.ultra.ktor_tools.resources
+package de.peekandpoke.ktorfx.webresources
 
-import de.peekandpoke.ultra.common.Lookup
 import de.peekandpoke.ultra.common.base64
 import de.peekandpoke.ultra.common.md5
 import de.peekandpoke.ultra.common.sha384
-import kotlinx.html.FlowOrMetaDataContent
-import kotlinx.html.ScriptType
-import kotlinx.html.link
-import kotlinx.html.script
 import java.io.InputStream
-import kotlin.reflect.KClass
 
-data class CacheBuster(val key: String)
+/**
+ * Abstract base for all resource groups
+ *
+ * Derive from this class and register all resources in the [builder]
+ *
+ * The [cacheBuster] is passed down to each [WebResource]
+ */
+abstract class WebResourceGroup(
 
+    private val cacheBuster: CacheBuster,
+    private val builder: Builder.() -> Unit
 
-class WebResources(private val groups: Lookup<WebResourceGroup>) {
+) {
 
-    operator fun <T : WebResourceGroup> get(cls: KClass<T>): T = groups.get(cls)
-        ?: throw Exception("Resource group '${cls.qualifiedName}' not present")
-}
-
-abstract class WebResourceGroup(cacheBuster: CacheBuster, builder: Builder.() -> Unit) {
-
+    /**
+     * A list of all css files in the group
+     */
     val css: List<WebResource>
 
+    /**
+     * A list of all js files in the group
+     */
     val js: List<WebResource>
 
     init {
@@ -73,31 +76,5 @@ abstract class WebResourceGroup(cacheBuster: CacheBuster, builder: Builder.() ->
         }
 
         private fun String.toInputStream(): InputStream = this::class.java.getResourceAsStream(this)
-    }
-}
-
-data class WebResource(val uri: String, val cacheKey: String? = null, val integrity: String? = null) {
-
-    val fullUri by lazy {
-
-        when (cacheKey) {
-            null -> uri
-            else -> "$uri?$cacheKey"
-        }
-    }
-}
-
-// HTML //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-fun FlowOrMetaDataContent.css(group: WebResourceGroup) = group.css.forEach { css ->
-
-    link(rel = "stylesheet", href = css.fullUri) {
-        css.integrity?.let { integrity = it }
-    }
-}
-
-fun FlowOrMetaDataContent.js(group: WebResourceGroup) = group.js.forEach { js ->
-    script(type = ScriptType.textJavaScript, src = js.fullUri) {
-        js.integrity?.let { integrity = it }
     }
 }

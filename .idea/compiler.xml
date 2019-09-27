@@ -25,6 +25,8 @@
       <module name="ktor-playground.ktorfx.test" target="1.8" />
       <module name="ktor-playground.ktorfx.webjars.main" target="1.8" />
       <module name="ktor-playground.ktorfx.webjars.test" target="1.8" />
+      <module name="ktor-playground.ktorfx.webresources.main" target="1.8" />
+      <module name="ktor-playground.ktorfx.webresources.test" target="1.8" />
       <module name="ktor-playground.main" target="1.8" />
       <module name="ktor-playground.mod_semanticui.main" target="1.8" />
       <module name="ktor-playground.mod_semanticui.test" target="1.8" />

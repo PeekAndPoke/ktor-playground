@@ -11,6 +11,7 @@ datasources.xml
 */out
 /build
 */build
+*/*/build
 /.kotlintest
 */.kotlintest
 .attach_pid*

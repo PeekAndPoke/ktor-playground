@@ -1,15 +1,15 @@
 package de.peekandpoke.module.semanticui
 
 import de.peekandpoke.PrismJsWebResources
-import de.peekandpoke.SemanticUiWebResources
+import de.peekandpoke.ktorfx.semanticui.semanticUi
 import de.peekandpoke.ktorfx.semanticui.ui
+import de.peekandpoke.ktorfx.webresources.WebResources
+import de.peekandpoke.ktorfx.webresources.css
+import de.peekandpoke.ktorfx.webresources.js
 import io.ktor.application.ApplicationCall
 import io.ktor.html.Placeholder
 import io.ktor.html.Template
 import io.ktor.html.insert
-import io.ultra.ktor_tools.resources.WebResources
-import io.ultra.ktor_tools.resources.css
-import io.ultra.ktor_tools.resources.js
 import io.ultra.ktor_tools.webResources
 import kotlinx.html.*
 
@@ -33,7 +33,7 @@ internal class Template constructor(private val routes: SemanticUiRoutes, call: 
 
             insert(pageTitle)
 
-            css(webResources[SemanticUiWebResources::class])
+            css(webResources.semanticUi)
             css(webResources[PrismJsWebResources::class])
 
             style("text/css") {
@@ -69,7 +69,7 @@ internal class Template constructor(private val routes: SemanticUiRoutes, call: 
                 }
             }
 
-            js(webResources[SemanticUiWebResources::class])
+            js(webResources.semanticUi)
             js(webResources[PrismJsWebResources::class])
         }
     }

@@ -1,4 +1,4 @@
-package io.ultra.ktor_tools.resources
+package de.peekandpoke.ktorfx.webresources
 
 import de.peekandpoke.ultra.common.md5
 

@@ -5,6 +5,7 @@ include ":polyglot"
 include ":ktorfx"
 include ":ktorfx:semanticui"
 include ":ktorfx:webjars"
+include ":ktorfx:webresources"
 
 include ":vault"
 include ":karango"

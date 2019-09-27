@@ -18,6 +18,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/webjars/ktor-playground.ktorfx.webjars.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/webjars/ktor-playground.ktorfx.webjars.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/webjars/ktor-playground.ktorfx.webjars.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/webjars/ktor-playground.ktorfx.webjars.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/webjars/ktor-playground.ktorfx.webjars.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/webjars/ktor-playground.ktorfx.webjars.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/webresources/ktor-playground.ktorfx.webresources.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/webresources/ktor-playground.ktorfx.webresources.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/webresources/ktor-playground.ktorfx.webresources.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/webresources/ktor-playground.ktorfx.webresources.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/webresources/ktor-playground.ktorfx.webresources.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/webresources/ktor-playground.ktorfx.webresources.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktor-playground.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktor-playground.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/polyglot/ktor-playground.polyglot.iml" filepath="$PROJECT_DIR$/.idea/modules/polyglot/ktor-playground.polyglot.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/polyglot/ktor-playground.polyglot.main.iml" filepath="$PROJECT_DIR$/.idea/modules/polyglot/ktor-playground.polyglot.main.iml" />

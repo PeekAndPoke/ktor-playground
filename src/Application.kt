@@ -5,6 +5,9 @@ import com.arangodb.ArangoDatabase
 import com.fasterxml.jackson.databind.SerializationFeature
 import de.peekandpoke.karango.vault.KarangoDriver
 import de.peekandpoke.ktorfx.webjars.BetterWebjars
+import de.peekandpoke.ktorfx.webresources.AppMeta
+import de.peekandpoke.ktorfx.webresources.CacheBuster
+import de.peekandpoke.ktorfx.webresources.WebResourceGroup
 import de.peekandpoke.module.cms.CmsAdmin
 import de.peekandpoke.module.cms.CmsAdminModule
 import de.peekandpoke.module.cms.CmsPublic
@@ -43,9 +46,6 @@ import io.ultra.ktor_tools.KontainerKey
 import io.ultra.ktor_tools.KtorFX
 import io.ultra.ktor_tools.logger.logger
 import io.ultra.ktor_tools.provide
-import io.ultra.ktor_tools.resources.AppMeta
-import io.ultra.ktor_tools.resources.CacheBuster
-import io.ultra.ktor_tools.resources.WebResourceGroup
 import io.ultra.polyglot.I18n
 import kotlinx.html.*
 import java.net.InetAddress
@@ -68,13 +68,6 @@ class LegacyWebResources(cacheBuster: CacheBuster) : WebResourceGroup(cacheBuste
     // custom
     resourceCss("/assets/css/styles.css")
     resourceJs("/assets/js/template.js")
-})
-
-class SemanticUiWebResources(cacheBuster: CacheBuster) : WebResourceGroup(cacheBuster, {
-    webjarCss("/vendor/Semantic-UI/semantic.css")
-
-    webjarJs("/vendor/jquery/jquery.min.js")
-    webjarJs("/vendor/Semantic-UI/semantic.js")
 })
 
 class PrismJsWebResources(cacheBuster: CacheBuster) : WebResourceGroup(cacheBuster, {
@@ -102,15 +95,14 @@ val kontainerBlueprint = kontainer {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //  APPLICATION  /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // We re-define the cache buster
+    // We re-define the cache buster, so we can read the version of the application and use it as cache buster key
     instance(Meta.cacheBuster())
-    // Redefine the i18n as a dynamic service, so we can inject it with user language for each request
+    // We re-define the i18n as a dynamic service, so we can inject it with user language for each request
     dynamic(I18n::class) { Translations.withLocale("en") }
 
     // application web resources
 
     singleton(LegacyWebResources::class)
-    singleton(SemanticUiWebResources::class)
     singleton(PrismJsWebResources::class)
 
     // application modules

@@ -70,9 +70,8 @@ dependencies {
 //    compile 'org.webjars:font-awesome:5.9.0'
     compile 'org.webjars.npm:prismjs:1.16.0'
 
-    compile "de.peekandpoke.ultra:kontainer:$ultra_version"
-    compile "de.peekandpoke.ultra:mutator:$ultra_version"
-    kapt "de.peekandpoke.ultra:mutator:$ultra_version"
+    compile "de.peekandpoke.ultra:ultra:$ultra_version"
+    kapt "de.peekandpoke.ultra:ultra:$ultra_version"
 
     compile project(":test_module")
 
