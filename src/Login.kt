@@ -98,7 +98,7 @@ fun Route.login(authName: String, users: UserHashedTableAuth) {
                     head {
                         title { +"Admin area" }
 
-                        css(webResources["semantic"])
+                        css(webResources[SemanticUiWebResources::class])
                     }
 
                     body {

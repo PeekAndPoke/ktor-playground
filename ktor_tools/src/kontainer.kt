@@ -1,5 +1,6 @@
 package io.ultra.ktor_tools
 
+import de.peekandpoke.ultra.common.md5
 import de.peekandpoke.ultra.kontainer.Kontainer
 import de.peekandpoke.ultra.kontainer.module
 import de.peekandpoke.ultra.vault.Database
@@ -22,6 +23,7 @@ import io.ultra.ktor_tools.typedroutes.IncomingVaultConverter
 import io.ultra.ktor_tools.typedroutes.OutgoingConverter
 import io.ultra.ktor_tools.typedroutes.OutgoingVaultConverter
 import io.ultra.polyglot.I18n
+import java.time.Instant
 
 // Kontainer module
 
@@ -47,8 +49,12 @@ val KtorFX = module {
 
     // resources //////////////////////////////////////////////////////////////////////////////////////////////
 
+    // I18n (can be overwritten by re-defining the instance)
     instance(I18n.empty())
-    instance(WebResources(CacheBuster("not-initialized")))
+
+    // WebResources and Cache Busting
+    instance(CacheBuster(Instant.now().toString().md5()))
+    singleton(WebResources::class)
 }
 
 // Registering the kontainer on call attributes
@@ -69,6 +75,9 @@ inline val PipelineContext<Unit, ApplicationCall>.database: Database get() = cal
 
 inline val ApplicationCall.i18n: I18n get() = kontainer.get(I18n::class)
 inline val PipelineContext<Unit, ApplicationCall>.i18n: I18n get() = call.i18n
+
+inline val ApplicationCall.cacheBuster: CacheBuster get() = kontainer.get(CacheBuster::class)
+inline val PipelineContext<Unit, ApplicationCall>.cacheBuster: CacheBuster get() = call.cacheBuster
 
 inline val ApplicationCall.webResources: WebResources get() = kontainer.get(WebResources::class)
 inline val PipelineContext<Unit, ApplicationCall>.webResources: WebResources get() = call.webResources

@@ -1,5 +1,6 @@
 package de.peekandpoke.resources
 
+import de.peekandpoke.LegacyWebResources
 import io.ktor.application.ApplicationCall
 import io.ktor.html.Placeholder
 import io.ktor.html.Template
@@ -13,7 +14,7 @@ import kotlinx.html.*
 class MainTemplate(call: ApplicationCall) : Template<HTML> {
 
     val t = call.i18n
-    private val webResources = call.webResources["legacy"]
+    private val webResources = call.webResources[LegacyWebResources::class]
 
     val pageTitle = Placeholder<HEAD>()
     val content = Placeholder<MAIN>()

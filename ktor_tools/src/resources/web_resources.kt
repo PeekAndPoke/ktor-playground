@@ -1,5 +1,6 @@
 package io.ultra.ktor_tools.resources
 
+import de.peekandpoke.ultra.common.Lookup
 import de.peekandpoke.ultra.common.base64
 import de.peekandpoke.ultra.common.md5
 import de.peekandpoke.ultra.common.sha384
@@ -8,37 +9,38 @@ import kotlinx.html.ScriptType
 import kotlinx.html.link
 import kotlinx.html.script
 import java.io.InputStream
+import kotlin.reflect.KClass
 
-data class CacheBuster(val key: String) {
-    override fun toString() = key
+data class CacheBuster(val key: String)
+
+
+class WebResources(private val groups: Lookup<WebResourceGroup>) {
+
+    operator fun <T : WebResourceGroup> get(cls: KClass<T>): T = groups.get(cls)
+        ?: throw Exception("Resource group '${cls.qualifiedName}' not present")
 }
 
-fun webResources(meta: AppMeta, builder: WebResources.() -> Unit): WebResources {
-    return WebResources(meta.cacheBuster()).apply(builder)
-}
+abstract class WebResourceGroup(cacheBuster: CacheBuster, builder: Builder.() -> Unit) {
 
-class WebResources(private val cacheBuster: CacheBuster) {
+    val css: List<WebResource>
 
-    private val groups = mutableMapOf<String, WebResourceGroup>()
+    val js: List<WebResource>
 
-    fun group(name: String, builder: WebResourceGroup.Builder.() -> Unit) {
-
-        WebResourceGroup.Builder(cacheBuster).apply(builder).build().apply {
-            groups[name] = this
+    init {
+        Builder(cacheBuster).apply(builder).apply {
+            css = getCss()
+            js = getJs()
         }
     }
-
-    operator fun get(name: String) = groups[name] ?: throw Exception("Resource group '$name' not present")
-}
-
-data class WebResourceGroup(val css: List<WebResource>, val js: List<WebResource>) {
 
     class Builder(private val cacheBuster: CacheBuster) {
 
         private val css = mutableListOf<WebResource>()
         private val js = mutableListOf<WebResource>()
 
-        internal fun build(): WebResourceGroup = WebResourceGroup(css, js)
+        internal fun getCss() = css.toList()
+
+        internal fun getJs() = js.toList()
 
         fun webjarCss(uri: String): WebResource {
             return WebResource(uri, cacheBuster.key).apply {
@@ -88,6 +90,7 @@ data class WebResource(val uri: String, val cacheKey: String? = null, val integr
 // HTML //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 fun FlowOrMetaDataContent.css(group: WebResourceGroup) = group.css.forEach { css ->
+
     link(rel = "stylesheet", href = css.fullUri) {
         css.integrity?.let { integrity = it }
     }

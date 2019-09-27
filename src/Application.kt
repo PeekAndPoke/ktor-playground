@@ -44,7 +44,8 @@ import io.ultra.ktor_tools.logger.logger
 import io.ultra.ktor_tools.provide
 import io.ultra.ktor_tools.resources.AppMeta
 import io.ultra.ktor_tools.resources.BetterWebjars
-import io.ultra.ktor_tools.resources.webResources
+import io.ultra.ktor_tools.resources.CacheBuster
+import io.ultra.ktor_tools.resources.WebResourceGroup
 import io.ultra.polyglot.I18n
 import kotlinx.html.*
 import java.net.InetAddress
@@ -61,58 +62,63 @@ private val arangoDatabase: ArangoDatabase = arangoDb.db("kotlindev")
 
 val Meta = object : AppMeta() {}
 
-val WebResources = webResources(Meta) {
+class LegacyWebResources(cacheBuster: CacheBuster) : WebResourceGroup(cacheBuster, {
+    webjarCss("/vendor/bootstrap/css/bootstrap.css")
+    webjarJs("/vendor/bootstrap/js/bootstrap.min.js")
 
-    group("legacy") {
+    webjarCss("/vendor/font-awesome/css/all.css")
 
-        webjarCss("/vendor/bootstrap/css/bootstrap.css")
-        webjarJs("/vendor/bootstrap/js/bootstrap.min.js")
+    webjarJs("/vendor/jquery/jquery.min.js")
 
-        webjarCss("/vendor/font-awesome/css/all.css")
+    // custom
+    resourceCss("/assets/css/styles.css")
+    resourceJs("/assets/js/template.js")
+})
 
-        webjarJs("/vendor/jquery/jquery.min.js")
+class SemanticUiWebResources(cacheBuster: CacheBuster) : WebResourceGroup(cacheBuster, {
+    webjarCss("/vendor/Semantic-UI/semantic.css")
 
-        // custom
-        resourceCss("/assets/css/styles.css")
-        resourceJs("/assets/js/template.js")
-    }
+    webjarJs("/vendor/jquery/jquery.min.js")
+    webjarJs("/vendor/Semantic-UI/semantic.js")
+})
 
-    group("semantic") {
-        webjarCss("/vendor/Semantic-UI/semantic.css")
+class PrismJsWebResources(cacheBuster: CacheBuster) : WebResourceGroup(cacheBuster, {
+    webjarCss("/vendor/prismjs/prism.css")
+    webjarCss("/vendor/prismjs/prism.css")
+    webjarCss("/vendor/prismjs/plugins/toolbar/prism-toolbar.css")
 
-        webjarJs("/vendor/jquery/jquery.min.js")
-        webjarJs("/vendor/Semantic-UI/semantic.js")
-    }
-
-    group("prism") {
-        webjarCss("/vendor/prismjs/prism.css")
-        webjarCss("/vendor/prismjs/prism.css")
-        webjarCss("/vendor/prismjs/plugins/toolbar/prism-toolbar.css")
-
-        webjarJs("/vendor/prismjs/prism.js")
-        webjarJs("/vendor/prismjs/plugins/toolbar/prism-toolbar.js")
-        webjarJs("/vendor/prismjs/show-language/prism-show-language.js")
-        webjarJs("/vendor/prismjs/components/prism-kotlin.js")
-    }
-}
-
+    webjarJs("/vendor/prismjs/prism.js")
+    webjarJs("/vendor/prismjs/plugins/toolbar/prism-toolbar.js")
+    webjarJs("/vendor/prismjs/show-language/prism-show-language.js")
+    webjarJs("/vendor/prismjs/components/prism-kotlin.js")
+})
 
 val kontainerBlueprint = kontainer {
 
     // functionality modules /////////////////////////////////////////////////////////////////////////////////////////////
 
     module(KtorFX)
-    // We re-define the web resource
-    instance(WebResources)
-    // Redefine the i18n as a dynamic service, so we can inject it with user language for each request
-    dynamic(I18n::class) { Translations.withLocale("en") }
 
     // database drivers
 
     instance(arangoDatabase)
     singleton(KarangoDriver::class)
 
-    // application modules ///////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //  APPLICATION  /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // We re-define the cache buster
+    instance(Meta.cacheBuster())
+    // Redefine the i18n as a dynamic service, so we can inject it with user language for each request
+    dynamic(I18n::class) { Translations.withLocale("en") }
+
+    // application web resources
+
+    singleton(LegacyWebResources::class)
+    singleton(SemanticUiWebResources::class)
+    singleton(PrismJsWebResources::class)
+
+    // application modules
 
     module(GameOfThronesModule)
 

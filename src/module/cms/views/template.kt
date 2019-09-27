@@ -1,5 +1,7 @@
 package de.peekandpoke.module.cms.views
 
+import de.peekandpoke.PrismJsWebResources
+import de.peekandpoke.SemanticUiWebResources
 import de.peekandpoke.module.cms.CmsAdminRoutes
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
@@ -49,8 +51,8 @@ internal class Template constructor(
 
             insert(pageTitle)
 
-            css(webResources["semantic"])
-            css(webResources["prism"])
+            css(webResources[SemanticUiWebResources::class])
+            css(webResources[PrismJsWebResources::class])
 
             style("text/css") {
                 unsafe {
@@ -91,8 +93,8 @@ internal class Template constructor(
                 }
             }
 
-            js(webResources["semantic"])
-            js(webResources["prism"])
+            js(webResources[SemanticUiWebResources::class])
+            js(webResources[PrismJsWebResources::class])
         }
     }
 }
