@@ -10,6 +10,15 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/karango_dev/ktor-playground.karango_dev.main.iml" filepath="$PROJECT_DIR$/.idea/modules/karango_dev/ktor-playground.karango_dev.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/karango_dev/ktor-playground.karango_dev.test.iml" filepath="$PROJECT_DIR$/.idea/modules/karango_dev/ktor-playground.karango_dev.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/ktor-playground.ktorfx.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/ktor-playground.ktorfx.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/broker/ktor-playground.ktorfx.broker.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/broker/ktor-playground.ktorfx.broker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/broker/ktor-playground.ktorfx.broker.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/broker/ktor-playground.ktorfx.broker.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/broker/ktor-playground.ktorfx.broker.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/broker/ktor-playground.ktorfx.broker.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/common/ktor-playground.ktorfx.common.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/common/ktor-playground.ktorfx.common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/common/ktor-playground.ktorfx.common.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/common/ktor-playground.ktorfx.common.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/common/ktor-playground.ktorfx.common.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/common/ktor-playground.ktorfx.common.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/formidable/ktor-playground.ktorfx.formidable.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/formidable/ktor-playground.ktorfx.formidable.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/formidable/ktor-playground.ktorfx.formidable.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/formidable/ktor-playground.ktorfx.formidable.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/formidable/ktor-playground.ktorfx.formidable.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/formidable/ktor-playground.ktorfx.formidable.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/ktor-playground.ktorfx.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/ktor-playground.ktorfx.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/prismjs/ktor-playground.ktorfx.prismjs.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/prismjs/ktor-playground.ktorfx.prismjs.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/prismjs/ktor-playground.ktorfx.prismjs.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/prismjs/ktor-playground.ktorfx.prismjs.main.iml" />

@@ -1,10 +1,10 @@
 package de.peekandpoke.module.got
 
 import de.peekandpoke.karango.examples.game_of_thrones.*
+import de.peekandpoke.ktorfx.formidable.*
 import de.peekandpoke.ultra.vault.New
 import de.peekandpoke.ultra.vault.Storable
 import de.peekandpoke.ultra.vault.value
-import io.ultra.ktor_tools.formidable.*
 
 class ActorForm private constructor(it: Storable<Actor>, mutator: ActorMutator, parent: Form?) :
     StorableForm<Actor, ActorMutator>(it, mutator, parent) {

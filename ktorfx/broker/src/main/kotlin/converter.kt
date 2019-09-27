@@ -1,4 +1,4 @@
-package io.ultra.ktor_tools.typedroutes
+package de.peekandpoke.ktorfx.broker
 
 import io.ktor.application.ApplicationCall
 import java.lang.reflect.Type

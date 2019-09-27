@@ -1,6 +1,6 @@
 @file:Suppress("FunctionName")
 
-package io.ultra.ktor_tools.formidable
+package de.peekandpoke.ktorfx.formidable
 
 import io.ultra.polyglot.translatable
 

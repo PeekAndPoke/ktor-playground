@@ -1,4 +1,4 @@
-package io.ultra.ktor_tools.formidable
+package de.peekandpoke.ktorfx.formidable
 
 import io.ktor.http.Parameters
 import io.ultra.polyglot.TextsByLocale
@@ -9,7 +9,7 @@ class Formidable {
     companion object {
 
         fun loadI18n(): TextsByLocale {
-            val stream = Formidable::class.java.classLoader.getResourceAsStream("formidable/i18n.json")!!
+            val stream = Formidable::class.java.classLoader.getResourceAsStream("ktorfx/formidable/i18n.json")!!
 
             return stream.readPolyglotJson()
         }

@@ -1,4 +1,4 @@
-package io.ultra.ktor_tools.typedroutes
+package de.peekandpoke.ktorfx.broker
 
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
@@ -7,7 +7,6 @@ import io.ktor.routing.Route
 import io.ktor.routing.method
 import io.ktor.routing.route
 import io.ktor.util.pipeline.PipelineContext
-import io.ultra.ktor_tools.incomingConverter
 
 
 fun <T : Any> Route.handle(route: TypedRoute<T>, body: suspend PipelineContext<Unit, ApplicationCall>.(T) -> Unit) {
@@ -34,3 +33,4 @@ fun Route.getOrPost(uri: String, body: suspend PipelineContext<Unit, Application
         method(HttpMethod.Post) { handle { body() } }
     }
 }
+

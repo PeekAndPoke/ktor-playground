@@ -1,14 +1,14 @@
 package de.peekandpoke.module.cms.forms
 
+import de.peekandpoke.ktorfx.formidable.Form
+import de.peekandpoke.ktorfx.formidable.StorableForm
+import de.peekandpoke.ktorfx.formidable.acceptsNonBlank
+import de.peekandpoke.ktorfx.formidable.field
 import de.peekandpoke.module.cms.CmsPage
 import de.peekandpoke.module.cms.CmsPageMutator
 import de.peekandpoke.module.cms.mutator
 import de.peekandpoke.ultra.vault.New
 import de.peekandpoke.ultra.vault.Storable
-import io.ultra.ktor_tools.formidable.Form
-import io.ultra.ktor_tools.formidable.StorableForm
-import io.ultra.ktor_tools.formidable.acceptsNonBlank
-import io.ultra.ktor_tools.formidable.field
 
 class CmsPageForm private constructor(it: Storable<CmsPage>, mutator: CmsPageMutator, parent: Form?) :
     StorableForm<CmsPage, CmsPageMutator>(it, mutator, parent) {

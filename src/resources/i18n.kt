@@ -1,6 +1,6 @@
 package de.peekandpoke.resources
 
-import io.ultra.ktor_tools.formidable.Formidable
+import de.peekandpoke.ktorfx.formidable.Formidable
 import io.ultra.polyglot.I18n
 import io.ultra.polyglot.buildI18n
 

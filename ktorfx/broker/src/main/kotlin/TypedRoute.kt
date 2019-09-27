@@ -1,17 +1,10 @@
-package io.ultra.ktor_tools.typedroutes
+package de.peekandpoke.ktorfx.broker
 
 import de.peekandpoke.ultra.common.toUri
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.jvm.javaType
-
-abstract class Routes(val converter: OutgoingConverter, private val mountPoint: String = "") {
-
-    fun route(uri: String) = mountPoint + uri
-
-    inline fun <reified T : Any> route(uri: String) = TypedRoute(converter, T::class, route(uri))
-}
 
 data class TypedRoute<T : Any>(val converter: OutgoingConverter, val type: KClass<T>, val uri: String) {
 
@@ -57,4 +50,3 @@ data class TypedRoute<T : Any>(val converter: OutgoingConverter, val type: KClas
         return result.toUri(queryParams)
     }
 }
-

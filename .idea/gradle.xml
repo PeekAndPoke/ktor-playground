@@ -15,6 +15,9 @@
             <option value="$PROJECT_DIR$/karango" />
             <option value="$PROJECT_DIR$/karango_dev" />
             <option value="$PROJECT_DIR$/ktorfx" />
+            <option value="$PROJECT_DIR$/ktorfx/broker" />
+            <option value="$PROJECT_DIR$/ktorfx/common" />
+            <option value="$PROJECT_DIR$/ktorfx/formidable" />
             <option value="$PROJECT_DIR$/ktorfx/prismjs" />
             <option value="$PROJECT_DIR$/ktorfx/semanticui" />
             <option value="$PROJECT_DIR$/ktorfx/webjars" />

@@ -1,4 +1,4 @@
-package io.ultra.ktor_tools.formidable
+package de.peekandpoke.ktorfx.formidable
 
 import io.ultra.polyglot.Translatable
 

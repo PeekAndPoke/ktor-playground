@@ -1,4 +1,4 @@
-package io.ultra.ktor_tools.formidable
+package de.peekandpoke.ktorfx.formidable
 
 import de.peekandpoke.ultra.mutator.Mutator
 import de.peekandpoke.ultra.vault.Storable

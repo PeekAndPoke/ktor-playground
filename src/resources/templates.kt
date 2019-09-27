@@ -3,12 +3,12 @@ package de.peekandpoke.resources
 import de.peekandpoke.LegacyWebResources
 import de.peekandpoke.ktorfx.webresources.css
 import de.peekandpoke.ktorfx.webresources.js
+import de.peekandpoke.ktorfx.webresources.webResources
 import io.ktor.application.ApplicationCall
 import io.ktor.html.Placeholder
 import io.ktor.html.Template
 import io.ktor.html.insert
 import io.ultra.ktor_tools.i18n
-import io.ultra.ktor_tools.webResources
 import kotlinx.html.*
 
 class MainTemplate(call: ApplicationCall) : Template<HTML> {

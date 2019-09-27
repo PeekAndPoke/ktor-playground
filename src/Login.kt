@@ -3,6 +3,7 @@ package de.peekandpoke
 import de.peekandpoke.ktorfx.semanticui.semanticUi
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.webresources.css
+import de.peekandpoke.ktorfx.webresources.webResources
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.application.feature
@@ -17,7 +18,6 @@ import io.ktor.sessions.get
 import io.ktor.sessions.sessions
 import io.ktor.sessions.set
 import io.ktor.util.KtorExperimentalAPI
-import io.ultra.ktor_tools.webResources
 import kotlinx.html.*
 
 
@@ -91,8 +91,6 @@ fun Route.login(authName: String, users: UserHashedTableAuth) {
                     )
                     return@handle
                 }
-
-                val webResources = call.webResources
 
                 call.respondHtml {
 

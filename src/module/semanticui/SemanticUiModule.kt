@@ -1,5 +1,7 @@
 package de.peekandpoke.module.semanticui
 
+import de.peekandpoke.ktorfx.broker.OutgoingConverter
+import de.peekandpoke.ktorfx.broker.Routes
 import de.peekandpoke.module.semanticui.views.buttons
 import de.peekandpoke.module.semanticui.views.icons
 import de.peekandpoke.module.semanticui.views.index
@@ -12,8 +14,6 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.util.pipeline.PipelineContext
-import io.ultra.ktor_tools.typedroutes.OutgoingConverter
-import io.ultra.ktor_tools.typedroutes.Routes
 
 val SemanticUiModule = module {
 

@@ -25,8 +25,6 @@ version '0.0.1'
 sourceSets {
     main.kotlin.srcDirs = main.java.srcDirs = ['src']
     test.kotlin.srcDirs = test.java.srcDirs = ['test']
-    main.resources.srcDirs = ['resources']
-    test.resources.srcDirs = ['testresources']
 }
 
 repositories {
@@ -59,9 +57,11 @@ dependencies {
     kapt "de.peekandpoke.ultra:mutator:$ultra_version"
 
     compile project(":vault")
-    compile project(":polyglot")
 
     // add all ktorfx sub-projects
+    compile project(":ktorfx:broker")
+    compile project(":ktorfx:common")
+    compile project(":ktorfx:formidable")
     compile project(":ktorfx:prismjs")
     compile project(":ktorfx:semanticui")
     compile project(":ktorfx:webjars")

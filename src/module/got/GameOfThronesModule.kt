@@ -1,6 +1,13 @@
 package de.peekandpoke.module.got
 
 import de.peekandpoke.karango.examples.game_of_thrones.*
+import de.peekandpoke.ktorfx.broker.OutgoingConverter
+import de.peekandpoke.ktorfx.broker.Routes
+import de.peekandpoke.ktorfx.broker.get
+import de.peekandpoke.ktorfx.broker.getOrPost
+import de.peekandpoke.ktorfx.formidable.semanticui.numberInput
+import de.peekandpoke.ktorfx.formidable.semanticui.selectInput
+import de.peekandpoke.ktorfx.formidable.semanticui.textInput
 import de.peekandpoke.resources.MainTemplate
 import de.peekandpoke.resources.WELCOME
 import de.peekandpoke.ultra.kontainer.module
@@ -9,13 +16,9 @@ import io.ktor.application.call
 import io.ktor.html.respondHtmlTemplate
 import io.ktor.response.respondRedirect
 import io.ktor.routing.Route
-import io.ultra.ktor_tools.bootstrap.*
+import io.ultra.ktor_tools.bootstrap.success
 import io.ultra.ktor_tools.database
 import io.ultra.ktor_tools.flashSession
-import io.ultra.ktor_tools.typedroutes.OutgoingConverter
-import io.ultra.ktor_tools.typedroutes.Routes
-import io.ultra.ktor_tools.typedroutes.get
-import io.ultra.ktor_tools.typedroutes.getOrPost
 import kotlinx.html.*
 
 val GameOfThronesModule = module {
@@ -76,7 +79,7 @@ class GameOfThrones(val routes: GameOfThronesRoutes) {
             call.respondHtmlTemplate(MainTemplate(call)) {
 
                 content {
-                    container_fluid {
+                    div {
 
                         flashEntries.takeIf { it.isNotEmpty() }?.let { entries ->
                             div {
@@ -136,24 +139,24 @@ class GameOfThrones(val routes: GameOfThronesRoutes) {
                 }
 
                 content {
-                    container_fluid {
+                    div {
 
                         h4 { +"Edit Character ${data.character.fullName}" }
 
                         form(method = FormMethod.post) {
 
-                            form_group {
-                                row {
-                                    col_md_3 {
+                            div {
+                                div {
+                                    div {
                                         textInput(t, form.name, label = "Name")
                                     }
-                                    col_md_3 {
+                                    div {
                                         textInput(t, form.surname, label = "Surname")
                                     }
-                                    col_md_3 {
+                                    div {
                                         textInput(t, form.age, label = "Age")
                                     }
-                                    col_md_3 {
+                                    div {
                                         selectInput(t, form.alive, label = "Alive")
                                     }
                                 }
@@ -162,22 +165,22 @@ class GameOfThrones(val routes: GameOfThronesRoutes) {
                             form.actor?.let { actorForm ->
                                 h4 { +"Edit Actor ${data.character.actor?.value?.name}" }
 
-                                row {
-                                    col_md_3 {
+                                div {
+                                    div {
                                         textInput(t, actorForm.name, label = "Name")
                                     }
 
-                                    col_md_3 {
+                                    div {
                                         textInput(t, actorForm.surname, label = "Surname")
                                     }
 
-                                    col_md_3 {
+                                    div {
                                         numberInput(t, actorForm.age, label = "Age")
                                     }
                                 }
                             }
 
-                            submit { +"Submit" }
+                            button(type = ButtonType.submit) { +"Submit" }
                         }
                     }
                 }

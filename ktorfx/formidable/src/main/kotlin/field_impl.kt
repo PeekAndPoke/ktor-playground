@@ -1,4 +1,4 @@
-package io.ultra.ktor_tools.formidable
+package de.peekandpoke.ktorfx.formidable
 
 import io.ktor.http.Parameters
 import io.ultra.polyglot.Translatable

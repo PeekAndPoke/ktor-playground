@@ -1,9 +1,9 @@
 package de.peekandpoke.module.cms.views
 
+import de.peekandpoke.ktorfx.formidable.semanticui.textArea
+import de.peekandpoke.ktorfx.formidable.semanticui.textInput
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.module.cms.forms.CmsPageForm
-import io.ultra.ktor_tools.bootstrap.textArea
-import io.ultra.ktor_tools.bootstrap.textInput
 import kotlinx.html.FormMethod
 import kotlinx.html.form
 import kotlinx.html.h1

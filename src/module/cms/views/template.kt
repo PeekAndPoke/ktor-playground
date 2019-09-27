@@ -4,6 +4,7 @@ import de.peekandpoke.ktorfx.semanticui.semanticUi
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.webresources.css
 import de.peekandpoke.ktorfx.webresources.js
+import de.peekandpoke.ktorfx.webresources.webResources
 import de.peekandpoke.module.cms.CmsAdminRoutes
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
@@ -13,7 +14,6 @@ import io.ktor.html.insert
 import io.ktor.util.pipeline.PipelineContext
 import io.ultra.ktor_tools.flashSession
 import io.ultra.ktor_tools.i18n
-import io.ultra.ktor_tools.webResources
 import kotlinx.html.*
 
 enum class MenuEntries {

@@ -4,6 +4,8 @@ import com.arangodb.ArangoDB
 import com.arangodb.ArangoDatabase
 import com.fasterxml.jackson.databind.SerializationFeature
 import de.peekandpoke.karango.vault.KarangoDriver
+import de.peekandpoke.ktorfx.common.kontainer
+import de.peekandpoke.ktorfx.common.provide
 import de.peekandpoke.ktorfx.webjars.BetterWebjars
 import de.peekandpoke.ktorfx.webresources.AppMeta
 import de.peekandpoke.ktorfx.webresources.CacheBuster
@@ -42,10 +44,8 @@ import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.getDigestFunction
 import io.ktor.util.hex
 import io.ultra.ktor_tools.FlashSession
-import io.ultra.ktor_tools.KontainerKey
 import io.ultra.ktor_tools.KtorFX
 import io.ultra.ktor_tools.logger.logger
-import io.ultra.ktor_tools.provide
 import io.ultra.polyglot.I18n
 import kotlinx.html.*
 import java.net.InetAddress
@@ -71,48 +71,51 @@ class LegacyWebResources(cacheBuster: CacheBuster) : WebResourceGroup(cacheBuste
 })
 
 
-val kontainerBlueprint = kontainer {
+val Application.kontainerBlueprint by lazy {
 
-    // functionality modules /////////////////////////////////////////////////////////////////////////////////////////////
+    kontainer {
 
-    // import ALL of KtorFX
-    module(KtorFX)
+        // functionality modules /////////////////////////////////////////////////////////////////////////////////////////////
 
-    // database drivers
+        // import ALL of KtorFX
+        module(KtorFX)
 
-    instance(arangoDatabase)
-    singleton(KarangoDriver::class)
+        // database drivers
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //  APPLICATION  /////////////////////////////////////////////////////////////////////////////////////////////////////
+        instance(arangoDatabase)
+        singleton(KarangoDriver::class)
 
-    // We re-define the cache buster, so we can read the version of the application and use it as cache buster key
-    instance(Meta.cacheBuster())
-    // We re-define the i18n as a dynamic service, so we can inject it with user language for each request
-    dynamic(I18n::class) { Translations.withLocale("en") }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //  APPLICATION  /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // application web resources
-    singleton(LegacyWebResources::class)
+        // We re-define the cache buster, so we can read the version of the application and use it as cache buster key
+        instance(Meta.cacheBuster())
+        // We re-define the i18n as a dynamic service, so we can inject it with user language for each request
+        dynamic(I18n::class) { Translations.withLocale("en") }
 
-    // application modules
-    module(GameOfThronesModule)
+        // application web resources
+        singleton(LegacyWebResources::class)
 
-    module(SemanticUiModule)
+        // application modules
+        module(GameOfThronesModule)
 
-    module(CmsAdminModule)
-    module(CmsPublicModule)
+        module(SemanticUiModule)
+
+        module(CmsAdminModule)
+        module(CmsPublicModule)
+    }
 }
 
-fun systemKontainer() = kontainerBlueprint.useWith(
+fun Application.systemKontainer() = kontainerBlueprint.useWith(
     // user record provider
     StaticUserRecordProvider(
         UserRecord("system", InetAddress.getLocalHost().canonicalHostName)
     )
 )
 
-fun requestContainer(user: UserRecord) = kontainerBlueprint.useWith(
+fun Application.requestContainer(user: UserRecord) = kontainerBlueprint.useWith(
     // default language
-    Translations.withLocale("en"),
+    Translations.withLocale("de"),
     // user record provider
     StaticUserRecordProvider(user)
 )
@@ -303,7 +306,7 @@ fun Application.module(testing: Boolean = false) {
             proceed()
         }
 
-        logger.debug(call.attributes[KontainerKey].dump())
+        logger.debug(call.kontainer.dump())
     }
 
     intercept(ApplicationCallPipeline.Features) {

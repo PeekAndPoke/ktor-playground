@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package io.ultra.ktor_tools.formidable
+package de.peekandpoke.ktorfx.formidable
 
 import kotlin.reflect.KMutableProperty0
 

@@ -1,4 +1,4 @@
-package io.ultra.ktor_tools.typedroutes
+package de.peekandpoke.ktorfx.broker
 
 import de.peekandpoke.ultra.vault.Database
 import de.peekandpoke.ultra.vault.Storable
