@@ -1,8 +1,4 @@
-@file:Suppress("unused")
-
-package io.ultra.ktor_tools.bootstrap
-
-import io.ultra.ktor_tools.FlashSession
+package de.peekandpoke.ktorfx.flashsession
 
 const val SUCCESS = "success"
 const val INFO = "info"

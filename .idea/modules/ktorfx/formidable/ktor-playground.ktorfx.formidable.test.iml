@@ -72,8 +72,8 @@
     <orderEntry type="module" module-name="ktor-playground.ktorfx.semanticui.main" />
     <orderEntry type="library" name="Gradle: de.peekandpoke.ultra:kontainer:0.0.32" level="project" />
     <orderEntry type="library" name="Gradle: de.peekandpoke.ultra:mutator:0.0.32" level="project" />
-    <orderEntry type="module" module-name="ktor-playground.ktorfx.webresources.main" scope="RUNTIME" />
     <orderEntry type="library" name="Gradle: io.ktor:ktor-html-builder:1.2.4" level="project" />
+    <orderEntry type="module" module-name="ktor-playground.ktorfx.webresources.main" scope="RUNTIME" />
     <orderEntry type="library" name="Gradle: io.ktor:ktor-server-core:1.2.4" level="project" />
     <orderEntry type="module" module-name="ktor-playground.ktorfx.common.main" scope="RUNTIME" />
     <orderEntry type="library" name="Gradle: de.peekandpoke.ultra:meta:0.0.32" level="project" />

@@ -5,6 +5,8 @@ import de.peekandpoke.ktorfx.broker.OutgoingConverter
 import de.peekandpoke.ktorfx.broker.Routes
 import de.peekandpoke.ktorfx.broker.get
 import de.peekandpoke.ktorfx.broker.getOrPost
+import de.peekandpoke.ktorfx.flashsession.flashSession
+import de.peekandpoke.ktorfx.flashsession.success
 import de.peekandpoke.ktorfx.formidable.semanticui.numberInput
 import de.peekandpoke.ktorfx.formidable.semanticui.selectInput
 import de.peekandpoke.ktorfx.formidable.semanticui.textInput
@@ -16,9 +18,7 @@ import io.ktor.application.call
 import io.ktor.html.respondHtmlTemplate
 import io.ktor.response.respondRedirect
 import io.ktor.routing.Route
-import io.ultra.ktor_tools.bootstrap.success
 import io.ultra.ktor_tools.database
-import io.ultra.ktor_tools.flashSession
 import kotlinx.html.*
 
 val GameOfThronesModule = module {

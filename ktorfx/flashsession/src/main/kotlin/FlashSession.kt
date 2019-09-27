@@ -1,14 +1,9 @@
-package io.ultra.ktor_tools
+package de.peekandpoke.ktorfx.flashsession
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import io.ktor.application.ApplicationCall
-import io.ktor.application.call
 import io.ktor.sessions.*
-import io.ktor.util.pipeline.PipelineContext
-
-val PipelineContext<Unit, ApplicationCall>.flashSession get() = FlashSession(call.sessions)
 
 class FlashSession(private val session: CurrentSession) {
 
@@ -39,7 +34,7 @@ class FlashSession(private val session: CurrentSession) {
         data class Entry(val message: String, val type: String)
     }
 
-    fun pull() : List<Data.Entry> {
+    fun pull(): List<Data.Entry> {
 
         val current = read()
 

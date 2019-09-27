@@ -3,6 +3,8 @@ package de.peekandpoke.module.cms
 import de.peekandpoke.ktorfx.broker.OutgoingConverter
 import de.peekandpoke.ktorfx.broker.Routes
 import de.peekandpoke.ktorfx.broker.getOrPost
+import de.peekandpoke.ktorfx.flashsession.flashSession
+import de.peekandpoke.ktorfx.flashsession.success
 import de.peekandpoke.module.cms.forms.CmsPageForm
 import de.peekandpoke.module.cms.views.Template
 import de.peekandpoke.module.cms.views.editPage
@@ -19,9 +21,7 @@ import io.ktor.response.respondRedirect
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.util.pipeline.PipelineContext
-import io.ultra.ktor_tools.bootstrap.success
 import io.ultra.ktor_tools.database
-import io.ultra.ktor_tools.flashSession
 import io.ultra.ktor_tools.logger.logger
 
 val CmsAdminModule = module {

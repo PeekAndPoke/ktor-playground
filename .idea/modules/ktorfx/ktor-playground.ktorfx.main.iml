@@ -83,6 +83,7 @@
     <orderEntry type="library" name="Gradle: org.webjars:webjars-locator-core:0.37" level="project" />
     <orderEntry type="module" module-name="ktor-playground.ktorfx.broker.main" />
     <orderEntry type="module" module-name="ktor-playground.ktorfx.common.main" />
+    <orderEntry type="module" module-name="ktor-playground.ktorfx.flashsession.main" />
     <orderEntry type="module" module-name="ktor-playground.ktorfx.prismjs.main" />
     <orderEntry type="module" module-name="ktor-playground.ktorfx.semanticui.main" />
     <orderEntry type="module" module-name="ktor-playground.ktorfx.webjars.main" />

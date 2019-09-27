@@ -17,6 +17,7 @@
             <option value="$PROJECT_DIR$/ktorfx" />
             <option value="$PROJECT_DIR$/ktorfx/broker" />
             <option value="$PROJECT_DIR$/ktorfx/common" />
+            <option value="$PROJECT_DIR$/ktorfx/flashsession" />
             <option value="$PROJECT_DIR$/ktorfx/formidable" />
             <option value="$PROJECT_DIR$/ktorfx/prismjs" />
             <option value="$PROJECT_DIR$/ktorfx/semanticui" />

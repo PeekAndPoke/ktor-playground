@@ -61,6 +61,7 @@ dependencies {
     // add all ktorfx sub-projects
     compile project(":ktorfx:broker")
     compile project(":ktorfx:common")
+    compile project(":ktorfx:flashsession")
     compile project(":ktorfx:formidable")
     compile project(":ktorfx:prismjs")
     compile project(":ktorfx:semanticui")

@@ -16,6 +16,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/common/ktor-playground.ktorfx.common.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/common/ktor-playground.ktorfx.common.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/common/ktor-playground.ktorfx.common.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/common/ktor-playground.ktorfx.common.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/common/ktor-playground.ktorfx.common.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/common/ktor-playground.ktorfx.common.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/flashsession/ktor-playground.ktorfx.flashsession.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/flashsession/ktor-playground.ktorfx.flashsession.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/flashsession/ktor-playground.ktorfx.flashsession.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/flashsession/ktor-playground.ktorfx.flashsession.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/flashsession/ktor-playground.ktorfx.flashsession.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/flashsession/ktor-playground.ktorfx.flashsession.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/formidable/ktor-playground.ktorfx.formidable.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/formidable/ktor-playground.ktorfx.formidable.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/formidable/ktor-playground.ktorfx.formidable.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/formidable/ktor-playground.ktorfx.formidable.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/formidable/ktor-playground.ktorfx.formidable.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/formidable/ktor-playground.ktorfx.formidable.test.iml" />

@@ -1,5 +1,6 @@
 package de.peekandpoke.module.cms.views
 
+import de.peekandpoke.ktorfx.flashsession.flashSession
 import de.peekandpoke.ktorfx.semanticui.semanticUi
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.webresources.css
@@ -12,7 +13,6 @@ import io.ktor.html.Placeholder
 import io.ktor.html.Template
 import io.ktor.html.insert
 import io.ktor.util.pipeline.PipelineContext
-import io.ultra.ktor_tools.flashSession
 import io.ultra.ktor_tools.i18n
 import kotlinx.html.*
 

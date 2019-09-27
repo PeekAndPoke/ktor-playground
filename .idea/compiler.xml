@@ -23,6 +23,8 @@
       <module name="ktor-playground.ktorfx.broker.test" target="1.8" />
       <module name="ktor-playground.ktorfx.common.main" target="1.8" />
       <module name="ktor-playground.ktorfx.common.test" target="1.8" />
+      <module name="ktor-playground.ktorfx.flashsession.main" target="1.8" />
+      <module name="ktor-playground.ktorfx.flashsession.test" target="1.8" />
       <module name="ktor-playground.ktorfx.formidable.main" target="1.8" />
       <module name="ktor-playground.ktorfx.formidable.test" target="1.8" />
       <module name="ktor-playground.ktorfx.main" target="1.8" />

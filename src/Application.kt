@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import de.peekandpoke.karango.vault.KarangoDriver
 import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ktorfx.common.provide
+import de.peekandpoke.ktorfx.flashsession.FlashSession
 import de.peekandpoke.ktorfx.webjars.BetterWebjars
 import de.peekandpoke.ktorfx.webresources.AppMeta
 import de.peekandpoke.ktorfx.webresources.CacheBuster
@@ -43,7 +44,6 @@ import io.ktor.sessions.*
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.getDigestFunction
 import io.ktor.util.hex
-import io.ultra.ktor_tools.FlashSession
 import io.ultra.ktor_tools.KtorFX
 import io.ultra.ktor_tools.logger.logger
 import io.ultra.polyglot.I18n
