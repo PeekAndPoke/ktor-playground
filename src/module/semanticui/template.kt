@@ -1,6 +1,6 @@
 package de.peekandpoke.module.semanticui
 
-import de.peekandpoke.PrismJsWebResources
+import de.peekandpoke.ktorfx.prismjs.prismJs
 import de.peekandpoke.ktorfx.semanticui.semanticUi
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.webresources.WebResources
@@ -34,7 +34,7 @@ internal class Template constructor(private val routes: SemanticUiRoutes, call: 
             insert(pageTitle)
 
             css(webResources.semanticUi)
-            css(webResources[PrismJsWebResources::class])
+            css(webResources.prismJs)
 
             style("text/css") {
                 unsafe {
@@ -70,7 +70,7 @@ internal class Template constructor(private val routes: SemanticUiRoutes, call: 
             }
 
             js(webResources.semanticUi)
-            js(webResources[PrismJsWebResources::class])
+            js(webResources.prismJs)
         }
     }
 }

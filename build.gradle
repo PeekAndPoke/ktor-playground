@@ -48,6 +48,8 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
     compile "io.ktor:ktor-server-netty:$ktor_version"
     compile "ch.qos.logback:logback-classic:$logback_version"
     compile "io.ktor:ktor-server-core:$ktor_version"
@@ -63,13 +65,7 @@ dependencies {
     implementation "io.ktor:ktor-client-jackson:$ktor_version"
     compile("com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version")
 
-    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-
-    // assets
-//    compile 'org.webjars:bootstrap:4.3.1'
-//    compile 'org.webjars:font-awesome:5.9.0'
-    compile 'org.webjars.npm:prismjs:1.16.0'
-
+    // ultra
     compile "de.peekandpoke.ultra:ultra:$ultra_version"
     kapt "de.peekandpoke.ultra:ultra:$ultra_version"
 

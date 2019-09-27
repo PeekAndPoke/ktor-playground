@@ -3,6 +3,7 @@ rootProject.name = "ktor-playground"
 include ":polyglot"
 
 include ":ktorfx"
+include ":ktorfx:prismjs"
 include ":ktorfx:semanticui"
 include ":ktorfx:webjars"
 include ":ktorfx:webresources"

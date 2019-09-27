@@ -70,21 +70,12 @@ class LegacyWebResources(cacheBuster: CacheBuster) : WebResourceGroup(cacheBuste
     resourceJs("/assets/js/template.js")
 })
 
-class PrismJsWebResources(cacheBuster: CacheBuster) : WebResourceGroup(cacheBuster, {
-    webjarCss("/vendor/prismjs/prism.css")
-    webjarCss("/vendor/prismjs/prism.css")
-    webjarCss("/vendor/prismjs/plugins/toolbar/prism-toolbar.css")
-
-    webjarJs("/vendor/prismjs/prism.js")
-    webjarJs("/vendor/prismjs/plugins/toolbar/prism-toolbar.js")
-    webjarJs("/vendor/prismjs/show-language/prism-show-language.js")
-    webjarJs("/vendor/prismjs/components/prism-kotlin.js")
-})
 
 val kontainerBlueprint = kontainer {
 
     // functionality modules /////////////////////////////////////////////////////////////////////////////////////////////
 
+    // import ALL of KtorFX
     module(KtorFX)
 
     // database drivers
@@ -101,12 +92,9 @@ val kontainerBlueprint = kontainer {
     dynamic(I18n::class) { Translations.withLocale("en") }
 
     // application web resources
-
     singleton(LegacyWebResources::class)
-    singleton(PrismJsWebResources::class)
 
     // application modules
-
     module(GameOfThronesModule)
 
     module(SemanticUiModule)

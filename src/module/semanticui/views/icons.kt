@@ -1,10 +1,10 @@
 package de.peekandpoke.module.semanticui.views
 
+import de.peekandpoke.ktorfx.prismjs.Language
+import de.peekandpoke.ktorfx.prismjs.prism
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.module.semanticui.Template
-import io.ultra.ktor_tools.prismjs.Lang
-import io.ultra.ktor_tools.prismjs.prism
 import kotlinx.html.*
 
 @Suppress("DuplicatedCode")
@@ -51,7 +51,7 @@ internal fun Template.icons() {
                     icon.question_circle()
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                         icon.question_circle()
                     """.trimIndent()
@@ -69,7 +69,7 @@ internal fun Template.icons() {
                     icon.question_circle_outline()
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             icon.question_circle_outline()
                         """.trimIndent()
@@ -95,7 +95,7 @@ internal fun Template.icons() {
                     icon.black.question_circle()
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             icon.red.question_circle()
                             icon.orange.question_circle()

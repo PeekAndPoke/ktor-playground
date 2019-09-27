@@ -1,6 +1,5 @@
 package de.peekandpoke.module.cms.views
 
-import de.peekandpoke.PrismJsWebResources
 import de.peekandpoke.ktorfx.semanticui.semanticUi
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.webresources.css
@@ -52,7 +51,6 @@ internal class Template constructor(
             insert(pageTitle)
 
             css(webResources.semanticUi)
-            css(webResources[PrismJsWebResources::class])
 
             style("text/css") {
                 unsafe {
@@ -94,7 +92,6 @@ internal class Template constructor(
             }
 
             js(webResources.semanticUi)
-            js(webResources[PrismJsWebResources::class])
         }
     }
 }

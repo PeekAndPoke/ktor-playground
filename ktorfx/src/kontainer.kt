@@ -1,5 +1,6 @@
 package io.ultra.ktor_tools
 
+import de.peekandpoke.ktorfx.prismjs.KtorFX_PrismJs
 import de.peekandpoke.ktorfx.semanticui.KtorFX_SemanticUi
 import de.peekandpoke.ktorfx.webresources.CacheBuster
 import de.peekandpoke.ktorfx.webresources.KtorFX_WebResources
@@ -52,6 +53,7 @@ val KtorFX = module {
     // I18n (can be overwritten by re-defining the instance)
     instance(I18n.empty())
 
+    module(KtorFX_PrismJs)
     module(KtorFX_SemanticUi)
     module(KtorFX_WebResources)
 }

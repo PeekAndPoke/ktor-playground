@@ -1,10 +1,10 @@
 package de.peekandpoke.module.semanticui.views
 
+import de.peekandpoke.ktorfx.prismjs.Language
+import de.peekandpoke.ktorfx.prismjs.prism
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.module.semanticui.Template
-import io.ultra.ktor_tools.prismjs.Lang
-import io.ultra.ktor_tools.prismjs.prism
 import kotlinx.html.a
 import kotlinx.html.div
 import kotlinx.html.h1
@@ -33,7 +33,7 @@ internal fun Template.buttons() {
                 ui.column { +"Default button as <div>" }
                 ui.column { ui.button { +"Default" } }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.button { +"Default" }
                         """.trimIndent()
@@ -45,7 +45,7 @@ internal fun Template.buttons() {
                 ui.column { +"Default button as <button>" }
                 ui.column { ui.button Button { +"Default" } }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.button Button { +"Default" }
                         """.trimIndent()
@@ -57,7 +57,7 @@ internal fun Template.buttons() {
                 ui.column { +"'Primary' Button as <div>" }
                 ui.column { ui.primary.button { +"Primary" } }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.primary.button { +"Primary" }
                         """.trimIndent()
@@ -69,7 +69,7 @@ internal fun Template.buttons() {
                 ui.column { +"'Primary' Button as <button>" }
                 ui.column { ui.primary.button Button { +"Primary" } }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.primary.button Button { +"Primary" }
                         """.trimIndent()
@@ -81,7 +81,7 @@ internal fun Template.buttons() {
                 ui.column { +"'Secondary' Button as <div>" }
                 ui.column { ui.secondary.button { +"Secondary" } }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.secondary.button { +"Secondary" }
                         """.trimIndent()
@@ -93,7 +93,7 @@ internal fun Template.buttons() {
                 ui.column { +"'Secondary' Button as <button>" }
                 ui.column { ui.secondary.button Button { +"Secondary" } }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.secondary.button Button { +"Secondary" }
                         """.trimIndent()
@@ -105,7 +105,7 @@ internal fun Template.buttons() {
                 ui.column { +"'Positive' Button as <button>" }
                 ui.column { ui.positive.button Button { +"Positive" } }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.positive.button Button { +"Positive" }
                         """.trimIndent()
@@ -117,7 +117,7 @@ internal fun Template.buttons() {
                 ui.column { +"'Negative' Button as <button>" }
                 ui.column { ui.negative.button Button { +"Negative" } }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.negative.button Button { +"Negative" }
                         """.trimIndent()
@@ -150,7 +150,7 @@ internal fun Template.buttons() {
                     ui.black.button { +"Black" }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.red.button { +"Red" }
                             ui.orange.button { +"Orange" }
@@ -194,7 +194,7 @@ internal fun Template.buttons() {
                     ui.basic.black.button { +"Black" }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.basic.button { +"Default" }
                             ui.basic.primary.button { +"Primary" }
@@ -243,7 +243,7 @@ internal fun Template.buttons() {
                     }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.inverted.button { +"Default" }
                             ui.inverted.primary.button { +"Primary" }
@@ -290,7 +290,7 @@ internal fun Template.buttons() {
                     }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.basic.inverted.button { +"Default" }
                             ui.basic.inverted.primary.button { +"Primary" }
@@ -333,7 +333,7 @@ internal fun Template.buttons() {
                     ui.massive.button { +"Massive" }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.mini.button { +"Mini" }
                             ui.tiny.button { +"Tiny" }
@@ -364,7 +364,7 @@ internal fun Template.buttons() {
                     }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.animated.button {
                                 ui.visible.content { +"Next" }
@@ -384,7 +384,7 @@ internal fun Template.buttons() {
                     }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.vertical.animated.button {
                                 ui.visible.content { icon.shop() }
@@ -404,7 +404,7 @@ internal fun Template.buttons() {
                     }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.animated.fade.button {
                                 ui.visible.content { +"Sign-up for a Pro account" }
@@ -431,7 +431,7 @@ internal fun Template.buttons() {
                     }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                         ui.labeled.button {
                             ui.button { icon.heart() }
@@ -451,7 +451,7 @@ internal fun Template.buttons() {
                     }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                         ui.left.labeled.button {
                             ui.basic.right.pointing.label A { +"2,048" } 
@@ -474,7 +474,7 @@ internal fun Template.buttons() {
                     }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.labeled.button {
                                 ui.red.button {
@@ -500,7 +500,7 @@ internal fun Template.buttons() {
                     }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.labeled.button {
                                 ui.basic.blue.button {
@@ -529,7 +529,7 @@ internal fun Template.buttons() {
                     }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.icon.button {
                                 icon.cloud()
@@ -552,7 +552,7 @@ internal fun Template.buttons() {
                     }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.labeled.icon.button {
                                 icon.pause()
@@ -576,7 +576,7 @@ internal fun Template.buttons() {
                     }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.basic.button {
                                 icon.user()
@@ -604,7 +604,7 @@ internal fun Template.buttons() {
                     }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.buttons {
                                 ui.button Button { +"One" }
@@ -632,7 +632,7 @@ internal fun Template.buttons() {
                     }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.icon.buttons {
                                 ui.button { icon.align_left() }
@@ -667,7 +667,7 @@ internal fun Template.buttons() {
                     }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.buttons {
                                 ui.button.active Button { +"Cancel" }
@@ -689,7 +689,7 @@ internal fun Template.buttons() {
                     }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.buttons {
                                 ui.button.active Button { +"un" }
@@ -717,7 +717,7 @@ internal fun Template.buttons() {
                     }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.active.button {
                                 icon.user()
@@ -737,7 +737,7 @@ internal fun Template.buttons() {
                     }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.disabled.button {
                                 icon.user()
@@ -757,7 +757,7 @@ internal fun Template.buttons() {
                     ui.secondary.loading.button { +"Loading" }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.loading.button { +"Loading" }
                             ui.basic.loading.button { +"Loading" }
@@ -782,7 +782,7 @@ internal fun Template.buttons() {
                     ui.left.floated.button { +"Left Floated" }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.right.floated.button { +"Right Floated" }
                             ui.left.floated.button { +"Left Floated" }
@@ -809,7 +809,7 @@ internal fun Template.buttons() {
                     }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.compact.button { +"Hold" }
                             ui.compact.icon.button { icon.pause() }
@@ -836,7 +836,7 @@ internal fun Template.buttons() {
                     ui.toggle.button.active Button { +"Voted" }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.toggle.button Button { +"Vote" }
                             ui.toggle.button.active Button { +"Voted" }
@@ -858,7 +858,7 @@ internal fun Template.buttons() {
                     ui.fluid.button Button { +"Fits container" }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.fluid.button Button { +"Fits container" }
                         """.trimIndent()
@@ -879,7 +879,7 @@ internal fun Template.buttons() {
                     ui.circular.icon.button Button { icon.settings() }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.circular.icon.button Button { icon.settings() }
                         """.trimIndent()
@@ -911,7 +911,7 @@ internal fun Template.buttons() {
                     ui.circular.youtube.icon.button { icon.youtube() }
                 }
                 ui.column {
-                    prism(Lang.Kotlin) {
+                    prism(Language.Kotlin) {
                         """
                             ui.facebook.icon.button { icon.facebook(); +"Facebook" }
                             ui.circular.facebook.icon.button { icon.facebook() }

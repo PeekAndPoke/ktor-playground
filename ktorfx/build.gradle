@@ -62,6 +62,7 @@ dependencies {
     compile project(":polyglot")
 
     // add all ktorfx sub-projects
+    compile project(":ktorfx:prismjs")
     compile project(":ktorfx:semanticui")
     compile project(":ktorfx:webjars")
     compile project(":ktorfx:webresources")
