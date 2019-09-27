@@ -1,10 +1,10 @@
 package de.peekandpoke.module.semanticui.views
 
+import de.peekandpoke.ktorfx.semanticui.icon
+import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.module.semanticui.Template
 import io.ultra.ktor_tools.prismjs.Lang
 import io.ultra.ktor_tools.prismjs.prism
-import io.ultra.ktor_tools.semanticui.icon
-import io.ultra.ktor_tools.semanticui.ui
 import kotlinx.html.a
 import kotlinx.html.div
 import kotlinx.html.h1

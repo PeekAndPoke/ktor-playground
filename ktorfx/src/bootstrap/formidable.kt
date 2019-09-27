@@ -1,8 +1,8 @@
 package io.ultra.ktor_tools.bootstrap
 
+import de.peekandpoke.ktorfx.semanticui.ui
 import io.ultra.ktor_tools.formidable.FormField
 import io.ultra.ktor_tools.formidable.FormFieldWithOptions
-import io.ultra.ktor_tools.semanticui.ui
 import io.ultra.polyglot.I18n
 import kotlinx.html.*
 

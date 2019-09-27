@@ -4,6 +4,7 @@ import com.arangodb.ArangoDB
 import com.arangodb.ArangoDatabase
 import com.fasterxml.jackson.databind.SerializationFeature
 import de.peekandpoke.karango.vault.KarangoDriver
+import de.peekandpoke.ktorfx.webjars.BetterWebjars
 import de.peekandpoke.module.cms.CmsAdmin
 import de.peekandpoke.module.cms.CmsAdminModule
 import de.peekandpoke.module.cms.CmsPublic
@@ -43,7 +44,6 @@ import io.ultra.ktor_tools.KtorFX
 import io.ultra.ktor_tools.logger.logger
 import io.ultra.ktor_tools.provide
 import io.ultra.ktor_tools.resources.AppMeta
-import io.ultra.ktor_tools.resources.BetterWebjars
 import io.ultra.ktor_tools.resources.CacheBuster
 import io.ultra.ktor_tools.resources.WebResourceGroup
 import io.ultra.polyglot.I18n
@@ -63,11 +63,6 @@ private val arangoDatabase: ArangoDatabase = arangoDb.db("kotlindev")
 val Meta = object : AppMeta() {}
 
 class LegacyWebResources(cacheBuster: CacheBuster) : WebResourceGroup(cacheBuster, {
-    webjarCss("/vendor/bootstrap/css/bootstrap.css")
-    webjarJs("/vendor/bootstrap/js/bootstrap.min.js")
-
-    webjarCss("/vendor/font-awesome/css/all.css")
-
     webjarJs("/vendor/jquery/jquery.min.js")
 
     // custom

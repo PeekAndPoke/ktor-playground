@@ -19,15 +19,8 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     }
 }
 
-group 'de.peekandpoke.ultra'
+group 'de.peekandpoke.ktorfx'
 version '0.0.1'
-
-sourceSets {
-    main.kotlin.srcDirs = main.java.srcDirs = ['src']
-    test.kotlin.srcDirs = test.java.srcDirs = ['test']
-    main.resources.srcDirs = ['resources']
-    test.resources.srcDirs = ['testresources']
-}
 
 repositories {
     mavenLocal()
@@ -38,32 +31,16 @@ repositories {
 
 dependencies {
 
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-
-    compile "de.peekandpoke.ultra:common:$ultra_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     // include for server side
     implementation "io.ktor:ktor-server-core:$ktor_version"
     implementation "io.ktor:ktor-html-builder:$ktor_version"
 
-    // logging
-    compile "ch.qos.logback:logback-classic:$logback_version"
-    compile "net.logstash.logback:logstash-logback-encoder:5.3"
-
     // webjars
-    compile 'org.webjars:webjars-locator-core:0.37'
-
-    compile "de.peekandpoke.ultra:kontainer:$ultra_version"
-    compile "de.peekandpoke.ultra:mutator:$ultra_version"
-    kapt "de.peekandpoke.ultra:mutator:$ultra_version"
-
-    compile project(":vault")
-    compile project(":polyglot")
-
-    // add all ktorfx sub-projects
-    compile project(":ktorfx:semanticui")
-    compile project(":ktorfx:webjars")
+    compile "org.webjars:jquery:3.2.1"
+    compile 'org.webjars:Semantic-UI:2.4.1'
 
     ////  tests  ////////////////////////////////////////////////////////////////////////////////////////////////
 

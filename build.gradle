@@ -66,10 +66,8 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     // assets
-    compile 'org.webjars:bootstrap:4.3.1'
-    compile "org.webjars:jquery:3.2.1"
-    compile 'org.webjars:font-awesome:5.9.0'
-    compile 'org.webjars:Semantic-UI:2.4.1'
+//    compile 'org.webjars:bootstrap:4.3.1'
+//    compile 'org.webjars:font-awesome:5.9.0'
     compile 'org.webjars.npm:prismjs:1.16.0'
 
     compile "de.peekandpoke.ultra:kontainer:$ultra_version"

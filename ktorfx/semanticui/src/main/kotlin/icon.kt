@@ -1,13 +1,9 @@
-package io.ultra.ktor_tools.semanticui
+package de.peekandpoke.ktorfx.semanticui
 
 import kotlinx.html.FlowContent
 import kotlinx.html.i
 
 @SemanticUiDslMarker val FlowContent.icon get() = SemanticIcon(this)
-
-/*
-
- */
 
 @Suppress("PropertyName", "FunctionName")
 class SemanticIcon(private val parent: FlowContent) {

@@ -1,5 +1,6 @@
 package de.peekandpoke
 
+import de.peekandpoke.ktorfx.semanticui.ui
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.application.feature
@@ -15,7 +16,6 @@ import io.ktor.sessions.sessions
 import io.ktor.sessions.set
 import io.ktor.util.KtorExperimentalAPI
 import io.ultra.ktor_tools.resources.css
-import io.ultra.ktor_tools.semanticui.ui
 import io.ultra.ktor_tools.webResources
 import kotlinx.html.*
 

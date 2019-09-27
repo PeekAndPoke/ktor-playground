@@ -2,6 +2,7 @@ package de.peekandpoke.module.cms.views
 
 import de.peekandpoke.PrismJsWebResources
 import de.peekandpoke.SemanticUiWebResources
+import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.module.cms.CmsAdminRoutes
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
@@ -13,7 +14,6 @@ import io.ultra.ktor_tools.flashSession
 import io.ultra.ktor_tools.i18n
 import io.ultra.ktor_tools.resources.css
 import io.ultra.ktor_tools.resources.js
-import io.ultra.ktor_tools.semanticui.ui
 import io.ultra.ktor_tools.webResources
 import kotlinx.html.*
 

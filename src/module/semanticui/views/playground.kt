@@ -1,7 +1,7 @@
 package de.peekandpoke.module.semanticui.views
 
+import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.module.semanticui.Template
-import io.ultra.ktor_tools.semanticui.ui
 import kotlinx.html.*
 
 internal fun Template.playground() {

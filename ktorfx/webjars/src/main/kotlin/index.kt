@@ -1,4 +1,4 @@
-package io.ultra.ktor_tools.resources
+package de.peekandpoke.ktorfx.webjars
 
 import io.ktor.application.ApplicationCall
 import io.ktor.application.ApplicationCallPipeline

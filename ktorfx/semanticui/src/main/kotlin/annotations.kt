@@ -1,4 +1,4 @@
-package io.ultra.ktor_tools.semanticui
+package de.peekandpoke.ktorfx.semanticui
 
 @DslMarker
 annotation class SemanticUiDslMarker
