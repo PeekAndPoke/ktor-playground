@@ -72,6 +72,10 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
     @SemanticUiCssMarker val scale get() = this + "scale"
     @SemanticUiCssMarker val shrink get() = this + "shrink"
     @SemanticUiCssMarker val toggle get() = this + "toggle"
+    @SemanticUiCssMarker val styled get() = this + "styled"
+    @SemanticUiCssMarker val accordion get() = this + "accordion"
+    @SemanticUiCssMarker val title get() = this + "title"
+    @SemanticUiCssMarker val transition get() = this + "transition"
 
     // display sizes
 

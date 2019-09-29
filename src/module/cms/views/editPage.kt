@@ -8,10 +8,15 @@ import de.peekandpoke.module.cms.forms.CmsPageForm
 import kotlinx.html.FormMethod
 import kotlinx.html.form
 import kotlinx.html.h1
+import kotlinx.html.title
 
 internal fun SimpleTemplate.editPage(create: Boolean, form: CmsPageForm) {
 
-    breadCrumbs = listOf(MenuEntries.PAGES)
+    breadCrumbs = listOf(CmsMenu.PAGES)
+
+    pageTitle {
+        title { +"CMS Edit Page" }
+    }
 
     content {
 

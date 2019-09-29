@@ -5,13 +5,16 @@ import de.peekandpoke.ktorfx.prismjs.prism
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
-import kotlinx.html.a
-import kotlinx.html.div
-import kotlinx.html.h1
-import kotlinx.html.p
+import kotlinx.html.*
 
 @Suppress("DuplicatedCode")
 internal fun SimpleTemplate.buttons() {
+
+    breadCrumbs = listOf(SemanticUiMenu.Buttons)
+
+    pageTitle {
+        title { +"SemanticUI Buttons" }
+    }
 
     content {
 

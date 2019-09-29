@@ -10,6 +10,12 @@ import kotlinx.html.*
 @Suppress("DuplicatedCode")
 internal fun SimpleTemplate.icons() {
 
+    breadCrumbs = listOf(SemanticUiMenu.Icons)
+
+    pageTitle {
+        title { +"SemanticUI Icons" }
+    }
+
     content {
 
         style(

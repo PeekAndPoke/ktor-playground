@@ -25,4 +25,5 @@ interface SimpleTemplate : Template<HTML> {
     val pageTitle: Placeholder<HEAD>
     val mainMenu: Placeholder<FlowContent>
     val content: Placeholder<FlowContent>
+    val scripts: Placeholder<FlowContent>
 }

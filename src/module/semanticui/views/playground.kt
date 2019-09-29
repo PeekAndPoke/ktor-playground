@@ -6,6 +6,12 @@ import kotlinx.html.*
 
 internal fun SimpleTemplate.playground() {
 
+    breadCrumbs = listOf(SemanticUiMenu.Playground)
+
+    pageTitle {
+        title { +"SemanticUI Playground" }
+    }
+
     content {
 
         h1 {

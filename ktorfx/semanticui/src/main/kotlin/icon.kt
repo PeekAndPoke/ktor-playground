@@ -66,7 +66,6 @@ class SemanticIcon(private val parent: FlowContent) {
 
     // Arrows ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
     @SemanticUiCssMarker fun angle_double_down() = render("angle double down icon")
 
     @SemanticUiCssMarker fun angle_double_left() = render("angle double left icon")
@@ -690,6 +689,8 @@ class SemanticIcon(private val parent: FlowContent) {
     @SemanticUiCssMarker fun crop() = render("crop icon")
 
     @SemanticUiCssMarker fun crosshairs() = render("crosshairs icon")
+
+    @SemanticUiCssMarker fun dropdown() = render("dropdown icon")
 
     @SemanticUiCssMarker fun eye() = render("eye icon")
 

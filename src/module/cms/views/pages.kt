@@ -9,7 +9,11 @@ import kotlinx.html.*
 
 internal fun SimpleTemplate.pages(mod: CmsAdmin, pages: List<Stored<CmsPage>>) {
 
-    breadCrumbs = listOf(MenuEntries.PAGES)
+    breadCrumbs = listOf(CmsMenu.PAGES)
+
+    pageTitle {
+        title { +"CMS Pages" }
+    }
 
     content {
         ui.dividing.header H1 {
