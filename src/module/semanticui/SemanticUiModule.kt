@@ -2,6 +2,8 @@ package de.peekandpoke.module.semanticui
 
 import de.peekandpoke.ktorfx.broker.OutgoingConverter
 import de.peekandpoke.ktorfx.broker.Routes
+import de.peekandpoke.ktorfx.templating.SimpleTemplate
+import de.peekandpoke.ktorfx.templating.defaultTemplate
 import de.peekandpoke.module.semanticui.views.buttons
 import de.peekandpoke.module.semanticui.views.icons
 import de.peekandpoke.module.semanticui.views.index
@@ -34,8 +36,11 @@ class SemanticUiRoutes(converter: OutgoingConverter, semanticUiMountPoint: Strin
 class SemanticUi(val routes: SemanticUiRoutes) {
 
 
-    private suspend fun PipelineContext<Unit, ApplicationCall>.respond(status: HttpStatusCode = HttpStatusCode.OK, body: Template.() -> Unit) {
-        call.respondHtmlTemplate(Template(routes, call), status, body)
+    private suspend fun PipelineContext<Unit, ApplicationCall>.respond(
+        status: HttpStatusCode = HttpStatusCode.OK,
+        body: SimpleTemplate.() -> Unit
+    ) {
+        call.respondHtmlTemplate(defaultTemplate, status, body)
     }
 
     fun mount(route: Route) = with(route) {

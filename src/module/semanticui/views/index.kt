@@ -1,8 +1,8 @@
 package de.peekandpoke.module.semanticui.views
 
-import de.peekandpoke.module.semanticui.Template
+import de.peekandpoke.ktorfx.templating.SimpleTemplate
 
-internal fun Template.index() {
+internal fun SimpleTemplate.index() {
 
     content {
         +"INDEX page"

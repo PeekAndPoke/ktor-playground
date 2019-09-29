@@ -9,6 +9,7 @@ include ":ktorfx:formidable"
 include ":ktorfx:flashsession"
 include ":ktorfx:prismjs"
 include ":ktorfx:semanticui"
+include ":ktorfx:templating"
 include ":ktorfx:webjars"
 include ":ktorfx:webresources"
 

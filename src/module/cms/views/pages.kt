@@ -1,20 +1,22 @@
 package de.peekandpoke.module.cms.views
 
 import de.peekandpoke.ktorfx.semanticui.ui
+import de.peekandpoke.ktorfx.templating.SimpleTemplate
+import de.peekandpoke.module.cms.CmsAdmin
 import de.peekandpoke.module.cms.CmsPage
 import de.peekandpoke.ultra.vault.Stored
 import kotlinx.html.*
 
-internal fun Template.pages(pages: List<Stored<CmsPage>>) {
+internal fun SimpleTemplate.pages(mod: CmsAdmin, pages: List<Stored<CmsPage>>) {
 
-    activeMenu = MenuEntries.PAGES
+    breadCrumbs = listOf(MenuEntries.PAGES)
 
     content {
         ui.dividing.header H1 {
             +"Pages"
 
             ui.right.floated.basic.primary.button A {
-                href = routes.createPage
+                href = mod.routes.createPage
                 +"Create Page"
             }
         }
@@ -35,13 +37,13 @@ internal fun Template.pages(pages: List<Stored<CmsPage>>) {
                 pages.forEach {
                     tr {
                         td {
-                            a(href = routes.editPage(it)) { +it._id }
+                            a(href = mod.routes.editPage(it)) { +it._id }
                         }
                         td {
-                            a(href = routes.editPage(it)) { +it.value.name }
+                            a(href = mod.routes.editPage(it)) { +it.value.name }
                         }
                         td {
-                            a(href = routes.editPage(it)) { +it.value.slug }
+                            a(href = mod.routes.editPage(it)) { +it.value.slug }
                         }
                         td {
                             +(it._meta?.ts?.createdAt?.toString() ?: "n/a")

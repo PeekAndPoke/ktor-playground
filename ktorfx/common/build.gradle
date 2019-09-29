@@ -40,7 +40,8 @@ dependencies {
     // ultra
     implementation "de.peekandpoke.ultra:kontainer:$ultra_version"
 
-    implementation project(":vault")
+    api project(":polyglot")
+    api project(":vault")
 
     ////  tests  ////////////////////////////////////////////////////////////////////////////////////////////////
 

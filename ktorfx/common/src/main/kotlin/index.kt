@@ -6,6 +6,7 @@ import io.ktor.application.call
 import io.ktor.util.AttributeKey
 import io.ktor.util.Attributes
 import io.ktor.util.pipeline.PipelineContext
+import io.ultra.polyglot.I18n
 
 // Registering the kontainer on call attributes
 
@@ -17,4 +18,7 @@ inline val PipelineContext<Unit, ApplicationCall>.kontainer: Kontainer get() = c
 fun Attributes.provide(value: Kontainer) = put(KontainerKey, value)
 
 
+// TODO: remove this from here ... where to put it ?
+inline val ApplicationCall.i18n: I18n get() = kontainer.get(I18n::class)
+inline val PipelineContext<Unit, ApplicationCall>.i18n: I18n get() = call.i18n
 

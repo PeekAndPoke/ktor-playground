@@ -1,16 +1,13 @@
 package de.peekandpoke
 
-import com.arangodb.ArangoDB
-import com.arangodb.ArangoDatabase
 import com.fasterxml.jackson.databind.SerializationFeature
-import de.peekandpoke.karango.vault.KarangoDriver
+import de.peekandpoke.karango.KarangoModule
 import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ktorfx.common.provide
 import de.peekandpoke.ktorfx.flashsession.FlashSession
+import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import de.peekandpoke.ktorfx.webjars.BetterWebjars
 import de.peekandpoke.ktorfx.webresources.AppMeta
-import de.peekandpoke.ktorfx.webresources.CacheBuster
-import de.peekandpoke.ktorfx.webresources.WebResourceGroup
 import de.peekandpoke.module.cms.CmsAdmin
 import de.peekandpoke.module.cms.CmsAdminModule
 import de.peekandpoke.module.cms.CmsPublic
@@ -22,6 +19,7 @@ import de.peekandpoke.module.semanticui.SemanticUiModule
 import de.peekandpoke.resources.Translations
 import de.peekandpoke.ultra.kontainer.kontainer
 import de.peekandpoke.ultra.vault.Database
+import de.peekandpoke.ultra.vault.Vault
 import de.peekandpoke.ultra.vault.hooks.StaticUserRecordProvider
 import de.peekandpoke.ultra.vault.hooks.UserRecord
 import io.ktor.application.*
@@ -56,51 +54,38 @@ import kotlin.system.measureNanoTime
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-private val arangoDb: ArangoDB = ArangoDB.Builder().user("root").password("").host("localhost", 8529).build()
 
-private val arangoDatabase: ArangoDatabase = arangoDb.db("kotlindev")
-
-val Meta = object : AppMeta() {}
-
-class LegacyWebResources(cacheBuster: CacheBuster) : WebResourceGroup(cacheBuster, {
-    webjarJs("/vendor/jquery/jquery.min.js")
-
-    // custom
-    resourceCss("/assets/css/styles.css")
-    resourceJs("/assets/js/template.js")
-})
-
+val AppMeta = object : AppMeta() {}
 
 val Application.kontainerBlueprint by lazy {
 
     kontainer {
 
-        // functionality modules /////////////////////////////////////////////////////////////////////////////////////////////
+        // Database //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        module(Vault)
+        module(KarangoModule)
+        // provide connection to arango database
+        instance(arangoDatabase)
 
         // import ALL of KtorFX
         module(KtorFX)
-
-        // database drivers
-
-        instance(arangoDatabase)
-        singleton(KarangoDriver::class)
-
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //  APPLICATION  /////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // We re-define the cache buster, so we can read the version of the application and use it as cache buster key
-        instance(Meta.cacheBuster())
-        // We re-define the i18n as a dynamic service, so we can inject it with user language for each request
+        // create a app specific cache buster
+        instance(AppMeta.cacheBuster())
+        // Re-define the I18n with our texts
         dynamic(I18n::class) { Translations.withLocale("en") }
 
-        // application web resources
-        singleton(LegacyWebResources::class)
+        // set default html template
+        // TODO: we need a solution to divide Frontend from Backend
+        //       -> idea: KontainerBlueprint.extend(KontainerBuilder)) ?
+        prototype(SimpleTemplate::class, AdminTemplate::class)
+
+
+        // application ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
         // application modules
         module(GameOfThronesModule)
-
         module(SemanticUiModule)
-
         module(CmsAdminModule)
         module(CmsPublicModule)
     }

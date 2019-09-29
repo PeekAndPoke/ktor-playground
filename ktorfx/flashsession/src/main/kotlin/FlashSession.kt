@@ -5,9 +5,20 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.sessions.*
 
-class FlashSession(private val session: CurrentSession) {
+interface FlashSession {
+
+    data class Data(val entries: List<Entry> = listOf()) {
+        data class Entry(val message: String, val type: String)
+    }
+
+    fun pull(): List<Data.Entry>
+
+    fun add(message: String, type: String)
 
     companion object {
+
+        fun of(session: CurrentSession): FlashSession = FlashSessionImpl(session)
+
         fun register(config: Sessions.Configuration) {
 
             config.cookie<Data>("flash-messages") {
@@ -29,32 +40,38 @@ class FlashSession(private val session: CurrentSession) {
             }
         }
     }
+}
 
-    data class Data(val entries: List<Entry> = listOf()) {
-        data class Entry(val message: String, val type: String)
-    }
+class NullFlashSession internal constructor() : FlashSession {
 
-    fun pull(): List<Data.Entry> {
+    override fun pull(): List<FlashSession.Data.Entry> = listOf()
+
+    override fun add(message: String, type: String) = Unit
+}
+
+class FlashSessionImpl internal constructor(private val session: CurrentSession) : FlashSession {
+
+    override fun pull(): List<FlashSession.Data.Entry> {
 
         val current = read()
 
-        session.set(Data())
+        session.set(FlashSession.Data())
 
         return current.entries
     }
 
-    fun add(message: String, type: String) {
+    override fun add(message: String, type: String) {
 
         val current = read()
 
         session.set(
             current.copy(
                 entries = current.entries.plus(
-                    Data.Entry(message, type)
+                    FlashSession.Data.Entry(message, type)
                 )
             )
         )
     }
 
-    private fun read() = session.get<Data>() ?: Data()
+    private fun read() = session.get<FlashSession.Data>() ?: FlashSession.Data()
 }

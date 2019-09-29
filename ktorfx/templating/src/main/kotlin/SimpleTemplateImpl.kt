@@ -1,44 +1,35 @@
-package de.peekandpoke.module.cms.views
+package de.peekandpoke.ktorfx.templating
 
-import de.peekandpoke.ktorfx.flashsession.flashSession
+import de.peekandpoke.ktorfx.flashsession.FlashSession
 import de.peekandpoke.ktorfx.semanticui.semanticUi
 import de.peekandpoke.ktorfx.semanticui.ui
+import de.peekandpoke.ktorfx.webresources.WebResources
 import de.peekandpoke.ktorfx.webresources.css
 import de.peekandpoke.ktorfx.webresources.js
-import de.peekandpoke.ktorfx.webresources.webResources
-import de.peekandpoke.module.cms.CmsAdminRoutes
-import io.ktor.application.ApplicationCall
-import io.ktor.application.call
 import io.ktor.html.Placeholder
-import io.ktor.html.Template
 import io.ktor.html.insert
-import io.ktor.util.pipeline.PipelineContext
-import io.ultra.ktor_tools.i18n
+import io.ultra.polyglot.I18n
 import kotlinx.html.*
 
-enum class MenuEntries {
-    HOME,
-    PAGES
-}
+open class SimpleTemplateImpl(
 
-internal class Template constructor(
-    val routes: CmsAdminRoutes,
-    pipeline: PipelineContext<Unit, ApplicationCall>
-) : Template<HTML> {
+    final override val t: I18n,
+    final override val flashSession: FlashSession,
+    final override val webResources: WebResources
 
-    private val call = pipeline.call
-    val t = call.i18n
-    private val webResources = call.webResources
-    private val flashSessionEntries = pipeline.flashSession.pull()
+) : SimpleTemplate {
 
-    val pageTitle = Placeholder<HEAD>()
-    val content = Placeholder<FlowContent>()
+    override var breadCrumbs: List<Any> = listOf()
 
-    var activeMenu = MenuEntries.HOME
+    final override val pageTitle = Placeholder<HEAD>()
+    final override val mainMenu = Placeholder<FlowContent>()
+    final override val content = Placeholder<FlowContent>()
+
+    private val flashSessionEntries = flashSession.pull()
 
     init {
         pageTitle {
-            title { +"Mini CMS" }
+            title { +"Default Template" }
         }
     }
 
@@ -68,10 +59,7 @@ internal class Template constructor(
         body {
 
             ui.sidebar.vertical.left.inverted.violet.menu.visible.fixed {
-
-                ui.item.given(activeMenu == MenuEntries.HOME) { active } A { href = routes.index; +"Overview" }
-
-                ui.item.given(activeMenu == MenuEntries.PAGES) { active } A { href = routes.pages; +"Pages" }
+                insert(mainMenu)
             }
 
             ui.pusher.padded.right {

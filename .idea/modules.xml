@@ -29,6 +29,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/semanticui/ktor-playground.ktorfx.semanticui.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/semanticui/ktor-playground.ktorfx.semanticui.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/semanticui/ktor-playground.ktorfx.semanticui.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/semanticui/ktor-playground.ktorfx.semanticui.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/semanticui/ktor-playground.ktorfx.semanticui.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/semanticui/ktor-playground.ktorfx.semanticui.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/templating/ktor-playground.ktorfx.templating.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/templating/ktor-playground.ktorfx.templating.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/templating/ktor-playground.ktorfx.templating.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/templating/ktor-playground.ktorfx.templating.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/templating/ktor-playground.ktorfx.templating.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/templating/ktor-playground.ktorfx.templating.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/ktor-playground.ktorfx.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/ktor-playground.ktorfx.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/webjars/ktor-playground.ktorfx.webjars.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/webjars/ktor-playground.ktorfx.webjars.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/webjars/ktor-playground.ktorfx.webjars.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/webjars/ktor-playground.ktorfx.webjars.main.iml" />

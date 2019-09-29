@@ -4,11 +4,11 @@ import de.peekandpoke.ktorfx.prismjs.Language
 import de.peekandpoke.ktorfx.prismjs.prism
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
-import de.peekandpoke.module.semanticui.Template
+import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import kotlinx.html.*
 
 @Suppress("DuplicatedCode")
-internal fun Template.icons() {
+internal fun SimpleTemplate.icons() {
 
     content {
 

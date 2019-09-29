@@ -10,7 +10,7 @@ import de.peekandpoke.ktorfx.flashsession.success
 import de.peekandpoke.ktorfx.formidable.semanticui.numberInput
 import de.peekandpoke.ktorfx.formidable.semanticui.selectInput
 import de.peekandpoke.ktorfx.formidable.semanticui.textInput
-import de.peekandpoke.resources.MainTemplate
+import de.peekandpoke.module.got.view.MainTemplate
 import de.peekandpoke.resources.WELCOME
 import de.peekandpoke.ultra.kontainer.module
 import de.peekandpoke.ultra.vault.Stored

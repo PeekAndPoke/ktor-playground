@@ -3,14 +3,15 @@ package de.peekandpoke.module.cms.views
 import de.peekandpoke.ktorfx.formidable.semanticui.textArea
 import de.peekandpoke.ktorfx.formidable.semanticui.textInput
 import de.peekandpoke.ktorfx.semanticui.ui
+import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import de.peekandpoke.module.cms.forms.CmsPageForm
 import kotlinx.html.FormMethod
 import kotlinx.html.form
 import kotlinx.html.h1
 
-internal fun Template.editPage(create: Boolean, form: CmsPageForm) {
+internal fun SimpleTemplate.editPage(create: Boolean, form: CmsPageForm) {
 
-    activeMenu = MenuEntries.PAGES
+    breadCrumbs = listOf(MenuEntries.PAGES)
 
     content {
 

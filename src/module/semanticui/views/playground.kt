@@ -1,10 +1,10 @@
 package de.peekandpoke.module.semanticui.views
 
 import de.peekandpoke.ktorfx.semanticui.ui
-import de.peekandpoke.module.semanticui.Template
+import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import kotlinx.html.*
 
-internal fun Template.playground() {
+internal fun SimpleTemplate.playground() {
 
     content {
 

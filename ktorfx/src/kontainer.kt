@@ -2,18 +2,13 @@ package io.ultra.ktor_tools
 
 import de.peekandpoke.ktorfx.broker.KtorFX_Broker
 import de.peekandpoke.ktorfx.common.kontainer
+import de.peekandpoke.ktorfx.flashsession.KtorFX_FlashSession
 import de.peekandpoke.ktorfx.prismjs.KtorFX_PrismJs
 import de.peekandpoke.ktorfx.semanticui.KtorFX_SemanticUi
+import de.peekandpoke.ktorfx.templating.KtorFX_Templating
 import de.peekandpoke.ktorfx.webresources.KtorFX_WebResources
 import de.peekandpoke.ultra.kontainer.module
 import de.peekandpoke.ultra.vault.Database
-import de.peekandpoke.ultra.vault.DefaultEntityCache
-import de.peekandpoke.ultra.vault.EntityCache
-import de.peekandpoke.ultra.vault.SharedRepoClassLookup
-import de.peekandpoke.ultra.vault.hooks.AnonymousUserRecordProvider
-import de.peekandpoke.ultra.vault.hooks.TimestampedOnSaveHook
-import de.peekandpoke.ultra.vault.hooks.UserRecordOnSaveHook
-import de.peekandpoke.ultra.vault.hooks.UserRecordProvider
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.util.pipeline.PipelineContext
@@ -23,24 +18,14 @@ import io.ultra.polyglot.I18n
 
 val KtorFX = module {
 
-    // database ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    singleton(SharedRepoClassLookup::class)
-    singleton(Database::class)
-    dynamic(EntityCache::class) { DefaultEntityCache() }
-
-    singleton(TimestampedOnSaveHook::class)
-    singleton(UserRecordOnSaveHook::class)
-    dynamic(UserRecordProvider::class) { AnonymousUserRecordProvider() }
-
-
     // I18n (can be overwritten by re-defining the instance)
-    instance(I18n.empty())
-
+    dynamic(I18n::class) { I18n.empty() }
 
     module(KtorFX_Broker)
+    module(KtorFX_FlashSession)
     module(KtorFX_PrismJs)
     module(KtorFX_SemanticUi)
+    module(KtorFX_Templating)
     module(KtorFX_WebResources)
 }
 

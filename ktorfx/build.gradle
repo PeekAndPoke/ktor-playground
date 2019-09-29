@@ -64,6 +64,7 @@ dependencies {
     compile project(":ktorfx:flashsession")
     compile project(":ktorfx:formidable")
     compile project(":ktorfx:prismjs")
+    compile project(":ktorfx:templating")
     compile project(":ktorfx:semanticui")
     compile project(":ktorfx:webjars")
     compile project(":ktorfx:webresources")

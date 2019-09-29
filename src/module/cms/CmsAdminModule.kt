@@ -5,8 +5,9 @@ import de.peekandpoke.ktorfx.broker.Routes
 import de.peekandpoke.ktorfx.broker.getOrPost
 import de.peekandpoke.ktorfx.flashsession.flashSession
 import de.peekandpoke.ktorfx.flashsession.success
+import de.peekandpoke.ktorfx.templating.SimpleTemplate
+import de.peekandpoke.ktorfx.templating.defaultTemplate
 import de.peekandpoke.module.cms.forms.CmsPageForm
-import de.peekandpoke.module.cms.views.Template
 import de.peekandpoke.module.cms.views.editPage
 import de.peekandpoke.module.cms.views.index
 import de.peekandpoke.module.cms.views.pages
@@ -22,7 +23,6 @@ import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.util.pipeline.PipelineContext
 import io.ultra.ktor_tools.database
-import io.ultra.ktor_tools.logger.logger
 
 val CmsAdminModule = module {
     // config
@@ -52,8 +52,11 @@ class CmsAdminRoutes(converter: OutgoingConverter, cmsAdminMountPoint: String) :
 
 class CmsAdmin(val routes: CmsAdminRoutes) {
 
-    private suspend fun PipelineContext<Unit, ApplicationCall>.respond(status: HttpStatusCode = HttpStatusCode.OK, body: Template.() -> Unit) {
-        call.respondHtmlTemplate(Template(routes, this), status, body)
+    private suspend fun PipelineContext<Unit, ApplicationCall>.respond(
+        status: HttpStatusCode = HttpStatusCode.OK,
+        body: SimpleTemplate.() -> Unit
+    ) {
+        call.respondHtmlTemplate(defaultTemplate, status, body)
     }
 
     fun mount(route: Route) = with(route) {
@@ -66,7 +69,7 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
 
         get(routes.pages) {
             respond {
-                pages(database.cmsPages.findAllSorted().toList())
+                pages(this@CmsAdmin, database.cmsPages.findAllSorted().toList())
             }
         }
 
@@ -89,15 +92,14 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
         getOrPost(routes.createPage) {
 
             val page = New(CmsPage.empty())
-
             val form = CmsPageForm.of(page)
 
             if (form.submit(call)) {
 
                 if (form.isModified) {
                     val saved = database.cmsPages.save(form.result)
-                    logger.info("Updated page in database '${saved.value.name}'")
-                    flashSession.success("Page ${form.result.value.name} was created")
+
+                    flashSession.success("Page ${saved.value.name} was created")
                 }
 
                 return@getOrPost call.respondRedirect(routes.pages)
@@ -108,6 +110,5 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
             }
 
         }
-
     }
 }
