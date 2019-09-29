@@ -98,11 +98,13 @@ fun Application.systemKontainer() = kontainerBlueprint.useWith(
     )
 )
 
-fun Application.requestContainer(user: UserRecord) = kontainerBlueprint.useWith(
+fun Application.requestContainer(user: UserRecord, flash: FlashSession) = kontainerBlueprint.useWith(
     // default language
     Translations.withLocale("de"),
     // user record provider
-    StaticUserRecordProvider(user)
+    StaticUserRecordProvider(user),
+    // the flash session
+    flash
 )
 
 @KtorExperimentalAPI
@@ -305,7 +307,8 @@ fun Application.module(testing: Boolean = false) {
                         UserRecord(
                             call.sessions.get<UserSession>()?.userId ?: "anonymous",
                             call.request.origin.remoteHost
-                        )
+                        ),
+                        FlashSession.of(call.sessions)
                     )
                 )
             }
