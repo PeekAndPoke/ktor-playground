@@ -17,6 +17,7 @@ import de.peekandpoke.module.got.GameOfThronesModule
 import de.peekandpoke.module.semanticui.SemanticUi
 import de.peekandpoke.module.semanticui.SemanticUiModule
 import de.peekandpoke.resources.Translations
+import de.peekandpoke.ultra.kontainer.Kontainer
 import de.peekandpoke.ultra.kontainer.kontainer
 import de.peekandpoke.ultra.vault.Database
 import de.peekandpoke.ultra.vault.Vault
@@ -72,7 +73,8 @@ val Application.kontainerBlueprint by lazy {
         // create a app specific cache buster
         instance(AppMeta.cacheBuster())
         // Re-define the I18n with our texts
-        dynamic(I18n::class) { Translations.withLocale("en") }
+        // TODO we a way to omit the first parameter
+        dynamic(I18n::class) { _: Kontainer -> Translations.withLocale("en") }
 
         // set default html template
         // TODO: we need a solution to divide Frontend from Backend
@@ -98,13 +100,13 @@ fun Application.systemKontainer() = kontainerBlueprint.useWith(
     )
 )
 
-fun Application.requestContainer(user: UserRecord, flash: FlashSession) = kontainerBlueprint.useWith(
+fun Application.requestContainer(user: UserRecord, session: CurrentSession) = kontainerBlueprint.useWith(
     // default language
     Translations.withLocale("de"),
     // user record provider
     StaticUserRecordProvider(user),
-    // the flash session
-    flash
+    // the current session
+    session
 )
 
 @KtorExperimentalAPI
@@ -308,7 +310,7 @@ fun Application.module(testing: Boolean = false) {
                             call.sessions.get<UserSession>()?.userId ?: "anonymous",
                             call.request.origin.remoteHost
                         ),
-                        FlashSession.of(call.sessions)
+                        call.sessions
                     )
                 )
             }

@@ -1,6 +1,7 @@
 package io.ultra.ktor_tools
 
 import de.peekandpoke.ktorfx.broker.KtorFX_Broker
+import de.peekandpoke.ktorfx.common.KtorFX_Common
 import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ktorfx.flashsession.KtorFX_FlashSession
 import de.peekandpoke.ktorfx.prismjs.KtorFX_PrismJs
@@ -13,13 +14,16 @@ import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.util.pipeline.PipelineContext
 import io.ultra.polyglot.I18n
+import io.ultra.polyglot.NullI18n
 
 // Kontainer module
 
 val KtorFX = module {
 
     // I18n (can be overwritten by re-defining the instance)
-    dynamic(I18n::class) { I18n.empty() }
+    dynamic(I18n::class, NullI18n::class)
+
+    module(KtorFX_Common)
 
     module(KtorFX_Broker)
     module(KtorFX_FlashSession)

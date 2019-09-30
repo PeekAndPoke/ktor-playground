@@ -24,6 +24,8 @@ open class SimpleTemplateImpl(
     final override val pageTitle = Placeholder<HEAD>()
     final override val mainMenu = Placeholder<FlowContent>()
     final override val content = Placeholder<FlowContent>()
+
+    final override val styles = Placeholder<HEAD>()
     final override val scripts = Placeholder<FlowContent>()
 
     private val flashSessionEntries = flashSession.pull()
@@ -43,6 +45,7 @@ open class SimpleTemplateImpl(
             insert(pageTitle)
 
             css(webResources.semanticUi)
+            insert(styles)
 
             style("text/css") {
                 unsafe {

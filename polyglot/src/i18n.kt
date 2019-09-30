@@ -26,11 +26,10 @@ fun buildI18n(locale: String, fallbackLocale: String, vararg texts: TextsByLocal
     return I18n(locale, fallbackLocale, result)
 }
 
-data class I18n(private val locale: String, private val fallbackLocale: String, private val texts: TextsByLocale) {
+// TODO: introduce common Interface I18n and derive NullI18n and SimpleI18n from it
+class NullI18n : I18n("en", "en", mapOf("en" to mapOf()))
 
-    companion object {
-        fun empty() = I18n("en", "en", mapOf("en" to mapOf()))
-    }
+open class I18n(locale: String, private val fallbackLocale: String, private val texts: TextsByLocale) {
 
     private val fallback = texts[fallbackLocale] ?: throw Exception("Fallback locale '$locale' is not present")
 

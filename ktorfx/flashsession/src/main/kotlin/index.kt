@@ -4,6 +4,7 @@ import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ultra.kontainer.module
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
+import io.ktor.sessions.CurrentSession
 import io.ktor.util.pipeline.PipelineContext
 
 /**
@@ -15,7 +16,7 @@ import io.ktor.util.pipeline.PipelineContext
  */
 val KtorFX_FlashSession = module {
 
-    dynamic(FlashSession::class) { NullFlashSession() }
+    dynamic(FlashSession::class) { current: CurrentSession -> FlashSession.of(current) }
 }
 
 inline val ApplicationCall.flashSession: FlashSession get() = kontainer.get(FlashSession::class)

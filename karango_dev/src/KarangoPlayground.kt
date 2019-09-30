@@ -21,7 +21,7 @@ val kontainer = kontainer {
 
     singleton(SharedRepoClassLookup::class)
     singleton(Database::class)
-    dynamic(EntityCache::class) { NullEntityCache() }
+    dynamic(EntityCache::class, NullEntityCache::class)
 
     instance(arangoDatabase)
     singleton(KarangoDriver::class)
@@ -175,6 +175,7 @@ fun moreFun() {
     println(person2::class)
 }
 
+@Suppress("UNUSED_VARIABLE")
 fun y() {
 
 //    val addresses = db.collection(Address.)

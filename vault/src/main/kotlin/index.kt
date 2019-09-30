@@ -16,12 +16,14 @@ import de.peekandpoke.ultra.vault.hooks.UserRecordProvider
  * - [UserRecordProvider] which defaults to [AnonymousUserRecordProvider]
  */
 val Vault = module {
+    // Database
     singleton(Database::class)
-
     singleton(SharedRepoClassLookup::class)
-    dynamic(EntityCache::class) { DefaultEntityCache() }
+    dynamic(EntityCache::class, DefaultEntityCache::class)
 
+    // OnSaveHook for Timestamps
     singleton(TimestampedOnSaveHook::class)
+    // OnSaveHook for UserRecords
     singleton(UserRecordOnSaveHook::class)
-    dynamic(UserRecordProvider::class) { AnonymousUserRecordProvider() }
+    dynamic(UserRecordProvider::class, AnonymousUserRecordProvider::class)
 }

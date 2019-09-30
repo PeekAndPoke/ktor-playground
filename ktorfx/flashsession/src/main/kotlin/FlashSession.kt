@@ -17,7 +17,11 @@ interface FlashSession {
 
     companion object {
 
-        fun of(session: CurrentSession): FlashSession = FlashSessionImpl(session)
+        fun of(session: CurrentSession): FlashSession = when {
+            session.get<Data>() != null -> SimpleFlashSession(session)
+
+            else -> NullFlashSession()
+        }
 
         fun register(config: Sessions.Configuration) {
 
@@ -49,7 +53,7 @@ class NullFlashSession internal constructor() : FlashSession {
     override fun add(message: String, type: String) = Unit
 }
 
-class FlashSessionImpl internal constructor(private val session: CurrentSession) : FlashSession {
+class SimpleFlashSession internal constructor(private val session: CurrentSession) : FlashSession {
 
     override fun pull(): List<FlashSession.Data.Entry> {
 
