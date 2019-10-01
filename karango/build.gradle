@@ -44,7 +44,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     compile "com.arangodb:arangodb-java-driver:$arangodb_driver_version"
-    compile project(":vault")
+    compile project(":ultra:vault")
 
     implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"

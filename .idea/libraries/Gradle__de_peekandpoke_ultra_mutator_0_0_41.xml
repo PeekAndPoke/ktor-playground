@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: de.peekandpoke.ultra:mutator:0.0.41">
     <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/de/peekandpoke/ultra/mutator/0.0.41/mutator-0.0.41.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/de.peekandpoke.ultra/mutator/0.0.41/5883084383947aa9d1ba15ef7d7c99da31ec85ab/mutator-0.0.41.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$MAVEN_REPOSITORY$/de/peekandpoke/ultra/mutator/0.0.41/mutator-0.0.41-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/de.peekandpoke.ultra/mutator/0.0.41/d1a4c79fda2f36faffe181244a5333cd1330ecaf/mutator-0.0.41-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

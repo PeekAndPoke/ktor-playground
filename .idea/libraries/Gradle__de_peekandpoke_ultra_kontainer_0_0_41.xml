@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: de.peekandpoke.ultra:kontainer:0.0.41">
     <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/de/peekandpoke/ultra/kontainer/0.0.41/kontainer-0.0.41.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/de.peekandpoke.ultra/kontainer/0.0.41/1ffeca9409ead75a23f2f36b30dea7583ef2c9a2/kontainer-0.0.41.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$MAVEN_REPOSITORY$/de/peekandpoke/ultra/kontainer/0.0.41/kontainer-0.0.41-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/de.peekandpoke.ultra/kontainer/0.0.41/25b72dee7b4e90ac23123af661cfef8dab7842f4/kontainer-0.0.41-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

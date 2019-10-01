@@ -26,7 +26,8 @@
             <option value="$PROJECT_DIR$/ktorfx/webresources" />
             <option value="$PROJECT_DIR$/polyglot" />
             <option value="$PROJECT_DIR$/test_module" />
-            <option value="$PROJECT_DIR$/vault" />
+            <option value="$PROJECT_DIR$/ultra" />
+            <option value="$PROJECT_DIR$/ultra/vault" />
           </set>
         </option>
         <option name="useAutoImport" value="true" />

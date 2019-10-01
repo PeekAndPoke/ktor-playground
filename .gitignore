@@ -9,9 +9,11 @@ datasources.xml
 /.gradle
 /out
 */out
+*/*/out
 /build
 */build
 */*/build
 /.kotlintest
 */.kotlintest
+*/*/.kotlintest
 .attach_pid*

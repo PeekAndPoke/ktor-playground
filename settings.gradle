@@ -13,7 +13,9 @@ include ":ktorfx:templating"
 include ":ktorfx:webjars"
 include ":ktorfx:webresources"
 
-include ":vault"
+include ":ultra"
+include ":ultra:vault"
+
 include ":karango"
 include ":karango_dev"
 

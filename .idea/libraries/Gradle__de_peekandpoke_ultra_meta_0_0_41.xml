@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: de.peekandpoke.ultra:meta:0.0.41">
     <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/de/peekandpoke/ultra/meta/0.0.41/meta-0.0.41.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/de.peekandpoke.ultra/meta/0.0.41/12391d6c1646ff0b17d39a1652b35cd16ffe3ef/meta-0.0.41.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$MAVEN_REPOSITORY$/de/peekandpoke/ultra/meta/0.0.41/meta-0.0.41-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/de.peekandpoke.ultra/meta/0.0.41/8e83ec1e18dd700048445ed85b288569479a6257/meta-0.0.41-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

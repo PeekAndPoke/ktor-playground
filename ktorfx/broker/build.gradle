@@ -40,7 +40,7 @@ dependencies {
     // ultra
     implementation "de.peekandpoke.ultra:kontainer:$ultra_version"
 
-    implementation project(":vault")
+    implementation project(":ultra:vault")
 
     // ktorfx
     implementation project(":ktorfx:common")

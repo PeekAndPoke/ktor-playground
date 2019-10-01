@@ -49,6 +49,10 @@
       <module name="ktor-playground.test" target="1.8" />
       <module name="ktor-playground.test_module.main" target="1.8" />
       <module name="ktor-playground.test_module.test" target="1.8" />
+      <module name="ktor-playground.ultra.main" target="1.8" />
+      <module name="ktor-playground.ultra.test" target="1.8" />
+      <module name="ktor-playground.ultra.vault.main" target="1.8" />
+      <module name="ktor-playground.ultra.vault.test" target="1.8" />
       <module name="ktor-playground.vault.main" target="1.8" />
       <module name="ktor-playground.vault.test" target="1.8" />
     </bytecodeTargetLevel>

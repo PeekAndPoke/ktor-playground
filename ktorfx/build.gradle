@@ -39,7 +39,6 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    compile "de.peekandpoke.ultra:common:$ultra_version"
 
     // include for server side
     implementation "io.ktor:ktor-server-core:$ktor_version"
@@ -52,11 +51,12 @@ dependencies {
     // webjars
     compile 'org.webjars:webjars-locator-core:0.37'
 
+    compile "de.peekandpoke.ultra:common:$ultra_version"
     compile "de.peekandpoke.ultra:kontainer:$ultra_version"
     compile "de.peekandpoke.ultra:mutator:$ultra_version"
     kapt "de.peekandpoke.ultra:mutator:$ultra_version"
 
-    compile project(":vault")
+    compile project(":ultra:vault")
 
     // add all ktorfx sub-projects
     compile project(":ktorfx:broker")
