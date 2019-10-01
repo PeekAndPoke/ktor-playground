@@ -12,11 +12,15 @@ import de.peekandpoke.module.cms.CmsAdmin
 import de.peekandpoke.module.cms.CmsAdminModule
 import de.peekandpoke.module.cms.CmsPublic
 import de.peekandpoke.module.cms.CmsPublicModule
+import de.peekandpoke.module.depot.DepotAdmin
+import de.peekandpoke.module.depot.DepotAdminModule
 import de.peekandpoke.module.got.GameOfThrones
 import de.peekandpoke.module.got.GameOfThronesModule
 import de.peekandpoke.module.semanticui.SemanticUi
 import de.peekandpoke.module.semanticui.SemanticUiModule
 import de.peekandpoke.resources.Translations
+import de.peekandpoke.ultra.depot.DepotModule
+import de.peekandpoke.ultra.depot.FileSystemRepository
 import de.peekandpoke.ultra.kontainer.kontainer
 import de.peekandpoke.ultra.polyglot.I18n
 import de.peekandpoke.ultra.vault.Database
@@ -57,6 +61,8 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 val AppMeta = object : AppMeta() {}
 
+class DummyStorage : FileSystemRepository("dummy", "./tmp/dummy")
+
 val Application.kontainerBlueprint by lazy {
 
     kontainer {
@@ -66,6 +72,10 @@ val Application.kontainerBlueprint by lazy {
         module(KarangoModule)
         // provide connection to arango database
         instance(arangoDatabase)
+
+        // File depot ////////////////////////////////////////////////////////////////////////////////////////////////////////
+        module(DepotModule)
+        singleton(DummyStorage::class)
 
         // import ALL of KtorFX
         module(KtorFX)
@@ -85,9 +95,13 @@ val Application.kontainerBlueprint by lazy {
 
         // application modules
         module(GameOfThronesModule)
+
         module(SemanticUiModule)
+
         module(CmsAdminModule)
         module(CmsPublicModule)
+
+        module(DepotAdminModule)
     }
 }
 
@@ -124,6 +138,8 @@ fun Application.module(testing: Boolean = false) {
 
     val cmsAdmin = initKontainer.get(CmsAdmin::class)
     val cmsPublic = initKontainer.get(CmsPublic::class)
+
+    val depotAdmin = initKontainer.get(DepotAdmin::class)
 
     environment.monitor.subscribe(ApplicationStopped) {
         arangoDb.shutdown()
@@ -385,6 +401,7 @@ fun Application.module(testing: Boolean = false) {
             authenticate(authName) {
                 semanticUi.mount(this)
                 cmsAdmin.mount(this)
+                depotAdmin.mount(this)
             }
         }
     }

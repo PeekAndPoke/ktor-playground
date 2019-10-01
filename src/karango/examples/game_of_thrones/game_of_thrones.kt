@@ -13,7 +13,7 @@ import de.peekandpoke.ultra.vault.*
 private val arangoDb: ArangoDB = ArangoDB.Builder().user("root").password("").host("localhost", 8529).build()
 private val arangoDatabase: ArangoDatabase = arangoDb.db("kotlindev")
 
-val kontainer = kontainer {
+val kontainerInstance = kontainer {
 
     singleton(SharedRepoClassLookup::class)
     singleton(Database::class)
@@ -27,7 +27,7 @@ val kontainer = kontainer {
 
 }.useWith()
 
-private val db = kontainer.get<Database>()
+private val db = kontainerInstance.get<Database>()
 
 private val characters = db.characters
 private val actors = db.actors

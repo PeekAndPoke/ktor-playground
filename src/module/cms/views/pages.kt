@@ -63,8 +63,5 @@ internal fun SimpleTemplate.pages(mod: CmsAdmin, pages: List<Stored<CmsPage>>) {
 
             }
         }
-
-        ui.list {
-        }
     }
 }

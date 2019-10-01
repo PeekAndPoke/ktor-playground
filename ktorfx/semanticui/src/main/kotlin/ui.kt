@@ -41,12 +41,16 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
 
     @SemanticUiCssMarker fun with(cls: String, flow: FlowContent.() -> Unit) = (this + cls).renderDiv(flow)
 
-    @SemanticUiCssMarker fun given(condition: Boolean, action: SemanticUi.() -> SemanticUi) = when(condition) {
+    // conditional classes
+
+    @SemanticUiConditionalMarker fun given(condition: Boolean, action: SemanticUi.() -> SemanticUi) = when (condition) {
 
         false -> this
 
         else -> this.action()
     }
+
+    @SemanticUiConditionalMarker val then get() = this
 
     // misc
 

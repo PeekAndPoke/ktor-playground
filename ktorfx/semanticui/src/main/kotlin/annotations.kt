@@ -8,3 +8,6 @@ annotation class SemanticUiCssMarker
 
 @DslMarker
 annotation class SemanticUiTagMarker
+
+@DslMarker
+annotation class SemanticUiConditionalMarker

@@ -7,6 +7,8 @@ import de.peekandpoke.ktorfx.templating.SimpleTemplateImpl
 import de.peekandpoke.ktorfx.webresources.WebResources
 import de.peekandpoke.module.cms.CmsAdmin
 import de.peekandpoke.module.cms.views.CmsMenu
+import de.peekandpoke.module.depot.DepotAdmin
+import de.peekandpoke.module.depot.views.DepotMenu
 import de.peekandpoke.module.semanticui.SemanticUi
 import de.peekandpoke.module.semanticui.views.SemanticUiMenu
 import de.peekandpoke.ultra.polyglot.I18n
@@ -20,7 +22,8 @@ class AdminTemplate(
     webResources: WebResources,
 
     private val cms: CmsAdmin,
-    private val semanticUi: SemanticUi
+    private val semanticUi: SemanticUi,
+    private val depot: DepotAdmin
 
 
 ) : SimpleTemplateImpl(t, flashSession, webResources) {
@@ -44,11 +47,11 @@ class AdminTemplate(
         mainMenu {
 
             ui.accordion {
-                ui.given(CmsMenu has breadCrumbs) { active }.title {
-                    ui.header.item {
-                        icon.dropdown()
-                        +"CMS"
-                    }
+                // CMS ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                ui.given(CmsMenu has breadCrumbs) { active }.title.header.item H4 {
+                    icon.dropdown()
+                    +"Cms"
                 }
                 ui.given(CmsMenu has breadCrumbs) { active }.content {
                     ui.accordion.transition.active {
@@ -59,11 +62,26 @@ class AdminTemplate(
                     }
                 }
 
-                ui.given(SemanticUiMenu has breadCrumbs) { active }.title {
-                    ui.header.item {
-                        icon.dropdown()
-                        +"Semantic UI"
+                // DEPOT ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                ui.given(DepotMenu has breadCrumbs) { active }.title.header.item H4 {
+                    icon.dropdown()
+                    +"File Depot"
+                }
+                ui.given(DepotMenu has breadCrumbs) { active }.content {
+                    ui.accordion.transition.active {
+                        // TODO: create a method in the Cms Admin Module that renders all menu entries
+                        ui.item.given(DepotMenu.INDEX in breadCrumbs) { active } A { href = depot.routes.index; +"Overview" }
+
+                        ui.item.given(DepotMenu.REPOSITORIES in breadCrumbs) { active } A { href = depot.routes.repositories; +"Repositories" }
                     }
+                }
+
+                // SEMANTIC UI ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                ui.given(SemanticUiMenu has breadCrumbs) { active }.title.header.item H4 {
+                    icon.dropdown()
+                    +"Semantic UI"
                 }
                 ui.given(SemanticUiMenu has breadCrumbs) { active }.content {
                     ui.accordion.transition.active {

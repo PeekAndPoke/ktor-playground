@@ -13,6 +13,7 @@ include ":ktorfx:webjars"
 include ":ktorfx:webresources"
 
 include ":ultra"
+include ":ultra:depot"
 include ":ultra:polyglot"
 include ":ultra:vault"
 

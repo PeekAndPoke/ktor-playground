@@ -1,8 +1,10 @@
 package de.peekandpoke.module.cms
 
+import de.peekandpoke.DummyStorage
 import de.peekandpoke.ktorfx.broker.OutgoingConverter
 import de.peekandpoke.ktorfx.broker.Routes
 import de.peekandpoke.ktorfx.broker.getOrPost
+import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ktorfx.flashsession.flashSession
 import de.peekandpoke.ktorfx.flashsession.success
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
@@ -52,6 +54,7 @@ class CmsAdminRoutes(converter: OutgoingConverter, cmsAdminMountPoint: String) :
 
 class CmsAdmin(val routes: CmsAdminRoutes) {
 
+    // TODO: move this one into ktorfx::templating
     private suspend fun PipelineContext<Unit, ApplicationCall>.respond(
         status: HttpStatusCode = HttpStatusCode.OK,
         body: SimpleTemplate.() -> Unit
@@ -62,6 +65,11 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
     fun mount(route: Route) = with(route) {
 
         get(routes.index) {
+
+            kontainer.get(DummyStorage::class)
+                .createBucket("test2")
+                .putFile("test.${System.currentTimeMillis()}.txt", "THIS IS A TEST")
+
             respond {
                 index()
             }

@@ -70,6 +70,7 @@ dependencies {
     kapt "de.peekandpoke.ultra:ultra:$ultra_version"
 
     compile project(":ultra")
+    compile project(":ultra:depot")
     compile project(":ktorfx")
 
     compile project(":karango")

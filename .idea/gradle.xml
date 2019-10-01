@@ -25,6 +25,7 @@
             <option value="$PROJECT_DIR$/ktorfx/webjars" />
             <option value="$PROJECT_DIR$/ktorfx/webresources" />
             <option value="$PROJECT_DIR$/ultra" />
+            <option value="$PROJECT_DIR$/ultra/depot" />
             <option value="$PROJECT_DIR$/ultra/polyglot" />
             <option value="$PROJECT_DIR$/ultra/vault" />
           </set>

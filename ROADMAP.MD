@@ -11,7 +11,7 @@
 
 ## KARA
 
-Idea: Karango driver (arangodb) for Vault
+Idea: Karango repository (arangodb) for Vault
 
 Dependencies: none
 
@@ -28,8 +28,8 @@ Idea: Storing and loading files in different locations / remote services
 
 Dependencies: none
 
-- ( ) common interfaces for a file storage, driver, bucket, file
-- ( ) File system driver
+- ( ) common interfaces for a file storage, repository, bucket, file
+- ( ) File system repository
 - ( ) encryption for names and content
 - ( ) signing of content to ensure data is consistent
 

@@ -16,4 +16,5 @@ datasources.xml
 /.kotlintest
 */.kotlintest
 */*/.kotlintest
+/tmp
 .attach_pid*
