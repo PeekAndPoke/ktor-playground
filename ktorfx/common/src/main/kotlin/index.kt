@@ -10,18 +10,33 @@ import io.ktor.util.Attributes
 import io.ktor.util.pipeline.PipelineContext
 import io.ultra.polyglot.I18n
 
-// Registering the kontainer on call attributes
-
+/**
+ * Common kontainer module
+ */
 val KtorFX_Common = module {
     dynamic(CurrentSession::class, NullCurrentSession::class)
 }
 
+/**
+ * [AttributeKey] for the [Kontainer]
+ */
 val KontainerKey = AttributeKey<Kontainer>("kontainer")
 
+/**
+ * Puts a [Kontainer] instance into an [Attributes] set
+ */
+fun Attributes.provide(value: Kontainer) = put(KontainerKey, value)
+
+/**
+ * Retrieves the [Kontainer] from the [Attributes] of an [ApplicationCall]
+ */
 inline val ApplicationCall.kontainer: Kontainer get() = attributes[KontainerKey]
+
+/**
+ * Retrieves the [Kontainer] from the [Attributes] of an [ApplicationCall]
+ */
 inline val PipelineContext<Unit, ApplicationCall>.kontainer: Kontainer get() = call.kontainer
 
-fun Attributes.provide(value: Kontainer) = put(KontainerKey, value)
 
 
 // TODO: remove this from here ... where to put it ?

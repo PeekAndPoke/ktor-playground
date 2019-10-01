@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: de.peekandpoke.ultra:mutator:0.0.40">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/peekandpoke/ultra/mutator/0.0.40/mutator-0.0.40.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/peekandpoke/ultra/mutator/0.0.40/mutator-0.0.40-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

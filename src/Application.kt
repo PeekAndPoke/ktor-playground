@@ -17,7 +17,6 @@ import de.peekandpoke.module.got.GameOfThronesModule
 import de.peekandpoke.module.semanticui.SemanticUi
 import de.peekandpoke.module.semanticui.SemanticUiModule
 import de.peekandpoke.resources.Translations
-import de.peekandpoke.ultra.kontainer.Kontainer
 import de.peekandpoke.ultra.kontainer.kontainer
 import de.peekandpoke.ultra.vault.Database
 import de.peekandpoke.ultra.vault.Vault
@@ -73,8 +72,7 @@ val Application.kontainerBlueprint by lazy {
         // create a app specific cache buster
         instance(AppMeta.cacheBuster())
         // Re-define the I18n with our texts
-        // TODO we a way to omit the first parameter
-        dynamic(I18n::class) { _: Kontainer -> Translations.withLocale("en") }
+        dynamic0(I18n::class) { Translations.withLocale("en") }
 
         // set default html template
         // TODO: we need a solution to divide Frontend from Backend
