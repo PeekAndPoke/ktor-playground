@@ -6,6 +6,8 @@ interface DepotRepository {
 
     val type: String
 
+    val location: String
+
     fun listBuckets(): List<DepotBucket>
 
     fun get(bucketName: String): DepotBucket

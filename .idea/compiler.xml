@@ -51,6 +51,8 @@
       <module name="ktor-playground.test_module.test" target="1.8" />
       <module name="ktor-playground.ultra.depot.main" target="1.8" />
       <module name="ktor-playground.ultra.depot.test" target="1.8" />
+      <module name="ktor-playground.ultra.insights.main" target="1.8" />
+      <module name="ktor-playground.ultra.insights.test" target="1.8" />
       <module name="ktor-playground.ultra.main" target="1.8" />
       <module name="ktor-playground.ultra.polyglot.main" target="1.8" />
       <module name="ktor-playground.ultra.polyglot.test" target="1.8" />

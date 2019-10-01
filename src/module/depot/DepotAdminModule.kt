@@ -15,10 +15,7 @@ import de.peekandpoke.ultra.kontainer.module
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.html.respondHtmlTemplate
-import io.ktor.http.ContentDisposition
-import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
-import io.ktor.response.header
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
@@ -101,12 +98,11 @@ class DepotAdmin(val routes: DepotAdminRoutes) {
 
             val repository = depot.get(data.repository)
             val bucket = repository.get(data.bucket)
-            val fileList = bucket.listFiles()
+            val fileList = bucket.listFiles().sortedBy { it.name }.reversed().take(100)
 
             respond {
                 files(this@DepotAdmin, repository, bucket, fileList)
             }
-
         }
 
         get(routes.getFile) { data ->
@@ -115,10 +111,10 @@ class DepotAdmin(val routes: DepotAdminRoutes) {
             val bucket = repository.get(data.bucket)
             val file = bucket.getFile(data.file)
 
-            call.response.header(
-                HttpHeaders.ContentDisposition,
-                ContentDisposition.Attachment.withParameter(ContentDisposition.Parameters.FileName, file.name).toString()
-            )
+//            call.response.header(
+//                HttpHeaders.ContentDisposition,
+//                ContentDisposition.Attachment.withParameter(ContentDisposition.Parameters.FileName, file.name).toString()
+//            )
 
             call.respond(file.getContentBytes())
         }

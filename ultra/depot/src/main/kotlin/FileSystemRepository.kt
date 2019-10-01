@@ -47,6 +47,8 @@ abstract class FileSystemRepository(override val name: String, dir: String) : De
 
     override val type = "File system"
 
+    override val location: String = root.absolutePath
+
     override fun listBuckets(): List<DepotBucket> {
         return root.listFiles()
             ?.filter { it.isDirectory }

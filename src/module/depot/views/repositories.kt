@@ -29,6 +29,7 @@ internal fun SimpleTemplate.repositories(mod: DepotAdmin, repositories: List<Dep
                 tr {
                     th { +"Name" }
                     th { +"Type" }
+                    th { +"Location" }
                 }
             }
 
@@ -40,6 +41,9 @@ internal fun SimpleTemplate.repositories(mod: DepotAdmin, repositories: List<Dep
                         }
                         td {
                             +it.type
+                        }
+                        td {
+                            +it.location
                         }
                     }
                 }

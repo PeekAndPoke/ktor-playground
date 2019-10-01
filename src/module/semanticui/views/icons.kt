@@ -2,9 +2,12 @@ package de.peekandpoke.module.semanticui.views
 
 import de.peekandpoke.ktorfx.prismjs.Language
 import de.peekandpoke.ktorfx.prismjs.prism
+import de.peekandpoke.ktorfx.prismjs.prismJs
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
+import de.peekandpoke.ktorfx.webresources.css
+import de.peekandpoke.ktorfx.webresources.js
 import kotlinx.html.*
 
 @Suppress("DuplicatedCode")
@@ -14,6 +17,14 @@ internal fun SimpleTemplate.icons() {
 
     pageTitle {
         title { +"SemanticUI Icons" }
+    }
+
+    styles {
+        css(webResources.prismJs)
+    }
+
+    scripts {
+        js(webResources.prismJs)
     }
 
     content {
@@ -45,7 +56,7 @@ internal fun SimpleTemplate.icons() {
 
         ui.dividing.header H3 { +"General usage" }
 
-        ui.three.column.grid {
+        ui.three.column.celled.grid {
 
             ui.row {
                 ui.column {

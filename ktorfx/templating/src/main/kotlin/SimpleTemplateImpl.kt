@@ -8,6 +8,8 @@ import de.peekandpoke.ktorfx.webresources.css
 import de.peekandpoke.ktorfx.webresources.js
 import de.peekandpoke.ultra.polyglot.I18n
 import io.ktor.html.Placeholder
+import io.ktor.html.PlaceholderList
+import io.ktor.html.each
 import io.ktor.html.insert
 import kotlinx.html.*
 
@@ -25,14 +27,22 @@ open class SimpleTemplateImpl(
     final override val mainMenu = Placeholder<FlowContent>()
     final override val content = Placeholder<FlowContent>()
 
-    final override val styles = Placeholder<HEAD>()
-    final override val scripts = Placeholder<FlowContent>()
+    final override val styles = PlaceholderList<HEAD, HEAD>()
+    final override val scripts = PlaceholderList<FlowContent, FlowContent>()
 
     private val flashSessionEntries = flashSession.pull()
 
     init {
         pageTitle {
             title { +"Default Template" }
+        }
+
+        styles {
+            css(webResources.semanticUi)
+        }
+
+        scripts {
+            js(webResources.semanticUi)
         }
     }
 
@@ -44,8 +54,7 @@ open class SimpleTemplateImpl(
 
             insert(pageTitle)
 
-            css(webResources.semanticUi)
-            insert(styles)
+            each(styles) { insert(it) }
 
             style("text/css") {
                 unsafe {
@@ -83,8 +92,7 @@ open class SimpleTemplateImpl(
                 }
             }
 
-            js(webResources.semanticUi)
-            insert(scripts)
+            each(scripts) { insert(it) }
         }
     }
 }

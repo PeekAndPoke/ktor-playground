@@ -4,6 +4,7 @@ import de.peekandpoke.ktorfx.flashsession.FlashSession
 import de.peekandpoke.ktorfx.webresources.WebResources
 import de.peekandpoke.ultra.polyglot.I18n
 import io.ktor.html.Placeholder
+import io.ktor.html.PlaceholderList
 import io.ktor.html.Template
 import kotlinx.html.FlowContent
 import kotlinx.html.HEAD
@@ -26,7 +27,6 @@ interface SimpleTemplate : Template<HTML> {
     val mainMenu: Placeholder<FlowContent>
     val content: Placeholder<FlowContent>
 
-    // TODO: use place holder lists, so the templates can append content
-    val styles: Placeholder<HEAD>
-    val scripts: Placeholder<FlowContent>
+    val styles: PlaceholderList<HEAD, HEAD>
+    val scripts: PlaceholderList<FlowContent, FlowContent>
 }

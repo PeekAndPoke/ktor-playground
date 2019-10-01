@@ -71,6 +71,8 @@ dependencies {
 
     compile project(":ultra")
     compile project(":ultra:depot")
+    compile project(":ultra:insights")
+
     compile project(":ktorfx")
 
     compile project(":karango")
