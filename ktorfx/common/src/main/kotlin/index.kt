@@ -2,13 +2,13 @@ package de.peekandpoke.ktorfx.common
 
 import de.peekandpoke.ultra.kontainer.Kontainer
 import de.peekandpoke.ultra.kontainer.module
+import de.peekandpoke.ultra.polyglot.I18n
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.sessions.CurrentSession
 import io.ktor.util.AttributeKey
 import io.ktor.util.Attributes
 import io.ktor.util.pipeline.PipelineContext
-import io.ultra.polyglot.I18n
 
 /**
  * Common kontainer module

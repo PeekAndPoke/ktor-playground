@@ -3,7 +3,7 @@ package de.peekandpoke.ktorfx.formidable.semanticui
 import de.peekandpoke.ktorfx.formidable.FormField
 import de.peekandpoke.ktorfx.formidable.FormFieldWithOptions
 import de.peekandpoke.ktorfx.semanticui.ui
-import io.ultra.polyglot.I18n
+import de.peekandpoke.ultra.polyglot.I18n
 import kotlinx.html.*
 
 fun <T> FlowContent.label(field: FormField<T>, label: String?) {

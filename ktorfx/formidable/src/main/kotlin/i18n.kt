@@ -2,7 +2,7 @@
 
 package de.peekandpoke.ktorfx.formidable
 
-import io.ultra.polyglot.translatable
+import de.peekandpoke.ultra.polyglot.translatable
 
 const val mainGroup = "formidable"
 const val errorGroup = "$mainGroup.errors"

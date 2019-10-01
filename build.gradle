@@ -69,9 +69,7 @@ dependencies {
     compile "de.peekandpoke.ultra:ultra:$ultra_version"
     kapt "de.peekandpoke.ultra:ultra:$ultra_version"
 
-    compile project(":test_module")
-
-    compile project(":polyglot")
+    compile project(":ultra")
     compile project(":ktorfx")
 
     compile project(":karango")

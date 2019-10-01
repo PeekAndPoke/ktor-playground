@@ -9,7 +9,7 @@ import de.peekandpoke.module.cms.CmsAdmin
 import de.peekandpoke.module.cms.views.CmsMenu
 import de.peekandpoke.module.semanticui.SemanticUi
 import de.peekandpoke.module.semanticui.views.SemanticUiMenu
-import io.ultra.polyglot.I18n
+import de.peekandpoke.ultra.polyglot.I18n
 import kotlinx.html.script
 import kotlinx.html.unsafe
 

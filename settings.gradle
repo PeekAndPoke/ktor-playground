@@ -1,6 +1,5 @@
 rootProject.name = "ktor-playground"
 
-include ":polyglot"
 
 include ":ktorfx"
 include ":ktorfx:broker"
@@ -14,9 +13,8 @@ include ":ktorfx:webjars"
 include ":ktorfx:webresources"
 
 include ":ultra"
+include ":ultra:polyglot"
 include ":ultra:vault"
 
 include ":karango"
 include ":karango_dev"
-
-include ":test_module"

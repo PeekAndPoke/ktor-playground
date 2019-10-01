@@ -18,6 +18,7 @@ import de.peekandpoke.module.semanticui.SemanticUi
 import de.peekandpoke.module.semanticui.SemanticUiModule
 import de.peekandpoke.resources.Translations
 import de.peekandpoke.ultra.kontainer.kontainer
+import de.peekandpoke.ultra.polyglot.I18n
 import de.peekandpoke.ultra.vault.Database
 import de.peekandpoke.ultra.vault.Vault
 import de.peekandpoke.ultra.vault.hooks.StaticUserRecordProvider
@@ -44,7 +45,6 @@ import io.ktor.util.getDigestFunction
 import io.ktor.util.hex
 import io.ultra.ktor_tools.KtorFX
 import io.ultra.ktor_tools.logger.logger
-import io.ultra.polyglot.I18n
 import kotlinx.html.*
 import java.net.InetAddress
 import java.time.Duration

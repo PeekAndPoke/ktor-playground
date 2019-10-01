@@ -1,6 +1,6 @@
 package de.peekandpoke.ktorfx.formidable
 
-import io.ultra.polyglot.Translatable
+import de.peekandpoke.ultra.polyglot.Translatable
 
 fun isBoolean(value: String) = value == "true" || value == "false"
 

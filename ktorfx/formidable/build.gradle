@@ -41,8 +41,8 @@ dependencies {
     implementation "de.peekandpoke.ultra:kontainer:$ultra_version"
     implementation "de.peekandpoke.ultra:mutator:$ultra_version"
 
+    compile project(":ultra:polyglot")
     compile project(":ultra:vault")
-    compile project(":polyglot")
 
     compile project(":ktorfx:semanticui")
 

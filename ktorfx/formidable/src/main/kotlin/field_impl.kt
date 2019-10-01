@@ -1,7 +1,7 @@
 package de.peekandpoke.ktorfx.formidable
 
+import de.peekandpoke.ultra.polyglot.Translatable
 import io.ktor.http.Parameters
-import io.ultra.polyglot.Translatable
 
 fun <T> FormField<T>.withOptions(vararg options: Pair<T, String>) = withOptions(options.toList())
 

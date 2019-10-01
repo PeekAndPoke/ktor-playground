@@ -9,12 +9,12 @@ import de.peekandpoke.ktorfx.semanticui.KtorFX_SemanticUi
 import de.peekandpoke.ktorfx.templating.KtorFX_Templating
 import de.peekandpoke.ktorfx.webresources.KtorFX_WebResources
 import de.peekandpoke.ultra.kontainer.module
+import de.peekandpoke.ultra.polyglot.I18n
+import de.peekandpoke.ultra.polyglot.NullI18n
 import de.peekandpoke.ultra.vault.Database
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.util.pipeline.PipelineContext
-import io.ultra.polyglot.I18n
-import io.ultra.polyglot.NullI18n
 
 // Kontainer module
 

@@ -6,9 +6,9 @@ import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.webresources.WebResources
 import de.peekandpoke.ktorfx.webresources.css
 import de.peekandpoke.ktorfx.webresources.js
+import de.peekandpoke.ultra.polyglot.I18n
 import io.ktor.html.Placeholder
 import io.ktor.html.insert
-import io.ultra.polyglot.I18n
 import kotlinx.html.*
 
 open class SimpleTemplateImpl(

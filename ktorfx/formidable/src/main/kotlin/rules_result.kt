@@ -1,6 +1,6 @@
 package de.peekandpoke.ktorfx.formidable
 
-import io.ultra.polyglot.Translatable
+import de.peekandpoke.ultra.polyglot.Translatable
 
 fun <T : Comparable<T>> FormField<T>.resultingInRange(range: ClosedRange<T>, message: Translatable = must_be_in_range(range)) =
     resultingIn(message) { range.contains(it) }

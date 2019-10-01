@@ -1,8 +1,8 @@
 package de.peekandpoke.resources
 
 import de.peekandpoke.ktorfx.formidable.Formidable
-import io.ultra.polyglot.I18n
-import io.ultra.polyglot.buildI18n
+import de.peekandpoke.ultra.polyglot.I18n
+import de.peekandpoke.ultra.polyglot.buildI18n
 
 val Translations = buildI18n(
     "de", "en",

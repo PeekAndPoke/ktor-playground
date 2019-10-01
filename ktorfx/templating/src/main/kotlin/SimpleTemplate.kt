@@ -2,9 +2,9 @@ package de.peekandpoke.ktorfx.templating
 
 import de.peekandpoke.ktorfx.flashsession.FlashSession
 import de.peekandpoke.ktorfx.webresources.WebResources
+import de.peekandpoke.ultra.polyglot.I18n
 import io.ktor.html.Placeholder
 import io.ktor.html.Template
-import io.ultra.polyglot.I18n
 import kotlinx.html.FlowContent
 import kotlinx.html.HEAD
 import kotlinx.html.HTML

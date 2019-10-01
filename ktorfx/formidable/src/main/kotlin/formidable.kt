@@ -1,9 +1,9 @@
 package de.peekandpoke.ktorfx.formidable
 
+import de.peekandpoke.ultra.polyglot.TextsByLocale
+import de.peekandpoke.ultra.polyglot.Translatable
+import de.peekandpoke.ultra.polyglot.readPolyglotJson
 import io.ktor.http.Parameters
-import io.ultra.polyglot.TextsByLocale
-import io.ultra.polyglot.Translatable
-import io.ultra.polyglot.readPolyglotJson
 
 class Formidable {
     companion object {
@@ -51,7 +51,7 @@ interface FormField<T> {
 
     val errors: List<Translatable>
 
-    fun isValid() : Boolean
+    fun isValid(): Boolean
 
     fun mapToString(value: T): String
 

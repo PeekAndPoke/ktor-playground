@@ -1,4 +1,4 @@
-package io.ultra.polyglot
+package de.peekandpoke.ultra.polyglot
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue

@@ -1,4 +1,4 @@
-package io.ultra.polyglot
+package de.peekandpoke.ultra.polyglot
 
 typealias TextsByLocale =  Map<String, Map<String, String>>
 
