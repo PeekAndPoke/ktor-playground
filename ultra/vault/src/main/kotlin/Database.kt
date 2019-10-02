@@ -42,8 +42,7 @@ class Database(
     }
 
     fun <T : Repository<*>> getRepository(cls: Class<T>): T {
-        @Suppress("UNCHECKED_CAST")
-        return repositories.get(cls.kotlin) as T?
+        return repositories.get(cls.kotlin)
             ?: throw VaultException("No repository of class '$cls' is registered.")
     }
 

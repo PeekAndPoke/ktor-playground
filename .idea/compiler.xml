@@ -27,6 +27,8 @@
       <module name="ktor-playground.ktorfx.flashsession.test" target="1.8" />
       <module name="ktor-playground.ktorfx.formidable.main" target="1.8" />
       <module name="ktor-playground.ktorfx.formidable.test" target="1.8" />
+      <module name="ktor-playground.ktorfx.insights.main" target="1.8" />
+      <module name="ktor-playground.ktorfx.insights.test" target="1.8" />
       <module name="ktor-playground.ktorfx.main" target="1.8" />
       <module name="ktor-playground.ktorfx.prismjs.main" target="1.8" />
       <module name="ktor-playground.ktorfx.prismjs.test" target="1.8" />

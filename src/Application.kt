@@ -5,6 +5,7 @@ import de.peekandpoke.karango.KarangoModule
 import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ktorfx.common.provide
 import de.peekandpoke.ktorfx.flashsession.FlashSession
+import de.peekandpoke.ktorfx.insights.instrumentWithInsights
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import de.peekandpoke.ktorfx.webjars.BetterWebjars
 import de.peekandpoke.ktorfx.webresources.AppMeta
@@ -19,16 +20,12 @@ import de.peekandpoke.module.got.GameOfThronesModule
 import de.peekandpoke.module.semanticui.SemanticUi
 import de.peekandpoke.module.semanticui.SemanticUiModule
 import de.peekandpoke.resources.Translations
-import de.peekandpoke.ultra.depot.DepotModule
 import de.peekandpoke.ultra.depot.FileSystemRepository
-import de.peekandpoke.ultra.insights.Insights
-import de.peekandpoke.ultra.insights.InsightsCollector
-import de.peekandpoke.ultra.insights.InsightsModule
-import de.peekandpoke.ultra.kontainer.Kontainer
+import de.peekandpoke.ultra.depot.Ultra_Depot
 import de.peekandpoke.ultra.kontainer.kontainer
 import de.peekandpoke.ultra.polyglot.I18n
 import de.peekandpoke.ultra.vault.Database
-import de.peekandpoke.ultra.vault.Vault
+import de.peekandpoke.ultra.vault.Ultra_Vault
 import de.peekandpoke.ultra.vault.hooks.StaticUserRecordProvider
 import de.peekandpoke.ultra.vault.hooks.UserRecord
 import io.ktor.application.*
@@ -41,10 +38,6 @@ import io.ktor.http.content.resource
 import io.ktor.http.content.resources
 import io.ktor.http.content.static
 import io.ktor.jackson.jackson
-import io.ktor.request.host
-import io.ktor.request.httpMethod
-import io.ktor.request.port
-import io.ktor.request.uri
 import io.ktor.response.respond
 import io.ktor.routing.get
 import io.ktor.routing.host
@@ -53,7 +46,6 @@ import io.ktor.sessions.*
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.getDigestFunction
 import io.ktor.util.hex
-import io.ktor.util.toMap
 import io.ultra.ktor_tools.KtorFX
 import io.ultra.ktor_tools.logger.logger
 import kotlinx.html.*
@@ -70,98 +62,19 @@ val AppMeta = object : AppMeta() {}
 
 class DummyStorage : FileSystemRepository("dummy", "./tmp/dummy")
 
-class PhaseCollector : InsightsCollector {
-
-    class Data {
-        val phases = mutableMapOf<String, Long>()
-    }
-
-    override val name = "PhaseCollector"
-
-    override val data = Data()
-
-    fun record(phase: String, time: Long) {
-        data.phases[phase] = time
-    }
-}
-
-class RequestCollector : InsightsCollector {
-
-    data class Data(
-        val host: String,
-        val port: Int,
-        val uri: String,
-        val headers: Map<String, List<String>>,
-        val queryParams: Map<String, List<String>>
-    )
-
-    override val name = "Request"
-
-    override var data: Data? = null
-
-    fun record(call: ApplicationCall) {
-        data = Data(
-            call.request.host(),
-            call.request.port(),
-            call.request.uri,
-            call.request.headers.toMap(),
-            call.request.queryParameters.toMap()
-        )
-    }
-}
-
-class ResponseCollector : InsightsCollector {
-
-    data class Data(
-        val status: HttpStatusCode?,
-        val headers: Map<String, List<String>>
-    )
-
-    override val name = "Response"
-
-    override var data: Data? = null
-
-    fun record(call: ApplicationCall) {
-        data = Data(
-            call.response.status(),
-            call.response.headers.allValues().toMap()
-        )
-    }
-}
-
-class KontainerCollector : InsightsCollector {
-
-    override val name = "Kontainer"
-
-    override var data: List<String> = listOf()
-
-    fun record(kontainer: Kontainer) {
-        data = kontainer.dump().split("\n")
-    }
-}
-
-
 val Application.kontainerBlueprint by lazy {
 
     kontainer {
 
         // Database //////////////////////////////////////////////////////////////////////////////////////////////////////////
-        module(Vault)
+        module(Ultra_Vault)
         module(KarangoModule)
         // provide connection to arango database
         instance(arangoDatabase)
 
         // File depot ////////////////////////////////////////////////////////////////////////////////////////////////////////
-        module(DepotModule)
+        module(Ultra_Depot)
         singleton(DummyStorage::class)
-
-        // Insight ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-        module(InsightsModule)
-
-        dynamic0 { RequestCollector() }
-        dynamic0 { ResponseCollector() }
-        dynamic0 { KontainerCollector() }
-        dynamic0 { PhaseCollector() }
 
         // KtorFX ////////////////////////////////////////////////////////////////////////////////////////////////////////////
         module(KtorFX)
@@ -380,20 +293,9 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
+    // TODO: have a switch for live / stage / dev
+    instrumentWithInsights()
 
-    intercept(ApplicationCallPipeline.Setup) {
-
-        val ns = measureNanoTime { proceed() }
-
-        kontainer.get(RequestCollector::class).record(call)
-        kontainer.get(ResponseCollector::class).record(call)
-        kontainer.get(KontainerCollector::class).record(kontainer)
-        kontainer.get(PhaseCollector::class).record("Setup", ns)
-
-        kontainer.get(Insights::class).done()
-
-        logger.debug("${call.request.httpMethod.value} ${call.request.uri} took ${ns / 1_000_000.0} ms")
-    }
 
     intercept(ApplicationCallPipeline.Features) {
 

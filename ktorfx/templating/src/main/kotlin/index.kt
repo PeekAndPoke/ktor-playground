@@ -12,9 +12,14 @@ import io.ktor.util.pipeline.PipelineContext
 val KtorFX_Templating = module {
 
     /**
-     * Overwrite this one in with an application specific implementation of [SimpleTemplate]
+     * Overwrite this one with an application specific implementation of [SimpleTemplate]
      */
     prototype(SimpleTemplate::class, SimpleTemplateImpl::class)
+
+    /**
+     * Override this one with an application specific implementation of [TemplateTools]
+     */
+    prototype(TemplateTools::class, TemplateToolsImpl::class)
 }
 
 inline val ApplicationCall.defaultTemplate: SimpleTemplate get() = kontainer.get(SimpleTemplate::class)

@@ -40,6 +40,7 @@ dependencies {
     // ktorfx
     implementation project(":ktorfx:common")
     implementation project(":ktorfx:flashsession")
+    implementation project(":ktorfx:insights")
     implementation project(":ktorfx:semanticui")
     implementation project(":ktorfx:webresources")
 

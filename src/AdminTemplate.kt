@@ -1,33 +1,28 @@
 package de.peekandpoke
 
-import de.peekandpoke.ktorfx.flashsession.FlashSession
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.SimpleTemplateImpl
-import de.peekandpoke.ktorfx.webresources.WebResources
+import de.peekandpoke.ktorfx.templating.TemplateTools
 import de.peekandpoke.module.cms.CmsAdmin
 import de.peekandpoke.module.cms.views.CmsMenu
 import de.peekandpoke.module.depot.DepotAdmin
 import de.peekandpoke.module.depot.views.DepotMenu
 import de.peekandpoke.module.semanticui.SemanticUi
 import de.peekandpoke.module.semanticui.views.SemanticUiMenu
-import de.peekandpoke.ultra.polyglot.I18n
 import kotlinx.html.script
 import kotlinx.html.unsafe
 
 class AdminTemplate(
 
-    t: I18n,
-    flashSession: FlashSession,
-    webResources: WebResources,
+    tools: TemplateTools,
 
     private val cms: CmsAdmin,
     private val semanticUi: SemanticUi,
     private val depot: DepotAdmin
 
 
-) : SimpleTemplateImpl(t, flashSession, webResources) {
-
+) : SimpleTemplateImpl(tools) {
 
     init {
 

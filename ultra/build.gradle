@@ -35,7 +35,6 @@ dependencies {
 
     // include all sub projects
     compile project(":ultra:depot")
-    compile project(":ultra:insights")
     compile project(":ultra:polyglot")
     compile project(":ultra:vault")
 }

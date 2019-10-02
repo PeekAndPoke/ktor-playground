@@ -19,6 +19,7 @@
             <option value="$PROJECT_DIR$/ktorfx/common" />
             <option value="$PROJECT_DIR$/ktorfx/flashsession" />
             <option value="$PROJECT_DIR$/ktorfx/formidable" />
+            <option value="$PROJECT_DIR$/ktorfx/insights" />
             <option value="$PROJECT_DIR$/ktorfx/prismjs" />
             <option value="$PROJECT_DIR$/ktorfx/semanticui" />
             <option value="$PROJECT_DIR$/ktorfx/templating" />
@@ -26,7 +27,6 @@
             <option value="$PROJECT_DIR$/ktorfx/webresources" />
             <option value="$PROJECT_DIR$/ultra" />
             <option value="$PROJECT_DIR$/ultra/depot" />
-            <option value="$PROJECT_DIR$/ultra/insights" />
             <option value="$PROJECT_DIR$/ultra/polyglot" />
             <option value="$PROJECT_DIR$/ultra/vault" />
           </set>

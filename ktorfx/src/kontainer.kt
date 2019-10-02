@@ -4,6 +4,7 @@ import de.peekandpoke.ktorfx.broker.KtorFX_Broker
 import de.peekandpoke.ktorfx.common.KtorFX_Common
 import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ktorfx.flashsession.KtorFX_FlashSession
+import de.peekandpoke.ktorfx.insights.KtorFX_Insights
 import de.peekandpoke.ktorfx.prismjs.KtorFX_PrismJs
 import de.peekandpoke.ktorfx.semanticui.KtorFX_SemanticUi
 import de.peekandpoke.ktorfx.templating.KtorFX_Templating
@@ -27,6 +28,7 @@ val KtorFX = module {
 
     module(KtorFX_Broker)
     module(KtorFX_FlashSession)
+    module(KtorFX_Insights)
     module(KtorFX_PrismJs)
     module(KtorFX_SemanticUi)
     module(KtorFX_Templating)

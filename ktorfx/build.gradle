@@ -63,6 +63,7 @@ dependencies {
     compile project(":ktorfx:common")
     compile project(":ktorfx:flashsession")
     compile project(":ktorfx:formidable")
+    compile project(":ktorfx:insights")
     compile project(":ktorfx:prismjs")
     compile project(":ktorfx:templating")
     compile project(":ktorfx:semanticui")

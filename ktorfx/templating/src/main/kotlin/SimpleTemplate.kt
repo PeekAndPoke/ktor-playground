@@ -1,6 +1,7 @@
 package de.peekandpoke.ktorfx.templating
 
 import de.peekandpoke.ktorfx.flashsession.FlashSession
+import de.peekandpoke.ktorfx.insights.Insights
 import de.peekandpoke.ktorfx.webresources.WebResources
 import de.peekandpoke.ultra.polyglot.I18n
 import io.ktor.html.Placeholder
@@ -12,9 +13,12 @@ import kotlinx.html.HTML
 
 interface SimpleTemplate : Template<HTML> {
 
+    val tools: TemplateTools
+
     val t: I18n
     val flashSession: FlashSession
     val webResources: WebResources
+    val insights: Insights?
 
     /**
      * The bread crumbs can be set by each template in order to:

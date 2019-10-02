@@ -15,7 +15,7 @@ import de.peekandpoke.ultra.vault.hooks.UserRecordProvider
  *
  * - [UserRecordProvider] which defaults to [AnonymousUserRecordProvider]
  */
-val Vault = module {
+val Ultra_Vault = module {
     // Database
     singleton(Database::class)
     singleton(SharedRepoClassLookup::class)
