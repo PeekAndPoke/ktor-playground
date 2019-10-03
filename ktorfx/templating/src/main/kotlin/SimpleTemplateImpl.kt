@@ -1,7 +1,8 @@
 package de.peekandpoke.ktorfx.templating
 
 import de.peekandpoke.ktorfx.flashsession.FlashSession
-import de.peekandpoke.ktorfx.insights.Insights
+import de.peekandpoke.ktorfx.insights.gui.InsightsBarRenderer
+import de.peekandpoke.ktorfx.insights.gui.insightsGui
 import de.peekandpoke.ktorfx.semanticui.semanticUi
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.webresources.WebResources
@@ -23,7 +24,7 @@ open class SimpleTemplateImpl(
     final override val t: I18n = tools.i18n
     final override val flashSession: FlashSession = tools.flashSession
     final override val webResources: WebResources = tools.webResources
-    final override val insights: Insights? = tools.insights
+    final override val insights: InsightsBarRenderer? = tools.insights
 
     private val flashSessionEntries = flashSession.pull()
 
@@ -36,6 +37,8 @@ open class SimpleTemplateImpl(
     final override val styles = PlaceholderList<HEAD, HEAD>()
     final override val scripts = PlaceholderList<FlowContent, FlowContent>()
 
+    val insightsBar = Placeholder<FlowContent>()
+
     init {
         pageTitle {
             title { +"Default Template" }
@@ -47,6 +50,19 @@ open class SimpleTemplateImpl(
 
         scripts {
             js(webResources.semanticUi)
+        }
+
+        if (insights != null) {
+            styles {
+                css(webResources.insightsGui)
+            }
+            scripts {
+                js(webResources.insightsGui)
+            }
+
+            insightsBar {
+                insights.render(this)
+            }
         }
     }
 
@@ -96,13 +112,7 @@ open class SimpleTemplateImpl(
                 }
             }
 
-            if (insights != null) {
-                div {
-                    style = "position: fixed; bottom: 0; border: 1px solid grey; background-color: red; z-index: 10000; width: 100%;"
-
-                    +insights.filename
-                }
-            }
+            insert(insightsBar)
 
             each(scripts) { insert(it) }
         }

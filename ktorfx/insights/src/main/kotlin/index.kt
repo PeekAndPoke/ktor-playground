@@ -5,6 +5,10 @@ import de.peekandpoke.ktorfx.insights.collectors.KontainerCollector
 import de.peekandpoke.ktorfx.insights.collectors.PhaseCollector
 import de.peekandpoke.ktorfx.insights.collectors.RequestCollector
 import de.peekandpoke.ktorfx.insights.collectors.ResponseCollector
+import de.peekandpoke.ktorfx.insights.gui.InsightsBarRenderer
+import de.peekandpoke.ktorfx.insights.gui.InsightsGui
+import de.peekandpoke.ktorfx.insights.gui.InsightsGuiRoutes
+import de.peekandpoke.ktorfx.insights.gui.InsightsGuiWebResourceGroup
 import de.peekandpoke.ultra.kontainer.module
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCallPipeline
@@ -12,6 +16,7 @@ import io.ktor.application.call
 import io.ktor.application.log
 import io.ktor.request.httpMethod
 import io.ktor.request.uri
+import io.ktor.routing.routing
 import kotlin.system.measureNanoTime
 
 val KtorFX_Insights = module {
@@ -20,14 +25,27 @@ val KtorFX_Insights = module {
     singleton(InsightsMapper::class)
     instance(InsightsRepository::class, InsightsFileRepository())
 
+    // default collectors
     dynamic0 { RequestCollector() }
     dynamic0 { ResponseCollector() }
     dynamic0 { KontainerCollector() }
     dynamic0 { PhaseCollector() }
+
+    // web resources and rendering
+    singleton(InsightsGuiWebResourceGroup::class)
+    dynamic(InsightsBarRenderer::class, InsightsBarRenderer::class)
+
+    // endpoints
+    singleton(InsightsGuiRoutes::class)
+    singleton(InsightsGui::class)
 }
 
 
-fun Application.instrumentWithInsights() {
+fun Application.instrumentWithInsights(gui: InsightsGui) {
+
+    routing {
+        gui.mount(this)
+    }
 
     intercept(ApplicationCallPipeline.Setup) {
 

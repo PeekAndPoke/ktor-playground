@@ -30,13 +30,13 @@ abstract class WebResourceGroup(
     val js: List<WebResource>
 
     init {
-        Builder(cacheBuster).apply(builder).apply {
+        Builder(this::class.java.classLoader, cacheBuster).apply(builder).apply {
             css = getCss()
             js = getJs()
         }
     }
 
-    class Builder(private val cacheBuster: CacheBuster) {
+    class Builder(private val loader: ClassLoader, private val cacheBuster: CacheBuster) {
 
         private val css = mutableListOf<WebResource>()
         private val js = mutableListOf<WebResource>()
@@ -75,6 +75,9 @@ abstract class WebResourceGroup(
             }
         }
 
-        private fun String.toInputStream(): InputStream = this::class.java.getResourceAsStream(this)
+        private fun String.toInputStream(): InputStream {
+
+            return loader.getResourceAsStream(this.trimStart('/'))
+        }
     }
 }

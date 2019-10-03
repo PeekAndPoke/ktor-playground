@@ -5,6 +5,7 @@ import de.peekandpoke.karango.KarangoModule
 import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ktorfx.common.provide
 import de.peekandpoke.ktorfx.flashsession.FlashSession
+import de.peekandpoke.ktorfx.insights.gui.InsightsGui
 import de.peekandpoke.ktorfx.insights.instrumentWithInsights
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import de.peekandpoke.ktorfx.webjars.BetterWebjars
@@ -294,7 +295,9 @@ fun Application.module(testing: Boolean = false) {
     }
 
     // TODO: have a switch for live / stage / dev
-    instrumentWithInsights()
+    instrumentWithInsights(
+        initKontainer.get(InsightsGui::class)
+    )
 
 
     intercept(ApplicationCallPipeline.Features) {

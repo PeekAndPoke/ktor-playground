@@ -7,7 +7,7 @@ import io.ktor.request.port
 import io.ktor.request.uri
 import io.ktor.util.toMap
 
-class RequestCollector : InsightsCollector {
+class RequestCollector(override var data: Data? = null) : InsightsCollector {
 
     data class Data(
         val host: String,
@@ -18,8 +18,6 @@ class RequestCollector : InsightsCollector {
     )
 
     override val name = "Request"
-
-    override var data: Data? = null
 
     fun record(call: ApplicationCall) {
         data = Data(
