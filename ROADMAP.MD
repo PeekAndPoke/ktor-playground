@@ -1,9 +1,5 @@
 # Misc To dos
 
-- ( ) Common key based registry  
-  - ( ) Move class Key from ultra.vault to ultra.common
-  - ( ) Create base impl of Registry in ultra.common   
-
 - ( ) Fix movies and actors example
 - ( ) Impl arangodb's UPDATE functionality as DSL
 
@@ -15,10 +11,10 @@ Idea: Karango repository (arangodb) for Vault
 
 Dependencies: none
 
-- ( ) Remove DbEntityCollection and move all methods to EntityRepository
-- ( ) Impl onSaveHooks in EntityRepository
-- ( ) Impl EntityRepository::save(stored: Stored<T>)
-- ( ) Impl Reference<T> (similar to Stored<T>) and remove @Ref annotation
+- (x) Remove DbEntityCollection and move all methods to EntityRepository
+- (x) Impl onSaveHooks in EntityRepository
+- (x) Impl EntityRepository::save(stored: Stored<T>)
+- (x) Impl Reference<T> (similar to Stored<T>) and remove @Ref annotation
 - ( ) FIX EntityRefSerializer
 
 

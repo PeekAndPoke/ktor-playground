@@ -15,6 +15,7 @@ import io.ktor.application.log
 import io.ktor.request.httpMethod
 import io.ktor.request.uri
 import io.ktor.routing.routing
+import kotlinx.coroutines.launch
 import kotlin.system.measureNanoTime
 
 val KtorFX_Insights = module {
@@ -28,6 +29,7 @@ val KtorFX_Insights = module {
     dynamic(ResponseCollector::class)
     dynamic(KontainerCollector::class)
     dynamic(PipelinePhasesCollector::class)
+    dynamic(RuntimeCollector::class)
     dynamic(VaultCollector::class)
 
     // web resources and rendering
@@ -54,7 +56,9 @@ fun Application.instrumentWithInsights(gui: InsightsGui) {
             kontainer.use(Insights::class) {
                 use(PipelinePhasesCollector::class) { record("Setup", ns) }
 
-                finish(call)
+                launch {
+                    finish(call)
+                }
             }
         }
 

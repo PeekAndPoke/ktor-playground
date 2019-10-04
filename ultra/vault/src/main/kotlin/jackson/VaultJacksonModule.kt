@@ -11,7 +11,7 @@ class VaultJacksonModule : SimpleModule() {
         addDeserializer(Stored::class.java, StoredDeserializer())
 
         // References
-        addSerializer(Ref::class.java, EntityRefSerializer())
-        addDeserializer(Ref::class.java, EntityRefDeserializer())
+        addSerializer(Ref::class.java, RefSerializer())
+        addDeserializer(Ref::class.java, RefDeserializer())
     }
 }
