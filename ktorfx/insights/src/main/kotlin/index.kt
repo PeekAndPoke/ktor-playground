@@ -1,10 +1,8 @@
 package de.peekandpoke.ktorfx.insights
 
+import de.peekandpoke.ktorfx.common.hasKontainer
 import de.peekandpoke.ktorfx.common.kontainer
-import de.peekandpoke.ktorfx.insights.collectors.KontainerCollector
-import de.peekandpoke.ktorfx.insights.collectors.PhaseCollector
-import de.peekandpoke.ktorfx.insights.collectors.RequestCollector
-import de.peekandpoke.ktorfx.insights.collectors.ResponseCollector
+import de.peekandpoke.ktorfx.insights.collectors.*
 import de.peekandpoke.ktorfx.insights.gui.InsightsBarRenderer
 import de.peekandpoke.ktorfx.insights.gui.InsightsGui
 import de.peekandpoke.ktorfx.insights.gui.InsightsGuiRoutes
@@ -26,14 +24,15 @@ val KtorFX_Insights = module {
     instance(InsightsRepository::class, InsightsFileRepository())
 
     // default collectors
-    dynamic0 { RequestCollector() }
-    dynamic0 { ResponseCollector() }
-    dynamic0 { KontainerCollector() }
-    dynamic0 { PhaseCollector() }
+    dynamic(RequestCollector::class)
+    dynamic(ResponseCollector::class)
+    dynamic(KontainerCollector::class)
+    dynamic(PipelinePhasesCollector::class)
+    dynamic(VaultCollector::class)
 
     // web resources and rendering
     singleton(InsightsGuiWebResourceGroup::class)
-    dynamic(InsightsBarRenderer::class, InsightsBarRenderer::class)
+    dynamic(InsightsBarRenderer::class)
 
     // endpoints
     singleton(InsightsGuiRoutes::class)
@@ -51,15 +50,12 @@ fun Application.instrumentWithInsights(gui: InsightsGui) {
 
         val ns = measureNanoTime { proceed() }
 
-        kontainer.use(Insights::class) {
+        if (hasKontainer) {
+            kontainer.use(Insights::class) {
+                use(PipelinePhasesCollector::class) { record("Setup", ns) }
 
-            use(PhaseCollector::class) { record("Setup", ns) }
-
-            use(RequestCollector::class) { record(call) }
-            use(ResponseCollector::class) { record(call) }
-            use(KontainerCollector::class) { record(kontainer) }
-
-            done()
+                finish(call)
+            }
         }
 
         log.debug("${call.request.httpMethod.value} ${call.request.uri} took ${ns / 1_000_000.0} ms")
@@ -69,8 +65,10 @@ fun Application.instrumentWithInsights(gui: InsightsGui) {
 
         val ns = measureNanoTime { proceed() }
 
-        kontainer.use(Insights::class) {
-            use(PhaseCollector::class) { record("Monitoring", ns) }
+        if (hasKontainer) {
+            kontainer.use(Insights::class) {
+                use(PipelinePhasesCollector::class) { record("Monitoring", ns) }
+            }
         }
     }
 
@@ -78,8 +76,10 @@ fun Application.instrumentWithInsights(gui: InsightsGui) {
 
         val ns = measureNanoTime { proceed() }
 
-        kontainer.use(Insights::class) {
-            use(PhaseCollector::class) { record("Features", ns) }
+        if (hasKontainer) {
+            kontainer.use(Insights::class) {
+                use(PipelinePhasesCollector::class) { record("Features", ns) }
+            }
         }
     }
 
@@ -87,8 +87,10 @@ fun Application.instrumentWithInsights(gui: InsightsGui) {
 
         val ns = measureNanoTime { proceed() }
 
-        kontainer.use(Insights::class) {
-            use(PhaseCollector::class) { record("Call", ns) }
+        if (hasKontainer) {
+            kontainer.use(Insights::class) {
+                use(PipelinePhasesCollector::class) { record("Call", ns) }
+            }
         }
     }
 
@@ -96,8 +98,10 @@ fun Application.instrumentWithInsights(gui: InsightsGui) {
 
         val ns = measureNanoTime { proceed() }
 
-        kontainer.use(Insights::class) {
-            use(PhaseCollector::class) { record("Fallback", ns) }
+        if (hasKontainer) {
+            kontainer.use(Insights::class) {
+                use(PipelinePhasesCollector::class) { record("Fallback", ns) }
+            }
         }
     }
 }

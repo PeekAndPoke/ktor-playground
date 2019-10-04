@@ -28,6 +28,16 @@ val KontainerKey = AttributeKey<Kontainer>("kontainer")
 fun Attributes.provide(value: Kontainer) = put(KontainerKey, value)
 
 /**
+ * Checks if the kontainer is in the attributes
+ */
+inline val ApplicationCall.hasKontainer: Boolean get() = attributes.contains(KontainerKey)
+
+/**
+ * Checks if the kontainer is in the attributes
+ */
+inline val PipelineContext<Unit, ApplicationCall>.hasKontainer: Boolean get() = call.hasKontainer
+
+/**
  * Retrieves the [Kontainer] from the [Attributes] of an [ApplicationCall]
  */
 inline val ApplicationCall.kontainer: Kontainer get() = attributes[KontainerKey]

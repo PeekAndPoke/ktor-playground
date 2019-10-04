@@ -23,13 +23,15 @@ import de.peekandpoke.karango.jackson.KarangoJacksonModule
 import de.peekandpoke.ultra.vault.*
 import de.peekandpoke.ultra.vault.hooks.OnSaveHook
 import de.peekandpoke.ultra.vault.jackson.VaultJacksonModule
+import de.peekandpoke.ultra.vault.profiling.QueryProfiler
 import kotlin.system.measureTimeMillis
 
 class KarangoDriver(
     private val database: Database,
     private val arangoDb: ArangoDatabase,
     private val onSaveHooks: List<OnSaveHook> = listOf(),
-    private val entityCache: EntityCache = NullEntityCache()
+    private val entityCache: EntityCache = NullEntityCache(),
+    private val profiler: QueryProfiler
 ) {
 
     /**
@@ -83,24 +85,30 @@ class KarangoDriver(
      */
     fun <T> query(query: TypedQuery<T>): Cursor<T> {
 
-        val options = AqlQueryOptions().count(true)
-        val params = serializer.convertValue<Map<String, Any>>(query.vars)
+        return profiler.add(
+            "Arango::${arangoDb.arango().db().name()}",
+            query.aql
+        ) {
+            val options = AqlQueryOptions().count(true)
+            val params = serializer.convertValue<Map<String, Any>>(query.vars)
 
-        lateinit var result: ArangoCursor<*>
+            lateinit var result: ArangoCursor<*>
 
-        println(query)
+            println(query)
 //        println(query.ret.innerType())
-        println(params)
+            println(params)
 
-        val time = measureTimeMillis {
-            try {
-                result = arangoDb.query(query.aql, params, options, Object::class.java)
-            } catch (e: ArangoDBException) {
-                throw KarangoQueryException(query, "Error while querying '${e.message}':\n\n${query.aql}\nwith params\n\n$params", e)
+            val time = measureTimeMillis {
+                try {
+                    result = arangoDb.query(query.aql, params, options, Object::class.java)
+                } catch (e: ArangoDBException) {
+                    throw KarangoQueryException(query, "Error while querying '${e.message}':\n\n${query.aql}\nwith params\n\n$params", e)
+                }
             }
-        }
 
-        return CursorImpl(result, query, time, serializer)
+            // return the cursor
+            CursorImpl(result, query, time, serializer)
+        }
     }
 
     fun <X> applyOnSaveHooks(repo: Repository<X>, storable: Storable<X>): Storable<X> {

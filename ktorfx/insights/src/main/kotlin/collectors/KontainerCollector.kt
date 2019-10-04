@@ -1,13 +1,15 @@
 package de.peekandpoke.ktorfx.insights.collectors
 
 import de.peekandpoke.ktorfx.insights.InsightsCollector
+import de.peekandpoke.ktorfx.insights.InsightsCollectorData
 import de.peekandpoke.ultra.kontainer.Kontainer
+import io.ktor.application.ApplicationCall
 
-class KontainerCollector(override var data: List<String> = listOf()) : InsightsCollector {
+class KontainerCollector(private val kontainer: Kontainer) : InsightsCollector {
+
+    data class Data(val dump: String) : InsightsCollectorData
 
     override val name = "Kontainer"
 
-    fun record(kontainer: Kontainer) {
-        data = kontainer.dump().split("\n")
-    }
+    override fun finish(call: ApplicationCall) = Data(kontainer.dump())
 }

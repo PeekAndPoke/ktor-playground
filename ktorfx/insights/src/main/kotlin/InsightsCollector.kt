@@ -1,10 +1,10 @@
 package de.peekandpoke.ktorfx.insights
 
-import de.peekandpoke.ktorfx.insights.gui.InsightsBarTemplate
+import io.ktor.application.ApplicationCall
 
 interface InsightsCollector {
-    val name: String
-    val data: Any?
 
-    fun renderBar(template: InsightsBarTemplate) {}
+    val name: String
+
+    fun finish(call: ApplicationCall): InsightsCollectorData
 }

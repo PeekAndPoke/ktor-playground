@@ -1,10 +1,34 @@
 package de.peekandpoke.ktorfx.insights
 
+import com.fasterxml.jackson.module.kotlin.convertValue
 import de.peekandpoke.ultra.common.Lookup
+import io.ktor.application.ApplicationCall
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName
+
+class Chronos {
+
+    var startNs: Long? = null
+    var endNs: Long? = null
+
+    fun start() {
+        startNs = System.nanoTime()
+    }
+
+    fun end() {
+        endNs = System.nanoTime()
+    }
+
+    fun totalDurationNs(): Long? {
+        if (startNs == null || endNs == null) {
+            return null
+        }
+
+        return endNs!! - startNs!!
+    }
+}
 
 class Insights(
     private val collectors: Lookup<InsightsCollector>,
@@ -15,6 +39,8 @@ class Insights(
     private val dateTime = LocalDateTime.now()
     private val ts = System.nanoTime()
 
+    private val chronos: Chronos = Chronos().apply { start() }
+
     val bucket = "records-${date}"
     val filename = "$dateTime.$ts.json"
 
@@ -22,19 +48,19 @@ class Insights(
         return collectors.get(cls)?.block()
     }
 
-    fun done() {
+    fun finish(call: ApplicationCall) {
+
+        chronos.end()
+
+        // finish all collectors
+        val entries = collectors.all().map { it.finish(call) }
 
         val data = InsightsData(
             ts,
             dateTime.toString(),
-            collectors.all().map {
-
-                val dataCls = when {
-                    it.data == null -> null
-                    else -> it.data!!::class.jvmName
-                }
-
-                CollectorData(it::class.jvmName, dataCls, it.name, it.data)
+            chronos,
+            entries.map {
+                CollectorData(it::class.jvmName, mapper.convertValue(it))
             }
         )
 

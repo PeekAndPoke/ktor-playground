@@ -5,6 +5,8 @@ import de.peekandpoke.ultra.vault.hooks.AnonymousUserRecordProvider
 import de.peekandpoke.ultra.vault.hooks.TimestampedOnSaveHook
 import de.peekandpoke.ultra.vault.hooks.UserRecordOnSaveHook
 import de.peekandpoke.ultra.vault.hooks.UserRecordProvider
+import de.peekandpoke.ultra.vault.profiling.DefaultQueryProfiler
+import de.peekandpoke.ultra.vault.profiling.QueryProfiler
 
 /**
  * Vault kontainer module.
@@ -19,7 +21,12 @@ val Ultra_Vault = module {
     // Database
     singleton(Database::class)
     singleton(SharedRepoClassLookup::class)
+
+    // Caching
     dynamic(EntityCache::class, DefaultEntityCache::class)
+
+    // Profiling
+    dynamic(QueryProfiler::class, DefaultQueryProfiler::class)
 
     // OnSaveHook for Timestamps
     singleton(TimestampedOnSaveHook::class)

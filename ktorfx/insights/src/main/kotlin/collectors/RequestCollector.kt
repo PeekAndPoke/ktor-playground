@@ -1,13 +1,14 @@
 package de.peekandpoke.ktorfx.insights.collectors
 
 import de.peekandpoke.ktorfx.insights.InsightsCollector
+import de.peekandpoke.ktorfx.insights.InsightsCollectorData
 import io.ktor.application.ApplicationCall
 import io.ktor.request.host
 import io.ktor.request.port
 import io.ktor.request.uri
 import io.ktor.util.toMap
 
-class RequestCollector(override var data: Data? = null) : InsightsCollector {
+class RequestCollector : InsightsCollector {
 
     data class Data(
         val host: String,
@@ -15,17 +16,15 @@ class RequestCollector(override var data: Data? = null) : InsightsCollector {
         val uri: String,
         val headers: Map<String, List<String>>,
         val queryParams: Map<String, List<String>>
-    )
+    ) : InsightsCollectorData
 
     override val name = "Request"
 
-    fun record(call: ApplicationCall) {
-        data = Data(
-            call.request.host(),
-            call.request.port(),
-            call.request.uri,
-            call.request.headers.toMap(),
-            call.request.queryParameters.toMap()
-        )
-    }
+    override fun finish(call: ApplicationCall) = Data(
+        call.request.host(),
+        call.request.port(),
+        call.request.uri,
+        call.request.headers.toMap(),
+        call.request.queryParameters.toMap()
+    )
 }

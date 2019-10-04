@@ -3,7 +3,7 @@ package de.peekandpoke.ktorfx.insights.gui
 import com.fasterxml.jackson.module.kotlin.readValue
 import de.peekandpoke.ktorfx.broker.get
 import de.peekandpoke.ktorfx.common.kontainer
-import de.peekandpoke.ktorfx.insights.InsightsCollector
+import de.peekandpoke.ktorfx.insights.InsightsCollectorData
 import de.peekandpoke.ktorfx.insights.InsightsData
 import de.peekandpoke.ktorfx.insights.InsightsMapper
 import de.peekandpoke.ktorfx.insights.InsightsRepository
@@ -19,7 +19,6 @@ import io.ktor.routing.Route
 import kotlinx.html.stream.appendHTML
 import java.io.StringWriter
 import kotlin.reflect.full.allSuperclasses
-import kotlin.reflect.full.primaryConstructor
 
 class InsightsGui(private val routes: InsightsGuiRoutes) {
 
@@ -27,13 +26,12 @@ class InsightsGui(private val routes: InsightsGuiRoutes) {
 
         get(routes.bar) { data ->
 
+
             val guiData = loadData(application, kontainer, data.bucket, data.filename)
 
             call.respondBytes(ContentType.Text.Html, HttpStatusCode.OK) {
 
-                val content = InsightsBarTemplate(StringWriter().appendHTML())
-                    .apply(guiData)
-                    .render()
+                val content = InsightsBarTemplate(guiData, StringWriter().appendHTML()).render()
 
                 content.toString().toByteArray()
             }
@@ -71,17 +69,13 @@ class InsightsGui(private val routes: InsightsGuiRoutes) {
         val collectors = insightsData.collectors
             .map {
                 try {
-                    val collectorCls = Class.forName(it.collectorCls).kotlin
+                    val cls = Class.forName(it.cls).kotlin
 
-                    if (!collectorCls.allSuperclasses.contains(InsightsCollector::class)) {
+                    if (!cls.allSuperclasses.contains(InsightsCollectorData::class)) {
                         return@map null
                     }
 
-                    val dataCls = Class.forName(it.dataCls)
-
-                    val dataMapped = mapper.convertValue(it.data, dataCls)
-
-                    return@map collectorCls.primaryConstructor!!.call(dataMapped) as InsightsCollector
+                    return@map mapper.convertValue(it.data, cls.java) as InsightsCollectorData
 
                 } catch (e: Throwable) {
                     application.log.warn(e.message)
@@ -90,7 +84,6 @@ class InsightsGui(private val routes: InsightsGuiRoutes) {
             }
             .filterNotNull()
 
-
-        return InsightsGuiData(insightsData.ts, insightsData.date, collectors)
+        return InsightsGuiData(insightsData.ts, insightsData.date, insightsData.chronos, collectors)
     }
 }
