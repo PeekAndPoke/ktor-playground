@@ -3,6 +3,7 @@ package de.peekandpoke.ktorfx.insights
 import com.fasterxml.jackson.module.kotlin.convertValue
 import de.peekandpoke.ultra.common.Lookup
 import io.ktor.application.ApplicationCall
+import io.ktor.request.uri
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.reflect.KClass
@@ -41,6 +42,12 @@ class Insights(
 
     private val chronos: Chronos = Chronos().apply { start() }
 
+    // TODO: make injectable
+    private val filter = listOf<(ApplicationCall) -> Boolean>(
+        { it.request.uri.contains("favicon.ico") },
+        { it.request.uri.startsWith("/_/") }
+    )
+
     val bucket = "records-${date}"
     val filename = "$dateTime.$ts.json"
 
@@ -51,6 +58,11 @@ class Insights(
     fun finish(call: ApplicationCall) {
 
         chronos.end()
+
+        // do not record if any of the filters match
+        if (filter.any { it(call) }) {
+            return
+        }
 
         // finish all collectors
         val entries = collectors.all().map { it.finish(call) }
