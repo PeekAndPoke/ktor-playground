@@ -20,6 +20,11 @@ val KtorFX_Templating = module {
      * Override this one with an application specific implementation of [TemplateTools]
      */
     prototype(TemplateTools::class, TemplateToolsImpl::class)
+
+    /**
+     * Insights collector for rendering
+     */
+    dynamic(TemplateInsightsCollector::class)
 }
 
 inline val ApplicationCall.defaultTemplate: SimpleTemplate get() = kontainer.get(SimpleTemplate::class)

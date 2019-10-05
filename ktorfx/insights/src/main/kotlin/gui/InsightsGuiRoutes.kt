@@ -5,7 +5,9 @@ import de.peekandpoke.ktorfx.broker.Routes
 
 class InsightsGuiRoutes(converter: OutgoingConverter) : Routes(converter) {
 
-    data class GetBar(val bucket: String, val filename: String)
+    data class BucketAndFile(val bucket: String, val filename: String)
 
-    val bar = route(GetBar::class, "/_/insights/bar/{bucket}/{filename}")
+    val bar = route(BucketAndFile::class, "/_/insights/bar/{bucket}/{filename}")
+
+    val details = route(BucketAndFile::class, "/_/insights/details/{bucket}/{filename}")
 }

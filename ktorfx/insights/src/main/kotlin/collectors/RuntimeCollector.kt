@@ -6,6 +6,7 @@ import de.peekandpoke.ktorfx.insights.gui.InsightsBarTemplate
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import io.ktor.application.ApplicationCall
+import kotlinx.html.title
 
 class RuntimeCollector : InsightsCollector {
 
@@ -21,6 +22,8 @@ class RuntimeCollector : InsightsCollector {
             left {
 
                 ui.item {
+                    title = "Number of available processors"
+
                     icon.microchip()
 
                     +"$cpus CPUs"
@@ -28,10 +31,11 @@ class RuntimeCollector : InsightsCollector {
 
                 ui.item {
 
+                    title = "Memory usage: free / reserved / max"
+
                     val maxGb = "%.2f".format(maxMem / 1_000_000_000.0)
                     val reservedGb = "%.2f".format(reservedMem / 1_000_000_000.0)
                     val freeGb = "%.2f".format(freeMem / 1_000_000_000.0)
-
 
                     +"$freeGb / $reservedGb / $maxGb GB"
                 }

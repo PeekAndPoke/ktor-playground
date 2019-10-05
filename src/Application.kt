@@ -2,7 +2,6 @@ package de.peekandpoke
 
 import com.fasterxml.jackson.databind.SerializationFeature
 import de.peekandpoke.karango.KarangoModule
-import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ktorfx.common.provide
 import de.peekandpoke.ktorfx.flashsession.FlashSession
 import de.peekandpoke.ktorfx.insights.gui.InsightsGui
@@ -54,7 +53,6 @@ import java.net.InetAddress
 import java.time.Duration
 import java.util.*
 import kotlin.collections.set
-import kotlin.system.measureNanoTime
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -302,35 +300,31 @@ fun Application.module(testing: Boolean = false) {
 
     intercept(ApplicationCallPipeline.Features) {
 
+        with(call.attributes) {
+            // inject a fresh Kontainer into each call
+            provide(
+                requestContainer(
+                    UserRecord(
+                        call.sessions.get<UserSession>()?.userId ?: "anonymous",
+                        call.request.origin.remoteHost
+                    ),
+                    call.sessions
+                )
+            )
+        }
+    }
+
+    intercept(ApplicationCallPipeline.Features) {
+
         val requestId = UUID.randomUUID()
 
         logger.attach("req.Id", requestId.toString()) {
             proceed()
         }
 
-        logger.debug(call.kontainer.dump())
+//        logger.debug(call.kontainer.dump())
     }
 
-    intercept(ApplicationCallPipeline.Features) {
-
-        val ns = measureNanoTime {
-
-            with(call.attributes) {
-                // inject a fresh Kontainer into each call
-                provide(
-                    requestContainer(
-                        UserRecord(
-                            call.sessions.get<UserSession>()?.userId ?: "anonymous",
-                            call.request.origin.remoteHost
-                        ),
-                        call.sessions
-                    )
-                )
-            }
-        }
-
-        logger.debug("Service injection into call attributes took ${ns / 1_000_000.0} ms")
-    }
 
     routing {
 

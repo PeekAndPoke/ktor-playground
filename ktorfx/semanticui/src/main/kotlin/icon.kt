@@ -14,6 +14,15 @@ class SemanticIcon(private val parent: FlowContent) {
 
     private fun render(classes: String): Unit = parent.i(classes = "${cssClasses.joinToString(" ")} $classes")
 
+    // conditional classes
+
+    @SemanticUiConditionalMarker fun given(condition: Boolean, action: SemanticIcon.() -> SemanticIcon) = when (condition) {
+        false -> this
+        else -> this.action()
+    }
+
+    @SemanticUiConditionalMarker val then get() = this
+
     // coloring ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @SemanticUiCssMarker val red get() = this + "red"

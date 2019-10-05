@@ -6,11 +6,14 @@ import io.ktor.html.PlaceholderList
 import io.ktor.html.each
 import io.ktor.html.insert
 import io.ktor.http.isSuccess
-import kotlinx.html.FlowContent
-import kotlinx.html.TagConsumer
-import kotlinx.html.div
+import kotlinx.html.*
 
-class InsightsBarTemplate(private val guiData: InsightsGuiData, private val consumer: TagConsumer<Appendable>) {
+class InsightsBarTemplate(
+    private val data: InsightsGuiRoutes.BucketAndFile,
+    private val routes: InsightsGuiRoutes,
+    private val guiData: InsightsGuiData,
+    private val consumer: TagConsumer<Appendable>
+) {
 
     val status = PlaceholderList<FlowContent, FlowContent>()
 
@@ -25,28 +28,41 @@ class InsightsBarTemplate(private val guiData: InsightsGuiData, private val cons
             ui.item {
                 val statusCode = guiData.statusCode
 
-                when {
-                    statusCode == null -> ui.grey.label { +"???" }
+                a(href = routes.details(data), target = "_blank") {
+                    when {
+                        statusCode == null -> ui.grey.label { +"???" }
 
-                    statusCode.isSuccess() -> ui.green.label { +(statusCode.value).toString() }
+                        statusCode.isSuccess() -> ui.green.label { +(statusCode.value).toString() }
 
-                    else -> ui.red.label { +(statusCode.value).toString() }
+                        else -> ui.red.label { +(statusCode.value).toString() }
+                    }
                 }
             }
         }
 
         left {
+
             ui.item {
-                icon.clock()
+                title = "Response time in ms"
 
                 val durationNs = guiData.chronos.totalDurationNs()
 
-                val duration = when {
-                    durationNs != null -> "%.2f".format(durationNs / 1_000_000.0)
-                    else -> "???"
-                }
+                if (durationNs == null) {
+                    icon.grey.clock()
+                    +"???"
+                } else {
 
-                +("$duration ms")
+                    val durationMillis: Double = durationNs / 1_000_000.0
+
+                    when {
+                        durationMillis > 300 -> icon.red.clock()
+                        durationMillis > 150 -> icon.yellow.clock()
+                        durationMillis > 75 -> icon.olive.clock()
+                        else -> icon.green.clock()
+                    }
+
+                    +"%.2f ms".format(durationMillis)
+                }
             }
         }
 

@@ -10,3 +10,12 @@
 .insights-bar > .ui.segment {
     padding: 0;
 }
+
+.insights-bar .ui.horizontal.list > .item > .icon {
+    padding-right: 18px;
+    font-size: 1em;
+}
+
+.insights-bar .ui.horizontal.list > .item > .icon.tv {
+    padding-right: 22px;
+}

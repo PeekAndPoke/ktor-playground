@@ -3,15 +3,14 @@ package de.peekandpoke.ktorfx.insights.gui
 import com.fasterxml.jackson.module.kotlin.readValue
 import de.peekandpoke.ktorfx.broker.get
 import de.peekandpoke.ktorfx.common.kontainer
-import de.peekandpoke.ktorfx.insights.InsightsCollectorData
-import de.peekandpoke.ktorfx.insights.InsightsData
-import de.peekandpoke.ktorfx.insights.InsightsMapper
-import de.peekandpoke.ktorfx.insights.InsightsRepository
+import de.peekandpoke.ktorfx.insights.*
+import de.peekandpoke.ktorfx.webresources.WebResources
 import de.peekandpoke.ultra.kontainer.Kontainer
 import io.ktor.application.Application
 import io.ktor.application.application
 import io.ktor.application.call
 import io.ktor.application.log
+import io.ktor.html.respondHtmlTemplate
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.response.respondBytes
@@ -24,38 +23,31 @@ class InsightsGui(private val routes: InsightsGuiRoutes) {
 
     fun mount(route: Route) = with(route) {
 
-        get(routes.bar) { data ->
+        get(routes.bar) { bucketAndFile ->
 
-
-            val guiData = loadData(application, kontainer, data.bucket, data.filename)
+            val guiData = loadData(application, kontainer, bucketAndFile.bucket, bucketAndFile.filename)
 
             call.respondBytes(ContentType.Text.Html, HttpStatusCode.OK) {
 
-                val content = InsightsBarTemplate(guiData, StringWriter().appendHTML()).render()
+                val content = InsightsBarTemplate(bucketAndFile, routes, guiData, StringWriter().appendHTML()).render()
 
                 content.toString().toByteArray()
             }
+        }
 
+        get(routes.details) { bucketAndFile ->
 
-//            call.respondHtml {
-//                body {
-//                    div(classes = "insights-bar") {
-//
-//                        style = "position: fixed; bottom: 0; border: 1px solid grey; background-color: red; z-index: 10000; width: 100%;"
-//
-//                        div {
-//                            +data.id
-//                        }
-//
-//                        div {
-//                            +"200 OK"
-//                        }
-//                    }
-//                }
-//            }
+            val guiData = loadData(application, kontainer, bucketAndFile.bucket, bucketAndFile.filename)
+
+            val template = InsightsDetailsTemplate(kontainer.get(WebResources::class), guiData)
+
+            call.respondHtmlTemplate(template, HttpStatusCode.OK) {}
         }
     }
 
+    /**
+     *  TODO: move to [Insights]
+     */
     private fun loadData(application: Application, kontainer: Kontainer, bucket: String, filename: String): InsightsGuiData {
 
         val storage = kontainer.get(InsightsRepository::class)

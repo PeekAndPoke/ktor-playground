@@ -7,6 +7,7 @@ import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ultra.vault.profiling.QueryProfiler
 import io.ktor.application.ApplicationCall
+import kotlinx.html.title
 
 class VaultCollector(private val profiler: QueryProfiler) : InsightsCollector {
 
@@ -21,7 +22,10 @@ class VaultCollector(private val profiler: QueryProfiler) : InsightsCollector {
             with(template) {
 
                 left {
+
                     ui.item {
+                        title = "Database queries"
+
                         icon.database()
 
                         val time = "%.2f".format(totalTimeNs / 1_000_000.0)

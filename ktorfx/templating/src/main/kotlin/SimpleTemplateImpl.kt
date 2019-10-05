@@ -14,6 +14,7 @@ import io.ktor.html.PlaceholderList
 import io.ktor.html.each
 import io.ktor.html.insert
 import kotlinx.html.*
+import kotlin.system.measureNanoTime
 
 open class SimpleTemplateImpl(
 
@@ -24,7 +25,7 @@ open class SimpleTemplateImpl(
     final override val t: I18n = tools.i18n
     final override val flashSession: FlashSession = tools.flashSession
     final override val webResources: WebResources = tools.webResources
-    final override val insights: InsightsBarRenderer? = tools.insights
+    final override val insights: InsightsBarRenderer? = tools.insightsBar
 
     private val flashSessionEntries = flashSession.pull()
 
@@ -68,53 +69,58 @@ open class SimpleTemplateImpl(
 
     override fun HTML.apply() {
 
-        head {
+        val nanos = measureNanoTime {
 
-            meta { charset = "utf-8" }
+            head {
 
-            insert(pageTitle)
+                meta { charset = "utf-8" }
 
-            each(styles) { insert(it) }
+                insert(pageTitle)
 
-            style("text/css") {
-                unsafe {
-                    +"""
+                each(styles) { insert(it) }
+
+                style("text/css") {
+                    unsafe {
+                        +"""
                     
                         .pusher.padded.right {
                             padding-right: 260px;
                         }
 
                     """.trimIndent()
+                    }
                 }
             }
-        }
 
-        body {
+            body {
 
-            ui.sidebar.vertical.left.inverted.violet.menu.visible.fixed {
-                insert(mainMenu)
-            }
+                ui.sidebar.vertical.left.inverted.violet.menu.visible.fixed {
+                    insert(mainMenu)
+                }
 
-            ui.pusher.padded.right {
+                ui.pusher.padded.right {
 
-                flashSessionEntries.takeIf { it.isNotEmpty() }?.let { entries ->
-                    ui.padded.basic.segment {
-                        entries.forEach { entry ->
-                            ui.message.with(entry.type) {
-                                +entry.message
+                    flashSessionEntries.takeIf { it.isNotEmpty() }?.let { entries ->
+                        ui.padded.basic.segment {
+                            entries.forEach { entry ->
+                                ui.message.with(entry.type) {
+                                    +entry.message
+                                }
                             }
                         }
                     }
+
+                    ui.padded.basic.segment {
+                        insert(content)
+                    }
                 }
 
-                ui.padded.basic.segment {
-                    insert(content)
-                }
+                insert(insightsBar)
+
+                each(scripts) { insert(it) }
             }
-
-            insert(insightsBar)
-
-            each(scripts) { insert(it) }
         }
+
+        tools.insightsCollector?.record(nanos)
     }
 }

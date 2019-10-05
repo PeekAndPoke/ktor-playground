@@ -44,9 +44,7 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
     // conditional classes
 
     @SemanticUiConditionalMarker fun given(condition: Boolean, action: SemanticUi.() -> SemanticUi) = when (condition) {
-
         false -> this
-
         else -> this.action()
     }
 
@@ -81,6 +79,7 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
     @SemanticUiCssMarker val title get() = this + "title"
     @SemanticUiCssMarker val transition get() = this + "transition"
     @SemanticUiCssMarker val relaxed get() = this + "relaxed"
+    @SemanticUiCssMarker val attached get() = this + "attached"
 
     // display sizes
 
