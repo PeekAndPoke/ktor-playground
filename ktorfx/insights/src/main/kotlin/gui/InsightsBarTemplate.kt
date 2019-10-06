@@ -73,13 +73,12 @@ class InsightsBarTemplate(
 
     fun render() = consumer.div(classes = "insights-bar") {
 
-        ui.inverted.segment {
+        ui.attached.inverted.segment {
+
             ui.inverted.horizontal.divided.list {
 
                 each(status) { insert(it) }
-
                 each(left) { insert(it) }
-
                 each(right) { insert(it) }
             }
         }

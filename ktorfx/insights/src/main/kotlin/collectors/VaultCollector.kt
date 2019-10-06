@@ -3,6 +3,7 @@ package de.peekandpoke.ktorfx.insights.collectors
 import de.peekandpoke.ktorfx.insights.InsightsCollector
 import de.peekandpoke.ktorfx.insights.InsightsCollectorData
 import de.peekandpoke.ktorfx.insights.gui.InsightsBarTemplate
+import de.peekandpoke.ktorfx.insights.gui.InsightsGuiTemplate
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ultra.vault.profiling.QueryProfiler
@@ -17,28 +18,38 @@ class VaultCollector(private val profiler: QueryProfiler) : InsightsCollector {
             entries.map { it.timeNs }.sum()
         }
 
-        override fun renderBar(template: InsightsBarTemplate) {
+        override fun renderBar(template: InsightsBarTemplate) = with(template) {
 
-            with(template) {
+            left {
 
-                left {
+                ui.item {
+                    title = "Database queries"
 
-                    ui.item {
-                        title = "Database queries"
+                    icon.database()
 
-                        icon.database()
+                    val time = "%.2f".format(totalTimeNs / 1_000_000.0)
 
-                        val time = "%.2f".format(totalTimeNs / 1_000_000.0)
-
-                        +"${entries.size} in $time ms"
-                    }
+                    +"${entries.size} in $time ms"
                 }
             }
         }
+
+        override fun renderDetails(template: InsightsGuiTemplate) = with(template) {
+
+            menu {
+                icon.database()
+                +"Database"
+            }
+
+            content {
+                ui.header H3 {
+                    +"Database"
+                }
+
+                json(this@Data)
+            }
+        }
     }
-
-    override val name = "Vault"
-
 
     override fun finish(call: ApplicationCall) = Data(profiler.entries)
 }

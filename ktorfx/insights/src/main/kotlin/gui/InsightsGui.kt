@@ -39,7 +39,12 @@ class InsightsGui(private val routes: InsightsGuiRoutes) {
 
             val guiData = loadData(application, kontainer, bucketAndFile.bucket, bucketAndFile.filename)
 
-            val template = InsightsDetailsTemplate(kontainer.get(WebResources::class), guiData)
+            // TODO: avoid getting the service manually
+            val template = InsightsGuiTemplate(
+                kontainer.get(WebResources::class),
+                kontainer.get(InsightsMapper::class),
+                guiData
+            )
 
             call.respondHtmlTemplate(template, HttpStatusCode.OK) {}
         }

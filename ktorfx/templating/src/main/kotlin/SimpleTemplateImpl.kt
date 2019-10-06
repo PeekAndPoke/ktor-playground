@@ -2,7 +2,7 @@ package de.peekandpoke.ktorfx.templating
 
 import de.peekandpoke.ktorfx.flashsession.FlashSession
 import de.peekandpoke.ktorfx.insights.gui.InsightsBarRenderer
-import de.peekandpoke.ktorfx.insights.gui.insightsGui
+import de.peekandpoke.ktorfx.insights.gui.insightsBar
 import de.peekandpoke.ktorfx.semanticui.semanticUi
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.webresources.WebResources
@@ -55,10 +55,10 @@ open class SimpleTemplateImpl(
 
         if (insights != null) {
             styles {
-                css(webResources.insightsGui)
+                css(webResources.insightsBar)
             }
             scripts {
-                js(webResources.insightsGui)
+                js(webResources.insightsBar)
             }
 
             insightsBar {

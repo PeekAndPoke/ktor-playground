@@ -46,6 +46,7 @@ dependencies {
     // ktorfx
     implementation project(":ktorfx:broker")
     implementation project(":ktorfx:common")
+    implementation project(":ktorfx:prismjs")
     implementation project(":ktorfx:semanticui")
     implementation project(":ktorfx:webresources")
 

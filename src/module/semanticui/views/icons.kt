@@ -29,20 +29,21 @@ internal fun SimpleTemplate.icons() {
 
     content {
 
-        style(
-            "text/css",
-            """
-                h3 {
-                    margin-top: 40px;
-                }
-                
-                i.icon {
-                    font-size: 2em;
-                    margin: 0em auto 0.25em;
-                    display: block;
-                }
-            """.trimIndent()
-        )
+        style("text/css") {
+            unsafe {
+                +"""
+                    h3 {
+                        margin-top: 40px;
+                    }
+                    
+                    i.icon {
+                        font-size: 2em;
+                        margin: 0em auto 0.25em;
+                        display: block;
+                    }
+                """.trimIndent()
+            }
+        }
 
         ui.vertical.basic.segment {
             h1 { +"Icon" }

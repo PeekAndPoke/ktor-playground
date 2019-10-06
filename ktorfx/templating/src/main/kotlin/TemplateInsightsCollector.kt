@@ -3,6 +3,7 @@ package de.peekandpoke.ktorfx.templating
 import de.peekandpoke.ktorfx.insights.InsightsCollector
 import de.peekandpoke.ktorfx.insights.InsightsCollectorData
 import de.peekandpoke.ktorfx.insights.gui.InsightsBarTemplate
+import de.peekandpoke.ktorfx.insights.gui.InsightsGuiTemplate
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import io.ktor.application.ApplicationCall
@@ -24,7 +25,7 @@ class TemplateInsightsCollector : InsightsCollector {
 
                     left {
                         ui.item {
-                            title = "Template rendering"
+                            title = "View"
 
                             when {
                                 // TODO: make thresholds configurable
@@ -38,11 +39,24 @@ class TemplateInsightsCollector : InsightsCollector {
                     }
                 }
             }
+        }
 
+        override fun renderDetails(template: InsightsGuiTemplate) = with(template) {
+
+            menu {
+                icon.tv()
+                +"View"
+            }
+
+            content {
+                ui.header H3 {
+                    +"View"
+                }
+
+                json(this@Data)
+            }
         }
     }
-
-    override val name = "Template"
 
     var data = Data()
 

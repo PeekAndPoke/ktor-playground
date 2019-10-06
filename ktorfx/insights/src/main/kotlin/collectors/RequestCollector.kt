@@ -2,6 +2,9 @@ package de.peekandpoke.ktorfx.insights.collectors
 
 import de.peekandpoke.ktorfx.insights.InsightsCollector
 import de.peekandpoke.ktorfx.insights.InsightsCollectorData
+import de.peekandpoke.ktorfx.insights.gui.InsightsGuiTemplate
+import de.peekandpoke.ktorfx.semanticui.icon
+import de.peekandpoke.ktorfx.semanticui.ui
 import io.ktor.application.ApplicationCall
 import io.ktor.features.origin
 import io.ktor.http.HttpMethod
@@ -22,10 +25,25 @@ class RequestCollector : InsightsCollector {
         val headers: Map<String, List<String>>,
         val queryParams: Map<String, List<String>>
     ) : InsightsCollectorData {
-        val fullUrl = "$scheme://$host:$port$uri"
-    }
 
-    override val name = "Request"
+        val fullUrl = "$scheme://$host:$port$uri"
+
+        override fun renderDetails(template: InsightsGuiTemplate) = with(template) {
+
+            menu {
+                icon.cloud_upload()
+                +"Request"
+            }
+
+            content {
+                ui.header H3 {
+                    +"Request"
+                }
+
+                json(this@Data)
+            }
+        }
+    }
 
     override fun finish(call: ApplicationCall) = Data(
         call.request.httpMethod,

@@ -12,8 +12,6 @@ class PipelinePhasesCollector : InsightsCollector {
 
     private val data = Data()
 
-    override val name = "Pipeline Phases"
-
     override fun finish(call: ApplicationCall) = data
 
     fun record(phase: String, time: Long) {

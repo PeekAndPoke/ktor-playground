@@ -1,9 +1,10 @@
 package de.peekandpoke.ktorfx.prismjs
 
 enum class Language {
-    Html,
+    Markup,
     Css,
     Java,
     Javascript,
+    Json,
     Kotlin
 }

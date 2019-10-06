@@ -3,11 +3,13 @@ package de.peekandpoke.ktorfx.insights.collectors
 import de.peekandpoke.ktorfx.insights.InsightsCollector
 import de.peekandpoke.ktorfx.insights.InsightsCollectorData
 import de.peekandpoke.ktorfx.insights.gui.InsightsBarTemplate
+import de.peekandpoke.ktorfx.insights.gui.InsightsGuiTemplate
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ultra.kontainer.Kontainer
 import de.peekandpoke.ultra.kontainer.KontainerBlueprint
 import io.ktor.application.ApplicationCall
+import kotlinx.html.pre
 import kotlinx.html.title
 
 class KontainerCollector(private val kontainer: Kontainer, private val blueprint: KontainerBlueprint) : InsightsCollector {
@@ -18,30 +20,43 @@ class KontainerCollector(private val kontainer: Kontainer, private val blueprint
         val dump: String
     ) : InsightsCollectorData {
 
-        override fun renderBar(template: InsightsBarTemplate) {
+        override fun renderBar(template: InsightsBarTemplate) = with(template) {
 
-            with(template) {
+            left {
 
-                left {
+                ui.item {
+                    title = "Kontainers in memory: young / old / total"
 
-                    ui.item {
-                        title = "Kontainers in memory: young / old / total"
-
-                        // TODO: make the magic numbers configurable
-                        when {
-                            numOld < 10 -> icon.green.cubes()
-                            numOld < 50 -> icon.yellow.cubes()
-                            else -> icon.red.cubes()
-                        }
-
-                        +"${numTotal - numOld} / $numOld / $numTotal"
+                    // TODO: make the magic numbers configurable
+                    when {
+                        numOld < 10 -> icon.green.cubes()
+                        numOld < 50 -> icon.yellow.cubes()
+                        else -> icon.red.cubes()
                     }
+
+                    +"${numTotal - numOld} / $numOld / $numTotal"
                 }
             }
         }
-    }
 
-    override val name = "Kontainer"
+        override fun renderDetails(template: InsightsGuiTemplate) = with(template) {
+
+            menu {
+                icon.cubes()
+                +"Kontainer"
+            }
+
+            content {
+                ui.header H3 {
+                    +"Kontainer"
+                }
+
+                pre { +dump }
+
+                json(this@Data)
+            }
+        }
+    }
 
     override fun finish(call: ApplicationCall): Data {
 

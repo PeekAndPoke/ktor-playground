@@ -3,6 +3,7 @@ package de.peekandpoke.ktorfx.insights.collectors
 import de.peekandpoke.ktorfx.insights.InsightsCollector
 import de.peekandpoke.ktorfx.insights.InsightsCollectorData
 import de.peekandpoke.ktorfx.insights.gui.InsightsBarTemplate
+import de.peekandpoke.ktorfx.insights.gui.InsightsGuiTemplate
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import io.ktor.application.ApplicationCall
@@ -41,9 +42,23 @@ class RuntimeCollector : InsightsCollector {
                 }
             }
         }
-    }
 
-    override val name = "Runtime"
+        override fun renderDetails(template: InsightsGuiTemplate) = with(template) {
+
+            menu {
+                icon.microchip()
+                +"Runtime"
+            }
+
+            content {
+                ui.header H3 {
+                    +"Runtime"
+                }
+
+                json(this@Data)
+            }
+        }
+    }
 
     override fun finish(call: ApplicationCall): InsightsCollectorData {
 

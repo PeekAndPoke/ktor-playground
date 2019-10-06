@@ -4,11 +4,11 @@ import de.peekandpoke.ktorfx.webresources.CacheBuster
 import de.peekandpoke.ktorfx.webresources.WebResourceGroup
 import de.peekandpoke.ktorfx.webresources.WebResources
 
-class InsightsGuiWebResourceGroup(buster: CacheBuster) : WebResourceGroup(buster, {
+class InsightsBarWebResources(buster: CacheBuster) : WebResourceGroup(buster, {
 
-    resourceCss("/assets/ktorfx/insights/insights.css")
+    resourceCss("/assets/ktorfx/insights/bar.css")
 
     resourceJs("/assets/ktorfx/insights/bar.js")
 })
 
-val WebResources.insightsGui get() = get(InsightsGuiWebResourceGroup::class)
+val WebResources.insightsBar get() = get(InsightsBarWebResources::class)

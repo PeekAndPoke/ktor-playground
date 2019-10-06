@@ -3,10 +3,7 @@ package de.peekandpoke.ktorfx.insights
 import de.peekandpoke.ktorfx.common.hasKontainer
 import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ktorfx.insights.collectors.*
-import de.peekandpoke.ktorfx.insights.gui.InsightsBarRenderer
-import de.peekandpoke.ktorfx.insights.gui.InsightsGui
-import de.peekandpoke.ktorfx.insights.gui.InsightsGuiRoutes
-import de.peekandpoke.ktorfx.insights.gui.InsightsGuiWebResourceGroup
+import de.peekandpoke.ktorfx.insights.gui.*
 import de.peekandpoke.ultra.kontainer.module
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCallPipeline
@@ -24,7 +21,7 @@ val KtorFX_Insights = module {
     singleton(InsightsMapper::class)
     instance(InsightsRepository::class, InsightsFileRepository())
 
-    // default collectors
+    // Default collectors
     dynamic(RequestCollector::class)
     dynamic(ResponseCollector::class)
     dynamic(KontainerCollector::class)
@@ -32,11 +29,12 @@ val KtorFX_Insights = module {
     dynamic(RuntimeCollector::class)
     dynamic(VaultCollector::class)
 
-    // web resources and rendering
-    singleton(InsightsGuiWebResourceGroup::class)
+    // Insights Bar
     dynamic(InsightsBarRenderer::class)
+    singleton(InsightsBarWebResources::class)
 
-    // endpoints
+    // Insights Gui
+    singleton(InsightsGuiWebResources::class)
     singleton(InsightsGuiRoutes::class)
     singleton(InsightsGui::class)
 }
