@@ -47,9 +47,6 @@ class KontainerCollector(private val kontainer: Kontainer, private val blueprint
             }
 
             content {
-                ui.header H3 {
-                    +"Kontainer"
-                }
 
                 pre { +dump }
 

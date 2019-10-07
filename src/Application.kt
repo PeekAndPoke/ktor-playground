@@ -328,7 +328,7 @@ fun Application.module(testing: Boolean = false) {
 
     routing {
 
-        //        trace { application.log.trace(it.buildText()) }
+        // trace { application.log.trace(it.buildText()) }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //  Common area

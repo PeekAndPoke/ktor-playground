@@ -49,10 +49,6 @@ class TemplateInsightsCollector : InsightsCollector {
             }
 
             content {
-                ui.header H3 {
-                    +"View"
-                }
-
                 json(this@Data)
             }
         }

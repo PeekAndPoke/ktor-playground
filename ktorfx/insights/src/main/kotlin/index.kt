@@ -24,6 +24,7 @@ val KtorFX_Insights = module {
     // Default collectors
     dynamic(RequestCollector::class)
     dynamic(ResponseCollector::class)
+    dynamic(RoutingCollector::class)
     dynamic(KontainerCollector::class)
     dynamic(PipelinePhasesCollector::class)
     dynamic(RuntimeCollector::class)
@@ -42,8 +43,16 @@ val KtorFX_Insights = module {
 
 fun Application.instrumentWithInsights(gui: InsightsGui) {
 
+    // Mount the insights gui
     routing {
         gui.mount(this)
+
+        // trace routing
+        trace {
+            it.call.kontainer.use(RoutingCollector::class) {
+                recordTrace(it.buildText())
+            }
+        }
     }
 
     intercept(ApplicationCallPipeline.Setup) {

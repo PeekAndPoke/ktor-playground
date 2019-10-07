@@ -42,10 +42,6 @@ class VaultCollector(private val profiler: QueryProfiler) : InsightsCollector {
             }
 
             content {
-                ui.header H3 {
-                    +"Database"
-                }
-
                 json(this@Data)
             }
         }

@@ -5,31 +5,36 @@ import de.peekandpoke.ktorfx.insights.InsightsCollectorData
 import de.peekandpoke.ktorfx.insights.gui.InsightsGuiTemplate
 import de.peekandpoke.ktorfx.semanticui.icon
 import io.ktor.application.ApplicationCall
-import io.ktor.http.HttpStatusCode
-import io.ktor.util.toMap
+import kotlinx.html.pre
 
-class ResponseCollector : InsightsCollector {
+class RoutingCollector : InsightsCollector {
 
     data class Data(
-        val status: HttpStatusCode?,
-        val headers: Map<String, List<String>>
+        val trace: String? = null
     ) : InsightsCollectorData {
 
         override fun renderDetails(template: InsightsGuiTemplate) = with(template) {
-
             menu {
-                icon.cloud_download()
-                +"Response"
+                icon.compass_outline()
+                +"Routing"
             }
 
             content {
+
+                pre { +(trace ?: "???") }
+
                 json(this@Data)
             }
         }
     }
 
-    override fun finish(call: ApplicationCall) = Data(
-        call.response.status(),
-        call.response.headers.allValues().toMap()
-    )
+    private var data: Data = Data()
+
+    override fun finish(call: ApplicationCall): InsightsCollectorData {
+        return data
+    }
+
+    fun recordTrace(trace: String) {
+        data = data.copy(trace = trace)
+    }
 }

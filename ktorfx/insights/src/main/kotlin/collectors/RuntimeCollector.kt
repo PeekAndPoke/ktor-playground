@@ -51,10 +51,6 @@ class RuntimeCollector : InsightsCollector {
             }
 
             content {
-                ui.header H3 {
-                    +"Runtime"
-                }
-
                 json(this@Data)
             }
         }

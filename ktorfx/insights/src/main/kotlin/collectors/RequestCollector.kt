@@ -4,7 +4,6 @@ import de.peekandpoke.ktorfx.insights.InsightsCollector
 import de.peekandpoke.ktorfx.insights.InsightsCollectorData
 import de.peekandpoke.ktorfx.insights.gui.InsightsGuiTemplate
 import de.peekandpoke.ktorfx.semanticui.icon
-import de.peekandpoke.ktorfx.semanticui.ui
 import io.ktor.application.ApplicationCall
 import io.ktor.features.origin
 import io.ktor.http.HttpMethod
@@ -36,10 +35,6 @@ class RequestCollector : InsightsCollector {
             }
 
             content {
-                ui.header H3 {
-                    +"Request"
-                }
-
                 json(this@Data)
             }
         }

@@ -41,7 +41,6 @@ dependencies {
     implementation "de.peekandpoke.ultra:kontainer:$ultra_version"
 
     api project(":ultra:polyglot")
-    api project(":ultra:vault")
 
     ////  tests  ////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -119,8 +119,8 @@
     <orderEntry type="library" name="Gradle: org.checkerframework:checker-qual:2.0.0" level="project" />
     <orderEntry type="library" name="Gradle: com.google.errorprone:error_prone_annotations:2.0.18" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: org.atteo.classindex:classindex:3.4" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.j2objc:j2objc-annotations:1.1" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: org.javassist:javassist:3.25.0-GA" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.j2objc:j2objc-annotations:1.1" level="project" />
     <orderEntry type="library" name="Gradle: org.codehaus.mojo:animal-sniffer-annotations:1.14" level="project" />
     <orderEntry type="library" name="Gradle: com.univocity:univocity-parsers:2.7.6" level="project" />
     <orderEntry type="library" name="Gradle: com.github.wumpz:diffutils:2.2" level="project" />

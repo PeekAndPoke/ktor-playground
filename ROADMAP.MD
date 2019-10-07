@@ -5,27 +5,14 @@
 
 # Milestones
 
-## KARA
-
-Idea: Karango repository (arangodb) for Vault
-
-Dependencies: none
-
-- (x) Remove DbEntityCollection and move all methods to EntityRepository
-- (x) Impl onSaveHooks in EntityRepository
-- (x) Impl EntityRepository::save(stored: Stored<T>)
-- (x) Impl Reference<T> (similar to Stored<T>) and remove @Ref annotation
-- ( ) FIX EntityRefSerializer
-
-
 ## FIST - File storage
 
 Idea: Storing and loading files in different locations / remote services
 
 Dependencies: none
 
-- ( ) common interfaces for a file storage, repository, bucket, file
-- ( ) File system repository
+- (x) common interfaces for a file storage, repository, bucket, file
+- (x) File system repository
 - ( ) encryption for names and content
 - ( ) signing of content to ensure data is consistent
 
@@ -35,33 +22,14 @@ Idea: A minimal DI container that lives for only on ktor-call
 
 Dependencies: none
 
-- ( ) implement a DI that lazily instantiates requested services
-- ( ) consistency check for container (running in dev mode)
-  - ( ) are all dependencies present for all services
+- (x) implement a DI that lazily instantiates requested services
+- (x) consistency check for container (running in dev mode)
+  - (x) are all dependencies present for all services
   - ( ) detect cyclic dependencies
 
-## CULO - Custom Locations Server
+## INSIGHTS - beautify collector view in gui
 
-Idea: The locations service also handles the parameter conversion.
-      The Parameter conversion needs to access the call, in order to 
-      access the injected attributes. This is currently not possible
-
-Dependencis: RECO
-
-## INCO- Insight Collectors
-
-Idea: Collect insights about code execution, e.g. db-queries, request-details, etc for display in DEBA
-
-Dependencies: none
-
-- ( ) common interfaces for insight collectors 
-
-## DEBA - Debug Bar (inspired by symphony)
-
-Dependencies: RECO, INCO, FIST
-
-- ( ) gather information from all INCOs
-- ( ) write collected information to file storage 
-- ( ) UI - Bottom of screen bar
-- ( ) UI - full screen with all details 
-
+- ( ) Overview ... some fancy display
+- ( ) VaultCollector
+- ( ) Request 
+- ( ) Response 
