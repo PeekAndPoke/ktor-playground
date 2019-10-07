@@ -43,7 +43,7 @@ class InsightsBarTemplate(
         left {
 
             ui.item {
-                title = "Response time in ms"
+                title = "Processing time"
 
                 val durationNs = guiData.chronos.totalDurationNs()
 

@@ -9,7 +9,7 @@ import kotlinx.html.*
 fun <T> FlowContent.label(field: FormField<T>, label: String?) {
 
     if (label != null) {
-        label {
+        ui.given(field.hasErrors()) { error }.then Label {
             attributes["for"] = field.name.asFormId
             +label
         }
@@ -19,15 +19,15 @@ fun <T> FlowContent.label(field: FormField<T>, label: String?) {
 fun <T> FlowContent.errors(t: I18n, field: FormField<T>) {
     if (!field.isValid()) {
 
-        ul {
-            field.errors.forEach { li { +t[it] } }
+        field.errors.forEach {
+            ui.basic.red.pointing.label { +t[it] }
         }
     }
 }
 
 fun <T> FlowContent.textArea(t: I18n, field: FormField<T>, label: String? = null) {
 
-    ui.field {
+    ui.field.given(field.hasErrors()) { error }.then {
 
         label(field, label)
 
@@ -44,7 +44,8 @@ fun <T> FlowContent.textArea(t: I18n, field: FormField<T>, label: String? = null
 
 fun <T> FlowContent.textInput(t: I18n, field: FormField<T>, label: String? = null) {
 
-    ui.field {
+    ui.field.given(field.hasErrors()) { error }.then {
+
         label(field, label)
 
         textInput(classes = "form-control") {
@@ -61,7 +62,7 @@ fun <T> FlowContent.textInput(t: I18n, field: FormField<T>, label: String? = nul
 
 fun <T> FlowContent.numberInput(t: I18n, field: FormField<T>, label: String? = null, step: Double? = null) {
 
-    ui.field {
+    ui.field.given(field.hasErrors()) { error }.then {
 
         label(field, label)
 
@@ -83,7 +84,7 @@ fun <T> FlowContent.numberInput(t: I18n, field: FormField<T>, label: String? = n
 
 fun <T> FlowContent.selectInput(t: I18n, field: FormFieldWithOptions<T>, label: String? = null) {
 
-    ui.field {
+    ui.field.given(field.hasErrors()) { error }.then {
 
         label(field, label)
 

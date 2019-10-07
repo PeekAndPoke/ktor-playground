@@ -2,7 +2,7 @@ $(() => {
 
     $("#content > *").hide().first().show();
 
-    $("#menu .item").on("click", function () {
+    $("#menu > .item").on("click", function () {
 
         const $target = $(this);
         const key = $target.data("key");

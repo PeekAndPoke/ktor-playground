@@ -1,7 +1,9 @@
 package de.peekandpoke.ktorfx.insights
 
+import java.time.LocalDateTime
+
 data class InsightsData(
-    val ts: Long,
+    val ts: LocalDateTime,
     val date: String,
     val chronos: Chronos,
     val collectors: List<CollectorData>

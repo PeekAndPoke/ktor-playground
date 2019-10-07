@@ -51,7 +51,9 @@ interface FormField<T> {
 
     val errors: List<Translatable>
 
-    fun isValid(): Boolean
+    fun isValid(): Boolean = errors.isEmpty()
+
+    fun hasErrors(): Boolean = !isValid()
 
     fun mapToString(value: T): String
 

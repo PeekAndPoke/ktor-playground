@@ -4,6 +4,8 @@ import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ultra.kontainer.module
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
+import io.ktor.html.respondHtmlTemplate
+import io.ktor.http.HttpStatusCode
 import io.ktor.util.pipeline.PipelineContext
 
 /**
@@ -29,3 +31,10 @@ val KtorFX_Templating = module {
 
 inline val ApplicationCall.defaultTemplate: SimpleTemplate get() = kontainer.get(SimpleTemplate::class)
 inline val PipelineContext<Unit, ApplicationCall>.defaultTemplate: SimpleTemplate get() = call.defaultTemplate
+
+suspend fun PipelineContext<Unit, ApplicationCall>.respond(
+    status: HttpStatusCode = HttpStatusCode.OK,
+    body: SimpleTemplate.() -> Unit
+) {
+    call.respondHtmlTemplate(defaultTemplate, status, body)
+}

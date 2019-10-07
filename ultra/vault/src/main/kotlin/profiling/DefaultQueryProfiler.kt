@@ -6,7 +6,13 @@ class DefaultQueryProfiler : QueryProfiler {
 
     override val entries: MutableList<QueryProfiler.Entry> = mutableListOf()
 
-    override fun <R> add(connection: String, query: String, block: () -> R): R {
+    override fun <R> add(
+        connection: String,
+        queryLanguage: String,
+        query: String,
+        vars: Any?,
+        block: () -> R
+    ): R {
 
         var result: R? = null
 
@@ -14,7 +20,15 @@ class DefaultQueryProfiler : QueryProfiler {
             result = block()
         }
 
-        entries.add(QueryProfiler.Entry(connection, query, time))
+        entries.add(
+            QueryProfiler.Entry(
+                connection = connection,
+                queryLanguage = queryLanguage,
+                query = query,
+                vars = vars,
+                timeNs = time
+            )
+        )
 
         return result!!
     }

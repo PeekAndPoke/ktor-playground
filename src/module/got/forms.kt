@@ -35,7 +35,7 @@ class CharacterForm private constructor(it: Storable<Character>, mutator: Charac
         fun of(it: CharacterMutator, parent: Form? = null) = CharacterForm(New(it.getInput()), it, parent)
     }
 
-    val name = field(target::name)
+    val name = field(target::name).acceptsNonBlank()
 
     val surname = field(target::surname)
 

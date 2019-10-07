@@ -1,5 +1,6 @@
 package de.peekandpoke.ktorfx.common
 
+import de.peekandpoke.ultra.depot.Depot
 import de.peekandpoke.ultra.kontainer.Kontainer
 import de.peekandpoke.ultra.kontainer.module
 import de.peekandpoke.ultra.polyglot.I18n
@@ -48,8 +49,10 @@ inline val ApplicationCall.kontainer: Kontainer get() = attributes[KontainerKey]
 inline val PipelineContext<Unit, ApplicationCall>.kontainer: Kontainer get() = call.kontainer
 
 
-
-// TODO: remove this from here ... where to put it ?
+// TODO: remove this from here ... where to put it? -> ktorfx::polyglot
 inline val ApplicationCall.i18n: I18n get() = kontainer.get(I18n::class)
 inline val PipelineContext<Unit, ApplicationCall>.i18n: I18n get() = call.i18n
 
+// TODO: remove this from here ... where to put it? -> ktorfx::depot
+inline val ApplicationCall.depot get() = kontainer.get(Depot::class)
+inline val PipelineContext<Unit, ApplicationCall>.depot get() = kontainer.get(Depot::class)

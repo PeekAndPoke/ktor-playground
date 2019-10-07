@@ -4,8 +4,7 @@ import de.peekandpoke.ktorfx.broker.OutgoingConverter
 import de.peekandpoke.ktorfx.broker.Routes
 import de.peekandpoke.ktorfx.broker.get
 import de.peekandpoke.ktorfx.common.kontainer
-import de.peekandpoke.ktorfx.templating.SimpleTemplate
-import de.peekandpoke.ktorfx.templating.defaultTemplate
+import de.peekandpoke.ktorfx.templating.respond
 import de.peekandpoke.module.depot.views.buckets
 import de.peekandpoke.module.depot.views.files
 import de.peekandpoke.module.depot.views.index
@@ -14,8 +13,6 @@ import de.peekandpoke.ultra.depot.Depot
 import de.peekandpoke.ultra.kontainer.module
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
-import io.ktor.html.respondHtmlTemplate
-import io.ktor.http.HttpStatusCode
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
@@ -54,30 +51,19 @@ class DepotAdminRoutes(converter: OutgoingConverter, depotAdminMountPoint: Strin
 
 class DepotAdmin(val routes: DepotAdminRoutes) {
 
-    // TODO: move this one into ktorfx::templating
-    private suspend fun PipelineContext<Unit, ApplicationCall>.respond(
-        status: HttpStatusCode = HttpStatusCode.OK,
-        body: SimpleTemplate.() -> Unit
-    ) {
-        call.respondHtmlTemplate(defaultTemplate, status, body)
-    }
-
     // TODO: create helper method in ktorfx::depot
     val ApplicationCall.depot get() = kontainer.get(Depot::class)
     val PipelineContext<Unit, ApplicationCall>.depot get() = kontainer.get(Depot::class)
 
     fun mount(route: Route) = with(route) {
 
-
         get(routes.index) {
-
             respond {
                 index()
             }
         }
 
         get(routes.repositories) {
-
             respond {
                 repositories(this@DepotAdmin, depot.all())
             }
@@ -98,7 +84,7 @@ class DepotAdmin(val routes: DepotAdminRoutes) {
 
             val repository = depot.get(data.repository)
             val bucket = repository.get(data.bucket)
-            val fileList = bucket.listFiles().sortedBy { it.name }.reversed().take(100)
+            val fileList = bucket.listNewest()
 
             respond {
                 files(this@DepotAdmin, repository, bucket, fileList)

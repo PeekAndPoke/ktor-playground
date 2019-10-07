@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.convertValue
 import de.peekandpoke.ultra.common.Lookup
 import io.ktor.application.ApplicationCall
 import io.ktor.request.uri
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.reflect.KClass
@@ -38,7 +39,7 @@ class Insights(
 ) {
     private val date = LocalDate.now()
     private val dateTime = LocalDateTime.now()
-    private val ts = System.nanoTime()
+    private val ts = Instant.now()
 
     private val chronos: Chronos = Chronos().apply { start() }
 
@@ -68,7 +69,7 @@ class Insights(
         val entries = collectors.all().map { it.finish(call) }
 
         val data = InsightsData(
-            ts,
+            dateTime,
             dateTime.toString(),
             chronos,
             entries.map {

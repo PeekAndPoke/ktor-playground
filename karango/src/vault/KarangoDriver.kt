@@ -86,8 +86,10 @@ class KarangoDriver(
     fun <T> query(query: TypedQuery<T>): Cursor<T> {
 
         return profiler.add(
-            "Arango::${arangoDb.arango().db().name()}",
-            query.aql
+            connection = "Arango::${arangoDb.arango().db().name()}",
+            queryLanguage = "aql",
+            query = query.aql,
+            vars = query.vars
         ) {
             val options = AqlQueryOptions().count(true)
             val params = serializer.convertValue<Map<String, Any>>(query.vars)

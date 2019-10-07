@@ -8,8 +8,11 @@ import de.peekandpoke.module.cms.CmsAdmin
 import de.peekandpoke.module.cms.views.CmsMenu
 import de.peekandpoke.module.depot.DepotAdmin
 import de.peekandpoke.module.depot.views.DepotMenu
+import de.peekandpoke.module.got.GameOfThrones
+import de.peekandpoke.module.got.views.GameOfThronesMenu
 import de.peekandpoke.module.semanticui.SemanticUi
 import de.peekandpoke.module.semanticui.views.SemanticUiMenu
+import kotlinx.html.div
 import kotlinx.html.script
 import kotlinx.html.unsafe
 
@@ -19,8 +22,8 @@ class AdminTemplate(
 
     private val cms: CmsAdmin,
     private val semanticUi: SemanticUi,
-    private val depot: DepotAdmin
-
+    private val depot: DepotAdmin,
+    private val gameOfThrones: GameOfThrones
 
 ) : SimpleTemplateImpl(tools) {
 
@@ -88,6 +91,24 @@ class AdminTemplate(
                         ui.item.given(SemanticUiMenu.Buttons in breadCrumbs) { active } A { href = semanticUi.routes.buttons; +"Buttons" }
 
                         ui.item.given(SemanticUiMenu.Icons in breadCrumbs) { active } A { href = semanticUi.routes.icons; +"Icons" }
+                    }
+                }
+
+                // PLAYGROUND //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                ui.given(GameOfThronesMenu has breadCrumbs) { active }.title.header.item H4 {
+                    icon.dropdown()
+
+                    div {
+                        icon.gamepad()
+                        +"Playground"
+                    }
+                }
+                ui.given(GameOfThronesMenu has breadCrumbs) { active }.content {
+                    ui.accordion.transition.active {
+                        ui.item.given(GameOfThronesMenu.CHARACTERS in breadCrumbs) { active } A {
+                            href = gameOfThrones.routes.getCharacters(); +"Game of Thrones"
+                        }
                     }
                 }
             }

@@ -2,6 +2,7 @@ package de.peekandpoke.ktorfx.templating
 
 import de.peekandpoke.ktorfx.flashsession.FlashSession
 import de.peekandpoke.ktorfx.insights.gui.InsightsBarRenderer
+import de.peekandpoke.ktorfx.semanticui.SemanticUi
 import de.peekandpoke.ktorfx.webresources.WebResources
 import de.peekandpoke.ultra.polyglot.I18n
 import io.ktor.html.Placeholder
@@ -28,7 +29,10 @@ interface SimpleTemplate : Template<HTML> {
     var breadCrumbs: List<Any>
 
     val pageTitle: Placeholder<HEAD>
+
     val mainMenu: Placeholder<FlowContent>
+    fun SemanticUi.menuColor(): SemanticUi
+
     val content: Placeholder<FlowContent>
 
     val styles: PlaceholderList<HEAD, HEAD>

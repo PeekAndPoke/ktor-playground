@@ -90,6 +90,8 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
 
     @SemanticUiCssMarker val form get() = this + "form"
     @SemanticUiCssMarker val field get() = this + "field"
+    @SemanticUiCssMarker val fields get() = this + "fields"
+    @SemanticUiCssMarker val error get() = this + "error"
 
     // table
 

@@ -17,6 +17,7 @@ import io.ktor.html.insert
 import kotlinx.html.*
 
 class InsightsGuiTemplate(
+    private val routes: InsightsGuiRoutes,
     private val webResources: WebResources,
     private val mapper: InsightsMapper,
     private val guiData: InsightsGuiData
@@ -85,6 +86,7 @@ class InsightsGuiTemplate(
                     ui.item { +guiData.requestMethod }
                     ui.item { +guiData.requestUrl }
                     ui.item { +guiData.responseTimeMs }
+                    ui.item { +guiData.ts.toString() }
                 }
             }
 
@@ -93,6 +95,22 @@ class InsightsGuiTemplate(
 
                 each(menuPlaceholders) {
                     insert(it)
+                }
+
+                if (guiData.previousFile != null) {
+                    a(href = routes.details(guiData.previousFile)) {
+                        ui.item {
+                            icon.arrow_left()
+                        }
+                    }
+                }
+
+                if (guiData.nextFile !== null) {
+                    a(href = routes.details(guiData.nextFile)) {
+                        ui.item {
+                            icon.arrow_right()
+                        }
+                    }
                 }
             }
 
@@ -108,7 +126,7 @@ class InsightsGuiTemplate(
         }
     }
 
-    fun FlowContent.json(data: Any) {
+    fun FlowContent.json(data: Any?) {
 
         prism(Language.Json) {
             mapper.writerWithDefaultPrettyPrinter().writeValueAsString(data)

@@ -25,7 +25,7 @@ class TemplateInsightsCollector : InsightsCollector {
 
                     left {
                         ui.item {
-                            title = "View"
+                            title = "View rendering"
 
                             when {
                                 // TODO: make thresholds configurable

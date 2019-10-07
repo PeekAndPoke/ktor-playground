@@ -6,7 +6,6 @@ import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import de.peekandpoke.module.cms.forms.CmsPageForm
 import kotlinx.html.FormMethod
-import kotlinx.html.form
 import kotlinx.html.h1
 import kotlinx.html.title
 
@@ -27,7 +26,8 @@ internal fun SimpleTemplate.editPage(create: Boolean, form: CmsPageForm) {
             }
         }
 
-        form(classes = "ui form", method = FormMethod.post) {
+        ui.form Form {
+            method = FormMethod.post
 
             textInput(t, form.name, label = "Name")
 
@@ -35,9 +35,7 @@ internal fun SimpleTemplate.editPage(create: Boolean, form: CmsPageForm) {
 
             textArea(t, form.markup, label = "Markup")
 
-            ui.button Submit {
-                +"Submit"
-            }
+            ui.button Submit { +"Submit" }
         }
     }
 }

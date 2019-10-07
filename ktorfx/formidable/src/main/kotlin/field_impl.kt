@@ -29,11 +29,11 @@ internal class FormFieldImpl<T>(
     private val acceptRules = mutableListOf<Pair<AcceptRule, Translatable>>()
     private val resultRules = mutableListOf<Pair<Rule<T>, Translatable>>()
 
+    override fun isValid() = _errors.isEmpty()
+
     override fun accepting(errorMessage: Translatable, rule: AcceptRule) = apply { acceptRules.add(rule to errorMessage) }
 
     override fun resultingIn(errorMessage: Translatable, rule: Rule<T>) = apply { resultRules.add(rule to errorMessage) }
-
-    override fun isValid() = _errors.isEmpty()
 
     override fun submit(params: Parameters) {
 
@@ -78,8 +78,6 @@ internal class FormFieldWithOptionsImpl<T>(
     override val errors: List<Translatable> get() = wrapped.errors
 
     override fun mapToString(value: T) = wrapped.mapToString(value)
-
-    override fun isValid() = wrapped.isValid()
 
     override fun accepting(errorMessage: Translatable, rule: AcceptRule): FormFieldWithOptions<T> = apply {
         wrapped.accepting(errorMessage, rule)

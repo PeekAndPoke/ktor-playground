@@ -14,12 +14,16 @@ abstract class FileSystemRepository(override val name: String, dir: String) : De
         override fun listFiles(): List<DepotFile> {
             return root.listFiles()
                 ?.filter { it.isFile }
-                ?.map { FsFile(it.name, it) }
+                ?.map { FsFile(this, it.name, it) }
                 ?: listOf()
         }
 
+        override fun listNewest(limit: Int): List<DepotFile> {
+            return listFiles().sortedBy { it.lastModifiedAt }.reversed().take(limit)
+        }
+
         override fun getFile(name: String): DepotFile {
-            return FsFile(name, File(root, name))
+            return FsFile(this, name, File(root, name))
         }
 
         override fun putFile(name: String, contents: String): DepotFile {
@@ -28,11 +32,11 @@ abstract class FileSystemRepository(override val name: String, dir: String) : De
 
             file.writeText(contents)
 
-            return FsFile(name, file)
+            return FsFile(this, name, file)
         }
     }
 
-    data class FsFile(override val name: String, private val file: File) : DepotFile {
+    data class FsFile(override val bucket: FsBucket, override val name: String, private val file: File) : DepotFile {
 
         override val lastModifiedAt: Instant by lazy {
             Instant.ofEpochMilli(file.lastModified())

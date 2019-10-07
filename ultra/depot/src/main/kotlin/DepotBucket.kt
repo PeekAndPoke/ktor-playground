@@ -10,6 +10,8 @@ interface DepotBucket {
 
     fun listFiles(): List<DepotFile>
 
+    fun listNewest(limit: Int = 100): List<DepotFile>
+
     fun getFile(name: String): DepotFile
 
     fun putFile(name: String, contents: String): DepotFile

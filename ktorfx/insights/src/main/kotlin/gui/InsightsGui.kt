@@ -41,6 +41,7 @@ class InsightsGui(private val routes: InsightsGuiRoutes) {
 
             // TODO: avoid getting the service manually
             val template = InsightsGuiTemplate(
+                routes,
                 kontainer.get(WebResources::class),
                 kontainer.get(InsightsMapper::class),
                 guiData
@@ -58,9 +59,17 @@ class InsightsGui(private val routes: InsightsGuiRoutes) {
         val storage = kontainer.get(InsightsRepository::class)
         val mapper = kontainer.get(InsightsMapper::class)
 
-        val recordBytes = storage.get(bucket).getFile(filename).getContentBytes()
-        val recordString = String(recordBytes)
+        // get all newest files
+        val files = storage.get(bucket).listNewest()
+        // get the actual file
+        val file = storage.get(bucket).getFile(filename)
+        val fileIdx = files.indexOf(file)
+        // get the previous and next file
+        val nextFile = if (fileIdx > 0) files[fileIdx - 1] else null
+        val previousFile = if (fileIdx < files.size - 1) files[fileIdx + 1] else null
 
+        // read file contents
+        val recordString = String(file.getContentBytes())
         val insightsData = mapper.readValue<InsightsData>(recordString)
 
         val collectors = insightsData.collectors
@@ -81,6 +90,13 @@ class InsightsGui(private val routes: InsightsGuiRoutes) {
             }
             .filterNotNull()
 
-        return InsightsGuiData(insightsData.ts, insightsData.date, insightsData.chronos, collectors)
+        return InsightsGuiData(
+            insightsData.ts,
+            insightsData.date,
+            insightsData.chronos,
+            collectors,
+            nextFile,
+            previousFile
+        )
     }
 }

@@ -3,6 +3,7 @@ package de.peekandpoke.ktorfx.templating
 import de.peekandpoke.ktorfx.flashsession.FlashSession
 import de.peekandpoke.ktorfx.insights.gui.InsightsBarRenderer
 import de.peekandpoke.ktorfx.insights.gui.insightsBar
+import de.peekandpoke.ktorfx.semanticui.SemanticUi
 import de.peekandpoke.ktorfx.semanticui.semanticUi
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.webresources.WebResources
@@ -32,7 +33,10 @@ open class SimpleTemplateImpl(
     override var breadCrumbs: List<Any> = listOf()
 
     final override val pageTitle = Placeholder<HEAD>()
+
     final override val mainMenu = Placeholder<FlowContent>()
+    override fun SemanticUi.menuColor(): SemanticUi = violet
+
     final override val content = Placeholder<FlowContent>()
 
     final override val styles = PlaceholderList<HEAD, HEAD>()
@@ -94,7 +98,7 @@ open class SimpleTemplateImpl(
 
             body {
 
-                ui.sidebar.vertical.left.inverted.violet.menu.visible.fixed {
+                ui.sidebar.vertical.left.inverted.menuColor().menu.visible.fixed {
                     insert(mainMenu)
                 }
 

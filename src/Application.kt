@@ -6,7 +6,9 @@ import de.peekandpoke.ktorfx.common.provide
 import de.peekandpoke.ktorfx.flashsession.FlashSession
 import de.peekandpoke.ktorfx.insights.gui.InsightsGui
 import de.peekandpoke.ktorfx.insights.instrumentWithInsights
+import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
+import de.peekandpoke.ktorfx.templating.respond
 import de.peekandpoke.ktorfx.webjars.BetterWebjars
 import de.peekandpoke.ktorfx.webresources.AppMeta
 import de.peekandpoke.module.cms.CmsAdmin
@@ -20,7 +22,6 @@ import de.peekandpoke.module.got.GameOfThronesModule
 import de.peekandpoke.module.semanticui.SemanticUi
 import de.peekandpoke.module.semanticui.SemanticUiModule
 import de.peekandpoke.resources.Translations
-import de.peekandpoke.ultra.depot.FileSystemRepository
 import de.peekandpoke.ultra.depot.Ultra_Depot
 import de.peekandpoke.ultra.kontainer.kontainer
 import de.peekandpoke.ultra.polyglot.I18n
@@ -48,7 +49,8 @@ import io.ktor.util.getDigestFunction
 import io.ktor.util.hex
 import io.ultra.ktor_tools.KtorFX
 import io.ultra.ktor_tools.logger.logger
-import kotlinx.html.*
+import kotlinx.html.body
+import kotlinx.html.div
 import java.net.InetAddress
 import java.time.Duration
 import java.util.*
@@ -56,10 +58,7 @@ import kotlin.collections.set
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-
 val AppMeta = object : AppMeta() {}
-
-class DummyStorage : FileSystemRepository("dummy", "./tmp/dummy")
 
 val Application.kontainerBlueprint by lazy {
 
@@ -73,7 +72,6 @@ val Application.kontainerBlueprint by lazy {
 
         // File depot ////////////////////////////////////////////////////////////////////////////////////////////////////////
         module(Ultra_Depot)
-        singleton(DummyStorage::class)
 
         // KtorFX ////////////////////////////////////////////////////////////////////////////////////////////////////////////
         module(KtorFX)
@@ -87,9 +85,7 @@ val Application.kontainerBlueprint by lazy {
         //       -> idea: KontainerBlueprint.extend(KontainerBuilder)) ?
         prototype(SimpleTemplate::class, AdminTemplate::class)
 
-
         // application ///////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
         // application modules
         module(GameOfThronesModule)
@@ -127,17 +123,7 @@ fun Application.module(testing: Boolean = false) {
     val initKontainer = systemKontainer()
 
     // Ensure all database repositories are set up properly
-    initKontainer.get(Database::class).ensureRepositories()
-
-    // Get all application modules
-    val gameOfThrones = initKontainer.get(GameOfThrones::class)
-
-    val semanticUi = initKontainer.get(SemanticUi::class)
-
-    val cmsAdmin = initKontainer.get(CmsAdmin::class)
-    val cmsPublic = initKontainer.get(CmsPublic::class)
-
-    val depotAdmin = initKontainer.get(DepotAdmin::class)
+    initKontainer.use(Database::class) { ensureRepositories() }
 
     environment.monitor.subscribe(ApplicationStopped) {
         arangoDb.shutdown()
@@ -347,8 +333,8 @@ fun Application.module(testing: Boolean = false) {
         /////
 
         host("www.*".toRegex()) {
-            gameOfThrones.mount(this)
-            cmsPublic.mount(this)
+            initKontainer.use(GameOfThrones::class) { mount(this@host) }
+            initKontainer.use(CmsPublic::class) { mount(this@host) }
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -374,27 +360,18 @@ fun Application.module(testing: Boolean = false) {
             login(authName, users)
 
             get("/") {
-                call.respondHtml {
-                    body {
-                        h1 {
-                            +"Admin area"
-                        }
-                        ul {
-                            li {
-                                a(href = semanticUi.routes.index) { +"Semantic UI demo" }
-                            }
-                            li {
-                                a(href = cmsAdmin.routes.index) { +"Mini CMS" }
-                            }
-                        }
+                respond {
+                    content {
+                        ui.header H3 { +"Admin area" }
                     }
                 }
             }
 
             authenticate(authName) {
-                semanticUi.mount(this)
-                cmsAdmin.mount(this)
-                depotAdmin.mount(this)
+                initKontainer.use(SemanticUi::class) { mount(this@authenticate) }
+                initKontainer.use(CmsAdmin::class) { mount(this@authenticate) }
+                initKontainer.use(DepotAdmin::class) { mount(this@authenticate) }
+                initKontainer.use(GameOfThrones::class) { mount(this@authenticate) }
             }
         }
     }
