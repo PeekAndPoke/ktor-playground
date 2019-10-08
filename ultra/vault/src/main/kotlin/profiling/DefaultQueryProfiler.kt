@@ -10,7 +10,7 @@ class DefaultQueryProfiler : QueryProfiler {
         connection: String,
         queryLanguage: String,
         query: String,
-        vars: Any?,
+        vars: Map<String, Any>?,
         block: () -> R
     ): R {
 

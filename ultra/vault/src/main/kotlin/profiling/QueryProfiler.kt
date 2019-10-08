@@ -6,7 +6,7 @@ interface QueryProfiler {
         val connection: String,
         val queryLanguage: String,
         val query: String,
-        val vars: Any?,
+        val vars: Map<String, Any>?,
         val timeNs: Long
     )
 
@@ -16,7 +16,7 @@ interface QueryProfiler {
         connection: String,
         queryLanguage: String,
         query: String,
-        vars: Any?,
+        vars: Map<String, Any>?,
         block: () -> R
     ): R
 }

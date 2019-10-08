@@ -55,7 +55,7 @@ class DepotAdmin(val routes: DepotAdminRoutes) {
     val ApplicationCall.depot get() = kontainer.get(Depot::class)
     val PipelineContext<Unit, ApplicationCall>.depot get() = kontainer.get(Depot::class)
 
-    fun mount(route: Route) = with(route) {
+    fun Route.mount() {
 
         get(routes.index) {
             respond {

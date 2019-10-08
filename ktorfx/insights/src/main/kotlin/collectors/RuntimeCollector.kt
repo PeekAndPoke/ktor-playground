@@ -7,6 +7,7 @@ import de.peekandpoke.ktorfx.insights.gui.InsightsGuiTemplate
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import io.ktor.application.ApplicationCall
+import kotlinx.html.FlowContent
 import kotlinx.html.title
 
 class RuntimeCollector : InsightsCollector {
@@ -51,10 +52,39 @@ class RuntimeCollector : InsightsCollector {
             }
 
             content {
+
+                stats()
+
                 json(this@Data)
             }
         }
+
+        fun FlowContent.stats() {
+            ui.horizontal.segments {
+
+                ui.compact.center.aligned.segment {
+                    ui.header { +"CPUs" }
+                    +cpus.toString()
+                }
+
+                ui.compact.center.aligned.segment {
+                    ui.header { +"Free Heap" }
+                    +"%d MB".format(freeMem / (1024 * 1024))
+                }
+
+                ui.compact.center.aligned.segment {
+                    ui.header { +"Reserved Heap" }
+                    +"%d MB".format(reservedMem / (1024 * 1024))
+                }
+
+                ui.compact.center.aligned.segment {
+                    ui.header { +"Max Heap" }
+                    +"%d MB".format(maxMem / (1024 * 1024))
+                }
+            }
+        }
     }
+
 
     override fun finish(call: ApplicationCall): InsightsCollectorData {
 

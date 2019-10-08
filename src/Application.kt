@@ -6,6 +6,7 @@ import de.peekandpoke.ktorfx.common.provide
 import de.peekandpoke.ktorfx.flashsession.FlashSession
 import de.peekandpoke.ktorfx.insights.gui.InsightsGui
 import de.peekandpoke.ktorfx.insights.instrumentWithInsights
+import de.peekandpoke.ktorfx.insights.registerInsightsRouteTracer
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import de.peekandpoke.ktorfx.templating.respond
@@ -23,6 +24,7 @@ import de.peekandpoke.module.semanticui.SemanticUi
 import de.peekandpoke.module.semanticui.SemanticUiModule
 import de.peekandpoke.resources.Translations
 import de.peekandpoke.ultra.depot.Ultra_Depot
+import de.peekandpoke.ultra.kontainer.KontainerBlueprint
 import de.peekandpoke.ultra.kontainer.kontainer
 import de.peekandpoke.ultra.polyglot.I18n
 import de.peekandpoke.ultra.vault.Database
@@ -40,6 +42,7 @@ import io.ktor.http.content.resources
 import io.ktor.http.content.static
 import io.ktor.jackson.jackson
 import io.ktor.response.respond
+import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.routing.host
 import io.ktor.routing.routing
@@ -60,7 +63,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 val AppMeta = object : AppMeta() {}
 
-val Application.kontainerBlueprint by lazy {
+private val commonKontainerBlueprint by lazy {
 
     kontainer {
 
@@ -80,11 +83,6 @@ val Application.kontainerBlueprint by lazy {
         // Re-define the I18n with our texts
         dynamic0(I18n::class) { Translations.withLocale("en") }
 
-        // set default html template
-        // TODO: we need a solution to divide Frontend from Backend
-        //       -> idea: KontainerBlueprint.extend(KontainerBuilder)) ?
-        prototype(SimpleTemplate::class, AdminTemplate::class)
-
         // application ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // application modules
@@ -99,21 +97,49 @@ val Application.kontainerBlueprint by lazy {
     }
 }
 
-fun Application.systemKontainer() = kontainerBlueprint.useWith(
+private fun systemKontainer() = commonKontainerBlueprint.useWith(
     // user record provider
     StaticUserRecordProvider(
         UserRecord("system", InetAddress.getLocalHost().canonicalHostName)
     )
 )
 
-fun Application.requestContainer(user: UserRecord, session: CurrentSession) = kontainerBlueprint.useWith(
-    // default language
-    Translations.withLocale("de"),
-    // user record provider
-    StaticUserRecordProvider(user),
-    // the current session
-    session
-)
+val Application.wwwKontainerBlueprint by lazy {
+    commonKontainerBlueprint.extend {
+        // set default html template
+        prototype(SimpleTemplate::class, WwwTemplate::class)
+    }
+}
+
+val Application.adminKontainerBlueprint by lazy {
+    commonKontainerBlueprint.extend {
+        // set default html template
+        prototype(SimpleTemplate::class, AdminTemplate::class)
+    }
+}
+
+fun Route.installKontainer(blueprint: KontainerBlueprint) {
+
+    intercept(ApplicationCallPipeline.Setup) {
+
+        val userRecord = UserRecord(
+            call.sessions.get<UserSession>()?.userId ?: "anonymous",
+            call.request.origin.remoteHost
+        )
+
+        val kontainer = blueprint.useWith(
+            // default language
+            Translations.withLocale("de"),
+            // user record provider
+            StaticUserRecordProvider(userRecord),
+            // session
+            call.sessions
+        )
+
+        call.attributes.provide(kontainer)
+    }
+}
+
 
 @KtorExperimentalAPI
 @kotlin.jvm.JvmOverloads
@@ -278,27 +304,20 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
-    // TODO: have a switch for live / stage / dev
-    instrumentWithInsights(
-        initKontainer.get(InsightsGui::class)
-    )
-
-
-    intercept(ApplicationCallPipeline.Features) {
-
-        with(call.attributes) {
-            // inject a fresh Kontainer into each call
-            provide(
-                requestContainer(
-                    UserRecord(
-                        call.sessions.get<UserSession>()?.userId ?: "anonymous",
-                        call.request.origin.remoteHost
-                    ),
-                    call.sessions
-                )
-            )
-        }
-    }
+//    // TODO: have a switch for live / stage / dev
+//    instrumentWithInsights(
+//        initKontainer.get(InsightsGui::class)
+//    )
+//
+//    intercept(ApplicationCallPipeline.Features) {
+//
+//        val userRecord = UserRecord(
+//            call.sessions.get<UserSession>()?.userId ?: "anonymous",
+//            call.request.origin.remoteHost
+//        )
+//
+//        call.attributes.provide(requestContainer(userRecord , call.sessions))
+//    }
 
     intercept(ApplicationCallPipeline.Features) {
 
@@ -314,7 +333,7 @@ fun Application.module(testing: Boolean = false) {
 
     routing {
 
-        // trace { application.log.trace(it.buildText()) }
+        registerInsightsRouteTracer()
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //  Common area
@@ -333,8 +352,18 @@ fun Application.module(testing: Boolean = false) {
         /////
 
         host("www.*".toRegex()) {
-            initKontainer.use(GameOfThrones::class) { mount(this@host) }
-            initKontainer.use(CmsPublic::class) { mount(this@host) }
+
+            // install the Kontainer into the pipeline
+            installKontainer(wwwKontainerBlueprint)
+
+            // instrument the pipeline with insights collectors
+            instrumentWithInsights()
+
+            // mount the insights gui when present
+            initKontainer.use(InsightsGui::class) { mount() }
+
+            // mount application modules
+            initKontainer.use(CmsPublic::class) { mount() }
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -342,6 +371,12 @@ fun Application.module(testing: Boolean = false) {
         /////
 
         host("admin.*".toRegex()) {
+
+            // install the Kontainer into the pipeline
+            installKontainer(adminKontainerBlueprint)
+
+            // instrument the pipeline with insights collectors
+            instrumentWithInsights()
 
             val authName = "adminAreaFormAuth"
 
@@ -368,10 +403,14 @@ fun Application.module(testing: Boolean = false) {
             }
 
             authenticate(authName) {
-                initKontainer.use(SemanticUi::class) { mount(this@authenticate) }
-                initKontainer.use(CmsAdmin::class) { mount(this@authenticate) }
-                initKontainer.use(DepotAdmin::class) { mount(this@authenticate) }
-                initKontainer.use(GameOfThrones::class) { mount(this@authenticate) }
+                // mount the insights gui when present
+                initKontainer.use(InsightsGui::class) { mount() }
+
+                // mount application modules
+                initKontainer.use(SemanticUi::class) { mount() }
+                initKontainer.use(CmsAdmin::class) { mount() }
+                initKontainer.use(DepotAdmin::class) { mount() }
+                initKontainer.use(GameOfThrones::class) { mount() }
             }
         }
     }

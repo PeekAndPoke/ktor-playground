@@ -29,8 +29,7 @@ class SemanticUiRoutes(converter: OutgoingConverter, semanticUiMountPoint: Strin
 
 class SemanticUi(val routes: SemanticUiRoutes) {
 
-
-    fun mount(route: Route) = with(route) {
+    fun Route.mount() {
 
         get(routes.index) {
             respond { index() }

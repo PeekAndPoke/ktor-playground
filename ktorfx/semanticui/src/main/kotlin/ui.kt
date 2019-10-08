@@ -101,6 +101,7 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
 
     @SemanticUiCssMarker val container get() = this + "container"
     @SemanticUiCssMarker val segment get() = this + "segment"
+    @SemanticUiCssMarker val segments get() = this + "segments"
     @SemanticUiCssMarker val pusher get() = this + "pusher"
 
     // numbers
@@ -144,6 +145,7 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
     // layout
 
     @SemanticUiCssMarker val aligned get() = this + "aligned"
+    @SemanticUiCssMarker val center get() = this + "center"
     @SemanticUiCssMarker val centered get() = this + "centered"
     @SemanticUiCssMarker val divided get() = this + "divided"
     @SemanticUiCssMarker val celled get() = this + "celled"

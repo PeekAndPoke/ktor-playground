@@ -1,6 +1,8 @@
 package de.peekandpoke.ktorfx.insights.gui
 
 import de.peekandpoke.ktorfx.insights.InsightsMapper
+import de.peekandpoke.ktorfx.insights.collectors.RuntimeCollector
+import de.peekandpoke.ktorfx.insights.collectors.VaultCollector
 import de.peekandpoke.ktorfx.prismjs.Language
 import de.peekandpoke.ktorfx.prismjs.prism
 import de.peekandpoke.ktorfx.prismjs.prismJs
@@ -57,10 +59,22 @@ class InsightsGuiTemplate(
                 attributes["data-key"] = "overview"
 
                 ui.basic.segment {
-                    ui.header H3 {
-                        +"Overview"
+
+                    guiData.use(VaultCollector.Data::class) {
+                        ui.segment {
+                            ui.header H3 { +"Database" }
+                            stats()
+                        }
+                    }
+
+                    guiData.use(RuntimeCollector.Data::class) {
+                        ui.segment {
+                            ui.header H3 { +"Runtime" }
+                            stats()
+                        }
                     }
                 }
+
             }
         }
 

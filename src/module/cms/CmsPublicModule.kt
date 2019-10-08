@@ -1,16 +1,16 @@
 package de.peekandpoke.module.cms
 
+import de.peekandpoke.ktorfx.templating.respond
 import de.peekandpoke.ultra.kontainer.module
 import io.ktor.application.call
 import io.ktor.features.NotFoundException
-import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
 import io.ktor.request.uri
-import io.ktor.response.respondText
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.util.KtorExperimentalAPI
 import io.ultra.ktor_tools.database
+import kotlinx.html.div
+import kotlinx.html.unsafe
 
 val CmsPublicModule = module {
     singleton(CmsPublic::class)
@@ -19,7 +19,7 @@ val CmsPublicModule = module {
 class CmsPublic {
 
     @KtorExperimentalAPI
-    fun mount(mountPoint: Route) = with(mountPoint) {
+    fun Route.mount() {
 
         get("/*") {
 
@@ -27,8 +27,14 @@ class CmsPublic {
 
             val page = database.cmsPages.findBySlug(path) ?: throw NotFoundException("Cms page '$path' not found")
 
-            call.respondText(ContentType.Text.Html, HttpStatusCode.OK) {
-                page.value.markup
+            respond {
+                content {
+                    div {
+                        unsafe {
+                            +page.value.markup
+                        }
+                    }
+                }
             }
         }
     }

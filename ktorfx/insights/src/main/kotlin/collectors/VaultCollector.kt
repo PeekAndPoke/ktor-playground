@@ -9,6 +9,7 @@ import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ultra.vault.profiling.QueryProfiler
 import io.ktor.application.ApplicationCall
+import kotlinx.html.FlowContent
 import kotlinx.html.title
 
 class VaultCollector(private val profiler: QueryProfiler) : InsightsCollector {
@@ -19,6 +20,8 @@ class VaultCollector(private val profiler: QueryProfiler) : InsightsCollector {
             entries.map { it.timeNs }.sum()
         }
 
+        private val totalTimeMsStr = "%.2f ms".format(totalTimeNs / 1_000_000.0)
+
         override fun renderBar(template: InsightsBarTemplate) = with(template) {
 
             left {
@@ -28,9 +31,7 @@ class VaultCollector(private val profiler: QueryProfiler) : InsightsCollector {
 
                     icon.database()
 
-                    val time = "%.2f".format(totalTimeNs / 1_000_000.0)
-
-                    +"${entries.size} in $time ms"
+                    +"${entries.size} in $totalTimeMsStr ms"
                 }
             }
         }
@@ -43,6 +44,8 @@ class VaultCollector(private val profiler: QueryProfiler) : InsightsCollector {
             }
 
             content {
+
+                stats()
 
                 entries.forEachIndexed { idx, it ->
                     ui.segment {
@@ -58,6 +61,20 @@ class VaultCollector(private val profiler: QueryProfiler) : InsightsCollector {
 
                 ui.segment {
                     json(this@Data)
+                }
+            }
+        }
+
+        fun FlowContent.stats() {
+            ui.horizontal.segments {
+                ui.center.aligned.segment {
+                    ui.header { +"Queries" }
+                    +entries.size.toString()
+                }
+
+                ui.center.aligned.segment {
+                    ui.header { +"Time" }
+                    +totalTimeMsStr
                 }
             }
         }

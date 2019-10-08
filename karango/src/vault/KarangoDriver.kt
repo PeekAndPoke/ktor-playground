@@ -85,26 +85,27 @@ class KarangoDriver(
      */
     fun <T> query(query: TypedQuery<T>): Cursor<T> {
 
+        val vars = serializer.convertValue<Map<String, Any>>(query.vars)
+
         return profiler.add(
             connection = "Arango::${arangoDb.arango().db().name()}",
             queryLanguage = "aql",
             query = query.aql,
-            vars = query.vars
+            vars = vars
         ) {
             val options = AqlQueryOptions().count(true)
-            val params = serializer.convertValue<Map<String, Any>>(query.vars)
 
             lateinit var result: ArangoCursor<*>
 
-            println(query)
+//            println(query)
 //        println(query.ret.innerType())
-            println(params)
+//            println(vars)
 
             val time = measureTimeMillis {
                 try {
-                    result = arangoDb.query(query.aql, params, options, Object::class.java)
+                    result = arangoDb.query(query.aql, vars, options, Object::class.java)
                 } catch (e: ArangoDBException) {
-                    throw KarangoQueryException(query, "Error while querying '${e.message}':\n\n${query.aql}\nwith params\n\n$params", e)
+                    throw KarangoQueryException(query, "Error while querying '${e.message}':\n\n${query.aql}\nwith params\n\n$vars", e)
                 }
             }
 

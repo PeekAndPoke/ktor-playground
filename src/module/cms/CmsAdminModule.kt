@@ -47,7 +47,7 @@ class CmsAdminRoutes(converter: OutgoingConverter, cmsAdminMountPoint: String) :
 
 class CmsAdmin(val routes: CmsAdminRoutes) {
 
-    fun mount(route: Route) = with(route) {
+    fun Route.mount() {
 
         get(routes.index) {
             respond {

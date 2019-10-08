@@ -49,7 +49,11 @@ class AdminTemplate(
 
                 ui.given(CmsMenu has breadCrumbs) { active }.title.header.item H4 {
                     icon.dropdown()
-                    +"Cms"
+
+                    div {
+                        icon.tv()
+                        +"Cms"
+                    }
                 }
                 ui.given(CmsMenu has breadCrumbs) { active }.content {
                     ui.accordion.transition.active {
@@ -64,7 +68,11 @@ class AdminTemplate(
 
                 ui.given(DepotMenu has breadCrumbs) { active }.title.header.item H4 {
                     icon.dropdown()
-                    +"File Depot"
+
+                    div {
+                        icon.folder()
+                        +"File Depot"
+                    }
                 }
                 ui.given(DepotMenu has breadCrumbs) { active }.content {
                     ui.accordion.transition.active {
@@ -79,7 +87,11 @@ class AdminTemplate(
 
                 ui.given(SemanticUiMenu has breadCrumbs) { active }.title.header.item H4 {
                     icon.dropdown()
-                    +"Semantic UI"
+
+                    div {
+                        icon.code()
+                        +"Semantic UI"
+                    }
                 }
                 ui.given(SemanticUiMenu has breadCrumbs) { active }.content {
                     ui.accordion.transition.active {

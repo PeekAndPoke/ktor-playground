@@ -5,13 +5,16 @@ import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ktorfx.insights.collectors.*
 import de.peekandpoke.ktorfx.insights.gui.*
 import de.peekandpoke.ultra.kontainer.module
-import io.ktor.application.Application
 import io.ktor.application.ApplicationCallPipeline
+import io.ktor.application.application
 import io.ktor.application.call
 import io.ktor.application.log
 import io.ktor.request.httpMethod
 import io.ktor.request.uri
-import io.ktor.routing.routing
+import io.ktor.routing.Route
+import io.ktor.routing.Routing
+import io.ktor.routing.RoutingResolveTrace
+import io.ktor.util.AttributeKey
 import kotlinx.coroutines.launch
 import kotlin.system.measureNanoTime
 
@@ -40,20 +43,38 @@ val KtorFX_Insights = module {
     singleton(InsightsGui::class)
 }
 
+val RoutingTraceKey = AttributeKey<RoutingResolveTrace>("routing_resolve_trace")
 
-fun Application.instrumentWithInsights(gui: InsightsGui) {
+/**
+ * We need some special handling for recording the route trace
+ *
+ * The problem:
+ *
+ * The route tracers are called before the pipeline is executed.
+ * This mean that we did not have the chance to inject the kontainer
+ * into the call parameters yet.
+ *
+ * The solution:
+ *
+ * We put the [RoutingResolveTrace] in the call attributes.
+ * And the [RoutingCollector] will pick it up in its finish() method.
+ *
+ * NOTICE:
+ *
+ * This handler should only be registered once in the global routing { } block of the
+ * application.
+ */
+fun Routing.registerInsightsRouteTracer() {
 
-    // Mount the insights gui
-    routing {
-        gui.mount(this)
-
-        // trace routing
-        trace {
-            it.call.kontainer.use(RoutingCollector::class) {
-                recordTrace(it.buildText())
-            }
-        }
+    trace {
+        it.call.attributes.put(RoutingTraceKey, it)
     }
+}
+
+/**
+ * Applies insights instrumentation to the Pipeline
+ */
+fun Route.instrumentWithInsights() {
 
     intercept(ApplicationCallPipeline.Setup) {
 
@@ -69,7 +90,7 @@ fun Application.instrumentWithInsights(gui: InsightsGui) {
             }
         }
 
-        log.debug("${call.request.httpMethod.value} ${call.request.uri} took ${ns / 1_000_000.0} ms")
+        application.log.debug("${call.request.httpMethod.value} ${call.request.uri} took ${ns / 1_000_000.0} ms")
     }
 
     intercept(ApplicationCallPipeline.Monitoring) {

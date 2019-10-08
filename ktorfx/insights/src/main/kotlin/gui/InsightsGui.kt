@@ -21,7 +21,7 @@ import kotlin.reflect.full.allSuperclasses
 
 class InsightsGui(private val routes: InsightsGuiRoutes) {
 
-    fun mount(route: Route) = with(route) {
+    fun Route.mount() {
 
         get(routes.bar) { bucketAndFile ->
 

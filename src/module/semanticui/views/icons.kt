@@ -36,7 +36,7 @@ internal fun SimpleTemplate.icons() {
                         margin-top: 40px;
                     }
                     
-                    i.icon {
+                    .segment i.icon {
                         font-size: 2em;
                         margin: 0em auto 0.25em;
                         display: block;

@@ -45,7 +45,7 @@ class GameOfThronesRoutes(converter: OutgoingConverter, gotMountPoint: String) :
 
 class GameOfThrones(val routes: GameOfThronesRoutes) {
 
-    fun mount(route: Route) = with(route) {
+    fun Route.mount() {
 
         get(routes.getCharacters) { p ->
             val characters = database.characters.findAllPaged(p.page, p.epp)
