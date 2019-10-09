@@ -72,7 +72,7 @@ class DepotAdmin(val routes: DepotAdminRoutes) {
         get(routes.getRepository) { data ->
 
             val repository = depot.get(data.repository)
-            val bucketList = repository.listBuckets()
+            val bucketList = repository.listNewest()
 
             respond {
                 buckets(this@DepotAdmin, repository, bucketList)

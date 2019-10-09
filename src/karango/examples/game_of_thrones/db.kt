@@ -9,12 +9,16 @@ import de.peekandpoke.karango.aql.RETURN
 import de.peekandpoke.karango.vault.EntityRepository
 import de.peekandpoke.karango.vault.KarangoDriver
 import de.peekandpoke.ultra.vault.Database
+import de.peekandpoke.ultra.vault.hooks.WithTimestamps
+import de.peekandpoke.ultra.vault.hooks.WithUserRecord
 import de.peekandpoke.ultra.vault.type
 
 internal val Database.characters get() = getRepository<CharactersRepository>()
 
 val Characters = EntityCollection<Character>("got_characters", type())
 
+@WithTimestamps
+@WithUserRecord
 class CharactersRepository(driver: KarangoDriver) : EntityRepository<Character>(driver, Characters) {
 
     private val findAllWithActorQuery = FOR(coll) { character ->

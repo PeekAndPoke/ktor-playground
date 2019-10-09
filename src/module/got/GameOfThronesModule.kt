@@ -51,7 +51,7 @@ class GameOfThrones(val routes: GameOfThronesRoutes) {
             val characters = database.characters.findAllPaged(p.page, p.epp)
 
             respond {
-                characters(routes, characters)
+                characters(routes, characters.toList())
             }
         }
 

@@ -72,6 +72,7 @@ class InsightsBarTemplate(
     }
 
     fun render() = consumer.div(classes = "insights-bar") {
+        id = "insights-bar"
 
         ui.attached.inverted.segment {
 
@@ -80,6 +81,13 @@ class InsightsBarTemplate(
                 each(status) { insert(it) }
                 each(left) { insert(it) }
                 each(right) { insert(it) }
+
+            }
+
+            span {
+                id = "close-insights-bar"
+                style = "float: right; margin-top: 6px;"
+                icon.inverted.window_close_outline()
             }
         }
     }

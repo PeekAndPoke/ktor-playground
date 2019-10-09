@@ -4,48 +4,90 @@ package de.peekandpoke.ktorfx.formidable
 
 import kotlin.reflect.KMutableProperty0
 
-@JvmName("text_Boolean")
+@JvmName("field_Boolean")
 fun Form.field(prop: KMutableProperty0<Boolean>) =
     add(prop.name, prop.getter(), prop.setter, { it.toString() }, { it.toBoolean() })
+        .trimmed()
         .acceptsBoolean()
 
-@JvmName("text_Boolean?")
+@JvmName("field_Boolean?")
 fun Form.field(prop: KMutableProperty0<Boolean?>) =
     add(prop.name, prop.getter(), prop.setter, { it?.toString() ?: "" }, { if (it.isNotEmpty()) it.toBoolean() else null })
+        .trimmed()
         .acceptsBooleanOrBlank()
 
-@JvmName("text_Byte")
+@JvmName("field_Byte")
 fun Form.field(prop: KMutableProperty0<Byte>) =
     add(prop.name, prop.getter(), prop.setter, { it.toString() }, { it.toByte() })
+        .trimmed()
         .acceptsByte()
 
-@JvmName("text_Byte?")
+@JvmName("field_Byte?")
 fun Form.field(prop: KMutableProperty0<Byte?>) =
     add(prop.name, prop.getter(), prop.setter, { it?.toString() ?: "" }, { it.toByteOrNull() })
+        .trimmed()
         .acceptsByteOrBlank()
 
-@JvmName("text_Short")
+@JvmName("field_Char")
+fun Form.field(prop: KMutableProperty0<Char>) =
+    add(prop.name, prop.getter(), prop.setter, { it.toString() }, { it[0] })
+        .acceptsChar()
+
+@JvmName("field_Char?")
+fun Form.field(prop: KMutableProperty0<Char?>) =
+    add(prop.name, prop.getter(), prop.setter, { it?.toString() ?: "" }, { if (it.isNotEmpty()) it[0] else null })
+        .acceptsCharOrBlank()
+
+@JvmName("field_Short")
 fun Form.field(prop: KMutableProperty0<Short>) =
     add(prop.name, prop.getter(), prop.setter, { it.toString() }, { it.toShort() })
+        .trimmed()
         .acceptsInteger()
 
-@JvmName("text_Short?")
+@JvmName("field_Short?")
 fun Form.field(prop: KMutableProperty0<Short?>) =
     add(prop.name, prop.getter(), prop.setter, { it?.toString() ?: "" }, { it.toShortOrNull() })
+        .trimmed()
         .acceptsIntegerOrBlank()
 
-@JvmName("text_Int")
+@JvmName("field_Int")
 fun Form.field(prop: KMutableProperty0<Int>) =
     add(prop.name, prop.getter(), prop.setter, { it.toString() }, { it.toInt() })
+        .trimmed()
         .acceptsInteger()
 
-@JvmName("text_Int?")
+@JvmName("field_Int?")
 fun Form.field(prop: KMutableProperty0<Int?>) =
     add(prop.name, prop.getter(), prop.setter, { it?.toString() ?: "" }, { it.toIntOrNull() })
+        .trimmed()
         .acceptsIntegerOrBlank()
 
-@JvmName("text_String")
+@JvmName("field_Float")
+fun Form.field(prop: KMutableProperty0<Float>) =
+    add(prop.name, prop.getter(), prop.setter, { it.toString() }, { it.toFloat() })
+        .trimmed()
+        .acceptsFloat()
+
+@JvmName("field_Float?")
+fun Form.field(prop: KMutableProperty0<Float?>) =
+    add(prop.name, prop.getter(), prop.setter, { it?.toString() ?: "" }, { it.toFloatOrNull() })
+        .trimmed()
+        .acceptsFloatOrBlank()
+
+@JvmName("field_Double")
+fun Form.field(prop: KMutableProperty0<Double>) =
+    add(prop.name, prop.getter(), prop.setter, { it.toString() }, { it.toDouble() })
+        .trimmed()
+        .acceptsDouble()
+
+@JvmName("field_Double?")
+fun Form.field(prop: KMutableProperty0<Double?>) =
+    add(prop.name, prop.getter(), prop.setter, { it?.toString() ?: "" }, { it.toDoubleOrNull() })
+        .trimmed()
+        .acceptsDoubleOrBlank()
+
+@JvmName("field_String")
 fun Form.field(prop: KMutableProperty0<String>) = add(prop.name, prop.getter(), prop.setter, { it }, { it })
 
-@JvmName("text_String?")
+@JvmName("field_String?")
 fun Form.field(prop: KMutableProperty0<String?>) = add(prop.name, prop.getter(), prop.setter, { it ?: "" }, { s -> if (s.isNotEmpty()) s else null })

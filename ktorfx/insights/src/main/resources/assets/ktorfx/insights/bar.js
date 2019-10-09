@@ -7,7 +7,11 @@ $(() => {
         const filename = $placeholder.data("insights-filename");
 
         $.ajax(`/_/insights/bar/${bucket}/${filename}`)
-            .then(result => $placeholder.replaceWith($(result)))
+            .then(result => {
+                $placeholder.replaceWith($(result));
+
+                $('#close-insights-bar').on("click", () => $('#insights-bar').remove())
+            })
             .catch(console.error)
-    })
+    });
 });

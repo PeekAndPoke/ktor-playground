@@ -2,13 +2,22 @@ package de.peekandpoke.ktorfx.formidable
 
 import de.peekandpoke.ultra.polyglot.Translatable
 
+/**
+ * Makes the field accept only results within the given [ClosedRange]
+ */
 fun <T : Comparable<T>> FormField<T>.resultingInRange(range: ClosedRange<T>, message: Translatable = must_be_in_range(range)) =
-    resultingIn(message) { range.contains(it) }
+    addResultRule(message) { range.contains(it) }
 
+/**
+ * Makes the field accept only results within the given [ClosedRange] or blank input
+ */
 @JvmName("resultingInRange?")
 fun <T : Comparable<T>> FormField<T?>.resultingInRange(range: ClosedRange<T>, message: Translatable = must_be_in_range_or_blank(range)) =
-    resultingIn(message) { it == null || range.contains(it) }
+    addResultRule(message) { it == null || range.contains(it) }
 
-fun <T> FormField<T>.resultingInAnyOf(options: List<T>, message: Translatable = invalid_value) =
-    resultingIn(message) { options.contains(it) }
+/**
+ * Makes the field accept only results the are present in the given [Set]
+ */
+fun <T> FormField<T>.resultingInAnyOf(options: Set<T>, message: Translatable = invalid_value) =
+    addResultRule(message) { options.contains(it) }
 

@@ -39,6 +39,8 @@ class SemanticIcon(private val parent: FlowContent) {
     @SemanticUiCssMarker val grey get() = this + "grey"
     @SemanticUiCssMarker val black get() = this + "black"
 
+    @SemanticUiCssMarker val inverted get() = this + "inverted"
+
     // Accessibility ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @SemanticUiCssMarker fun american_sign_language_interpreting() = render("american sign language interpreting icon")

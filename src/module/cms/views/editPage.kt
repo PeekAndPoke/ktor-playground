@@ -1,11 +1,9 @@
 package de.peekandpoke.module.cms.views
 
-import de.peekandpoke.ktorfx.formidable.semanticui.textArea
-import de.peekandpoke.ktorfx.formidable.semanticui.textInput
+import de.peekandpoke.ktorfx.formidable.semanticui.formidable
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import de.peekandpoke.module.cms.forms.CmsPageForm
-import kotlinx.html.FormMethod
 import kotlinx.html.h1
 import kotlinx.html.title
 
@@ -26,8 +24,7 @@ internal fun SimpleTemplate.editPage(create: Boolean, form: CmsPageForm) {
             }
         }
 
-        ui.form Form {
-            method = FormMethod.post
+        formidable(form) {
 
             textInput(t, form.name, label = "Name")
 

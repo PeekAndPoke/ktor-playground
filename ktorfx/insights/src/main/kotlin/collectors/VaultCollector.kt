@@ -31,7 +31,7 @@ class VaultCollector(private val profiler: QueryProfiler) : InsightsCollector {
 
                     icon.database()
 
-                    +"${entries.size} in $totalTimeMsStr ms"
+                    +"${entries.size} in $totalTimeMsStr"
                 }
             }
         }

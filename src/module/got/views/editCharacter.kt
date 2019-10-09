@@ -1,15 +1,12 @@
 package de.peekandpoke.module.got.views
 
 import de.peekandpoke.karango.examples.game_of_thrones.Character
-import de.peekandpoke.ktorfx.formidable.semanticui.numberInput
-import de.peekandpoke.ktorfx.formidable.semanticui.selectInput
-import de.peekandpoke.ktorfx.formidable.semanticui.textInput
+import de.peekandpoke.ktorfx.formidable.semanticui.formidable
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import de.peekandpoke.module.got.CharacterForm
 import de.peekandpoke.module.got.GameOfThronesRoutes
 import de.peekandpoke.ultra.vault.Stored
-import kotlinx.html.FormMethod
 import kotlinx.html.title
 
 fun SimpleTemplate.editCharacter(routes: GameOfThronesRoutes, character: Stored<Character>, form: CharacterForm) {
@@ -24,8 +21,7 @@ fun SimpleTemplate.editCharacter(routes: GameOfThronesRoutes, character: Stored<
 
         ui.header H4 { +"Edit Character ${character.value.fullName}" }
 
-        ui.form Form {
-            method = FormMethod.post
+        formidable(form) {
 
             ui.two.fields {
                 textInput(t, form.name, label = "Name")

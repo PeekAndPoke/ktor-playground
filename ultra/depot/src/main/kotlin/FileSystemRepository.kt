@@ -60,6 +60,16 @@ abstract class FileSystemRepository(override val name: String, dir: String) : De
             ?: listOf()
     }
 
+    override fun listNewest(limit: Int): List<DepotBucket> {
+        return root.listFiles()
+            ?.filter { it.isDirectory }
+            ?.sortedBy { it.lastModified() }
+            ?.reversed()
+            ?.take(limit)
+            ?.map { FsBucket(it.name, it) }
+            ?: listOf()
+    }
+
     override fun get(bucketName: String): DepotBucket {
         return FsBucket(bucketName, File(root, bucketName))
     }

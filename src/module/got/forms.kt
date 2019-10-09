@@ -35,9 +35,9 @@ class CharacterForm private constructor(it: Storable<Character>, mutator: Charac
         fun of(it: CharacterMutator, parent: Form? = null) = CharacterForm(New(it.getInput()), it, parent)
     }
 
-    val name = field(target::name).acceptsNonBlank()
+    val name = field(target::name).trimmed().acceptsNonBlank()
 
-    val surname = field(target::surname)
+    val surname = field(target::surname).trimmed()
 
     val age = field(target::age).resultingInRange(0..200)
 
