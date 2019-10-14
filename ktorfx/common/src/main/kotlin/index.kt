@@ -2,6 +2,7 @@ package de.peekandpoke.ktorfx.common
 
 import de.peekandpoke.ultra.depot.Depot
 import de.peekandpoke.ultra.kontainer.Kontainer
+import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
 import de.peekandpoke.ultra.polyglot.I18n
 import io.ktor.application.ApplicationCall
@@ -10,6 +11,8 @@ import io.ktor.sessions.CurrentSession
 import io.ktor.util.AttributeKey
 import io.ktor.util.Attributes
 import io.ktor.util.pipeline.PipelineContext
+
+fun KontainerBuilder.ktorFxCommon() = module(KtorFX_Common)
 
 /**
  * Common kontainer module

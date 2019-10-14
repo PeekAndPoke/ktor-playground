@@ -7,6 +7,8 @@ import de.peekandpoke.ultra.polyglot.translatable
 const val mainGroup = "formidable"
 const val errorGroup = "$mainGroup.errors"
 
+val invalid_csrf_token = "$errorGroup.invalid_csrf_token".translatable()
+
 val must_not_be_blank = "$errorGroup.must_not_be_blank".translatable()
 
 val must_not_be_empty = "$errorGroup.must_not_be_empty".translatable()

@@ -1,7 +1,10 @@
 package de.peekandpoke.karango
 
 import de.peekandpoke.karango.vault.KarangoDriver
+import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
+
+fun KontainerBuilder.karango() = module(KarangoModule)
 
 /**
  * Karango kontainer module

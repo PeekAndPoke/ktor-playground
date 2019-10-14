@@ -50,7 +50,9 @@
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output-test url="file://$MODULE_DIR$/../../../../ktorfx/webjars/out/test/classes" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../../../ktorfx/webjars/build/generated/source/kapt/test" />
+    <content url="file://$MODULE_DIR$/../../../../ktorfx/webjars/build/generated/source/kapt/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../ktorfx/webjars/build/generated/source/kapt/test" isTestSource="true" generated="true" />
+    </content>
     <content url="file://$MODULE_DIR$/../../../../ktorfx/webjars/build/generated/source/kaptKotlin/test">
       <sourceFolder url="file://$MODULE_DIR$/../../../../ktorfx/webjars/build/generated/source/kaptKotlin/test" isTestSource="true" generated="true" />
     </content>

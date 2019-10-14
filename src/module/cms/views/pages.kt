@@ -56,7 +56,7 @@ internal fun SimpleTemplate.pages(mod: CmsAdmin, pages: List<Stored<CmsPage>>) {
                             +(it._meta?.ts?.updatedAt?.toString() ?: "n/a")
                         }
                         td {
-                            +(it._meta?.user?.user ?: "n/a")
+                            +(it._meta?.user?.userId ?: "n/a")
                         }
                     }
                 }

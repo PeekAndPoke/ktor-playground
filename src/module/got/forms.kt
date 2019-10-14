@@ -24,10 +24,12 @@ class ActorForm private constructor(it: Storable<Actor>, mutator: ActorMutator, 
     val age = field(target::age).resultingInRange(0..200)
 }
 
+
 class CharacterForm private constructor(it: Storable<Character>, mutator: CharacterMutator, parent: Form?) :
     StorableForm<Character, CharacterMutator>(it, mutator, parent) {
 
     companion object {
+
         fun of(it: Character, parent: Form? = null) = of(New(it), parent)
 
         fun of(it: Storable<Character>, parent: Form? = null) = CharacterForm(it, it.value.mutator(), parent)

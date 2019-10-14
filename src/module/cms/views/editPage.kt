@@ -24,13 +24,13 @@ internal fun SimpleTemplate.editPage(create: Boolean, form: CmsPageForm) {
             }
         }
 
-        formidable(form) {
+        formidable(t, form) {
 
-            textInput(t, form.name, label = "Name")
+            textInput(form.name, label = "Name")
 
-            textInput(t, form.slug, label = "Slug")
+            textInput(form.slug, label = "Slug")
 
-            textArea(t, form.markup, label = "Markup")
+            textArea(form.markup, label = "Markup")
 
             ui.button Submit { +"Submit" }
         }

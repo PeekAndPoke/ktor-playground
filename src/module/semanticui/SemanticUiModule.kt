@@ -7,9 +7,12 @@ import de.peekandpoke.module.semanticui.views.buttons
 import de.peekandpoke.module.semanticui.views.icons
 import de.peekandpoke.module.semanticui.views.index
 import de.peekandpoke.module.semanticui.views.playground
+import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
 import io.ktor.routing.Route
 import io.ktor.routing.get
+
+fun KontainerBuilder.semanticUi() = module(SemanticUiModule)
 
 val SemanticUiModule = module {
 

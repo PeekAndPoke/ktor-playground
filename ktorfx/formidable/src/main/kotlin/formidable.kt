@@ -64,7 +64,7 @@ interface FormElement {
 /**
  * Defines a form field
  */
-interface FormField<T> {
+interface FormField<T> : FormElement {
 
     /**
      * The name of the form field
@@ -89,7 +89,7 @@ interface FormField<T> {
     /**
      * Returns true when the fields has no errors
      */
-    fun isValid(): Boolean = errors.isEmpty()
+    override fun isValid(): Boolean = errors.isEmpty()
 
     /**
      * Returns true when the field has errors
@@ -130,6 +130,16 @@ interface FormField<T> {
      */
     fun addResultRule(errorMessage: Translatable, rule: Rule<T>): FormField<T>
 }
+
+/**
+ * Special type of field, for hidden form fields
+ */
+interface HiddenFormField<T> : FormField<T>
+
+/**
+ * Special type of field, for csrf form fields
+ */
+interface CsrfFormField : HiddenFormField<String>
 
 /**
  * Special type of field, which can by used to f.e. render a [FormidableViewBuilder.selectInput]

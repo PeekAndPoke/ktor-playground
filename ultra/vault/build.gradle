@@ -38,6 +38,7 @@ dependencies {
     implementation "de.peekandpoke.ultra:kontainer:$ultra_version"
     implementation "de.peekandpoke.ultra:mutator:$ultra_version"
     kapt "de.peekandpoke.ultra:mutator:$ultra_version"
+    implementation "de.peekandpoke.ultra:security:$ultra_version"
 
     ////  tests  ////////////////////////////////////////////////////////////////////////////////////////////////
 

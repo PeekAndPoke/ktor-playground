@@ -2,11 +2,14 @@ package de.peekandpoke.ktorfx.webresources
 
 import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ultra.common.md5
+import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.util.pipeline.PipelineContext
 import java.time.Instant
+
+fun KontainerBuilder.ktorFxWebResources() = module(KtorFX_WebResources)
 
 val KtorFX_WebResources = module {
 

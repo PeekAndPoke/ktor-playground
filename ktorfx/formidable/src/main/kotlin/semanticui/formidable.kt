@@ -3,11 +3,33 @@ package de.peekandpoke.ktorfx.formidable.semanticui
 import de.peekandpoke.ktorfx.formidable.Form
 import de.peekandpoke.ktorfx.formidable.FormField
 import de.peekandpoke.ktorfx.formidable.FormFieldWithOptions
+import de.peekandpoke.ktorfx.formidable.HiddenFormField
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ultra.polyglot.I18n
 import kotlinx.html.*
 
-class FormidableViewBuilder(val form: FORM) {
+fun FlowContent.formidable(i18n: I18n, form: Form, block: FormidableViewBuilder.() -> Unit) {
+
+    ui.form Form {
+        // default is post
+        method = FormMethod.post
+
+        val builder = FormidableViewBuilder(i18n, this)
+
+        // render all hidden fields
+        builder.apply {
+            form.hiddenFields.forEach {
+                hidden(it)
+            }
+        }
+
+        // apply the builder block
+        builder.block()
+    }
+}
+
+
+class FormidableViewBuilder(private val i18n: I18n, val form: FORM) {
 
     fun configure(block: FORM.() -> Unit) {
         form.block()
@@ -23,16 +45,31 @@ class FormidableViewBuilder(val form: FORM) {
         }
     }
 
-    fun <T> FlowContent.errors(t: I18n, field: FormField<T>) {
+    fun <T> FlowContent.errors(field: FormField<T>) {
         if (!field.isValid()) {
 
             field.errors.forEach {
-                ui.basic.red.pointing.label { +t[it] }
+                ui.basic.red.pointing.label { +i18n[it] }
             }
         }
     }
 
-    fun <T> FlowContent.textArea(t: I18n, field: FormField<T>, label: String? = null) {
+    fun <T> FlowContent.hidden(field: HiddenFormField<T>) {
+
+        if (field.hasErrors()) {
+            ui.field.error {
+                errors(field)
+            }
+        }
+
+        input {
+            type = InputType.hidden
+            name = field.name.value
+            value = field.textValue
+        }
+    }
+
+    fun <T> FlowContent.textArea(field: FormField<T>, label: String? = null) {
 
         ui.field.given(field.hasErrors()) { error }.then {
 
@@ -45,11 +82,11 @@ class FormidableViewBuilder(val form: FORM) {
                 +field.textValue
             }
 
-            errors(t, field)
+            errors(field)
         }
     }
 
-    fun <T> FlowContent.textInput(t: I18n, field: FormField<T>, label: String? = null) {
+    fun <T> FlowContent.textInput(field: FormField<T>, label: String? = null) {
 
         ui.field.given(field.hasErrors()) { error }.then {
 
@@ -62,12 +99,11 @@ class FormidableViewBuilder(val form: FORM) {
                 value = field.textValue
             }
 
-            errors(t, field)
+            errors(field)
         }
-
     }
 
-    fun <T> FlowContent.numberInput(t: I18n, field: FormField<T>, label: String? = null, step: Double? = null) {
+    fun <T> FlowContent.numberInput(field: FormField<T>, label: String? = null, step: Double? = null) {
 
         ui.field.given(field.hasErrors()) { error }.then {
 
@@ -85,11 +121,11 @@ class FormidableViewBuilder(val form: FORM) {
                 value = field.textValue
             }
 
-            errors(t, field)
+            errors(field)
         }
     }
 
-    fun <T> FlowContent.selectInput(t: I18n, field: FormFieldWithOptions<T>, label: String? = null) {
+    fun <T> FlowContent.selectInput(field: FormFieldWithOptions<T>, label: String? = null) {
 
         ui.field.given(field.hasErrors()) { error }.then {
 
@@ -111,21 +147,8 @@ class FormidableViewBuilder(val form: FORM) {
                 }
             }
 
-            errors(t, field)
+            errors(field)
         }
     }
 }
-
-fun FlowContent.formidable(form: Form, builder: FormidableViewBuilder.() -> Unit) {
-
-    ui.form Form {
-        // default is post
-        method = FormMethod.post
-
-        // TODO: hidden fields... get all hidden fields from the form
-
-        FormidableViewBuilder(this).builder()
-    }
-}
-
 

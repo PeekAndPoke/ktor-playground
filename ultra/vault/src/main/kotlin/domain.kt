@@ -5,8 +5,8 @@ package de.peekandpoke.ultra.vault
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonUnwrapped
+import de.peekandpoke.ultra.security.user.UserRecord
 import de.peekandpoke.ultra.vault.hooks.Timestamps
-import de.peekandpoke.ultra.vault.hooks.UserRecord
 
 data class StorableMeta(
     val ts: Timestamps? = null,

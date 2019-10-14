@@ -10,12 +10,15 @@ import de.peekandpoke.ktorfx.flashsession.success
 import de.peekandpoke.ktorfx.templating.respond
 import de.peekandpoke.module.got.views.characters
 import de.peekandpoke.module.got.views.editCharacter
+import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
 import de.peekandpoke.ultra.vault.Stored
 import io.ktor.application.call
 import io.ktor.response.respondRedirect
 import io.ktor.routing.Route
 import io.ultra.ktor_tools.database
+
+fun KontainerBuilder.gameOfThrones() = module(GameOfThronesModule)
 
 val GameOfThronesModule = module {
     // config
@@ -57,7 +60,7 @@ class GameOfThrones(val routes: GameOfThronesRoutes) {
 
         getOrPost(routes.getCharacter) { data ->
 
-            val form = CharacterForm.of(data.character)
+            val form = CharacterForm.of(data.character).apply { secure() }
 
             println(data.character)
 

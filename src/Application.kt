@@ -1,36 +1,37 @@
 package de.peekandpoke
 
 import com.fasterxml.jackson.databind.SerializationFeature
-import de.peekandpoke.karango.KarangoModule
+import de.peekandpoke.karango.karango
 import de.peekandpoke.ktorfx.common.provide
 import de.peekandpoke.ktorfx.flashsession.FlashSession
 import de.peekandpoke.ktorfx.insights.gui.InsightsGui
 import de.peekandpoke.ktorfx.insights.instrumentWithInsights
 import de.peekandpoke.ktorfx.insights.registerInsightsRouteTracer
+import de.peekandpoke.ktorfx.security.KtorFXSecurityConfig
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import de.peekandpoke.ktorfx.templating.respond
 import de.peekandpoke.ktorfx.webjars.BetterWebjars
 import de.peekandpoke.ktorfx.webresources.AppMeta
 import de.peekandpoke.module.cms.CmsAdmin
-import de.peekandpoke.module.cms.CmsAdminModule
 import de.peekandpoke.module.cms.CmsPublic
-import de.peekandpoke.module.cms.CmsPublicModule
+import de.peekandpoke.module.cms.cmsAdmin
+import de.peekandpoke.module.cms.cmsPublic
 import de.peekandpoke.module.depot.DepotAdmin
-import de.peekandpoke.module.depot.DepotAdminModule
+import de.peekandpoke.module.depot.depotAdmin
 import de.peekandpoke.module.got.GameOfThrones
-import de.peekandpoke.module.got.GameOfThronesModule
+import de.peekandpoke.module.got.gameOfThrones
 import de.peekandpoke.module.semanticui.SemanticUi
-import de.peekandpoke.module.semanticui.SemanticUiModule
+import de.peekandpoke.module.semanticui.semanticUi
 import de.peekandpoke.resources.Translations
-import de.peekandpoke.ultra.depot.Ultra_Depot
+import de.peekandpoke.ultra.depot.ultraDepot
 import de.peekandpoke.ultra.kontainer.KontainerBlueprint
 import de.peekandpoke.ultra.kontainer.kontainer
 import de.peekandpoke.ultra.polyglot.I18n
+import de.peekandpoke.ultra.security.user.StaticUserRecordProvider
+import de.peekandpoke.ultra.security.user.UserRecord
 import de.peekandpoke.ultra.vault.Database
-import de.peekandpoke.ultra.vault.Ultra_Vault
-import de.peekandpoke.ultra.vault.hooks.StaticUserRecordProvider
-import de.peekandpoke.ultra.vault.hooks.UserRecord
+import de.peekandpoke.ultra.vault.ultraVault
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.features.*
@@ -50,7 +51,8 @@ import io.ktor.sessions.*
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.getDigestFunction
 import io.ktor.util.hex
-import io.ultra.ktor_tools.KtorFX
+import io.ultra.ktor_tools.KtorFXConfig
+import io.ultra.ktor_tools.ktorFx
 import io.ultra.ktor_tools.logger.logger
 import kotlinx.html.body
 import kotlinx.html.div
@@ -65,35 +67,44 @@ val AppMeta = object : AppMeta() {}
 
 private val commonKontainerBlueprint by lazy {
 
+    // TODO: get the config from application.environment.config
+
+    val config = KtorFXConfig(
+//        KtorFXSecurityConfig("super-secret", 300_000)
+        KtorFXSecurityConfig("super-secret", 300_000)
+    )
+
     kontainer {
 
         // Database //////////////////////////////////////////////////////////////////////////////////////////////////////////
-        module(Ultra_Vault)
-        module(KarangoModule)
-        // provide connection to arango database
+        ultraVault()
+
+        // Add karango and provide connection to arango database
+        karango()
         instance(arangoDatabase)
 
         // File depot ////////////////////////////////////////////////////////////////////////////////////////////////////////
-        module(Ultra_Depot)
+        ultraDepot()
 
         // KtorFX ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        module(KtorFX)
+        ktorFx(config)
         // create a app specific cache buster
         instance(AppMeta.cacheBuster())
         // Re-define the I18n with our texts
+        // TODO: we need an I18n service that injects all I18nGroup instances, so we can avoid this dynamic here
         dynamic0(I18n::class) { Translations.withLocale("en") }
 
         // application ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        cmsAdmin()
+        cmsPublic()
+
+        depotAdmin()
+
         // application modules
-        module(GameOfThronesModule)
+        gameOfThrones()
+        semanticUi()
 
-        module(SemanticUiModule)
-
-        module(CmsAdminModule)
-        module(CmsPublicModule)
-
-        module(DepotAdminModule)
     }
 }
 

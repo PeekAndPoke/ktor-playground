@@ -3,7 +3,10 @@ package de.peekandpoke.ktorfx.prismjs
 import de.peekandpoke.ktorfx.webresources.CacheBuster
 import de.peekandpoke.ktorfx.webresources.WebResourceGroup
 import de.peekandpoke.ktorfx.webresources.WebResources
+import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
+
+fun KontainerBuilder.ktorFxPrismJs() = module(KtorFX_PrismJs)
 
 val KtorFX_PrismJs = module {
     singleton(PrismJsWebResources::class)

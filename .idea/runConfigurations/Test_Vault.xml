@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Test Vault" type="JUnit" factoryName="JUnit">
-    <module name="ktor-playground.vault.test" />
-    <option name="PACKAGE_NAME" value="" />
+    <module name="ktor-playground.ultra.vault.test" />
+    <option name="PACKAGE_NAME" value="de.peekandpoke.ultra.vault" />
     <option name="MAIN_CLASS_NAME" value="" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="package" />

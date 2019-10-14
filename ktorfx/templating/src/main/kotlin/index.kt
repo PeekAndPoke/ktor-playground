@@ -1,6 +1,7 @@
 package de.peekandpoke.ktorfx.templating
 
 import de.peekandpoke.ktorfx.common.kontainer
+import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
@@ -8,6 +9,8 @@ import io.ktor.html.respondHtmlTemplate
 import io.ktor.http.HttpStatusCode
 import io.ktor.util.pipeline.PipelineContext
 import kotlin.reflect.KClass
+
+fun KontainerBuilder.ktorFxTemplating() = module(KtorFX_Templating)
 
 /**
  * Template kontainer module

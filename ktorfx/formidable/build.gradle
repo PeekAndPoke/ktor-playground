@@ -40,10 +40,12 @@ dependencies {
     // ultra
     implementation "de.peekandpoke.ultra:kontainer:$ultra_version"
     implementation "de.peekandpoke.ultra:mutator:$ultra_version"
+    implementation "de.peekandpoke.ultra:security:$ultra_version"
 
     compile project(":ultra:polyglot")
     compile project(":ultra:vault")
 
+    compile project(":ktorfx:common")
     compile project(":ktorfx:semanticui")
 
     ////  tests  ////////////////////////////////////////////////////////////////////////////////////////////////

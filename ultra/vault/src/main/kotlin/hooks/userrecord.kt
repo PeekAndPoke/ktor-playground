@@ -1,5 +1,7 @@
 package de.peekandpoke.ultra.vault.hooks
 
+import de.peekandpoke.ultra.security.user.UserRecord
+import de.peekandpoke.ultra.security.user.UserRecordProvider
 import de.peekandpoke.ultra.vault.Repository
 import de.peekandpoke.ultra.vault.Storable
 import de.peekandpoke.ultra.vault.StorableMeta
@@ -13,11 +15,6 @@ import kotlin.reflect.full.hasAnnotation
  */
 @Target(AnnotationTarget.CLASS)
 annotation class WithUserRecord
-
-data class UserRecord(
-    val user: String,
-    val ip: String
-)
 
 class UserRecordOnSaveHook(private val provider: UserRecordProvider) : OnSaveHook {
 
@@ -34,16 +31,4 @@ class UserRecordOnSaveHook(private val provider: UserRecordProvider) : OnSaveHoo
             (storable._meta ?: StorableMeta()).copy(user = user)
         )
     }
-}
-
-interface UserRecordProvider {
-    operator fun invoke(): UserRecord
-}
-
-class AnonymousUserRecordProvider : UserRecordProvider {
-    override fun invoke() = UserRecord("anonymous", "unknown")
-}
-
-class StaticUserRecordProvider(private val user: UserRecord) : UserRecordProvider {
-    override fun invoke() = user
 }

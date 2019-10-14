@@ -21,25 +21,25 @@ fun SimpleTemplate.editCharacter(routes: GameOfThronesRoutes, character: Stored<
 
         ui.header H4 { +"Edit Character ${character.value.fullName}" }
 
-        formidable(form) {
+        formidable(t, form) {
 
             ui.two.fields {
-                textInput(t, form.name, label = "Name")
-                textInput(t, form.surname, label = "Surname")
+                textInput(form.name, label = "Name")
+                textInput(form.surname, label = "Surname")
             }
 
             ui.two.fields {
-                textInput(t, form.age, label = "Age")
-                selectInput(t, form.alive, label = "Alive")
+                textInput(form.age, label = "Age")
+                selectInput(form.alive, label = "Alive")
             }
 
             form.actor?.let { actorForm ->
                 ui.header H4 { +"Edit Actor ${character.value.actor?.value?.name}" }
 
                 ui.three.fields {
-                    textInput(t, actorForm.name, label = "Name")
-                    textInput(t, actorForm.surname, label = "Surname")
-                    numberInput(t, actorForm.age, label = "Age")
+                    textInput(actorForm.name, label = "Name")
+                    textInput(actorForm.surname, label = "Surname")
+                    numberInput(actorForm.age, label = "Age")
                 }
             }
 

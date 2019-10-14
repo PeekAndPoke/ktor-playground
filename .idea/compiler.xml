@@ -34,6 +34,8 @@
       <module name="ktor-playground.ktorfx.main" target="1.8" />
       <module name="ktor-playground.ktorfx.prismjs.main" target="1.8" />
       <module name="ktor-playground.ktorfx.prismjs.test" target="1.8" />
+      <module name="ktor-playground.ktorfx.security.main" target="1.8" />
+      <module name="ktor-playground.ktorfx.security.test" target="1.8" />
       <module name="ktor-playground.ktorfx.semanticui.main" target="1.8" />
       <module name="ktor-playground.ktorfx.semanticui.test" target="1.8" />
       <module name="ktor-playground.ktorfx.templating.main" target="1.8" />

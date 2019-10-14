@@ -12,21 +12,19 @@ import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.webresources.WebResources
 import de.peekandpoke.ktorfx.webresources.css
 import de.peekandpoke.ktorfx.webresources.js
-import io.ktor.html.PlaceholderList
-import io.ktor.html.Template
-import io.ktor.html.each
-import io.ktor.html.insert
+import io.ktor.html.*
 import kotlinx.html.*
 
 class InsightsGuiTemplate(
     private val routes: InsightsGuiRoutes,
     private val webResources: WebResources,
-    private val mapper: InsightsMapper,
-    private val guiData: InsightsGuiData
+    private val mapper: InsightsMapper
 ) : Template<HTML> {
 
     val styles = PlaceholderList<HEAD, HEAD>()
     val scripts = PlaceholderList<FlowContent, FlowContent>()
+
+    val contentPlaceholder = Placeholder<BODY>()
 
     val menuPlaceholders = PlaceholderList<FlowContent, FlowContent>()
 
@@ -53,7 +51,22 @@ class InsightsGuiTemplate(
                 +"Overview"
             }
         }
+    }
 
+    override fun HTML.apply() {
+
+        head {
+            each(styles) { insert(it) }
+        }
+
+        body {
+            insert(contentPlaceholder)
+
+            each(scripts) { insert(it) }
+        }
+    }
+
+    fun render(guiData: InsightsGuiData) {
         contentPlaceholders {
             div {
                 attributes["data-key"] = "overview"
@@ -74,23 +87,14 @@ class InsightsGuiTemplate(
                         }
                     }
                 }
-
             }
         }
 
         guiData.collectors.forEach {
             it.renderDetails(this)
         }
-    }
 
-    override fun HTML.apply() {
-
-        head {
-            each(styles) { insert(it) }
-        }
-
-        body {
-
+        contentPlaceholder {
             ui.green.inverted.attached.segment {
 
                 ui.big.horizontal.divided.list {
@@ -135,8 +139,6 @@ class InsightsGuiTemplate(
                     insert(it)
                 }
             }
-
-            each(scripts) { insert(it) }
         }
     }
 

@@ -4,6 +4,7 @@ import de.peekandpoke.ktorfx.common.hasKontainer
 import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ktorfx.insights.collectors.*
 import de.peekandpoke.ktorfx.insights.gui.*
+import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
 import io.ktor.application.ApplicationCallPipeline
 import io.ktor.application.application
@@ -17,6 +18,8 @@ import io.ktor.routing.RoutingResolveTrace
 import io.ktor.util.AttributeKey
 import kotlinx.coroutines.launch
 import kotlin.system.measureNanoTime
+
+fun KontainerBuilder.ktorFxInsights() = module(KtorFX_Insights)
 
 val KtorFX_Insights = module {
 
@@ -41,6 +44,7 @@ val KtorFX_Insights = module {
     singleton(InsightsGuiWebResources::class)
     singleton(InsightsGuiRoutes::class)
     singleton(InsightsGui::class)
+    prototype(InsightsGuiTemplate::class)
 }
 
 val RoutingTraceKey = AttributeKey<RoutingResolveTrace>("routing_resolve_trace")

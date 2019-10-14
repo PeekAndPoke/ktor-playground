@@ -1,8 +1,8 @@
 package de.peekandpoke.ktorfx.webresources
 
-import de.peekandpoke.ultra.common.base64
 import de.peekandpoke.ultra.common.md5
 import de.peekandpoke.ultra.common.sha384
+import de.peekandpoke.ultra.common.toBase64
 import java.io.InputStream
 
 /**
@@ -55,7 +55,7 @@ abstract class WebResourceGroup(
 
             val bytes = uri.toInputStream().readBytes()
 
-            return WebResource(uri, bytes.md5(), "sha384-${bytes.sha384().base64()}").apply {
+            return WebResource(uri, bytes.md5(), "sha384-${bytes.sha384().toBase64()}").apply {
                 css.add(this)
             }
         }
@@ -70,13 +70,14 @@ abstract class WebResourceGroup(
 
             val bytes = uri.toInputStream().readBytes()
 
-            return WebResource(uri, bytes.md5(), "sha384-${bytes.sha384().base64()}").apply {
+            return WebResource(uri, bytes.md5(), "sha384-${bytes.sha384().toBase64()}").apply {
                 js.add(this)
             }
         }
 
         private fun String.toInputStream(): InputStream {
 
+            // TODO: check if resource is null and throw a custom exception if it is so
             return loader.getResourceAsStream(this.trimStart('/'))
         }
     }

@@ -10,6 +10,7 @@ import de.peekandpoke.module.cms.forms.CmsPageForm
 import de.peekandpoke.module.cms.views.editPage
 import de.peekandpoke.module.cms.views.index
 import de.peekandpoke.module.cms.views.pages
+import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
 import de.peekandpoke.ultra.vault.New
 import de.peekandpoke.ultra.vault.Stored
@@ -18,6 +19,8 @@ import io.ktor.response.respondRedirect
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ultra.ktor_tools.database
+
+fun KontainerBuilder.cmsAdmin() = module(CmsAdminModule)
 
 val CmsAdminModule = module {
     // config
@@ -63,7 +66,7 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
 
         getOrPost(routes.editPage) { data ->
 
-            val form = CmsPageForm.of(data.page)
+            val form = CmsPageForm.of(data.page).apply { secure() }
 
             if (form.submit(call)) {
                 if (form.isModified) {

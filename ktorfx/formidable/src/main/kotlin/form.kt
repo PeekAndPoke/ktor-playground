@@ -1,17 +1,31 @@
 package de.peekandpoke.ktorfx.formidable
 
+import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ultra.mutator.Mutator
+import de.peekandpoke.ultra.security.csrf.CsrfProtection
 import de.peekandpoke.ultra.vault.Storable
 import io.ktor.application.ApplicationCall
 import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
 import io.ktor.request.httpMethod
 import io.ktor.request.receive
+import io.ktor.util.pipeline.PipelineContext
+import kotlin.reflect.KMutableProperty0
 
 /**
  * Base implementation for all forms
  */
-abstract class Form(name: String = "", parent: Form? = null) : FormElement {
+abstract class Form(name: String, private val parent: Form? = null) : FormElement {
+
+    /**
+     * Markup compatible id of the form
+     */
+    val formId get(): String = _name.asFormId
+
+    /**
+     * All hidden fields of the form
+     */
+    val hiddenFields get(): List<HiddenFormField<*>> = _children.filterIsInstance<HiddenFormField<*>>()
 
     /**
      * The form name is constructed from the given name and an eventual parents form name
@@ -27,6 +41,9 @@ abstract class Form(name: String = "", parent: Form? = null) : FormElement {
      * Submits the given [params] to all children
      */
     override fun submit(params: Parameters) {
+
+        checkSecuritySetup()
+
         _children.forEach {
             it.submit(params)
         }
@@ -56,10 +73,52 @@ abstract class Form(name: String = "", parent: Form? = null) : FormElement {
     fun <T : Form> add(field: T): T = addField(field)
 
     /**
+     * Adds a hidden field
+     */
+    fun hidden(name: String, property: KMutableProperty0<String>) = addField(
+        FormFieldImpl(_name + name, property.getter(), property.setter, { it }, { it }).hidden()
+    )
+
+    /**
+     * Adds a hidden field
+     */
+    fun csrf(name: String, property: KMutableProperty0<String>) = addField(
+        FormFieldImpl(_name + name, property.getter(), property.setter, { it }, { it }).csrf()
+    )
+
+    /**
+     * Adds a hidden csrf token field to the form when the [CsrfProtection] is available in the container
+     */
+    fun PipelineContext<Unit, ApplicationCall>.secure() = apply {
+        kontainer.use(CsrfProtection::class) {
+            csrf(this)
+        }
+    }
+
+    /**
      * Adds the given [FormElement] as a child
      */
     private fun <T : FormElement> addField(field: T): T = field.apply { _children.add(this) }
+
+    /**
+     * Checks that the forms security measures are set up correctly
+     *
+     * When
+     *   security is not disabled for the form
+     *   AND the form is a root form (with no parent)
+     *   AND the form has no csrf field
+     * Then
+     *   a [InsecureFormError] will be raised
+     *
+     * TODO: add an option to disable the csrf check
+     */
+    private fun checkSecuritySetup() {
+        if (parent == null && _children.filterIsInstance<CsrfFormField>().isEmpty()) {
+            throw InsecureFormError("The form must have a csrf field")
+        }
+    }
 }
+
 
 abstract class MutatorFormBase<T : Any, M : Mutator<T>>(
 

@@ -1,6 +1,7 @@
 package de.peekandpoke.module.cms
 
 import de.peekandpoke.ktorfx.templating.respond
+import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
 import io.ktor.application.call
 import io.ktor.features.NotFoundException
@@ -11,6 +12,8 @@ import io.ktor.util.KtorExperimentalAPI
 import io.ultra.ktor_tools.database
 import kotlinx.html.div
 import kotlinx.html.unsafe
+
+fun KontainerBuilder.cmsPublic() = module(CmsPublicModule)
 
 val CmsPublicModule = module {
     singleton(CmsPublic::class)

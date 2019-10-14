@@ -3,20 +3,20 @@ package de.peekandpoke.module.depot
 import de.peekandpoke.ktorfx.broker.OutgoingConverter
 import de.peekandpoke.ktorfx.broker.Routes
 import de.peekandpoke.ktorfx.broker.get
-import de.peekandpoke.ktorfx.common.kontainer
+import de.peekandpoke.ktorfx.common.depot
 import de.peekandpoke.ktorfx.templating.respond
 import de.peekandpoke.module.depot.views.buckets
 import de.peekandpoke.module.depot.views.files
 import de.peekandpoke.module.depot.views.index
 import de.peekandpoke.module.depot.views.repositories
-import de.peekandpoke.ultra.depot.Depot
+import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
-import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
-import io.ktor.util.pipeline.PipelineContext
+
+fun KontainerBuilder.depotAdmin() = module(DepotAdminModule)
 
 val DepotAdminModule = module {
 
@@ -51,10 +51,6 @@ class DepotAdminRoutes(converter: OutgoingConverter, depotAdminMountPoint: Strin
 
 class DepotAdmin(val routes: DepotAdminRoutes) {
 
-    // TODO: create helper method in ktorfx::depot
-    val ApplicationCall.depot get() = kontainer.get(Depot::class)
-    val PipelineContext<Unit, ApplicationCall>.depot get() = kontainer.get(Depot::class)
-
     fun Route.mount() {
 
         get(routes.index) {
@@ -77,7 +73,6 @@ class DepotAdmin(val routes: DepotAdminRoutes) {
             respond {
                 buckets(this@DepotAdmin, repository, bucketList)
             }
-
         }
 
         get(routes.getBucket) { data ->

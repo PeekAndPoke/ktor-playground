@@ -29,6 +29,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/prismjs/ktor-playground.ktorfx.prismjs.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/prismjs/ktor-playground.ktorfx.prismjs.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/prismjs/ktor-playground.ktorfx.prismjs.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/prismjs/ktor-playground.ktorfx.prismjs.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/prismjs/ktor-playground.ktorfx.prismjs.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/prismjs/ktor-playground.ktorfx.prismjs.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/security/ktor-playground.ktorfx.security.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/security/ktor-playground.ktorfx.security.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/security/ktor-playground.ktorfx.security.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/security/ktor-playground.ktorfx.security.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/security/ktor-playground.ktorfx.security.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/security/ktor-playground.ktorfx.security.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/semanticui/ktor-playground.ktorfx.semanticui.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/semanticui/ktor-playground.ktorfx.semanticui.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/semanticui/ktor-playground.ktorfx.semanticui.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/semanticui/ktor-playground.ktorfx.semanticui.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktorfx/semanticui/ktor-playground.ktorfx.semanticui.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ktorfx/semanticui/ktor-playground.ktorfx.semanticui.test.iml" />

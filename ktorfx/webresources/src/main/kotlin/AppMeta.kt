@@ -2,6 +2,8 @@ package de.peekandpoke.ktorfx.webresources
 
 import de.peekandpoke.ultra.common.md5
 
+/**
+ */
 abstract class AppMeta {
 
     fun getVersion(): String? = this::class.java.`package`.implementationVersion
