@@ -1,5 +1,6 @@
 package de.peekandpoke.ktorfx.broker
 
+import de.peekandpoke.ktorfx.broker.converters.*
 import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
@@ -15,12 +16,14 @@ fun KontainerBuilder.ktorFxBroker() = module(KtorFX_Broker)
 val KtorFX_Broker = module {
 
     singleton(IncomingConverterLookup::class)
-    singleton(IncomingConverter::class)
+    dynamic(IncomingConverter::class)
+    dynamic(IncomingVaultConverter::class)
     singleton(IncomingPrimitiveConverter::class)
-    singleton(IncomingVaultConverter::class)
+    singleton(IncomingJavaTimeConverter::class)
 
     singleton(OutgoingConverter::class)
     singleton(OutgoingVaultConverter::class)
+    singleton(OutgoingJavaTimeConverter::class)
 }
 
 /**

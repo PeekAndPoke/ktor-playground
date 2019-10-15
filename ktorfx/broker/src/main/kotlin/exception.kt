@@ -1,3 +1,3 @@
 package de.peekandpoke.ktorfx.broker
 
-class NoConverterFoundError(message: String) : Throwable(message)
+class NoConverterFoundException(message: String) : Throwable(message)

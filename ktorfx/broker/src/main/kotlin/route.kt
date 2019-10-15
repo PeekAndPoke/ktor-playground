@@ -8,11 +8,16 @@ import io.ktor.routing.method
 import io.ktor.routing.route
 import io.ktor.util.pipeline.PipelineContext
 
-
 fun <T : Any> Route.handle(route: TypedRoute<T>, body: suspend PipelineContext<Unit, ApplicationCall>.(T) -> Unit) {
     handle {
         @Suppress("UNCHECKED_CAST")
-        body(incomingConverter.convert(call, route.type) as T)
+        body(
+            incomingConverter.convert(
+                call.parameters,
+                call.request.queryParameters,
+                route.type
+            ) as T
+        )
     }
 }
 
