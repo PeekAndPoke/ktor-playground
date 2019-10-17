@@ -1,41 +1,62 @@
 package de.peekandpoke.module.got.views
 
 import de.peekandpoke.karango.examples.game_of_thrones.Character
+import de.peekandpoke.ktorfx.common.texts.people
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import de.peekandpoke.module.got.GameOfThronesRoutes
+import de.peekandpoke.module.got.got
 import de.peekandpoke.ultra.vault.Stored
-import kotlinx.html.a
-import kotlinx.html.span
-import kotlinx.html.title
+import kotlinx.html.*
 
 internal fun SimpleTemplate.characters(routes: GameOfThronesRoutes, characters: Iterable<Stored<Character>>) {
 
     breadCrumbs = listOf(GameOfThronesMenu.CHARACTERS)
 
     pageTitle {
-        title { +"GoT Characters" }
+        title { +t { got.title_characters() } }
     }
 
     content {
 
-        ui.header H4 { +"List of Characters" }
+        ui.header H4 { +t { got.title_characters() } }
 
-        ui.list {
-            characters.forEach {
+        ui.celled.table Table {
+            thead {
+                tr {
+                    th { +t { people.name } }
+                    th { +t { people.age } }
+                    th { +t { people.alive } }
+                    th { +t { got.actor } }
+                }
+            }
 
-                ui.item {
-                    a(href = routes.getCharacter(it)) { +"${it.value.name} ${it.value.surname ?: ""} " }
+            tbody {
+                characters.forEach {
+                    tr {
+                        td {
+                            a(href = routes.getCharacter(it)) { +"${it.value.name} ${it.value.surname ?: ""} " }
+                        }
 
-                    span { +"${if (it.value.alive) "alive" else "dead"} " }
+                        td {
+                            it.value.age?.let { span { +"$it" } }
+                        }
 
-                    it.value.age?.let { span { +"Age: $it " } }
+                        td {
+                            span {
+                                +if (it.value.alive) t { people.alive } else t { people.dead }
+                            }
+                        }
 
-                    it.value.actor?.value?.let {
-                        span { +"(Actor: ${it.name} ${it.surname} Age: ${it.age}) " }
+                        td {
+                            it.value.actor?.value?.let {
+                                span { +"${it.name} ${it.surname} ${t { people.age }}: ${it.age}" }
+                            }
+                        }
                     }
                 }
             }
         }
     }
 }
+

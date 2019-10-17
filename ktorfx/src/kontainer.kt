@@ -4,6 +4,7 @@ import de.peekandpoke.ktorfx.broker.ktorFxBroker
 import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ktorfx.common.ktorFxCommon
 import de.peekandpoke.ktorfx.flashsession.ktorFxFlashSession
+import de.peekandpoke.ktorfx.formidable.ktorFxFormidable
 import de.peekandpoke.ktorfx.insights.ktorFxInsights
 import de.peekandpoke.ktorfx.prismjs.ktorFxPrismJs
 import de.peekandpoke.ktorfx.security.KtorFXSecurityConfig
@@ -11,10 +12,10 @@ import de.peekandpoke.ktorfx.security.ktorFxSecurity
 import de.peekandpoke.ktorfx.semanticui.ktorFxSemanticUi
 import de.peekandpoke.ktorfx.templating.ktorFxTemplating
 import de.peekandpoke.ktorfx.webresources.ktorFxWebResources
+import de.peekandpoke.ultra.depot.ultraDepot
 import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
-import de.peekandpoke.ultra.polyglot.I18n
-import de.peekandpoke.ultra.polyglot.NullI18n
+import de.peekandpoke.ultra.polyglot.ultraPolyglot
 import de.peekandpoke.ultra.vault.Database
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
@@ -28,13 +29,15 @@ fun KontainerBuilder.ktorFx(config: KtorFXConfig) = module(KtorFX, config)
 
 val KtorFX = module { config: KtorFXConfig ->
 
-    // I18n (can be overwritten by re-defining the instance)
-    dynamic(I18n::class, NullI18n::class)
+    // pull external libraries
+    ultraDepot()
+    ultraPolyglot()
 
     ktorFxCommon()
 
     ktorFxBroker()
     ktorFxFlashSession()
+    ktorFxFormidable()
     ktorFxInsights()
     ktorFxPrismJs()
     ktorFxSecurity(config.security)

@@ -23,6 +23,7 @@ val KtorFX_Broker = module {
 
     singleton(OutgoingConverter::class)
     singleton(OutgoingVaultConverter::class)
+    singleton(OutgoingPrimitiveConverter::class)
     singleton(OutgoingJavaTimeConverter::class)
 }
 

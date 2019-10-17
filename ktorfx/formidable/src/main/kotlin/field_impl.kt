@@ -7,12 +7,12 @@ import io.ktor.http.Parameters
 /**
  * Converts a [FormField] to a [FormFieldWithOptions]
  */
-fun <T> FormField<T>.withOptions(vararg options: Pair<T, String>): FormFieldWithOptions<T> = withOptions(options.toList())
+fun <T> FormField<T>.withOptions(vararg options: Pair<T, Translatable>): FormFieldWithOptions<T> = withOptions(options.toList())
 
 /**
  * Converts a [FormField] into a [FormFieldWithOptions]
  */
-fun <T> FormField<T>.withOptions(options: List<Pair<T, String>>) : FormFieldWithOptions<T> =
+fun <T> FormField<T>.withOptions(options: List<Pair<T, Translatable>>): FormFieldWithOptions<T> =
     FormFieldWithOptionsImpl(this, options).also {
         resultingInAnyOf(options.map { (k, _) -> k }.toSet())
     }
@@ -118,7 +118,7 @@ internal class FormFieldImpl<T>(
                 }
             }
         } else {
-            _errors = listOf(must_not_be_empty)
+            _errors = listOf(FormidableI18n.must_not_be_empty)
         }
     }
 
@@ -152,5 +152,5 @@ internal class HiddenFormFieldImpl<T>(
  */
 internal class FormFieldWithOptionsImpl<T>(
     private val wrapped: FormField<T>,
-    override val options: List<Pair<T, String>>
+    override val options: List<Pair<T, Translatable>>
 ) : FormFieldWithOptions<T>, FormField<T> by wrapped

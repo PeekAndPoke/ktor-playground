@@ -29,11 +29,13 @@ class IncomingConverter(
     fun convert(value: String, type: Type): Any {
 
         // Get the converter class from the shared lookup
-        val converterClass = lookUp.getOrPut(type) {
-            converters.all().firstOrNull { it.canHandle(type) }?.let { it::class }
-        }
+        val converterClass = findConverter(type)
             ?: throw NoConverterFoundException("There is no incoming param converter that can handle the type '$type'")
 
         return converters.get(converterClass)!!.convert(value, type)
+    }
+
+    private fun findConverter(type: Type) = lookUp.getOrPut(type) {
+        converters.all().firstOrNull { it.canHandle(type) }?.let { it::class }
     }
 }

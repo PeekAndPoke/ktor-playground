@@ -1,11 +1,14 @@
 package de.peekandpoke.module.got.views
 
 import de.peekandpoke.karango.examples.game_of_thrones.Character
+import de.peekandpoke.ktorfx.common.texts.forms
+import de.peekandpoke.ktorfx.common.texts.people
 import de.peekandpoke.ktorfx.formidable.semanticui.formidable
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import de.peekandpoke.module.got.CharacterForm
 import de.peekandpoke.module.got.GameOfThronesRoutes
+import de.peekandpoke.module.got.got
 import de.peekandpoke.ultra.vault.Stored
 import kotlinx.html.title
 
@@ -19,31 +22,31 @@ fun SimpleTemplate.editCharacter(routes: GameOfThronesRoutes, character: Stored<
 
     content {
 
-        ui.header H4 { +"Edit Character ${character.value.fullName}" }
+        ui.header H4 { +t { got.edit_character(character.value.fullName) } }
 
         formidable(t, form) {
 
             ui.two.fields {
-                textInput(form.name, label = "Name")
-                textInput(form.surname, label = "Surname")
+                textInput(form.name, label = t { people.name })
+                textInput(form.surname, label = t { people.surname })
             }
 
             ui.two.fields {
-                textInput(form.age, label = "Age")
-                selectInput(form.alive, label = "Alive")
+                textInput(form.age, label = t { people.age })
+                selectInput(form.alive, label = t { people.alive })
             }
 
             form.actor?.let { actorForm ->
-                ui.header H4 { +"Edit Actor ${character.value.actor?.value?.name}" }
+                ui.header H4 { +t { got.edit_actor(character.value.actor?.value?.name) } }
 
                 ui.three.fields {
-                    textInput(actorForm.name, label = "Name")
-                    textInput(actorForm.surname, label = "Surname")
-                    numberInput(actorForm.age, label = "Age")
+                    textInput(actorForm.name, label = t { people.name })
+                    textInput(actorForm.surname, label = t { people.surname })
+                    numberInput(actorForm.age, label = t { people.age })
                 }
             }
 
-            ui.button Submit { +"Submit" }
+            ui.button Submit { +t { forms.submit } }
         }
     }
 }

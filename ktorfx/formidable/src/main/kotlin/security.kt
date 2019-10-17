@@ -10,7 +10,7 @@ fun Form.csrf(csrf: CsrfProtection): FormField<String> {
     val dummy = CsrfTokenHolder(csrf.createToken(formId))
 
     return csrf("_csrf_", dummy::token)
-        .addAcceptRule(invalid_csrf_token) { value: String -> csrf.validateToken(formId, value) }
+        .addAcceptRule(FormidableI18n.invalid_csrf_token) { value: String -> csrf.validateToken(formId, value) }
 }
 
 /**

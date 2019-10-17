@@ -159,8 +159,8 @@
     <orderEntry type="library" name="Gradle: org.apache.commons:commons-compress:1.18" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.9.9" level="project" />
     <orderEntry type="library" name="Gradle: org.atteo.classindex:classindex:3.4" level="project" />
-    <orderEntry type="library" name="Gradle: org.javassist:javassist:3.25.0-GA" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.9" level="project" />
+    <orderEntry type="library" name="Gradle: org.javassist:javassist:3.25.0-GA" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.9" level="project" />
     <orderEntry type="library" name="Gradle: org.webjars.npm:prismjs:1.16.0" level="project" />
     <orderEntry type="library" name="Gradle: org.webjars:jquery:3.2.1" level="project" />

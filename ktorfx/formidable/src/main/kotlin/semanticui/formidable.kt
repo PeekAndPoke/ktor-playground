@@ -142,7 +142,7 @@ class FormidableViewBuilder(private val i18n: I18n, val form: FORM) {
 
                         selected = value == field.textValue
 
-                        +it.second
+                        +i18n[it.second]
                     }
                 }
             }

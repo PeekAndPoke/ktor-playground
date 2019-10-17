@@ -15,7 +15,7 @@ import kotlin.reflect.KMutableProperty0
 /**
  * Base implementation for all forms
  */
-abstract class Form(name: String, private val parent: Form? = null) : FormElement {
+abstract class Form(name: String = "", private val parent: Form? = null) : FormElement {
 
     /**
      * Markup compatible id of the form
@@ -36,6 +36,11 @@ abstract class Form(name: String, private val parent: Form? = null) : FormElemen
      * List of all child elements
      */
     private val _children: MutableList<FormElement> = mutableListOf()
+
+    /**
+     * Flag for enabling / disabling csrf security
+     */
+    protected var csrfRequired: Boolean = true
 
     /**
      * Submits the given [params] to all children
@@ -96,6 +101,11 @@ abstract class Form(name: String, private val parent: Form? = null) : FormElemen
     }
 
     /**
+     * Disables the check that looks for the presence of a csrf field
+     */
+    fun noCsrf() = apply { csrfRequired = false }
+
+    /**
      * Adds the given [FormElement] as a child
      */
     private fun <T : FormElement> addField(field: T): T = field.apply { _children.add(this) }
@@ -108,13 +118,18 @@ abstract class Form(name: String, private val parent: Form? = null) : FormElemen
      *   AND the form is a root form (with no parent)
      *   AND the form has no csrf field
      * Then
-     *   a [InsecureFormError] will be raised
+     *   a [InsecureFormException] will be raised
      *
      * TODO: add an option to disable the csrf check
      */
     private fun checkSecuritySetup() {
+
+        if (!csrfRequired) {
+            return
+        }
+
         if (parent == null && _children.filterIsInstance<CsrfFormField>().isEmpty()) {
-            throw InsecureFormError("The form must have a csrf field")
+            throw InsecureFormException("The form must have a csrf field")
         }
     }
 }

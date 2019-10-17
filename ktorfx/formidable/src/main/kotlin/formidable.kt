@@ -1,23 +1,8 @@
 package de.peekandpoke.ktorfx.formidable
 
 import de.peekandpoke.ktorfx.formidable.semanticui.FormidableViewBuilder
-import de.peekandpoke.ultra.polyglot.TextsByLocale
 import de.peekandpoke.ultra.polyglot.Translatable
-import de.peekandpoke.ultra.polyglot.readPolyglotJson
 import io.ktor.http.Parameters
-
-class Formidable {
-
-    companion object {
-
-        fun loadI18n(): TextsByLocale {
-            val stream = Formidable::class.java.classLoader.getResourceAsStream("ktorfx/formidable/i18n.json")!!
-
-            return stream.readPolyglotJson()
-        }
-    }
-}
-
 
 /**
  * Defines any kind of validation rule
@@ -145,5 +130,5 @@ interface CsrfFormField : HiddenFormField<String>
  * Special type of field, which can by used to f.e. render a [FormidableViewBuilder.selectInput]
  */
 interface FormFieldWithOptions<T> : FormField<T> {
-    val options: List<Pair<T, String>>
+    val options: List<Pair<T, Translatable>>
 }

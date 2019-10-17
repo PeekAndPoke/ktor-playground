@@ -2,21 +2,24 @@ package de.peekandpoke.ktorfx.broker.converters
 
 import de.peekandpoke.ktorfx.broker.IncomingParamConverter
 import de.peekandpoke.ktorfx.broker.NoConverterFoundException
+import de.peekandpoke.ktorfx.broker.OutgoingParamConverter
 import java.lang.reflect.Type
 import java.math.BigDecimal
 import java.math.BigInteger
 
+private fun supportsType(type: Type) = type == Int::class.java ||
+        type == Float::class.java ||
+        type == Double::class.java ||
+        type == Long::class.java ||
+        type == Boolean::class.java ||
+        type == String::class.java ||
+        type == BigDecimal::class.java ||
+        type == BigInteger::class.java ||
+        (type is Class<*> && type.isEnum)
+
 class IncomingPrimitiveConverter : IncomingParamConverter {
 
-    override fun canHandle(type: Type): Boolean = type == Int::class.java ||
-            type == Float::class.java ||
-            type == Double::class.java ||
-            type == Long::class.java ||
-            type == Boolean::class.java ||
-            type == String::class.java ||
-            type == BigDecimal::class.java ||
-            type == BigInteger::class.java ||
-            (type is Class<*> && type.isEnum)
+    override fun canHandle(type: Type): Boolean = supportsType(type)
 
     override fun convert(value: String, type: Type): Any = when (type) {
 
@@ -40,4 +43,11 @@ class IncomingPrimitiveConverter : IncomingParamConverter {
         else -> (type as Class<*>).enumConstants?.firstOrNull { (it as Enum<*>).name == value }
             ?: throw NoConverterFoundException("Value '$value' is not a enum member name of '$type'")
     }
+}
+
+class OutgoingPrimitiveConverter : OutgoingParamConverter {
+
+    override fun canHandle(type: Type): Boolean = supportsType(type)
+
+    override fun convert(value: Any, type: Type): String = value.toString()
 }

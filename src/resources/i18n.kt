@@ -1,26 +1,32 @@
 package de.peekandpoke.resources
 
-import de.peekandpoke.ktorfx.formidable.Formidable
 import de.peekandpoke.ultra.polyglot.I18n
-import de.peekandpoke.ultra.polyglot.buildI18n
+import de.peekandpoke.ultra.polyglot.I18nGroup
+import de.peekandpoke.ultra.polyglot.translatable
 
-val Translations = buildI18n(
-    "de", "en",
-    // Formidable texts
-    Formidable.loadI18n(),
-    // Application texts
-    mapOf(
+val I18n.app get() = getGroup(AppI18n::class)
+
+class AppI18n : I18nGroup, AppI18nTexts() {
+
+    // make the texts statically available
+    companion object : AppI18nTexts()
+
+    override val texts = mapOf(
         "de" to mapOf(
-            "WELCOME" to "Herzlich willkommen!",
-            "WELCOME_NAME" to "Herzlich willkommen %name%!"
+            "app.WELCOME" to "Herzlich willkommen!",
+            "app.WELCOME_NAME" to "Herzlich willkommen %name%!"
         ),
         "en" to mapOf(
-            "WELCOME" to "Welcome!",
-            "WELCOME_NAME" to "Welcome %name%!"
+            "app.WELCOME" to "Welcome!",
+            "app.WELCOME_NAME" to "Welcome {name}!"
         )
     )
-)
+}
 
-fun I18n.WELCOME() = get("WELCOME")
-fun I18n.WELCOME_NAME(name: String) = get("WELCOME", "name" to name)
+@Suppress("FunctionName", "PropertyName")
+open class AppI18nTexts() {
 
+    val WELCOME = "app.WELCOME".translatable()
+
+    fun WELCOME_NAME(name: String) = "app.WELCOME_NAME".translatable("name" to name)
+}

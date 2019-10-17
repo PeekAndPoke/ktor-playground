@@ -23,11 +23,10 @@ import de.peekandpoke.module.got.GameOfThrones
 import de.peekandpoke.module.got.gameOfThrones
 import de.peekandpoke.module.semanticui.SemanticUi
 import de.peekandpoke.module.semanticui.semanticUi
-import de.peekandpoke.resources.Translations
-import de.peekandpoke.ultra.depot.ultraDepot
+import de.peekandpoke.resources.AppI18n
 import de.peekandpoke.ultra.kontainer.KontainerBlueprint
 import de.peekandpoke.ultra.kontainer.kontainer
-import de.peekandpoke.ultra.polyglot.I18n
+import de.peekandpoke.ultra.polyglot.I18nLocaleSelector
 import de.peekandpoke.ultra.security.user.StaticUserRecordProvider
 import de.peekandpoke.ultra.security.user.UserRecord
 import de.peekandpoke.ultra.vault.Database
@@ -83,19 +82,18 @@ private val commonKontainerBlueprint by lazy {
         karango()
         instance(arangoDatabase)
 
-        // File depot ////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ultraDepot()
 
         // KtorFX ////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ktorFx(config)
         // create a app specific cache buster
         instance(AppMeta.cacheBuster())
-        // Re-define the I18n with our texts
-        // TODO: we need an I18n service that injects all I18nGroup instances, so we can avoid this dynamic here
-        dynamic0(I18n::class) { Translations.withLocale("en") }
 
         // application ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        // i18n
+        singleton(AppI18n::class)
+
+        // modules
         cmsAdmin()
         cmsPublic()
 
@@ -140,7 +138,7 @@ fun Route.installKontainer(blueprint: KontainerBlueprint) {
 
         val kontainer = blueprint.useWith(
             // default language
-            Translations.withLocale("de"),
+            I18nLocaleSelector("en", "en"),
             // user record provider
             StaticUserRecordProvider(userRecord),
             // session

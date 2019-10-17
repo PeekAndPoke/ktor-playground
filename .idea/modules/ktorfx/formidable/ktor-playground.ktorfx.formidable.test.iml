@@ -56,7 +56,9 @@
     <content url="file://$MODULE_DIR$/../../../../ktorfx/formidable/build/generated/source/kaptKotlin/test">
       <sourceFolder url="file://$MODULE_DIR$/../../../../ktorfx/formidable/build/generated/source/kaptKotlin/test" isTestSource="true" generated="true" />
     </content>
-    <content url="file://$MODULE_DIR$/../../../../ktorfx/formidable/src/test" />
+    <content url="file://$MODULE_DIR$/../../../../ktorfx/formidable/src/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../ktorfx/formidable/src/test/kotlin" isTestSource="true" />
+    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="ktor-playground.ktorfx.formidable.main" />

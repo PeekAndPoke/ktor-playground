@@ -11,20 +11,27 @@ data class TypedRoute<T : Any>(val converter: OutgoingConverter, val type: KClas
     private val parsedParams = "\\{([^}]*)}".toRegex().findAll(uri).map { it.groupValues[1] }.toList()
 
     init {
-        if (!type.isData && type.primaryConstructor!!.parameters.isNotEmpty()) {
-            error("The route object '${type.qualifiedName}' must be a data class")
+        // Check that the route object has a primary constructor
+        val primaryConstructor = type.primaryConstructor
+            ?: throw InvalidRouteObjectException("Route '$uri': The route object '$type' must have a primary constructor")
+
+        // Check that all properties of the route object can be handled by the outgoing converter
+        val unhandled = type.declaredMemberProperties.filter { !converter.canHandle(it.returnType.javaType) }
+
+        if (unhandled.isNotEmpty()) {
+            throw InvalidRouteObjectException(
+                "Route '$uri': The outgoing converter cannot handle parameters ${unhandled.map { it.name }} of route object '$type'"
+            )
         }
 
-        // TODO: check that all parameters can be handled by the conversion service
-
-        // check that all non optional parameters are present in the route
-        val missingInUri = type.primaryConstructor!!.parameters
+        // Check that all non optional parameters are present in the route
+        val missingInUri = primaryConstructor.parameters
             .filter { !it.isOptional }
             .map { it.name }
             .filter { !parsedParams.contains(it) }
 
         if (missingInUri.isNotEmpty()) {
-            error("Route '$uri' is missing parameters for route object '${type.qualifiedName}': ${missingInUri.joinToString(", ")}")
+            error("Route '$uri': misses route parameters $missingInUri for route object '${type}'")
         }
     }
 
@@ -39,10 +46,14 @@ data class TypedRoute<T : Any>(val converter: OutgoingConverter, val type: KClas
 
             val converted = converter.convert(it.get(obj) ?: "", it.returnType.javaType)
 
+            // replace the route param
             if (parsedParams.contains(it.name)) {
                 result = result.replace("{${it.name}}", converted)
             } else {
-                queryParams[it.name] = converted
+                // only add to the query params if the value is non null
+                if (it.get(obj) != null) {
+                    queryParams[it.name] = converted
+                }
             }
         }
 

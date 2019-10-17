@@ -1,6 +1,7 @@
 package de.peekandpoke.module.got
 
 import de.peekandpoke.karango.examples.game_of_thrones.*
+import de.peekandpoke.ktorfx.common.texts.PeopleI18n
 import de.peekandpoke.ktorfx.formidable.*
 import de.peekandpoke.ultra.vault.New
 import de.peekandpoke.ultra.vault.Storable
@@ -43,7 +44,10 @@ class CharacterForm private constructor(it: Storable<Character>, mutator: Charac
 
     val age = field(target::age).resultingInRange(0..200)
 
-    val alive = field(target::alive).withOptions(true to "alive", false to "dead")
+    val alive = field(target::alive).withOptions(
+        true to PeopleI18n.alive,
+        false to PeopleI18n.dead
+    )
 
     val actor = target.actor?.let { add(ActorForm.of(it.value, this)) }
 }

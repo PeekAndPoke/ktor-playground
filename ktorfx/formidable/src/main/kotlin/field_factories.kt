@@ -90,4 +90,4 @@ fun Form.field(prop: KMutableProperty0<Double?>) =
 fun Form.field(prop: KMutableProperty0<String>) = add(prop.name, prop.getter(), prop.setter, { it }, { it })
 
 @JvmName("field_String?")
-fun Form.field(prop: KMutableProperty0<String?>) = add(prop.name, prop.getter(), prop.setter, { it ?: "" }, { s -> if (s.isNotEmpty()) s else null })
+fun Form.field(prop: KMutableProperty0<String?>) = add(prop.name, prop.getter(), prop.setter, { it ?: "" }, { it })

@@ -27,6 +27,7 @@ val GameOfThronesModule = module {
     // application
     singleton(GameOfThronesRoutes::class)
     singleton(GameOfThrones::class)
+    singleton(GotI18n::class)
 
     // database
     singleton(CharactersRepository::class)

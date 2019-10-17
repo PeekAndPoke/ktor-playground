@@ -1,5 +1,7 @@
 package de.peekandpoke.ktorfx.common
 
+import de.peekandpoke.ktorfx.common.texts.FormsI18n
+import de.peekandpoke.ktorfx.common.texts.PeopleI18n
 import de.peekandpoke.ultra.depot.Depot
 import de.peekandpoke.ultra.kontainer.Kontainer
 import de.peekandpoke.ultra.kontainer.KontainerBuilder
@@ -18,6 +20,12 @@ fun KontainerBuilder.ktorFxCommon() = module(KtorFX_Common)
  * Common kontainer module
  */
 val KtorFX_Common = module {
+
+    // common i18n texts
+    singleton(FormsI18n::class)
+    singleton(PeopleI18n::class)
+
+    // session
     dynamic(CurrentSession::class, NullCurrentSession::class)
 }
 
@@ -52,7 +60,6 @@ inline val ApplicationCall.kontainer: Kontainer get() = attributes[KontainerKey]
 inline val PipelineContext<Unit, ApplicationCall>.kontainer: Kontainer get() = call.kontainer
 
 
-// TODO: remove this from here ... where to put it? -> ktorfx::polyglot
 inline val ApplicationCall.i18n: I18n get() = kontainer.get(I18n::class)
 inline val PipelineContext<Unit, ApplicationCall>.i18n: I18n get() = call.i18n
 
