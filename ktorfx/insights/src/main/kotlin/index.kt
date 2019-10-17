@@ -16,6 +16,7 @@ import io.ktor.routing.Route
 import io.ktor.routing.Routing
 import io.ktor.routing.RoutingResolveTrace
 import io.ktor.util.AttributeKey
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.system.measureNanoTime
 
@@ -82,6 +83,10 @@ fun Route.instrumentWithInsights() {
 
     intercept(ApplicationCallPipeline.Setup) {
 
+        if (hasKontainer) {
+            kontainer.use(Insights::class) {}
+        }
+
         val ns = measureNanoTime { proceed() }
 
         if (hasKontainer) {
@@ -89,6 +94,7 @@ fun Route.instrumentWithInsights() {
                 use(PipelinePhasesCollector::class) { record("Setup", ns) }
 
                 launch {
+                    delay(1)
                     finish(call)
                 }
             }

@@ -103,7 +103,9 @@ abstract class Form(name: String = "", private val parent: Form? = null) : FormE
     /**
      * Disables the check that looks for the presence of a csrf field
      */
-    fun noCsrf() = apply { csrfRequired = false }
+    fun disableCsrfCheck() {
+        csrfRequired = false
+    }
 
     /**
      * Adds the given [FormElement] as a child
@@ -133,6 +135,8 @@ abstract class Form(name: String = "", private val parent: Form? = null) : FormE
         }
     }
 }
+
+fun <T : Form> T.noCsrf(): T = apply { disableCsrfCheck() }
 
 
 abstract class MutatorFormBase<T : Any, M : Mutator<T>>(

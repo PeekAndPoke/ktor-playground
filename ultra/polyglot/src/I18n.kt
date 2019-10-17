@@ -2,8 +2,7 @@ package de.peekandpoke.ultra.polyglot
 
 import kotlin.reflect.KClass
 
-
-open class I18n(private val texts: I18nTexts, private val selector: I18nLocaleSelector) {
+class I18n(private val texts: I18nTexts, private val selector: I18nLocaleSelector) {
 
     private val fallback by lazy { texts.forLocale(selector.fallback) ?: emptyMap() }
 
@@ -12,7 +11,7 @@ open class I18n(private val texts: I18nTexts, private val selector: I18nLocaleSe
     fun <T : I18nGroup> getGroup(cls: KClass<T>): T = texts.getGroup(cls)
         ?: error("Translation group '$cls' is not present")
 
-    operator fun invoke(callback: I18n.() -> Translatable) = get(this.callback())
+    inline operator fun invoke(callback: I18n.() -> Translatable) = get(this.callback())
 
     operator fun get(key: String, replacements: List<Pair<String, String?>>): String {
 
