@@ -1,0 +1,11 @@
+.ui.accordion .accordion {
+    margin-top: 1px;
+}
+
+.ui.accordion .content .accordion {
+    margin-left: 0.5em;
+}
+
+.ui.menu .ui.accordion .title .dropdown.icon, .ui.accordion .accordion .title .dropdown.icon {
+    float: right;
+}

@@ -1,6 +1,7 @@
 package de.peekandpoke.ktorfx.formidable
 
 import de.peekandpoke.ktorfx.common.kontainer
+import de.peekandpoke.ktorfx.common.receiveOrGet
 import de.peekandpoke.ultra.mutator.Mutator
 import de.peekandpoke.ultra.security.csrf.CsrfProtection
 import de.peekandpoke.ultra.vault.Storable
@@ -8,8 +9,6 @@ import io.ktor.application.ApplicationCall
 import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
 import io.ktor.request.httpMethod
-import io.ktor.request.receive
-import io.ktor.util.pipeline.PipelineContext
 import kotlin.reflect.KMutableProperty0
 
 /**
@@ -38,9 +37,40 @@ abstract class Form(name: String = "", private val parent: Form? = null) : FormE
     private val _children: MutableList<FormElement> = mutableListOf()
 
     /**
+     * Flag that tracks if the form was submitted
+     */
+    private var isSubmitted = false
+
+    /**
      * Flag for enabling / disabling csrf security
      */
     protected var csrfRequired: Boolean = true
+
+    init {
+        if (parent == null) {
+            hidden("__submitted__", "")
+        }
+    }
+
+    suspend fun submit(call: ApplicationCall): Boolean {
+
+        // attach a csrf field if there is none already
+        if (parent == null && !hasCsrfField()) {
+            with(call) {
+                kontainer.use(CsrfProtection::class) {
+                    csrf(this)
+                }
+            }
+        }
+
+        if (call.request.httpMethod != HttpMethod.Post) {
+            return false
+        }
+
+        submit(call.receiveOrGet())
+
+        return isValid()
+    }
 
     /**
      * Submits the given [params] to all children
@@ -48,6 +78,14 @@ abstract class Form(name: String = "", private val parent: Form? = null) : FormE
     override fun submit(params: Parameters) {
 
         checkSecuritySetup()
+
+        val submissionCheckHiddenFieldName = (_name + "__submitted__").value
+
+        if (parent == null && !params.contains(submissionCheckHiddenFieldName)) {
+            return
+        }
+
+        isSubmitted = true
 
         _children.forEach {
             it.submit(params)
@@ -57,7 +95,7 @@ abstract class Form(name: String = "", private val parent: Form? = null) : FormE
     /**
      * Return true when the form is valid, meaning that all of the children are valid
      */
-    override fun isValid(): Boolean = _children.all { it.isValid() }
+    override fun isValid(): Boolean = isSubmitted && _children.all { it.isValid() }
 
     /**
      * Creates and adds a [FormField]
@@ -80,9 +118,18 @@ abstract class Form(name: String = "", private val parent: Form? = null) : FormE
     /**
      * Adds a hidden field
      */
-    fun hidden(name: String, property: KMutableProperty0<String>) = addField(
+    fun hidden(name: String, property: KMutableProperty0<String>): HiddenFormField<String> = addField(
         FormFieldImpl(_name + name, property.getter(), property.setter, { it }, { it }).hidden()
     )
+
+    /**
+     * Adds a hidden field with a static string value
+     */
+    fun hidden(name: String, value: String): HiddenFormField<String> {
+        val dummy = HiddenFormFieldImpl.Dummy(value)
+
+        return hidden(name, dummy::data)
+    }
 
     /**
      * Adds a hidden field
@@ -90,15 +137,6 @@ abstract class Form(name: String = "", private val parent: Form? = null) : FormE
     fun csrf(name: String, property: KMutableProperty0<String>) = addField(
         FormFieldImpl(_name + name, property.getter(), property.setter, { it }, { it }).csrf()
     )
-
-    /**
-     * Adds a hidden csrf token field to the form when the [CsrfProtection] is available in the container
-     */
-    fun PipelineContext<Unit, ApplicationCall>.secure() = apply {
-        kontainer.use(CsrfProtection::class) {
-            csrf(this)
-        }
-    }
 
     /**
      * Disables the check that looks for the presence of a csrf field
@@ -130,14 +168,15 @@ abstract class Form(name: String = "", private val parent: Form? = null) : FormE
             return
         }
 
-        if (parent == null && _children.filterIsInstance<CsrfFormField>().isEmpty()) {
+        if (parent == null && !hasCsrfField()) {
             throw InsecureFormException("The form must have a csrf field")
         }
     }
+
+    private fun hasCsrfField() = _children.filterIsInstance<CsrfFormField>().isNotEmpty()
 }
 
 fun <T : Form> T.noCsrf(): T = apply { disableCsrfCheck() }
-
 
 abstract class MutatorFormBase<T : Any, M : Mutator<T>>(
 
@@ -146,17 +185,6 @@ abstract class MutatorFormBase<T : Any, M : Mutator<T>>(
     parent: Form? = null
 
 ) : Form(name, parent) {
-
-    suspend fun submit(call: ApplicationCall): Boolean {
-
-        if (call.request.httpMethod != HttpMethod.Post) {
-            return false
-        }
-
-        submit(call.receive<Parameters>())
-
-        return isValid()
-    }
 
     val isModified: Boolean get() = target.isModified()
 }

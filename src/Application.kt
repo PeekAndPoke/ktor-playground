@@ -17,12 +17,15 @@ import de.peekandpoke.module.cms.CmsAdmin
 import de.peekandpoke.module.cms.CmsPublic
 import de.peekandpoke.module.cms.cmsAdmin
 import de.peekandpoke.module.cms.cmsPublic
+import de.peekandpoke.module.demos.forms.FormDemos
+import de.peekandpoke.module.demos.forms.formDemos
 import de.peekandpoke.module.depot.DepotAdmin
 import de.peekandpoke.module.depot.depotAdmin
 import de.peekandpoke.module.got.GameOfThrones
 import de.peekandpoke.module.got.gameOfThrones
 import de.peekandpoke.module.semanticui.SemanticUi
 import de.peekandpoke.module.semanticui.semanticUi
+import de.peekandpoke.resources.AdminWebResources
 import de.peekandpoke.resources.AppI18n
 import de.peekandpoke.ultra.kontainer.KontainerBlueprint
 import de.peekandpoke.ultra.kontainer.kontainer
@@ -69,7 +72,6 @@ private val commonKontainerBlueprint by lazy {
     // TODO: get the config from application.environment.config
 
     val config = KtorFXConfig(
-//        KtorFXSecurityConfig("super-secret", 300_000)
         KtorFXSecurityConfig("super-secret", 300_000)
     )
 
@@ -93,6 +95,9 @@ private val commonKontainerBlueprint by lazy {
         // i18n
         singleton(AppI18n::class)
 
+        // web resources
+        singleton(AdminWebResources::class)
+
         // modules
         cmsAdmin()
         cmsPublic()
@@ -102,6 +107,7 @@ private val commonKontainerBlueprint by lazy {
         // application modules
         gameOfThrones()
         semanticUi()
+        formDemos()
 
     }
 }
@@ -313,21 +319,9 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
-//    // TODO: have a switch for live / stage / dev
-//    instrumentWithInsights(
-//        initKontainer.get(InsightsGui::class)
-//    )
-//
-//    intercept(ApplicationCallPipeline.Features) {
-//
-//        val userRecord = UserRecord(
-//            call.sessions.get<UserSession>()?.userId ?: "anonymous",
-//            call.request.origin.remoteHost
-//        )
-//
-//        call.attributes.provide(requestContainer(userRecord , call.sessions))
-//    }
+    // TODO: have a switch for live / stage / dev
 
+    // TODO: fix to logging problem
     intercept(ApplicationCallPipeline.Features) {
 
         val requestId = UUID.randomUUID()
@@ -335,10 +329,7 @@ fun Application.module(testing: Boolean = false) {
         logger.attach("req.Id", requestId.toString()) {
             proceed()
         }
-
-//        logger.debug(call.kontainer.dump())
     }
-
 
     routing {
 
@@ -416,9 +407,12 @@ fun Application.module(testing: Boolean = false) {
                 initKontainer.use(InsightsGui::class) { mount() }
 
                 // mount application modules
-                initKontainer.use(SemanticUi::class) { mount() }
                 initKontainer.use(CmsAdmin::class) { mount() }
                 initKontainer.use(DepotAdmin::class) { mount() }
+
+                initKontainer.use(SemanticUi::class) { mount() }
+                initKontainer.use(FormDemos::class) { mount() }
+
                 initKontainer.use(GameOfThrones::class) { mount() }
             }
         }

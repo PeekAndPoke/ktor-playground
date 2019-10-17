@@ -1,10 +1,8 @@
-package de.peekandpoke.module.semanticui.views
+package de.peekandpoke.module.demos.forms
 
-enum class SemanticUiMenu {
+enum class FormDemosMenu {
     Index,
-    Playground,
-    Buttons,
-    Icons;
+    CommaSeparated;
 
     companion object {
         infix fun has(crumbs: List<Any>): Boolean = values().intersect(crumbs).isNotEmpty()

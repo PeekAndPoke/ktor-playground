@@ -145,7 +145,10 @@ internal class FormFieldImpl<T>(
  */
 internal class HiddenFormFieldImpl<T>(
     private val wrapped: FormField<T>
-) : HiddenFormField<T>, FormField<T> by wrapped
+) : HiddenFormField<T>, FormField<T> by wrapped {
+
+    data class Dummy(var data: String)
+}
 
 /**
  * Internal implementation of [FormFieldWithOptions]

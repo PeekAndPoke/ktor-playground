@@ -61,7 +61,7 @@ class GameOfThrones(val routes: GameOfThronesRoutes) {
 
         getOrPost(routes.getCharacter) { data ->
 
-            val form = CharacterForm.of(data.character).apply { secure() }
+            val form = CharacterForm.of(data.character)
 
             println(data.character)
 

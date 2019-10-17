@@ -12,7 +12,11 @@ class SemanticIcon(private val parent: FlowContent) {
 
     private operator fun plus(cls: String) = apply { cssClasses.add(cls) }
 
-    private fun render(classes: String): Unit = parent.i(classes = "${cssClasses.joinToString(" ")} $classes")
+    private fun render(classes: String): Unit = when {
+        cssClasses.isEmpty() -> parent.i(classes = classes)
+
+        else -> parent.i(classes = "${cssClasses.plus(classes).joinToString(" ")} $classes")
+    }
 
     // conditional classes
 

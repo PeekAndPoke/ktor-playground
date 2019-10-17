@@ -4,6 +4,8 @@ import kotlinx.html.*
 
 @SemanticUiDslMarker val FlowContent.ui get() = SemanticUi(this, mutableListOf("ui"))
 
+@SemanticUiDslMarker val FlowContent.noui get() = SemanticUi(this, mutableListOf(""))
+
 @Suppress("FunctionName", "PropertyName")
 class SemanticUi(private val parent: FlowContent, private val cssClasses: MutableList<String>) {
 

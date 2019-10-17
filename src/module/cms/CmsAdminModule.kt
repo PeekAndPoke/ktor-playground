@@ -66,7 +66,7 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
 
         getOrPost(routes.editPage) { data ->
 
-            val form = CmsPageForm.of(data.page).apply { secure() }
+            val form = CmsPageForm.of(data.page)
 
             if (form.submit(call)) {
                 if (form.isModified) {

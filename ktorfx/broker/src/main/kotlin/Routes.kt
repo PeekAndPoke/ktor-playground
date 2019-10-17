@@ -5,7 +5,7 @@ import kotlin.reflect.KClass
 /**
  * Base class for all route collections
  */
-abstract class Routes(private val converter: OutgoingConverter, private val mountPoint: String = "") {
+abstract class Routes(private val converter: OutgoingConverter, private val mountPoint: String) {
 
     fun route(uri: String) = mountPoint + uri
 

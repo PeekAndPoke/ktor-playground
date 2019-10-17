@@ -1,17 +1,23 @@
 package de.peekandpoke
 
 import de.peekandpoke.ktorfx.semanticui.icon
+import de.peekandpoke.ktorfx.semanticui.noui
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.SimpleTemplateImpl
 import de.peekandpoke.ktorfx.templating.TemplateTools
+import de.peekandpoke.ktorfx.webresources.css
+import de.peekandpoke.ktorfx.webresources.js
 import de.peekandpoke.module.cms.CmsAdmin
 import de.peekandpoke.module.cms.views.CmsMenu
+import de.peekandpoke.module.demos.forms.FormDemos
+import de.peekandpoke.module.demos.forms.FormDemosMenu
 import de.peekandpoke.module.depot.DepotAdmin
 import de.peekandpoke.module.depot.views.DepotMenu
 import de.peekandpoke.module.got.GameOfThrones
 import de.peekandpoke.module.got.views.GameOfThronesMenu
 import de.peekandpoke.module.semanticui.SemanticUi
 import de.peekandpoke.module.semanticui.views.SemanticUiMenu
+import de.peekandpoke.resources.admin
 import kotlinx.html.div
 import kotlinx.html.script
 import kotlinx.html.unsafe
@@ -21,13 +27,22 @@ class AdminTemplate(
     tools: TemplateTools,
 
     private val cms: CmsAdmin,
-    private val semanticUi: SemanticUi,
     private val depot: DepotAdmin,
-    private val gameOfThrones: GameOfThrones
+    private val gameOfThrones: GameOfThrones,
+    private val semanticUi: SemanticUi,
+    private val formDemos: FormDemos
 
 ) : SimpleTemplateImpl(tools) {
 
     init {
+
+        styles {
+            css(webResources.admin)
+        }
+
+        scripts {
+            js(webResources.admin)
+        }
 
         scripts {
             // TODO: move this somewhere else
@@ -83,26 +98,60 @@ class AdminTemplate(
                     }
                 }
 
-                // SEMANTIC UI ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+                // TOOLS ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                ui.given(SemanticUiMenu has breadCrumbs) { active }.title.header.item H4 {
+                ui.given(breadCrumbs.isTools()) { active }.title.header.item H4 {
                     icon.dropdown()
 
                     div {
-                        icon.code()
-                        +"Semantic UI"
+                        icon.wrench()
+                        +"Tools & Demos"
                     }
                 }
-                ui.given(SemanticUiMenu has breadCrumbs) { active }.content {
-                    ui.accordion.transition.active {
-                        // TODO: create a method in the Semantic Ui Module that renders all menu entries
-                        ui.item.given(SemanticUiMenu.Index in breadCrumbs) { active } A { href = semanticUi.routes.index; +"Semantic UI" }
 
-                        ui.item.given(SemanticUiMenu.Playground in breadCrumbs) { active } A { href = semanticUi.routes.playground; +"Playground" }
+                ui.given(breadCrumbs.isTools()) { active }.content {
 
-                        ui.item.given(SemanticUiMenu.Buttons in breadCrumbs) { active } A { href = semanticUi.routes.buttons; +"Buttons" }
+                    noui.accordion.transition {
+                        // Semantic UI demos
 
-                        ui.item.given(SemanticUiMenu.Icons in breadCrumbs) { active } A { href = semanticUi.routes.icons; +"Icons" }
+                        ui.given(SemanticUiMenu has breadCrumbs) { active }.title.header.item H5 {
+                            icon.dropdown()
+
+                            div {
+                                icon.code()
+                                +"SemanticUI"
+                            }
+                        }
+
+                        ui.given(SemanticUiMenu has breadCrumbs) { active }.content {
+                            ui.accordion.transition.active {
+                                // TODO: create a method in the Semantic Ui Module that renders all menu entries
+                                ui.item.given(SemanticUiMenu.Index in breadCrumbs) { active } A { href = semanticUi.routes.index; +"Semantic UI" }
+
+                                ui.item.given(SemanticUiMenu.Playground in breadCrumbs) { active } A { href = semanticUi.routes.playground; +"Playground" }
+
+                                ui.item.given(SemanticUiMenu.Buttons in breadCrumbs) { active } A { href = semanticUi.routes.buttons; +"Buttons" }
+
+                                ui.item.given(SemanticUiMenu.Icons in breadCrumbs) { active } A { href = semanticUi.routes.icons; +"Icons" }
+                            }
+                        }
+
+                        // Form demos
+
+                        ui.given(FormDemosMenu has breadCrumbs) { active }.title.header.item H5 {
+                            icon.dropdown()
+
+                            div {
+                                icon.code()
+                                +"Forms"
+                            }
+                        }
+
+                        ui.given(FormDemosMenu has breadCrumbs) { active }.content {
+                            ui.accordion.transition.active {
+                                ui.item.given(FormDemosMenu.Index in breadCrumbs) { active } A { href = formDemos.routes.index; +"Form Demos" }
+                            }
+                        }
                     }
                 }
 
@@ -126,5 +175,9 @@ class AdminTemplate(
             }
         }
     }
+
+
+    private fun List<Any>.isTools() = SemanticUiMenu has this ||
+            FormDemosMenu has this
 
 }
