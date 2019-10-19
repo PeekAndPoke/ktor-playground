@@ -33,6 +33,8 @@
       <module name="ktor-playground.ktorfx.i18n.test" target="1.8" />
       <module name="ktor-playground.ktorfx.insights.main" target="1.8" />
       <module name="ktor-playground.ktorfx.insights.test" target="1.8" />
+      <module name="ktor-playground.ktorfx.logging.main" target="1.8" />
+      <module name="ktor-playground.ktorfx.logging.test" target="1.8" />
       <module name="ktor-playground.ktorfx.main" target="1.8" />
       <module name="ktor-playground.ktorfx.prismjs.main" target="1.8" />
       <module name="ktor-playground.ktorfx.prismjs.test" target="1.8" />
@@ -61,6 +63,8 @@
       <module name="ktor-playground.ultra.depot.test" target="1.8" />
       <module name="ktor-playground.ultra.insights.main" target="1.8" />
       <module name="ktor-playground.ultra.insights.test" target="1.8" />
+      <module name="ktor-playground.ultra.logging.main" target="1.8" />
+      <module name="ktor-playground.ultra.logging.test" target="1.8" />
       <module name="ktor-playground.ultra.main" target="1.8" />
       <module name="ktor-playground.ultra.polyglot.main" target="1.8" />
       <module name="ktor-playground.ultra.polyglot.test" target="1.8" />

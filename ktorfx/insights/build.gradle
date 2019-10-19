@@ -54,6 +54,7 @@ dependencies {
     implementation "de.peekandpoke.ultra:kontainer:$ultra_version"
 
     implementation project(":ultra:depot")
+    implementation project(":ultra:logging")
     implementation project(":ultra:vault")
 
     ////  tests  ////////////////////////////////////////////////////////////////////////////////////////////////

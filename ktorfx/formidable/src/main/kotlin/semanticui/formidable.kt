@@ -8,11 +8,15 @@ import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ultra.polyglot.I18n
 import kotlinx.html.*
 
-fun FlowContent.formidable(i18n: I18n, form: Form, block: FormidableViewBuilder.() -> Unit) {
+fun FlowContent.formidable(i18n: I18n, form: Form, configure: FORM.() -> Unit = {}, block: FormidableViewBuilder.() -> Unit) {
 
     ui.form Form {
         // default is post
         method = FormMethod.post
+        action = ""
+
+        // apply configuration to the form tag
+        this.configure()
 
         val builder = FormidableViewBuilder(i18n, this)
 
@@ -30,10 +34,6 @@ fun FlowContent.formidable(i18n: I18n, form: Form, block: FormidableViewBuilder.
 
 
 class FormidableViewBuilder(private val i18n: I18n, val form: FORM) {
-
-    fun configure(block: FORM.() -> Unit) {
-        form.block()
-    }
 
     fun <T> FlowContent.label(field: FormField<T>, label: String?) {
 

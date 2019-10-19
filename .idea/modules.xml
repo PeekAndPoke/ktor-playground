@@ -51,6 +51,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ultra/depot/ktor-playground.ultra.depot.iml" filepath="$PROJECT_DIR$/.idea/modules/ultra/depot/ktor-playground.ultra.depot.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ultra/depot/ktor-playground.ultra.depot.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ultra/depot/ktor-playground.ultra.depot.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ultra/depot/ktor-playground.ultra.depot.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ultra/depot/ktor-playground.ultra.depot.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ultra/logging/ktor-playground.ultra.logging.iml" filepath="$PROJECT_DIR$/.idea/modules/ultra/logging/ktor-playground.ultra.logging.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ultra/logging/ktor-playground.ultra.logging.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ultra/logging/ktor-playground.ultra.logging.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ultra/logging/ktor-playground.ultra.logging.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ultra/logging/ktor-playground.ultra.logging.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ultra/ktor-playground.ultra.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ultra/ktor-playground.ultra.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ultra/polyglot/ktor-playground.ultra.polyglot.iml" filepath="$PROJECT_DIR$/.idea/modules/ultra/polyglot/ktor-playground.ultra.polyglot.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ultra/polyglot/ktor-playground.ultra.polyglot.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ultra/polyglot/ktor-playground.ultra.polyglot.main.iml" />

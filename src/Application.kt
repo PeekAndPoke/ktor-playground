@@ -58,6 +58,7 @@ import io.ultra.ktor_tools.ktorFx
 import io.ultra.ktor_tools.logger.logger
 import kotlinx.html.body
 import kotlinx.html.div
+import kotlinx.html.pre
 import java.net.InetAddress
 import java.time.Duration
 import java.util.*
@@ -275,7 +276,24 @@ fun Application.module(testing: Boolean = false) {
 
         exception<Throwable> { cause ->
             cause.printStackTrace()
-            call.respond(HttpStatusCode.InternalServerError, "Internal Server Error")
+
+            respond(HttpStatusCode.InternalServerError) {
+
+                content {
+                    div {
+                        +"Internal Server Error"
+                    }
+
+                    pre {
+                        +(cause.toString())
+                    }
+
+                    pre {
+                        +cause.stackTrace.joinToString("\n")
+                    }
+                }
+
+            }
         }
 
         exception<AuthenticationException> {

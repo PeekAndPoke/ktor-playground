@@ -149,7 +149,21 @@ class AdminTemplate(
 
                         ui.given(FormDemosMenu has breadCrumbs) { active }.content {
                             ui.accordion.transition.active {
-                                ui.item.given(FormDemosMenu.Index in breadCrumbs) { active } A { href = formDemos.routes.index; +"Form Demos" }
+
+                                ui.item.given(FormDemosMenu.Index in breadCrumbs) { active } A {
+                                    href = formDemos.routes.index
+                                    +"Index"
+                                }
+
+                                ui.item.given(FormDemosMenu.SimpleFields in breadCrumbs) { active } A {
+                                    href = formDemos.routes.simpleFields
+                                    +"Simple form fields"
+                                }
+
+                                ui.item.given(FormDemosMenu.CommaSeparated in breadCrumbs) { active } A {
+                                    href = formDemos.routes.commaSeparated
+                                    +"Comma separated lists"
+                                }
                             }
                         }
                     }

@@ -55,6 +55,8 @@ dependencies {
     implementation "de.peekandpoke.ultra:meta:$ultra_version"
     implementation "de.peekandpoke.ultra:kontainer:$ultra_version"
 
+    implementation project(":ultra:logging")
+
     ////  code generation  //////////////////////////////////////////////////////////////////////////////////////
 
     implementation "com.google.auto.service:auto-service:$google_auto_version"

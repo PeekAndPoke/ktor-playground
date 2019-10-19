@@ -15,6 +15,7 @@ import de.peekandpoke.ktorfx.webresources.ktorFxWebResources
 import de.peekandpoke.ultra.depot.ultraDepot
 import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
+import de.peekandpoke.ultra.logging.ultraLogging
 import de.peekandpoke.ultra.polyglot.ultraPolyglot
 import de.peekandpoke.ultra.vault.Database
 import io.ktor.application.ApplicationCall
@@ -31,6 +32,7 @@ val KtorFX = module { config: KtorFXConfig ->
 
     // pull external libraries
     ultraDepot()
+    ultraLogging()
     ultraPolyglot()
 
     ktorFxCommon()

@@ -93,6 +93,11 @@ abstract class Form(name: String = "", private val parent: Form? = null) : FormE
     }
 
     /**
+     * Returns true when the form was submitted
+     */
+    fun isSubmitted() = isSubmitted
+
+    /**
      * Return true when the form is valid, meaning that all of the children are valid
      */
     override fun isValid(): Boolean = isSubmitted && _children.all { it.isValid() }

@@ -56,6 +56,7 @@ dependencies {
     compile "de.peekandpoke.ultra:mutator:$ultra_version"
     kapt "de.peekandpoke.ultra:mutator:$ultra_version"
 
+    compile project(":ultra:logging")
     compile project(":ultra:vault")
 
     // add all ktorfx sub-projects

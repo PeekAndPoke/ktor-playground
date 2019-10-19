@@ -16,6 +16,7 @@ include ":ktorfx:webresources"
 
 include ":ultra"
 include ":ultra:depot"
+include ":ultra:logging"
 include ":ultra:polyglot"
 include ":ultra:vault"
 
