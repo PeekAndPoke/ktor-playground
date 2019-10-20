@@ -88,7 +88,7 @@ class KarangoDriver(
      */
     fun <T> query(query: TypedQuery<T>): Cursor<T> {
 
-        log.debug(query.aql)
+        log.debug("Arango query:\n${query.aql}\nVars:\n${query.vars}\n")
 
         val vars = serializer.convertValue<Map<String, Any>>(query.vars)
 

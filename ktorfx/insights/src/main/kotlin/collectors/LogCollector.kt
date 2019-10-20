@@ -12,6 +12,7 @@ import de.peekandpoke.ultra.logging.LogAppender
 import de.peekandpoke.ultra.logging.LogLevel
 import io.ktor.application.ApplicationCall
 import kotlinx.html.pre
+import kotlinx.html.style
 import kotlinx.html.title
 import java.time.ZonedDateTime
 
@@ -53,8 +54,11 @@ class LogCollector : InsightsCollector {
 
             content {
 
-                pre {
-                    +entries.joinToString("\n")
+                entries.forEach {
+                    pre {
+                        style = "background-color: #F8F8F8; padding: 10px; border-radius: 5px; border: 1px solid #CCC;"
+                        +it
+                    }
                 }
             }
         }

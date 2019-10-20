@@ -46,6 +46,15 @@ suspend fun PipelineContext<Unit, ApplicationCall>.respond(
     call.respondHtmlTemplate(defaultTemplate, status, body)
 }
 
+@JvmName("respond_withHint")
+suspend fun <T : SimpleTemplate> PipelineContext<Unit, ApplicationCall>.respond(
+    status: HttpStatusCode = HttpStatusCode.OK,
+    body: T.() -> Unit
+) {
+    @Suppress("UNCHECKED_CAST")
+    call.respondHtmlTemplate(defaultTemplate as T, status, body)
+}
+
 /**
  * Responds with the given template [T]
  */

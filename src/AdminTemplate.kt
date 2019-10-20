@@ -1,5 +1,7 @@
 package de.peekandpoke
 
+import de.peekandpoke.jointhebase.admin.JtbAdmin
+import de.peekandpoke.jointhebase.admin.views.JtbAdminMenu
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.noui
 import de.peekandpoke.ktorfx.semanticui.ui
@@ -26,7 +28,8 @@ class AdminTemplate(
 
     tools: TemplateTools,
 
-    private val cms: CmsAdmin,
+    val jtb: JtbAdmin,
+    val cms: CmsAdmin,
     private val depot: DepotAdmin,
     private val gameOfThrones: GameOfThrones,
     private val semanticUi: SemanticUi,
@@ -60,6 +63,24 @@ class AdminTemplate(
         mainMenu {
 
             ui.accordion {
+
+                // JoinTheBase ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                ui.given(JtbAdminMenu has breadCrumbs) { active }.title.header.item H4 {
+                    icon.dropdown()
+
+                    div {
+                        icon.building_outline()
+                        +"The Base"
+                    }
+                }
+                ui.given(JtbAdminMenu has breadCrumbs) { active }.content {
+                    ui.accordion.transition.active {
+                        // TODO: create a method in the Cms Admin Module that renders all menu entries
+                        ui.item.given(JtbAdminMenu.INDEX in breadCrumbs) { active } A { href = jtb.routes.index; +"Overview" }
+                    }
+                }
+
                 // CMS ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                 ui.given(CmsMenu has breadCrumbs) { active }.title.header.item H4 {

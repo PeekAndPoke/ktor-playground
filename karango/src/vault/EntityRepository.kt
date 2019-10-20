@@ -51,6 +51,11 @@ abstract class EntityRepository<T : Any>(
     fun save(new: T): Stored<T> = save(New(new))
 
     /**
+     * Inserts the given object with the given key into the database and returns the saved version
+     */
+    fun save(key: String, new: T): Stored<T> = save(New(_key = key, value = new))
+
+    /**
      * Inserts the given object into the database and returns the saved version
      */
     fun save(new: New<T>): Stored<T> = driver.applyOnSaveHooks(this, new).let {

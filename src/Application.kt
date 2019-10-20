@@ -1,6 +1,8 @@
 package de.peekandpoke
 
 import com.fasterxml.jackson.databind.SerializationFeature
+import de.peekandpoke.jointhebase.admin.JtbAdmin
+import de.peekandpoke.jointhebase.joinTheBase
 import de.peekandpoke.karango.karango
 import de.peekandpoke.ktorfx.common.provide
 import de.peekandpoke.ktorfx.flashsession.FlashSession
@@ -99,13 +101,14 @@ private val commonKontainerBlueprint by lazy {
         // web resources
         singleton(AdminWebResources::class)
 
-        // modules
+        // helper modules
         cmsAdmin()
         cmsPublic()
 
         depotAdmin()
 
         // application modules
+        joinTheBase()
         gameOfThrones()
         semanticUi()
         formDemos()
@@ -424,7 +427,10 @@ fun Application.module(testing: Boolean = false) {
                 // mount the insights gui when present
                 initKontainer.use(InsightsGui::class) { mount() }
 
-                // mount application modules
+                // mount main modules
+                initKontainer.use(JtbAdmin::class) { mount() }
+
+                // mount helper modules
                 initKontainer.use(CmsAdmin::class) { mount() }
                 initKontainer.use(DepotAdmin::class) { mount() }
 
