@@ -6,7 +6,6 @@ import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.vault.KarangoDriver
 import de.peekandpoke.karango_dev.domain.*
 import de.peekandpoke.ultra.kontainer.kontainer
-import de.peekandpoke.ultra.mutator.Frozen
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.vault.Database
 import de.peekandpoke.ultra.vault.EntityCache
@@ -151,28 +150,6 @@ fun playWithMutator() {
         println(it)
         println(it.hashCode())
     }
-}
-
-fun moreFun() {
-
-    println("----------------------------------------------------")
-
-    val person = Frozen.createLazyProxy { Person("Heinz", 55) }
-
-    println(person)
-    println(person::class)
-    println(person.name)
-    println(Person::class.java.methods.first { it.name == "getName" }.invoke(person))
-    println(person.age)
-
-    println(person.copy()::class)
-    println(person.copy(name = "bernd"))
-    println(person.copy().name)
-//    println(System.identityHashCode(person.copy()))
-
-    val person2 = Frozen.createLazyProxy { Person("Heinz 2", 55) }
-    println(person2)
-    println(person2::class)
 }
 
 @Suppress("UNUSED_VARIABLE")

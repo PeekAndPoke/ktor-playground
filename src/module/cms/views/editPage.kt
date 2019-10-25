@@ -20,13 +20,13 @@ internal fun SimpleTemplate.editPage(create: Boolean, form: CmsPageForm) {
         h1 {
             when (create) {
                 true -> +"Create Page"
-                false -> +"Edit ${form.name.value}"
+                false -> +"Edit ${form.id.value}"
             }
         }
 
         formidable(t, form) {
 
-            textInput(form.name, label = "Name")
+            textInput(form.id, label = "Name")
 
             textInput(form.slug, label = "Slug")
 

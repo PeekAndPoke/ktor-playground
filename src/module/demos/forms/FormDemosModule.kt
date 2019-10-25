@@ -1,13 +1,13 @@
 package de.peekandpoke.module.demos.forms
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import de.peekandpoke.ktorfx.broker.OutgoingConverter
 import de.peekandpoke.ktorfx.broker.Routes
 import de.peekandpoke.ktorfx.broker.getOrPost
 import de.peekandpoke.ktorfx.common.i18n
 import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ktorfx.common.texts.forms
-import de.peekandpoke.ktorfx.formidable.Form
-import de.peekandpoke.ktorfx.formidable.field
+import de.peekandpoke.ktorfx.formidable.*
 import de.peekandpoke.ktorfx.formidable.semanticui.formidable
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.respond
@@ -39,9 +39,15 @@ class FormDemosRoutes(converter: OutgoingConverter) : Routes(converter, "/demos/
     val simpleFields = route("/simple-fields")
 
     val commaSeparated = route("/comma-separated")
+
+    val listOfFields = route("/list-of-fields")
 }
 
 class FormDemos(val routes: FormDemosRoutes) {
+
+    private val jsonWriter by lazy {
+        ObjectMapper().writerWithDefaultPrettyPrinter()
+    }
 
     fun Route.mount() {
 
@@ -98,7 +104,7 @@ class FormDemos(val routes: FormDemosRoutes) {
 
             val data = Data()
 
-            class DataForm : Form() {
+            class DataForm : Form("data") {
                 val boolean = field(data::boolean)
                 val booleanOptional = field(data::booleanOptional)
                 val byte = field(data::byte)
@@ -202,23 +208,120 @@ class FormDemos(val routes: FormDemosRoutes) {
 
                 content {
 
-                    samples.forEach {
+                    samples.forEach { (description, data, form) ->
 
-                        a { id = it.third.formId }
+                        a { id = form.getId().asFormId }
 
-                        ui.dividing.given(it.third.isSubmitted()) { green }.header H3 { +it.first }
+                        ui.dividing.given(form.isSubmitted()) { green }.header H3 { +description }
 
                         ui.two.column.grid {
                             ui.column {
-                                formidable(i18n, it.third, {
-                                    action = "#${it.third.formId}"
-                                }) {
-                                    textInput(it.third.field)
+                                formidable(i18n, form, { action = "#${form.getId().asFormId}" }) {
+                                    textInput(it.field)
                                 }
                             }
 
                             ui.column {
-                                pre { +it.second.toString() }
+                                pre { +data.toString() }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        getOrPost(routes.listOfFields) {
+
+            data class ListOfStrings(
+                var strings: MutableList<String> = mutableListOf("a", "b")
+            )
+
+            val listWithStrings = ListOfStrings()
+
+            class ListWithStringsForm(target: ListOfStrings) : Form("strings") {
+
+                val strings = list(target::strings) {
+                    field(it::value).acceptsNonEmpty()
+                }
+            }
+
+            val listWithStringsForm = ListWithStringsForm(listWithStrings).apply { submit(call) }
+
+            data class SomeObject(var string: String, var int: Int)
+
+            data class ListWithObjects(
+                var objects: MutableList<SomeObject> = mutableListOf(
+                    SomeObject("a", 1),
+                    SomeObject("b", 2)
+                )
+            )
+
+            class SomeObjectForm(target: SomeObject) : Form("some-object") {
+                val string = field(target::string).acceptsNonEmpty()
+                val int = field(target::int).resultingInRange(0..200)
+            }
+
+            class ListWithObjectsForm(target: ListWithObjects) : Form("list-with-objects") {
+
+                val objects = list(target::objects) { element ->
+                    subForm(
+                        SomeObjectForm(element.value)
+                    )
+                }
+            }
+
+            val listWithObjects = ListWithObjects()
+
+            val listWithObjectsForm = ListWithObjectsForm(listWithObjects).apply { submit(call) }
+
+            respond {
+                breadCrumbs = listOf(FormDemosMenu.ListOfFields)
+
+                content {
+
+                    ui.dividing.header H3 { +"List of strings" }
+
+                    ui.grid {
+
+                        ui.ten.wide.column {
+                            formidable(i18n, listWithStringsForm) {
+
+                                it.strings.forEachIndexed { idx, child ->
+                                    textInput(child, label = "Field ${idx + 1}")
+                                }
+
+                                ui.button Submit { +t { forms.submit } }
+                            }
+                        }
+
+                        ui.six.wide.column {
+                            pre {
+                                +jsonWriter.writeValueAsString(listWithStrings)
+                            }
+                        }
+                    }
+
+                    ui.dividing.header H3 { +"List of objects" }
+
+                    ui.grid {
+
+                        ui.ten.wide.column {
+                            formidable(i18n, listWithObjectsForm) {
+
+                                it.objects.forEachIndexed { idx, child ->
+                                    ui.two.fields {
+                                        textInput(child.string, label = "Field ${idx + 1} String")
+                                        textInput(child.int, label = "Field ${idx + 1} Int")
+                                    }
+                                }
+
+                                ui.button Submit { +t { forms.submit } }
+                            }
+                        }
+
+                        ui.six.wide.column {
+                            pre {
+                                +jsonWriter.writeValueAsString(listWithObjects)
                             }
                         }
                     }

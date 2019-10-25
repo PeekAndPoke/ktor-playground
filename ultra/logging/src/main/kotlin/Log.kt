@@ -1,12 +1,8 @@
 package de.peekandpoke.ultra.logging
 
-import kotlin.reflect.KClass
+interface Log {
 
-class Log internal constructor(private val caller: KClass<*>, private val manager: UltraLogManager) {
-
-    fun log(level: LogLevel, message: String) {
-        manager.log(level, message, caller.qualifiedName ?: "n/a")
-    }
+    fun log(level: LogLevel, message: String)
 
     fun emergency(message: String) {
         log(LogLevel.EMERGENCY, message)

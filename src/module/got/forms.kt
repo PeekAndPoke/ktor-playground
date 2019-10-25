@@ -7,18 +7,17 @@ import de.peekandpoke.ultra.vault.New
 import de.peekandpoke.ultra.vault.Storable
 import de.peekandpoke.ultra.vault.value
 
-class ActorForm private constructor(it: Storable<Actor>, mutator: ActorMutator, parent: Form?) :
-    StorableForm<Actor, ActorMutator>(it, mutator, parent) {
+class ActorForm(it: Storable<Actor>, mutator: ActorMutator) : StorableForm<Actor, ActorMutator>(it, mutator) {
 
     companion object {
-        fun of(it: Actor, parent: Form? = null) = of(New(it), parent)
+        fun of(it: Actor) = of(New(it))
 
-        fun of(it: Storable<Actor>, parent: Form? = null) = ActorForm(it, it.value.mutator(), parent)
+        fun of(it: Storable<Actor>) = ActorForm(it, it.value.mutator())
 
-        fun of(it: ActorMutator, parent: Form? = null) = ActorForm(New(it.getInput()), it, parent)
+        fun of(it: ActorMutator) = ActorForm(New(it.getInput()), it)
     }
 
-    val name = field(target::name)
+    val id = field(target::name)
 
     val surname = field(target::surname)
 
@@ -26,19 +25,18 @@ class ActorForm private constructor(it: Storable<Actor>, mutator: ActorMutator, 
 }
 
 
-class CharacterForm private constructor(it: Storable<Character>, mutator: CharacterMutator, parent: Form?) :
-    StorableForm<Character, CharacterMutator>(it, mutator, parent) {
+class CharacterForm(it: Storable<Character>, mutator: CharacterMutator) : StorableForm<Character, CharacterMutator>(it, mutator) {
 
     companion object {
 
-        fun of(it: Character, parent: Form? = null) = of(New(it), parent)
+        fun of(it: Character) = of(New(it))
 
-        fun of(it: Storable<Character>, parent: Form? = null) = CharacterForm(it, it.value.mutator(), parent)
+        fun of(it: Storable<Character>) = CharacterForm(it, it.value.mutator())
 
-        fun of(it: CharacterMutator, parent: Form? = null) = CharacterForm(New(it.getInput()), it, parent)
+        fun of(it: CharacterMutator) = CharacterForm(New(it.getInput()), it)
     }
 
-    val name = field(target::name).trimmed().acceptsNonBlank()
+    val id = field(target::name).trimmed().acceptsNonBlank()
 
     val surname = field(target::surname).trimmed()
 
@@ -49,5 +47,7 @@ class CharacterForm private constructor(it: Storable<Character>, mutator: Charac
         false to PeopleI18n.dead
     )
 
-    val actor = target.actor?.let { add(ActorForm.of(it.value, this)) }
+    val actor = target.actor?.let {
+        subForm(ActorForm.of(it.value))
+    }
 }

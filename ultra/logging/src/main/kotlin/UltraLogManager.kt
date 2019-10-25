@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
 class UltraLogManager(private val appenders: List<LogAppender>) {
 
     fun getLogger(cls: KClass<*>): Log {
-        return Log(cls, this)
+        return LogImpl(cls, this)
     }
 
     fun log(level: LogLevel, message: String, loggerName: String) {

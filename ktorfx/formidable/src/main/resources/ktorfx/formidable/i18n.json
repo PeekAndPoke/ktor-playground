@@ -34,9 +34,8 @@
         "formidable.errors.must_be_a_big_decimal": "Must be a BigDecimal number",
         "formidable.errors.must_be_a_big_decimal_or_blank": "Must be blank or a BigDecimal number",
         "formidable.errors.must_be_a_list_of_big_decimals": "Must be a list of BigDecimal numbers",
-
-        "formidable.errors.must_be_in_range": "Must be in range %range%",
-        "formidable.errors.must_be_in_range_or_blank": "Must be in range %range% or blank"
+        "formidable.errors.must_be_in_range": "Must be in range {range}",
+        "formidable.errors.must_be_in_range_or_blank": "Must be in range {range} or blank"
     },
 
     "de": {
@@ -74,8 +73,7 @@
         "formidable.errors.must_be_a_big_decimal": "Muss eine große Gleitkommazahl sein",
         "formidable.errors.must_be_a_big_decimal_or_blank": "Muss leer oder eine große Gleitkommazahl sein",
         "formidable.errors.must_be_a_list_of_big_decimals": "Muss eine List von großen Gleitkommazahlen sein",
-
-        "formidable.errors.must_be_in_range": "Muss im Bereich %range% sein",
-        "formidable.errors.must_be_in_range_or_blank": "Muss im Bereich %range% oder leer sein"
+        "formidable.errors.must_be_in_range": "Muss im Bereich {range} sein",
+        "formidable.errors.must_be_in_range_or_blank": "Muss im Bereich {range} oder leer sein"
     }
 }

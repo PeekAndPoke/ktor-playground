@@ -2,15 +2,19 @@ package de.peekandpoke.ktorfx.formidable
 
 import de.peekandpoke.ultra.security.csrf.CsrfProtection
 
-
+/**
+ * Adds a hidden csrf token field to the form
+ */
 fun Form.csrf(csrf: CsrfProtection): FormField<String> {
 
     data class CsrfTokenHolder(var token: String)
 
-    val dummy = CsrfTokenHolder(csrf.createToken(formId))
+    val salt = getId().value
 
-    return csrf("_csrf_", dummy::token)
-        .addAcceptRule(FormidableI18n.invalid_csrf_token) { value: String -> csrf.validateToken(formId, value) }
+    val dummy = CsrfTokenHolder(csrf.createToken(salt))
+
+    return csrf(dummy::token)
+        .addAcceptRule(FormidableI18n.invalid_csrf_token) { value: String -> csrf.validateToken(salt, value) }
 }
 
 /**

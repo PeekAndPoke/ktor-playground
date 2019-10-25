@@ -7,8 +7,11 @@ import io.ktor.http.parametersOf
 
 class FormFieldImplSpec : StringSpec({
 
+    val parentForm = object : Form("") {}
+
     fun createSimpleField(setter: (String) -> Unit = {}) = FormFieldImpl(
-        FieldName("field"),
+        parentForm,
+        "field",
         "initial value",
         setter,
         { it },

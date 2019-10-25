@@ -8,7 +8,7 @@ import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ultra.polyglot.I18n
 import kotlinx.html.*
 
-fun FlowContent.formidable(i18n: I18n, form: Form, configure: FORM.() -> Unit = {}, block: FormidableViewBuilder.() -> Unit) {
+fun <T : Form> FlowContent.formidable(i18n: I18n, form: T, configure: FORM.() -> Unit = {}, block: FormidableViewBuilder.(T) -> Unit) {
 
     ui.form Form {
         // default is post
@@ -28,7 +28,7 @@ fun FlowContent.formidable(i18n: I18n, form: Form, configure: FORM.() -> Unit = 
         }
 
         // apply the builder block
-        builder.block()
+        builder.block(form)
     }
 }
 
@@ -39,7 +39,7 @@ class FormidableViewBuilder(private val i18n: I18n, val form: FORM) {
 
         if (label != null) {
             ui.given(field.hasErrors()) { error }.then Label {
-                attributes["for"] = field.name.asFormId
+                attributes["for"] = field.getId().asFormId
                 +label
             }
         }
@@ -64,7 +64,7 @@ class FormidableViewBuilder(private val i18n: I18n, val form: FORM) {
 
         input {
             type = InputType.hidden
-            name = field.name.value
+            name = field.getId().value
             value = field.textValue
         }
     }
@@ -76,8 +76,8 @@ class FormidableViewBuilder(private val i18n: I18n, val form: FORM) {
             label(field, label)
 
             textArea(classes = "form-control") {
-                id = field.name.asFormId
-                name = field.name.value
+                id = field.getId().asFormId
+                name = field.getId().value
 
                 +field.textValue
             }
@@ -93,8 +93,8 @@ class FormidableViewBuilder(private val i18n: I18n, val form: FORM) {
             label(field, label)
 
             textInput(classes = "form-control") {
-                id = field.name.asFormId
-                name = field.name.value
+                id = field.getId().asFormId
+                name = field.getId().value
                 type = InputType.text
                 value = field.textValue
             }
@@ -110,8 +110,8 @@ class FormidableViewBuilder(private val i18n: I18n, val form: FORM) {
             label(field, label)
 
             textInput(classes = "form-control") {
-                id = field.name.asFormId
-                name = field.name.value
+                id = field.getId().asFormId
+                name = field.getId().value
                 type = InputType.number
 
                 if (step != null) {
@@ -132,8 +132,8 @@ class FormidableViewBuilder(private val i18n: I18n, val form: FORM) {
             label(field, label)
 
             select(classes = "form-control") {
-                id = field.name.asFormId
-                name = field.name.value
+                id = field.getId().asFormId
+                name = field.getId().value
 
                 field.options.forEach {
 

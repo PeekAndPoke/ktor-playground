@@ -27,7 +27,7 @@ fun SimpleTemplate.editCharacter(routes: GameOfThronesRoutes, character: Stored<
         formidable(t, form) {
 
             ui.two.fields {
-                textInput(form.name, label = t { people.name })
+                textInput(form.id, label = t { people.name })
                 textInput(form.surname, label = t { people.surname })
             }
 
@@ -40,7 +40,7 @@ fun SimpleTemplate.editCharacter(routes: GameOfThronesRoutes, character: Stored<
                 ui.header H4 { +t { got.edit_actor(character.value.actor?.value?.name) } }
 
                 ui.three.fields {
-                    textInput(actorForm.name, label = t { people.name })
+                    textInput(actorForm.id, label = t { people.name })
                     textInput(actorForm.surname, label = t { people.surname })
                     numberInput(actorForm.age, label = t { people.age })
                 }

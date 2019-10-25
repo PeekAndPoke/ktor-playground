@@ -3,6 +3,7 @@ package de.peekandpoke.ktorfx.formidable
 import de.peekandpoke.ktorfx.formidable.semanticui.FormidableViewBuilder
 import de.peekandpoke.ultra.polyglot.Translatable
 import io.ktor.http.Parameters
+import kotlin.reflect.KMutableProperty0
 
 /**
  * Converts a [FormField] to a [FormFieldWithOptions]
@@ -26,13 +27,23 @@ fun <T> FormField<T>.hidden(): HiddenFormField<T> = HiddenFormFieldImpl(this)
  * Internal implementation of [FormField]
  */
 internal class FormFieldImpl<T>(
-    override val name: FieldName,
+    override val parent: Form,
+    private val name: String,
     override val value: T,
     private val setter: (T) -> Unit,
     private val toStr: (T) -> String,
     private val fromStr: (String) -> T
 ) :
     FormField<T>, FormElement {
+
+    constructor(parent: Form, prop: KMutableProperty0<T>, toStr: (T) -> String, fromStr: (String) -> T) : this(
+        parent,
+        prop.name,
+        prop.getter(),
+        prop.setter,
+        toStr,
+        fromStr
+    )
 
     /**
      * Public getter for the text value of the field
@@ -70,6 +81,11 @@ internal class FormFieldImpl<T>(
     private var _errors = listOf<Translatable>()
 
     /**
+     * Get the unique id
+     */
+    override fun getId(): FormElementId = parent.getId() + name
+
+    /**
      * Returns true when the fields is valid
      */
     override fun isValid() = _errors.isEmpty()
@@ -94,9 +110,11 @@ internal class FormFieldImpl<T>(
      */
     override fun submit(params: Parameters) {
 
-        if (params.contains(name.value)) {
+        val id = getId().value
+
+        if (params.contains(id)) {
             // get the input value
-            val input = params[name.value] ?: ""
+            val input = params[id] ?: ""
 
             // update the internal value of the form-field and apply all mappers (like trimmed)
             _textValue = input.applyMappers()
@@ -143,12 +161,17 @@ internal class FormFieldImpl<T>(
 /**
  * Internal implementation of [HiddenFormField]
  */
-internal class HiddenFormFieldImpl<T>(
+internal open class HiddenFormFieldImpl<T>(
     private val wrapped: FormField<T>
 ) : HiddenFormField<T>, FormField<T> by wrapped {
 
-    data class Dummy(var data: String)
+    data class Holder(var data: String)
 }
+
+/**
+ * Internal implementation of [SubmissionCheckField]
+ */
+internal class SubmissionCheckFieldImpl(wrapped: FormField<String>) : SubmissionCheckField, HiddenFormFieldImpl<String>(wrapped)
 
 /**
  * Internal implementation of [FormFieldWithOptions]

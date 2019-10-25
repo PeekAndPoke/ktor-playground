@@ -18,9 +18,10 @@ class FormSpec : StringSpec({
         val child: TestObj = TestObj()
     )
 
-    class TestForm(target: TestObj, name: String = "", parent: Form? = null) : Form(name, parent) {
+    class TestForm(target: TestObj, name: String) : Form(name) {
         init {
-            csrfRequired = false
+            noCsrf()
+            noSubmissionCheck()
         }
 
         val anInt = field(target::anInt).resultingInRange(-100..100)
@@ -28,19 +29,24 @@ class FormSpec : StringSpec({
         val anOptionalInt = field(target::anOptionalInt).resultingInRange(-100..100)
     }
 
-    class ParentForm(target: ParentObject) : Form() {
+    class ParentForm(target: ParentObject) : Form("") {
         init {
-            csrfRequired = false
+            noCsrf()
+            noSubmissionCheck()
         }
 
-        val name = field(target::name).acceptsNonBlank()
+        val id = field(target::name).acceptsNonBlank()
 
-        val child = add(TestForm(target.child, "child", this))
+        val child = subForm(TestForm(target.child, "child"))
     }
 
     "Submitting a form should by default throw an error when no csrf field is present" {
 
-        class BrokenForm : Form()
+        class BrokenForm : Form("") {
+            init {
+                noSubmissionCheck()
+            }
+        }
 
         val form = BrokenForm()
 
@@ -52,7 +58,7 @@ class FormSpec : StringSpec({
     "Submitting valid parameters to a form" {
 
         val obj = TestObj()
-        val subject = TestForm(obj)
+        val subject = TestForm(obj, "")
 
         subject.submit(
             parametersOf(
@@ -75,7 +81,7 @@ class FormSpec : StringSpec({
     "Submitting with missing parameters" {
 
         val obj = TestObj()
-        val subject = TestForm(obj)
+        val subject = TestForm(obj, "")
 
         subject.submit(parametersOf())
 
@@ -103,7 +109,7 @@ class FormSpec : StringSpec({
         assertSoftly {
             subject.isValid() shouldBe true
 
-            subject.name.isValid() shouldBe true
+            subject.id.isValid() shouldBe true
             obj.name shouldBe "name"
 
             subject.child.isValid() shouldBe true

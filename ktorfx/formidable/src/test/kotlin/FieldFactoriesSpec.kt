@@ -19,11 +19,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(true)
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", ""))
@@ -52,11 +52,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(true)
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -84,11 +84,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf(true, false))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -112,11 +112,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf(true, false))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -144,11 +144,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(10)
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", ""))
@@ -184,11 +184,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(10)
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
 
@@ -213,11 +213,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf(1, 2))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -241,11 +241,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf(1, 2))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -273,11 +273,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data('a')
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", ""))
@@ -301,11 +301,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data('a')
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -329,11 +329,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf('a', 'b'))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -357,11 +357,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf('a', 'b'))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -389,11 +389,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(10)
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", ""))
@@ -417,11 +417,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(10)
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -445,11 +445,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf(1, 2))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -473,11 +473,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf(1, 2))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -505,11 +505,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(10)
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", ""))
@@ -533,11 +533,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(10)
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -561,11 +561,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf(1, 2))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -589,11 +589,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf(1, 2))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -621,11 +621,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(10L)
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", ""))
@@ -649,11 +649,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(10L)
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -677,11 +677,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf(1, 2))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -705,11 +705,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf(1, 2))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -737,11 +737,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(10.0f)
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", ""))
@@ -769,11 +769,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(10.0f)
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -801,11 +801,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf(1.1f, 2.2f))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -829,11 +829,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf(1.1f, 2.2f))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -861,11 +861,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(10.0)
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", ""))
@@ -893,11 +893,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(10.0)
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -925,11 +925,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf(1.1, 2.2))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -953,11 +953,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf(1.1, 2.2))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -985,13 +985,13 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data("str")
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             init {
                 field(obj::data)
             }
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", ""))
@@ -1010,13 +1010,13 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data("str")
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             init {
                 field(obj::data)
             }
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -1035,15 +1035,16 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf("a", "b"))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
             subject.isValid() shouldBe true
+            subject.data.isValid() shouldBe true
             obj.data shouldBe listOf("ABC")
 
             subject.submit(parametersOf("data", ""))
@@ -1062,11 +1063,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf("a", "b"))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -1094,11 +1095,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(1.toBigInteger())
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", ""))
@@ -1122,11 +1123,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(1.toBigInteger())
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -1150,11 +1151,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf(1.toBigInteger(), 2.toBigInteger()))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -1178,11 +1179,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf(1.toBigInteger(), 2.toBigInteger()))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -1210,13 +1211,14 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(1.1.toBigDecimal())
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
+
             subject.submit(parametersOf("data", ""))
             subject.isValid() shouldBe false
             subject.data.errors shouldBe listOf(FormidableI18n.must_be_a_big_decimal)
@@ -1238,11 +1240,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(1.1.toBigDecimal())
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -1266,11 +1268,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf(10.1.toBigDecimal(), 20.2.toBigDecimal()))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))
@@ -1294,11 +1296,11 @@ class FieldFactoriesSpec : StringSpec({
 
         val obj = Data(listOf(10.1.toBigDecimal(), 20.2.toBigDecimal()))
 
-        class DataForm : Form() {
+        class DataForm : Form("") {
             val data = field(obj::data)
         }
 
-        val subject = DataForm().noCsrf()
+        val subject = DataForm().noCsrf().noSubmissionCheck()
 
         assertSoftly {
             subject.submit(parametersOf("data", "ABC"))

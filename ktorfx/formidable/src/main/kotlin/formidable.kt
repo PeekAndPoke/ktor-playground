@@ -17,7 +17,7 @@ typealias AcceptRule = Rule<String>
 /**
  * Represents the name of a form element
  */
-data class FieldName(val value: String) {
+data class FormElementId(val value: String) {
 
     val asFormId by lazy {
         value.replace("[^a-zA-Z0-9]".toRegex(), "-")
@@ -25,9 +25,9 @@ data class FieldName(val value: String) {
 
     operator fun plus(str: String) = when {
 
-        value.isEmpty() -> FieldName(str)
+        value.isEmpty() -> FormElementId(str)
 
-        else -> FieldName("$value.$str")
+        else -> FormElementId("$value.$str")
     }
 }
 
@@ -35,6 +35,11 @@ data class FieldName(val value: String) {
  * Defines the most basic structure of any form element
  */
 interface FormElement {
+    /**
+     * The unique element id
+     */
+    fun getId(): FormElementId
+
     /**
      * Submits the given [params] to the form element
      */
@@ -52,9 +57,9 @@ interface FormElement {
 interface FormField<T> : FormElement {
 
     /**
-     * The name of the form field
+     * The parent of the field
      */
-    val name: FieldName
+    val parent: Form
 
     /**
      * The real value of the field
@@ -120,6 +125,15 @@ interface FormField<T> : FormElement {
  * Special type of field, for hidden form fields
  */
 interface HiddenFormField<T> : FormField<T>
+
+/**
+ * Special type of field, for checking if a form was submitted or not
+ */
+interface SubmissionCheckField : HiddenFormField<String> {
+    companion object {
+        const val name = "_sub_"
+    }
+}
 
 /**
  * Special type of field, for csrf form fields

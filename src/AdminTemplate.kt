@@ -185,6 +185,11 @@ class AdminTemplate(
                                     href = formDemos.routes.commaSeparated
                                     +"Comma separated lists"
                                 }
+
+                                ui.item.given(FormDemosMenu.ListOfFields in breadCrumbs) { active } A {
+                                    href = formDemos.routes.listOfFields
+                                    +"List of fields"
+                                }
                             }
                         }
                     }

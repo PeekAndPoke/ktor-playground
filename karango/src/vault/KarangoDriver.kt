@@ -21,6 +21,7 @@ import de.peekandpoke.karango.aql.AqlBuilder
 import de.peekandpoke.karango.aql.TerminalExpr
 import de.peekandpoke.karango.jackson.KarangoJacksonModule
 import de.peekandpoke.ultra.logging.Log
+import de.peekandpoke.ultra.logging.NullLog
 import de.peekandpoke.ultra.vault.*
 import de.peekandpoke.ultra.vault.hooks.OnSaveHook
 import de.peekandpoke.ultra.vault.jackson.VaultJacksonModule
@@ -31,7 +32,7 @@ import kotlin.system.measureTimeMillis
 class KarangoDriver(
     private val database: Database,
     private val arangoDb: ArangoDatabase,
-    private val log: Log,
+    private val log: Log = NullLog(),
     private val onSaveHooks: List<OnSaveHook> = listOf(),
     private val entityCache: EntityCache = NullEntityCache(),
     private val profiler: QueryProfiler = NullQueryProfiler()

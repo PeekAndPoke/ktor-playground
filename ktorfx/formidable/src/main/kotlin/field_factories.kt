@@ -2,9 +2,54 @@
 
 package de.peekandpoke.ktorfx.formidable
 
+import io.ktor.http.Parameters
 import java.math.BigDecimal
 import java.math.BigInteger
 import kotlin.reflect.KMutableProperty0
+
+class ListItem<T>(
+    private val getter: () -> T,
+    private val setter: (T) -> Unit
+) {
+    var value: T
+        get() = getter()
+        set(value) = setter(value)
+}
+
+class ListField<T : FormElement>(private val id: FormElementId, val children: List<T>) : FormElement, Iterable<T> {
+
+    override fun getId(): FormElementId = id
+
+    override fun iterator(): Iterator<T> = children.iterator()
+
+    override fun submit(params: Parameters) {
+        forEach {
+            it.submit(params)
+        }
+    }
+
+    override fun isValid(): Boolean = all { it.isValid() }
+}
+
+internal class ListElementForm(name: FormElementId) : Form(name.value)
+
+fun <T, E : FormElement> Form.list(prop: KMutableProperty0<MutableList<T>>, elementBuilder: Form.(ListItem<T>) -> E): ListField<E> {
+
+    val list = prop.getter()
+
+    return add(prop.name) { fieldName ->
+        ListField(
+            id = fieldName,
+            children = list.mapIndexed { idx, _ ->
+                // Create a temp form to propagate the field name
+                val tmp = ListElementForm(fieldName + idx.toString())
+                // build the child element
+                tmp.elementBuilder(ListItem({ list[idx] }, { list[idx] = it }))
+            }
+        )
+    }
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helpers for comma separates lists
@@ -14,24 +59,37 @@ import kotlin.reflect.KMutableProperty0
  * Adds a field for list and displays the values as a comma separated list
  */
 @JvmName("separatedListField_List")
-fun <T> Form.separatedListField(prop: KMutableProperty0<List<T>>, toStr: (T) -> String, fromStr: (String) -> T, separator: String) = add(
-    name = prop.name,
-    value = prop.getter(),
-    setter = prop.setter,
-    toStr = { it.joinToString(separator, transform = toStr) },
-    fromStr = { str -> str.split(separator).map(String::trim).filter(String::isNotEmpty).map(fromStr) }
+fun <T> Form.separatedListField(
+    prop: KMutableProperty0<List<T>>,
+    toStr: (T) -> String,
+    fromStr: (String) -> T,
+    separator: String
+): FormField<List<T>> = add(
+    FormFieldImpl(
+        parent = this,
+        prop = prop,
+        toStr = { it.joinToString(separator, transform = toStr) },
+        fromStr = { str -> str.split(separator).map(String::trim).filter(String::isNotEmpty).map(fromStr) }
+    )
 )
+
 
 /**
  * Adds a field for list and displays the values as a comma separated list
  */
 @JvmName("separatedListField_List?")
-fun <T> Form.separatedListField(prop: KMutableProperty0<List<T>?>, toStr: (T) -> String, fromStr: (String) -> T, separator: String) = add(
-    name = prop.name,
-    value = prop.getter(),
-    setter = prop.setter,
-    toStr = { it?.joinToString(separator, transform = toStr) ?: "" },
-    fromStr = { str -> str.split(separator).map(String::trim).filter(String::isNotEmpty).map(fromStr) }
+fun <T> Form.separatedListField(
+    prop: KMutableProperty0<List<T>?>,
+    toStr: (T) -> String,
+    fromStr: (String) -> T,
+    separator: String
+): FormField<List<T>?> = add(
+    FormFieldImpl(
+        parent = this,
+        prop = prop,
+        toStr = { it?.joinToString(separator, transform = toStr) ?: "" },
+        fromStr = { str -> str.split(separator).map(String::trim).filter(String::isNotEmpty).map(fromStr) }
+    )
 )
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,7 +101,7 @@ fun <T> Form.separatedListField(prop: KMutableProperty0<List<T>?>, toStr: (T) ->
  */
 @JvmName("field_Boolean")
 fun Form.field(prop: KMutableProperty0<Boolean>) =
-    add(prop.name, prop.getter(), prop.setter, { it.toString() }, { it.toBoolean() })
+    add(FormFieldImpl(this, prop, { it.toString() }, { it.toBoolean() }))
         .trimmed()
         .acceptsBoolean()
 
@@ -52,9 +110,10 @@ fun Form.field(prop: KMutableProperty0<Boolean>) =
  */
 @JvmName("field_Boolean?")
 fun Form.field(prop: KMutableProperty0<Boolean?>) =
-    add(prop.name, prop.getter(), prop.setter, { it?.toString() ?: "" }, { if (it.isNotEmpty()) it.toBoolean() else null })
+    add(FormFieldImpl(this, prop, { it?.toString() ?: "" }, { if (it.isNotEmpty()) it.toBoolean() else null }))
         .trimmed()
         .acceptsBooleanOrBlank()
+
 
 /**
  * Adds a field for a List<Boolean> property with all entries as comma separated list
@@ -81,18 +140,20 @@ fun Form.field(prop: KMutableProperty0<List<Boolean>?>, separator: String = ",")
  */
 @JvmName("field_Byte")
 fun Form.field(prop: KMutableProperty0<Byte>) =
-    add(prop.name, prop.getter(), prop.setter, { it.toString() }, { it.toByte() })
+    add(FormFieldImpl(this, prop, { it.toString() }, { it.toByte() }))
         .trimmed()
         .acceptsByte()
+
 
 /**
  * Adds a field for a Byte? property
  */
 @JvmName("field_Byte?")
 fun Form.field(prop: KMutableProperty0<Byte?>) =
-    add(prop.name, prop.getter(), prop.setter, { it?.toString() ?: "" }, { it.toByteOrNull() })
+    add(FormFieldImpl(this, prop, { it?.toString() ?: "" }, { it.toByteOrNull() }))
         .trimmed()
         .acceptsByteOrBlank()
+
 
 /**
  * Adds a field for a List<Byte> property with all entries as comma separated list
@@ -119,16 +180,18 @@ fun Form.field(prop: KMutableProperty0<List<Byte>?>, separator: String = ",") =
  */
 @JvmName("field_Char")
 fun Form.field(prop: KMutableProperty0<Char>) =
-    add(prop.name, prop.getter(), prop.setter, { it.toString() }, { it[0] })
+    add(FormFieldImpl(this, prop, { it.toString() }, { it[0] }))
         .acceptsChar()
+
 
 /**
  * Adds a field for a Char? property
  */
 @JvmName("field_Char?")
 fun Form.field(prop: KMutableProperty0<Char?>) =
-    add(prop.name, prop.getter(), prop.setter, { it?.toString() ?: "" }, { if (it.isNotEmpty()) it[0] else null })
+    add(FormFieldImpl(this, prop, { it?.toString() ?: "" }, { if (it.isNotEmpty()) it[0] else null }))
         .acceptsCharOrBlank()
+
 
 /**
  * Adds a field for a List<Char> property with all entries as comma separated list
@@ -155,16 +218,17 @@ fun Form.field(prop: KMutableProperty0<List<Char>?>, separator: String = ",") =
  */
 @JvmName("field_Short")
 fun Form.field(prop: KMutableProperty0<Short>) =
-    add(prop.name, prop.getter(), prop.setter, { it.toString() }, { it.toShort() })
+    add(FormFieldImpl(this, prop, { it.toString() }, { it.toShort() }))
         .trimmed()
         .acceptsShort()
+
 
 /**
  * Adds a field for a Short? property
  */
 @JvmName("field_Short?")
 fun Form.field(prop: KMutableProperty0<Short?>) =
-    add(prop.name, prop.getter(), prop.setter, { it?.toString() ?: "" }, { it.toShortOrNull() })
+    add(FormFieldImpl(this, prop, { it?.toString() ?: "" }, { it.toShortOrNull() }))
         .trimmed()
         .acceptsShortOrBlank()
 
@@ -193,7 +257,7 @@ fun Form.field(prop: KMutableProperty0<List<Short>?>, separator: String = ",") =
  */
 @JvmName("field_Int")
 fun Form.field(prop: KMutableProperty0<Int>) =
-    add(prop.name, prop.getter(), prop.setter, { it.toString() }, { it.toInt() })
+    add(FormFieldImpl(this, prop, { it.toString() }, { it.toInt() }))
         .trimmed()
         .acceptsInteger()
 
@@ -202,7 +266,7 @@ fun Form.field(prop: KMutableProperty0<Int>) =
  */
 @JvmName("field_Int?")
 fun Form.field(prop: KMutableProperty0<Int?>) =
-    add(prop.name, prop.getter(), prop.setter, { it?.toString() ?: "" }, { it.toIntOrNull() })
+    add(FormFieldImpl(this, prop, { it?.toString() ?: "" }, { it.toIntOrNull() }))
         .trimmed()
         .acceptsIntegerOrBlank()
 
@@ -231,7 +295,7 @@ fun Form.field(prop: KMutableProperty0<List<Int>?>, separator: String = ",") =
  */
 @JvmName("field_Long")
 fun Form.field(prop: KMutableProperty0<Long>) =
-    add(prop.name, prop.getter(), prop.setter, { it.toString() }, { it.toLong() })
+    add(FormFieldImpl(this, prop, { it.toString() }, { it.toLong() }))
         .trimmed()
         .acceptsLong()
 
@@ -240,7 +304,7 @@ fun Form.field(prop: KMutableProperty0<Long>) =
  */
 @JvmName("field_Long?")
 fun Form.field(prop: KMutableProperty0<Long?>) =
-    add(prop.name, prop.getter(), prop.setter, { it?.toString() ?: "" }, { it.toLongOrNull() })
+    add(FormFieldImpl(this, prop, { it?.toString() ?: "" }, { it.toLongOrNull() }))
         .trimmed()
         .acceptsLongOrBlank()
 
@@ -269,7 +333,7 @@ fun Form.field(prop: KMutableProperty0<List<Long>?>, separator: String = ",") =
  */
 @JvmName("field_Float")
 fun Form.field(prop: KMutableProperty0<Float>) =
-    add(prop.name, prop.getter(), prop.setter, { it.toString() }, { it.toFloat() })
+    add(FormFieldImpl(this, prop, { it.toString() }, { it.toFloat() }))
         .trimmed()
         .acceptsFloat()
 
@@ -278,7 +342,7 @@ fun Form.field(prop: KMutableProperty0<Float>) =
  */
 @JvmName("field_Float?")
 fun Form.field(prop: KMutableProperty0<Float?>) =
-    add(prop.name, prop.getter(), prop.setter, { it?.toString() ?: "" }, { it.toFloatOrNull() })
+    add(FormFieldImpl(this, prop, { it?.toString() ?: "" }, { it.toFloatOrNull() }))
         .trimmed()
         .acceptsFloatOrBlank()
 
@@ -307,7 +371,7 @@ fun Form.field(prop: KMutableProperty0<List<Float>?>, separator: String = ",") =
  */
 @JvmName("field_Double")
 fun Form.field(prop: KMutableProperty0<Double>) =
-    add(prop.name, prop.getter(), prop.setter, { it.toString() }, { it.toDouble() })
+    add(FormFieldImpl(this, prop, { it.toString() }, { it.toDouble() }))
         .trimmed()
         .acceptsDouble()
 
@@ -316,7 +380,7 @@ fun Form.field(prop: KMutableProperty0<Double>) =
  */
 @JvmName("field_Double?")
 fun Form.field(prop: KMutableProperty0<Double?>) =
-    add(prop.name, prop.getter(), prop.setter, { it?.toString() ?: "" }, { it.toDoubleOrNull() })
+    add(FormFieldImpl(this, prop, { it?.toString() ?: "" }, { it.toDoubleOrNull() }))
         .trimmed()
         .acceptsDoubleOrBlank()
 
@@ -341,10 +405,12 @@ fun Form.field(prop: KMutableProperty0<List<Double>?>, separator: String = ",") 
 /////
 
 @JvmName("field_String")
-fun Form.field(prop: KMutableProperty0<String>) = add(prop.name, prop.getter(), prop.setter, { it }, { it })
+fun Form.field(prop: KMutableProperty0<String>): FormField<String> =
+    add(FormFieldImpl(this, prop, { it }, { it }))
 
 @JvmName("field_String?")
-fun Form.field(prop: KMutableProperty0<String?>) = add(prop.name, prop.getter(), prop.setter, { it ?: "" }, { it })
+fun Form.field(prop: KMutableProperty0<String?>): FormField<String?> =
+    add(FormFieldImpl(this, prop, { it ?: "" }, { it }))
 
 /**
  * Adds a field for a List<String> property with all entries as comma separated list
@@ -369,7 +435,7 @@ fun Form.field(prop: KMutableProperty0<List<String>?>, separator: String = ",") 
  */
 @JvmName("field_BigInteger")
 fun Form.field(prop: KMutableProperty0<BigInteger>) =
-    add(prop.name, prop.getter(), prop.setter, { it.toString() }, { it.toBigInteger() })
+    add(FormFieldImpl(this, prop, { it.toString() }, { it.toBigInteger() }))
         .trimmed()
         .acceptsBigInteger()
 
@@ -378,7 +444,7 @@ fun Form.field(prop: KMutableProperty0<BigInteger>) =
  */
 @JvmName("field_field_BigInteger?")
 fun Form.field(prop: KMutableProperty0<BigInteger?>) =
-    add(prop.name, prop.getter(), prop.setter, { it?.toString() ?: "" }, { it.toBigIntegerOrNull() })
+    add(FormFieldImpl(this, prop, { it?.toString() ?: "" }, { it.toBigIntegerOrNull() }))
         .trimmed()
         .acceptsBigIntegerOrBlank()
 
@@ -407,7 +473,7 @@ fun Form.field(prop: KMutableProperty0<List<BigInteger>?>, separator: String = "
  */
 @JvmName("field_BigDecimal")
 fun Form.field(prop: KMutableProperty0<BigDecimal>) =
-    add(prop.name, prop.getter(), prop.setter, { it.toString() }, { it.toBigDecimal() })
+    add(FormFieldImpl(this, prop, { it.toString() }, { it.toBigDecimal() }))
         .trimmed()
         .acceptsBigDecimal()
 
@@ -416,7 +482,7 @@ fun Form.field(prop: KMutableProperty0<BigDecimal>) =
  */
 @JvmName("field_field_BigDecimal?")
 fun Form.field(prop: KMutableProperty0<BigDecimal?>) =
-    add(prop.name, prop.getter(), prop.setter, { it?.toString() ?: "" }, { it.toBigDecimalOrNull() })
+    add(FormFieldImpl(this, prop, { it?.toString() ?: "" }, { it.toBigDecimalOrNull() }))
         .trimmed()
         .acceptsBigDecimalOrBlank()
 
@@ -435,4 +501,3 @@ fun Form.field(prop: KMutableProperty0<List<BigDecimal>>, separator: String = ",
 fun Form.field(prop: KMutableProperty0<List<BigDecimal>?>, separator: String = ",") =
     separatedListField(prop, { it.toString() }, { it.toBigDecimal() }, separator)
         .acceptsBigDecimalsCommaSeparated(separator)
-
