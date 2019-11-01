@@ -216,8 +216,5 @@ class AdminTemplate(
         }
     }
 
-
-    private fun List<Any>.isTools() = SemanticUiMenu has this ||
-            FormDemosMenu has this
-
+    private fun List<Any>.isTools() = SemanticUiMenu has this || FormDemosMenu has this
 }

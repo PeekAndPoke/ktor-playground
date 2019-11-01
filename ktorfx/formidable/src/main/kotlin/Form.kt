@@ -71,6 +71,8 @@ abstract class Form(private val name: String) : FormElement {
      */
     internal fun setParent(parent: Form) {
         this.parent = parent
+
+        disableSubmissionCheck()
     }
 
     /**
@@ -131,14 +133,9 @@ abstract class Form(private val name: String) : FormElement {
     override fun isValid(): Boolean = isSubmitted && _children.all { it.isValid() }
 
     /**
-     * Creates and adds a [FormField]
-     *
-     * @param name    The name of the field, which will be used to render the fields markup and for receiving data
-     * @param builder A callback that creates the form field
+     * Adds the given [FormElement] as a child
      */
-    fun <T : FormElement> add(name: String, builder: (FormElementId) -> T): T = addElement(
-        builder(this.getId() + name)
-    )
+    fun <T : FormElement> addElement(element: T): T = element.apply { _children.add(this) }
 
     /**
      * Adds a form field
@@ -161,7 +158,7 @@ abstract class Form(private val name: String) : FormElement {
     /**
      * Adds a hidden field
      */
-    internal fun csrf(property: KMutableProperty0<String>) = addElement(
+    internal fun csrf(property: KMutableProperty0<String>) = add(
         FormFieldImpl(this, "_csrf_", property.getter(), property.setter, { it }, { it }).csrf()
     )
 
@@ -170,17 +167,17 @@ abstract class Form(private val name: String) : FormElement {
      */
     private fun checkSubmission(params: Parameters): Boolean {
 
+        // The submission check is only applied to top-level forms
         if (parent != null) {
             return true
         }
 
-        if (!_children.any { it is SubmissionCheckField }) {
-            return true
-        }
-
-        val submissionCheckHiddenFieldName = (getId() + SubmissionCheckField.name).value
-
-        return params.contains(submissionCheckHiddenFieldName)
+        // The submission check might also be disabled manually.
+        // So we try to find a the submission check field and validate it.
+        // When there is no such field we return true.
+        return _children.filterIsInstance<SubmissionCheckField>().firstOrNull()
+            ?.apply { submit(params) }?.isValid()
+            ?: return true
     }
 
     /**
@@ -189,17 +186,12 @@ abstract class Form(private val name: String) : FormElement {
     private fun addSubmissionCheckField(): SubmissionCheckField {
         val dummy = HiddenFormFieldImpl.Holder("")
 
-        return addElement(
+        return add(
             SubmissionCheckFieldImpl(
                 FormFieldImpl(this, SubmissionCheckField.name, dummy::data.getter(), dummy::data.setter, { it }, { it })
             )
         )
     }
-
-    /**
-     * Adds the given [FormElement] as a child
-     */
-    private fun <T : FormElement> addElement(element: T): T = element.apply { _children.add(this) }
 
     /**
      * Checks that the forms security measures are set up correctly

@@ -16,9 +16,9 @@ class ListItem<T>(
         set(value) = setter(value)
 }
 
-class ListField<T : FormElement>(private val id: FormElementId, val children: List<T>) : FormElement, Iterable<T> {
+class ListField<T : FormElement>(private val name: String, private val parent: Form, val children: List<T>) : FormElement, Iterable<T> {
 
-    override fun getId(): FormElementId = id
+    override fun getId(): FormElementId = parent.getId() + name
 
     override fun iterator(): Iterator<T> = children.iterator()
 
@@ -31,23 +31,24 @@ class ListField<T : FormElement>(private val id: FormElementId, val children: Li
     override fun isValid(): Boolean = all { it.isValid() }
 }
 
-internal class ListElementForm(name: FormElementId) : Form(name.value)
+internal class ListElementForm(name: String) : Form(name)
 
 fun <T, E : FormElement> Form.list(prop: KMutableProperty0<MutableList<T>>, elementBuilder: Form.(ListItem<T>) -> E): ListField<E> {
 
     val list = prop.getter()
 
-    return add(prop.name) { fieldName ->
+    return addElement(
         ListField(
-            id = fieldName,
+            name = prop.name,
+            parent = this,
             children = list.mapIndexed { idx, _ ->
                 // Create a temp form to propagate the field name
-                val tmp = ListElementForm(fieldName + idx.toString())
+                val tmp = ListElementForm(prop.name + "." + idx.toString()).apply { setParent(this@list) }
                 // build the child element
                 tmp.elementBuilder(ListItem({ list[idx] }, { list[idx] = it }))
             }
         )
-    }
+    )
 }
 
 
