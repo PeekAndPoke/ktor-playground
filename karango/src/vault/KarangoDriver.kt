@@ -1,72 +1,32 @@
 package de.peekandpoke.karango.vault
 
-import com.arangodb.ArangoCursor
 import com.arangodb.ArangoDBException
 import com.arangodb.ArangoDatabase
 import com.arangodb.entity.CollectionType
 import com.arangodb.model.AqlQueryOptions
 import com.arangodb.model.CollectionCreateOptions
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.InjectableValues
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.fasterxml.jackson.module.kotlin.convertValue
 import de.peekandpoke.karango.Cursor
 import de.peekandpoke.karango.CursorImpl
 import de.peekandpoke.karango.KarangoQueryException
 import de.peekandpoke.karango.TypedQuery
 import de.peekandpoke.karango.aql.AqlBuilder
 import de.peekandpoke.karango.aql.TerminalExpr
-import de.peekandpoke.karango.jackson.KarangoJacksonModule
+import de.peekandpoke.karango.slumber.KarangoCodec
 import de.peekandpoke.ultra.logging.Log
 import de.peekandpoke.ultra.logging.NullLog
-import de.peekandpoke.ultra.vault.*
+import de.peekandpoke.ultra.vault.Repository
+import de.peekandpoke.ultra.vault.Storable
 import de.peekandpoke.ultra.vault.hooks.OnSaveHook
-import de.peekandpoke.ultra.vault.jackson.VaultJacksonModule
 import de.peekandpoke.ultra.vault.profiling.NullQueryProfiler
 import de.peekandpoke.ultra.vault.profiling.QueryProfiler
-import kotlin.system.measureTimeMillis
 
 class KarangoDriver(
-    private val database: Database,
     private val arangoDb: ArangoDatabase,
+    private val codec: KarangoCodec,
     private val log: Log = NullLog(),
     private val onSaveHooks: List<OnSaveHook> = listOf(),
-    private val entityCache: EntityCache = NullEntityCache(),
     private val profiler: QueryProfiler = NullQueryProfiler()
 ) {
-
-    /**
-     * The object mapper used for serializing queries
-     */
-    private val serializer = ObjectMapper().apply {
-        // default modules
-        registerModule(KotlinModule())
-        registerModule(Jdk8Module())
-
-        // Vault specific
-        registerModule(VaultJacksonModule())
-
-        // Karango specific
-        registerModule(KarangoJacksonModule())
-
-        // serialization features
-        configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true)
-
-        // deserialization features
-        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-
-        injectableValues = InjectableValues.Std(
-            mapOf(
-                "database" to database,
-                "mapper" to this,
-                "entityCache" to entityCache
-            )
-        )
-    }
-
     fun ensureEntityCollection(
         name: String,
         options: CollectionCreateOptions = CollectionCreateOptions().type(CollectionType.DOCUMENT)
@@ -89,34 +49,32 @@ class KarangoDriver(
      */
     fun <T> query(query: TypedQuery<T>): Cursor<T> {
 
-        log.debug("Arango query:\n${query.aql}\nVars:\n${query.vars}\n")
-
-        val vars = serializer.convertValue<Map<String, Any>>(query.vars)
-
-        return profiler.add(
+        return profiler.profile(
             connection = "Arango::${arangoDb.arango().db().name()}",
             queryLanguage = "aql",
-            query = query.aql,
-            vars = vars
-        ) {
+            query = query.aql
+        ) { entry ->
+
+            // TODO: nicer interface that avoid the type-cast here
+            @Suppress("UNCHECKED_CAST")
+            val vars = entry.measureSerializer { codec.slumber(query.vars) } as Map<String, Any>
+
+            entry.vars = vars
+
+            log.debug("Arango query:\n${query.aql}\nVars:\n${vars}\n")
+
             val options = AqlQueryOptions().count(true)
 
-            lateinit var result: ArangoCursor<*>
-
-//            println(query)
-//        println(query.ret.innerType())
-//            println(vars)
-
-            val time = measureTimeMillis {
+            val result = entry.measureQuery {
                 try {
-                    result = arangoDb.query(query.aql, vars, options, Object::class.java)
+                    arangoDb.query(query.aql, vars, options, Object::class.java)
                 } catch (e: ArangoDBException) {
                     throw KarangoQueryException(query, "Error while querying '${e.message}':\n\n${query.aql}\nwith params\n\n$vars", e)
                 }
             }
 
             // return the cursor
-            CursorImpl(result, query, time, serializer)
+            CursorImpl(result, query, codec, entry)
         }
     }
 

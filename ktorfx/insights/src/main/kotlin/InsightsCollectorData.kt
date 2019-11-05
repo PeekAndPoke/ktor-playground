@@ -39,4 +39,6 @@ interface InsightsCollectorData {
     }
 
     private fun String.toId() = replace("[^a-zA-Z0-9]".toRegex(), "-")
+
+    fun Long.formatMs(precision: Int = 2) = "${"%.${precision}f".format(this / 1_000_000.0)} ms"
 }

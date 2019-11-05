@@ -17,21 +17,39 @@ class VaultCollector(private val profiler: QueryProfiler) : InsightsCollector {
     data class Data(val entries: List<QueryProfiler.Entry>) : InsightsCollectorData {
 
         private val totalTimeNs: Long by lazy {
-            entries.map { it.timeNs }.sum()
+            entries.map { it.totalNs }.sum()
         }
 
-        private val totalTimeMsStr = "%.2f ms".format(totalTimeNs / 1_000_000.0)
+        private val totalSerializerNs by lazy {
+            entries.map { it.measureSerializer.totalNs }.sum()
+        }
+
+        private val totalQueryNs by lazy {
+            entries.map { it.measureQuery.totalNs }.sum()
+        }
+
+        private val totalIteratorNs by lazy {
+            entries.map { it.measureIterator.totalNs }.sum()
+        }
+
+        private val totalDeserializerNs by lazy {
+            entries.map { it.measureDeserializer.totalNs }.sum()
+        }
 
         override fun renderBar(template: InsightsBarTemplate) = with(template) {
 
             left {
 
                 ui.item {
-                    title = "Database queries"
+                    title = "Database | Total: ${totalTimeNs.formatMs()} | " +
+                            "Serializer: ${totalSerializerNs.formatMs()} | " +
+                            "Query: ${totalQueryNs.formatMs()} | " +
+                            "Iterator: ${totalIteratorNs.formatMs()} | " +
+                            "Deserializer: ${totalDeserializerNs.formatMs()}"
 
                     icon.database()
 
-                    +"${entries.size} in $totalTimeMsStr"
+                    +"${entries.size} in ${totalTimeNs.formatMs()}"
                 }
             }
         }
@@ -50,7 +68,22 @@ class VaultCollector(private val profiler: QueryProfiler) : InsightsCollector {
                 entries.forEachIndexed { idx, it ->
                     ui.segment {
                         ui.header H5 {
-                            +"Query #${idx + 1} took ${"%.2f".format(it.timeNs / 1_000_000.0)} ms"
+                            +"Query #${idx + 1} took ${it.totalNs.formatMs()} - ${it.connection}"
+                        }
+
+                        ui.horizontal.segments {
+                            ui.segment {
+                                +"Serializer: ${it.measureSerializer.totalNs.formatMs()} (${it.measureSerializer.count}x)"
+                            }
+                            ui.segment {
+                                +"Query: ${it.measureQuery.totalNs.formatMs()} (${it.measureQuery.count}x)"
+                            }
+                            ui.segment {
+                                +"Iterator: ${it.measureIterator.totalNs.formatMs()} (${it.measureIterator.count}x)"
+                            }
+                            ui.segment {
+                                +"Deserializer: ${it.measureDeserializer.totalNs.formatMs()} (${it.measureDeserializer.count}x)"
+                            }
                         }
 
                         prism(it.queryLanguage) { it.query }
@@ -73,8 +106,28 @@ class VaultCollector(private val profiler: QueryProfiler) : InsightsCollector {
                 }
 
                 ui.center.aligned.segment {
-                    ui.header { +"Time" }
-                    +totalTimeMsStr
+                    ui.header { +"Total" }
+                    +totalTimeNs.formatMs()
+                }
+
+                ui.center.aligned.segment {
+                    ui.header { +"Serializer" }
+                    +totalSerializerNs.formatMs()
+                }
+
+                ui.center.aligned.segment {
+                    ui.header { +"Query" }
+                    +totalQueryNs.formatMs()
+                }
+
+                ui.center.aligned.segment {
+                    ui.header { +"Iterator" }
+                    +totalIteratorNs.formatMs()
+                }
+
+                ui.center.aligned.segment {
+                    ui.header { +"Deserializer" }
+                    +totalDeserializerNs.formatMs()
                 }
             }
         }

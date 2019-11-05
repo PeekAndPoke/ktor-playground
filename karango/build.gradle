@@ -54,6 +54,7 @@ dependencies {
 
     implementation "de.peekandpoke.ultra:meta:$ultra_version"
     implementation "de.peekandpoke.ultra:kontainer:$ultra_version"
+    implementation "de.peekandpoke.ultra:slumber:$ultra_version"
 
     implementation project(":ultra:logging")
 

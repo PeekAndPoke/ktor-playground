@@ -5,13 +5,20 @@ import com.arangodb.ArangoDatabase
 import de.peekandpoke.karango.Karango
 import de.peekandpoke.karango.aql.Expression
 import de.peekandpoke.karango.aql.print
+import de.peekandpoke.karango.slumber.KarangoCodec
 import de.peekandpoke.karango.testdomain.TestPersonsRepository
 import de.peekandpoke.karango.vault.KarangoDriver
 import de.peekandpoke.ultra.common.SimpleLookup
+import de.peekandpoke.ultra.common.TypedAttributes
 import de.peekandpoke.ultra.common.surround
+import de.peekandpoke.ultra.slumber.Config
+import de.peekandpoke.ultra.slumber.builtin.BuiltInModule
+import de.peekandpoke.ultra.slumber.builtin.DateTimeModule
 import de.peekandpoke.ultra.vault.Database
+import de.peekandpoke.ultra.vault.DefaultEntityCache
 import de.peekandpoke.ultra.vault.Repository
 import de.peekandpoke.ultra.vault.SharedRepoClassLookup
+import de.peekandpoke.ultra.vault.slumber.VaultSlumberModule
 import io.kotlintest.TestContext
 import io.kotlintest.matchers.withClue
 
@@ -29,8 +36,24 @@ fun createDatabase(): Pair<Database, KarangoDriver> {
         )
     }
 
+
     db = Database(repos, SharedRepoClassLookup())
-    driver = KarangoDriver(db, arangoDatabase)
+
+    val codec = KarangoCodec(
+        Config(
+            listOf(
+                VaultSlumberModule,
+                DateTimeModule,
+                BuiltInModule
+            )
+        ),
+        TypedAttributes.of {
+            add(VaultSlumberModule.DatabaseKey, db)
+            add(VaultSlumberModule.EntityCacheKey, DefaultEntityCache())
+        }
+    )
+
+    driver = KarangoDriver(arangoDatabase, codec)
 
     return Pair(db, driver)
 }

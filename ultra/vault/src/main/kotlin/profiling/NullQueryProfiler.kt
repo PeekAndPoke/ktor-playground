@@ -4,8 +4,20 @@ class NullQueryProfiler : QueryProfiler {
 
     override val entries: List<QueryProfiler.Entry> get() = listOf()
 
-    override fun <R> add(connection: String, queryLanguage: String, query: String, vars: Map<String, Any>?, block: () -> R): R {
-        return block()
+    override fun <R> profile(
+        connection: String,
+        queryLanguage: String,
+        query: String,
+        block: (QueryProfiler.Entry) -> R
+    ): R {
+
+        val entry = QueryProfiler.Entry(
+            connection = connection,
+            queryLanguage = queryLanguage,
+            query = query
+        )
+
+        return block(entry)
     }
 
 }

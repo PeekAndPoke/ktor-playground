@@ -2,9 +2,6 @@
 
 package de.peekandpoke.ultra.vault
 
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonUnwrapped
 import de.peekandpoke.ultra.security.user.UserRecord
 import de.peekandpoke.ultra.vault.hooks.Timestamps
 
@@ -14,28 +11,19 @@ data class StorableMeta(
 )
 
 sealed class Storable<T> {
-    @get: JsonUnwrapped
     abstract val value: T
-
-    @get: JsonInclude(JsonInclude.Include.NON_EMPTY)
     abstract val _id: String
-
-    @get: JsonInclude(JsonInclude.Include.NON_EMPTY)
     abstract val _key: String
-
-    @get: JsonInclude(JsonInclude.Include.NON_EMPTY)
     abstract val _rev: String
-
     abstract val _meta: StorableMeta?
+
+    val collection by lazy {
+        _id.split("/").first()
+    }
 
     abstract fun withValue(newValue: T): Storable<T>
 
     abstract fun withMeta(newMeta: StorableMeta): Storable<T>
-
-    @get:JsonIgnore
-    val collection by lazy {
-        _id.split("/").first()
-    }
 }
 
 data class Stored<T>(
@@ -46,7 +34,6 @@ data class Stored<T>(
     override val _meta: StorableMeta?
 ) : Storable<T>() {
 
-    @get:JsonIgnore
     val asRef: Ref<T> by lazy {
         Ref(value, _id, _key, _rev, _meta)
     }
@@ -65,7 +52,6 @@ data class Ref<T>(
 
 ) : Storable<T>() {
 
-    @get:JsonIgnore
     val asStored: Stored<T> by lazy {
         Stored(value, _id, _key, _rev, _meta)
     }

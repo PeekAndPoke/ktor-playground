@@ -6,7 +6,7 @@ interface EntityCache {
     fun <T> getOrPut(id: String, builder: () -> T?): T?
 }
 
-class NullEntityCache : EntityCache {
+object NullEntityCache : EntityCache {
     override fun <T> getOrPut(id: String, builder: () -> T?): T? = builder()
 }
 

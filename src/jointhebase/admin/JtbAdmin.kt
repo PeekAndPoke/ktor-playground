@@ -23,7 +23,7 @@ class JtbAdmin(val routes: JtbAdminRoutes) {
 
         get(routes.index) {
 
-            val organisations = database.organisations.findAll()
+            val organisations = database.organisations.findAll().toList()
 
             respond<AdminTemplate> {
                 index(organisations)
@@ -32,7 +32,7 @@ class JtbAdmin(val routes: JtbAdminRoutes) {
 
         get(routes.listResidentialProperties) { data ->
 
-            val properties = database.residentialProperties.findByOrganisation(data.org)
+            val properties = database.residentialProperties.findByOrganisation(data.org).toList()
 
             respond<AdminTemplate> {
                 listResidentialProperties(properties)
@@ -41,7 +41,7 @@ class JtbAdmin(val routes: JtbAdminRoutes) {
 
         get(routes.listRentableRooms) { data ->
 
-            val rooms = database.rentableRooms.findByResidentialProperty(data.property)
+            val rooms = database.rentableRooms.findByResidentialProperty(data.property).toList()
 
             respond<AdminTemplate> {
                 listRentableRooms(rooms)

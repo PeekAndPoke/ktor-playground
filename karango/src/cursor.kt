@@ -3,34 +3,46 @@ package de.peekandpoke.karango
 import com.arangodb.ArangoCursor
 import com.arangodb.ArangoIterator
 import com.arangodb.entity.CursorEntity
-import com.fasterxml.jackson.databind.ObjectMapper
-import de.peekandpoke.ultra.vault.TypeRef
+import de.peekandpoke.ultra.slumber.Codec
+import de.peekandpoke.ultra.vault.profiling.QueryProfiler
+import kotlin.reflect.KType
 
 interface Cursor<T> : Iterable<T> {
     val query: TypedQuery<T>
-    val timeMs: Long
     val stats: CursorEntity.Stats
     val count: Int
+    val timeMs: Double
 }
 
 class CursorImpl<T>(
     private val arangoCursor: ArangoCursor<*>,
     override val query: TypedQuery<T>,
-    override val timeMs: Long,
-    mapper: ObjectMapper
+    codec: Codec,
+    private val profiler: QueryProfiler.Entry
 ) : Cursor<T> {
 
-    private val iterator = It(arangoCursor, query.ret.innerType(), mapper)
+    private val iterator = profiler.measureIterator {
+        It<T>(arangoCursor, query.ret.innerType().toKType(), codec, profiler)
+    }
 
     class It<X>(
         private val inner: ArangoIterator<*>,
-        private val type: TypeRef<X>,
-        private val mapper: ObjectMapper
+        private val type: KType,
+        private val codec: Codec,
+        private val profiler: QueryProfiler.Entry
     ) : Iterator<X> {
 
-        override fun hasNext(): Boolean = inner.hasNext()
+        override fun hasNext(): Boolean = profiler.measureIterator { inner.hasNext() }
 
-        override fun next(): X = mapper.convertValue(inner.next(), type)
+        override fun next(): X {
+
+            val next = profiler.measureIterator { inner.next() }
+
+            return profiler.measureDeserializer {
+                @Suppress("UNCHECKED_CAST")
+                return@measureDeserializer codec.awakeOrNull(type, next) as X
+            }
+        }
     }
 
     override val count: Int = arangoCursor.count
@@ -38,4 +50,6 @@ class CursorImpl<T>(
     override val stats: CursorEntity.Stats get() = arangoCursor.stats
 
     override fun iterator() = iterator
+
+    override val timeMs get() = profiler.totalNs / 1_000_000.0
 }

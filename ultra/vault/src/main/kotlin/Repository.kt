@@ -27,8 +27,8 @@ interface Repository<T> {
     /**
      * Checks whether the repository stores the given cls
      */
-    fun stores(type: Type): Boolean = when (storedType.type) {
-        is ParameterizedType -> (storedType.type as ParameterizedType).rawType == type
+    fun stores(type: Type): Boolean = when (val stored = storedType.getType()) {
+        is ParameterizedType -> stored.rawType == type
 
         else -> storedType == type
     }

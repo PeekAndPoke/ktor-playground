@@ -133,6 +133,8 @@ interface SubmissionCheckField : HiddenFormField<String> {
     companion object {
         const val name = "_sub_"
     }
+
+    fun isSubmitted(params: Parameters) = params.contains(getId().value)
 }
 
 /**

@@ -4,6 +4,7 @@
       <w>appenders</w>
       <w>arango</w>
       <w>arangodb</w>
+      <w>awaker</w>
       <w>chronos</w>
       <w>ctxt</w>
       <w>karango</w>
@@ -14,6 +15,7 @@
       <w>outersection</w>
       <w>printables</w>
       <w>rentable</w>
+      <w>slumberer</w>
       <w>soundex</w>
       <w>unshifting</w>
       <w>upsert</w>

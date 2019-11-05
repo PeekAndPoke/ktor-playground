@@ -176,8 +176,8 @@ abstract class Form(private val name: String) : FormElement {
         // So we try to find a the submission check field and validate it.
         // When there is no such field we return true.
         return _children.filterIsInstance<SubmissionCheckField>().firstOrNull()
-            ?.apply { submit(params) }?.isValid()
-            ?: return true
+            ?.isSubmitted(params)
+            ?: true
     }
 
     /**

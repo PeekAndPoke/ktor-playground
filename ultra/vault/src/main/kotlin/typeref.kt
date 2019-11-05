@@ -1,11 +1,13 @@
 package de.peekandpoke.ultra.vault
 
-import com.fasterxml.jackson.core.type.TypeReference
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl
 import java.io.Serializable
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
+import kotlin.reflect.KType
+import kotlin.reflect.KTypeProjection
+import kotlin.reflect.full.createType
 
 /**
  * Obtains a type reference from the context called in
@@ -64,7 +66,7 @@ open class TypeRef<T> constructor(private val explicitType: Type? = null) : Type
     /**
      * Prints the string representation of the type.
      */
-    override fun toString() = type.toString()
+    override fun toString() = getType().toString()
 
     /**
      * Go up the "List-ladder"
@@ -132,9 +134,28 @@ open class TypeRef<T> constructor(private val explicitType: Type? = null) : Type
     inline fun <reified X> wrapWith(): TypeRef<X> = wrapWith(X::class.java)
 
     /**
-     * Create a class object from the a type
+     * Returns the resulting type as a [KType]
      */
-    private fun Type.toClass() = when (this) {
+    fun toKType(): KType = resultingType.toKType()
+
+    /**
+     * Internal helper for creating a [KType] from a [Type]
+     */
+    private fun Type.toKType(): KType = when (this) {
+
+        is ParameterizedType -> toClass().kotlin.createType(
+            actualTypeArguments.map {
+                KTypeProjection.invariant(it.toKType())
+            }
+        )
+
+        else -> toClass().kotlin.createType()
+    }
+
+    /**
+     * Internal helper for creating a [Class] from the a [Type]
+     */
+    private fun Type.toClass(): Class<*> = when (this) {
         is ParameterizedType -> Class.forName(this.rawType.typeName)
         else -> Class.forName(this.typeName)
     }
@@ -175,3 +196,35 @@ open class TypeRef<T> constructor(private val explicitType: Type? = null) : Type
 }
 
 internal class TypeNode(val type: Type, val children: List<TypeNode>)
+
+/**
+ * Taken from Jackson 2.9.9
+ */
+abstract class TypeReference<T> protected constructor() : Comparable<TypeReference<T>> {
+
+    private val type: Type
+
+    init {
+        val superClass = javaClass.genericSuperclass
+
+        require(superClass !is Class<*>) {
+            // sanity check, should never happen
+            "Internal error: TypeReference constructed without actual type information"
+        }
+
+        type = (superClass as ParameterizedType).actualTypeArguments[0]
+    }
+
+    open fun getType() = type
+
+    /**
+     * The only reason we define this method (and require implementation
+     * of `Comparable`) is to prevent constructing a
+     * reference without type information.
+     */
+    override fun compareTo(other: TypeReference<T>): Int {
+        return 0
+    }
+    // just need an implementation, not a good one... hence ^^^
+}
+
