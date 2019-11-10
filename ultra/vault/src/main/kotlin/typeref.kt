@@ -9,6 +9,106 @@ import kotlin.reflect.KType
 import kotlin.reflect.KTypeProjection
 import kotlin.reflect.full.createType
 
+object KTypes {
+
+    val Any = kType<Any>()
+    val AnyNull = kType<Any?>()
+
+    val Boolean = kType<Boolean>()
+    val BooleanNull = kType<Boolean?>()
+
+    val Number = kType<Number>()
+    val NumberNull = kType<Number?>()
+
+    val String = kType<String>()
+    val StringNull = kType<String?>()
+}
+
+/**
+ * Creates a KType from the given class by trying to assign somewhat useful type parameters
+ */
+inline fun <reified T> kType(): KType {
+
+    val cls = T::class
+
+    if (cls.typeParameters.isNotEmpty()) {
+        error("Cannot create a KType for a generic class. Use the helper functions like kListType(), kMapType(), kGenericType() instead")
+    }
+
+    return cls.createType(nullable = null is T)
+}
+
+inline fun <reified T> kListType(): KType = kType<T>().upList()
+
+inline fun <reified KEY, reified VAL> kMapType(): KType = kGenericType2<Map<KEY, VAL>, KEY, VAL>()
+
+inline fun <reified OUTER, reified P1> kGenericType1(): KType = OUTER::class.createType(
+    listOf(
+        KTypeProjection.invariant(kType<P1>())
+    ),
+    null is OUTER
+)
+
+inline fun <reified OUTER, reified P1, reified P2> kGenericType2(): KType = OUTER::class.createType(
+    listOf(
+        KTypeProjection.invariant(kType<P1>()),
+        KTypeProjection.invariant(kType<P2>())
+    ),
+    null is OUTER
+)
+
+/**
+ * Wraps the current type with the given generic type [T]
+ *
+ * E.g. makes a String? type a MyWrapper<String?> type
+ *
+ * When the given type [T] does not have exactly one type parameter an exception is thrown
+ */
+inline fun <reified T> KType.wrapWith(): KType {
+    val cls = T::class
+
+    if (cls.typeParameters.size != 1) {
+        error("Can only wrap with a generic type with exactly one type parameter")
+    }
+
+    return cls.createType(
+        listOf(
+            KTypeProjection.invariant(this)
+        ),
+        nullable = null is T
+    )
+}
+
+/**
+ * Wraps the [KType] as a List
+ *
+ * E.g. makes a String?-type a List<String?>-type
+ *
+ * @param nullable defines if the resulting List type should be nullable
+ */
+fun KType.upList(nullable: Boolean = false): KType = List::class.createType(
+    arguments = listOf(
+        KTypeProjection.invariant(this)
+    ),
+    nullable = nullable
+)
+
+/**
+ * Unwraps a List-type
+ *
+ * E.g. makes a List<String?>-type a String?-type.
+ *
+ * When the classifier of the current type is not List::class an exception is thrown.
+ */
+fun KType.downList(): KType {
+
+    if (classifier != List::class) {
+        error("The current type [$this] must have the classifier List::class")
+    }
+
+    return arguments[0].type!!
+}
+
 /**
  * Obtains a type reference from the context called in
  */
@@ -19,7 +119,7 @@ inline fun <reified T> type() = object : TypeRef<T>() {}
  */
 fun <T> Class<T>.asTypeRef(): TypeRef<T> = TypeRef(this)
 
-open class TypeRef<T> constructor(private val explicitType: Type? = null) : TypeReference<T>() {
+open class TypeRef<T>(private val explicitType: Type? = null) : TypeReference<T>() {
 
     companion object {
 
@@ -144,12 +244,16 @@ open class TypeRef<T> constructor(private val explicitType: Type? = null) : Type
     private fun Type.toKType(): KType = when (this) {
 
         is ParameterizedType -> toClass().kotlin.createType(
-            actualTypeArguments.map {
+            arguments = actualTypeArguments.map {
                 KTypeProjection.invariant(it.toKType())
-            }
+            },
+            nullable = true // This is not so good. But there is currently no way to get the nullability
         )
 
-        else -> toClass().kotlin.createType()
+        else -> toClass().kotlin.createType(
+            arguments = listOf(),
+            nullable = true // This is not so good. But there is currently no way to get the nullability
+        )
     }
 
     /**
