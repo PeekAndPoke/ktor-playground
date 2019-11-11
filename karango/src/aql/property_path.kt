@@ -2,7 +2,8 @@ package de.peekandpoke.karango.aql
 
 import de.peekandpoke.karango.aql.PropertyPath.Companion.start
 import de.peekandpoke.ultra.vault.TypeRef
-import de.peekandpoke.ultra.vault.type
+import de.peekandpoke.ultra.vault.kType
+import de.peekandpoke.ultra.vault.unList
 
 typealias L1<T> = List<T>
 typealias L2<T> = List<List<T>>
@@ -43,11 +44,12 @@ data class PropertyPath<P, T>(private val previous: PropertyPath<*, *>?, private
         p.append(current)
     }
 
-    inline fun <NF, reified NT> append(prop: String) = PropertyPath<NF, NT>(this, PropStep(prop, type()))
+    inline fun <NF, reified NT> append(prop: String) = PropertyPath<NF, NT>(this, PropStep(prop, kType()))
 
     fun <NP> expand() = PropertyPath<NP, T>(this, ArrayOpStep("[*]", current.getType()))
 
-    fun <NT> contract() = PropertyPath<P, NT>(this, ArrayOpStep("[**]", current.getType().down()))
+    @Suppress("UNCHECKED_CAST")
+    fun <NT> contract() = PropertyPath<P, NT>(this, ArrayOpStep("[**]", (current.getType() as TypeRef<List<NT>>).unList))
 }
 
 interface ArrayExpansion
@@ -61,7 +63,7 @@ interface ArrayContraction
 object `**` : ArrayContraction
 
 @Suppress("UNUSED_PARAMETER")
-operator fun <F, L: List<F>, T> PropertyPath<L, List<T>>.get(`*`: ArrayExpansion) = expand<F>()
+operator fun <F, L : List<F>, T> PropertyPath<L, List<T>>.get(`*`: ArrayExpansion) = expand<F>()
 
 @Suppress("UNUSED_PARAMETER")
 operator fun <F, T> PropertyPath<F, L2<T>>.get(`**`: ArrayContraction) = contract<L1<T>>()

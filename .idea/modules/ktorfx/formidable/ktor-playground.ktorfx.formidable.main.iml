@@ -69,6 +69,7 @@
     <orderEntry type="module" module-name="ktor-playground.ultra.vault.main" />
     <orderEntry type="module" module-name="ktor-playground.ktorfx.semanticui.main" />
     <orderEntry type="module" module-name="ktor-playground.ultra.depot.main" />
+    <orderEntry type="module" module-name="ktor-playground.ktorfx.webresources.main" scope="RUNTIME" />
     <orderEntry type="module-library">
       <library name="Gradle: de.peekandpoke.ultra:kontainer:0.0.75">
         <CLASSES>
@@ -80,7 +81,6 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="ktor-playground.ktorfx.webresources.main" scope="RUNTIME" />
     <orderEntry type="module-library">
       <library name="Gradle: de.peekandpoke.ultra:mutator:0.0.75">
         <CLASSES>

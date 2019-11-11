@@ -4,6 +4,8 @@ package de.peekandpoke.karango.aql
 
 import de.peekandpoke.karango.ICollection
 import de.peekandpoke.ultra.vault.Storable
+import de.peekandpoke.ultra.vault.TypeRef
+import de.peekandpoke.ultra.vault.unList
 
 @Suppress("unused")
 @KarangoTerminalFuncMarker
@@ -16,7 +18,7 @@ infix fun <T> UpsertPartial<T>.INTO(collection: ICollection<T>): TerminalExpr<T>
 
 internal class UpsertInto<T>(private val entity: Storable<T>, private val coll: ICollection<T>) : TerminalExpr<T> {
 
-    override fun innerType() = coll.getType().down<T>()
+    override fun innerType(): TypeRef<T> = coll.getType().unList
 
     override fun getType() = coll.getType()
 

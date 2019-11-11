@@ -2,7 +2,7 @@
 
 package de.peekandpoke.karango.aql
 
-import de.peekandpoke.ultra.vault.type
+import de.peekandpoke.ultra.vault.kListType
 
 /**
  * Return the number of characters in value (not byte length).
@@ -67,7 +67,7 @@ fun FIND_FIRST(haystack: Expression<String>, needle: Expression<String>) = AqlFu
  * https://docs.arangodb.com/current/AQL/Functions/String.html#findfirst
  */
 @KarangoInputMarker
-fun <T: Number> FIND_FIRST(haystack: Expression<String>, needle: Expression<String>, start: Expression<T>) =
+fun <T : Number> FIND_FIRST(haystack: Expression<String>, needle: Expression<String>, start: Expression<T>) =
     AqlFunc.FIND_FIRST.numberCall(haystack, needle, start)
 
 /**
@@ -76,7 +76,7 @@ fun <T: Number> FIND_FIRST(haystack: Expression<String>, needle: Expression<Stri
  * https://docs.arangodb.com/current/AQL/Functions/String.html#findfirst
  */
 @KarangoInputMarker
-fun <T1: Number, T2: Number> FIND_FIRST(haystack: Expression<String>, needle: Expression<String>, start: Expression<T1>, end: Expression<T2>) =
+fun <T1 : Number, T2 : Number> FIND_FIRST(haystack: Expression<String>, needle: Expression<String>, start: Expression<T1>, end: Expression<T2>) =
     AqlFunc.FIND_FIRST.numberCall(haystack, needle, start, end)
 
 /**
@@ -93,7 +93,7 @@ fun FIND_LAST(haystack: Expression<String>, needle: Expression<String>) = AqlFun
  * https://docs.arangodb.com/current/AQL/Functions/String.html#findlast
  */
 @KarangoInputMarker
-fun <T: Number> FIND_LAST(haystack: Expression<String>, needle: Expression<String>, start: Expression<T>) =
+fun <T : Number> FIND_LAST(haystack: Expression<String>, needle: Expression<String>, start: Expression<T>) =
     AqlFunc.FIND_LAST.numberCall(haystack, needle, start)
 
 /**
@@ -102,7 +102,7 @@ fun <T: Number> FIND_LAST(haystack: Expression<String>, needle: Expression<Strin
  * https://docs.arangodb.com/current/AQL/Functions/String.html#findlast
  */
 @KarangoInputMarker
-fun <T1: Number, T2: Number> FIND_LAST(haystack: Expression<String>, needle: Expression<String>, start: Expression<T1>, end: Expression<T2>) =
+fun <T1 : Number, T2 : Number> FIND_LAST(haystack: Expression<String>, needle: Expression<String>, start: Expression<T1>, end: Expression<T2>) =
     AqlFunc.FIND_LAST.numberCall(haystack, needle, start, end)
 
 /**
@@ -111,7 +111,7 @@ fun <T1: Number, T2: Number> FIND_LAST(haystack: Expression<String>, needle: Exp
  * https://docs.arangodb.com/current/AQL/Functions/String.html#jsonparse
  */
 @KarangoInputMarker
-fun JSON_PARSE(expr: Expression<String>) = AqlFunc.JSON_PARSE.anyCall(expr)
+fun JSON_PARSE(expr: Expression<String>) = AqlFunc.JSON_PARSE.nullableAnyCall(expr)
 
 /**
  * Return a JSON string representation of the input value.
@@ -127,7 +127,7 @@ fun <T> JSON_STRINGIFY(expr: Expression<T>) = AqlFunc.JSON_STRINGIFY.stringCall(
  * https://docs.arangodb.com/current/AQL/Functions/String.html#left
  */
 @KarangoInputMarker
-fun <T: Number> LEFT(expr: Expression<String>, n: Expression<T>) = AqlFunc.LEFT.stringCall(expr, n)
+fun <T : Number> LEFT(expr: Expression<String>, n: Expression<T>) = AqlFunc.LEFT.stringCall(expr, n)
 
 /**
  * Determine the character length of a string.
@@ -200,7 +200,7 @@ fun MD5(value: Expression<String>) = AqlFunc.MD5.stringCall(value)
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#randomtoken
  */
 @KarangoInputMarker
-fun <T: Number> RANDOM_TOKEN(length: Expression<T>) = AqlFunc.RANDOM_TOKEN.stringCall(length)
+fun <T : Number> RANDOM_TOKEN(length: Expression<T>) = AqlFunc.RANDOM_TOKEN.stringCall(length)
 
 /**
  * Return the matches in the given string text, using the regex.
@@ -209,7 +209,7 @@ fun <T: Number> RANDOM_TOKEN(length: Expression<T>) = AqlFunc.RANDOM_TOKEN.strin
  */
 @KarangoInputMarker
 fun REGEX_MATCHES(text: Expression<String>, regex: Expression<String>) =
-    AqlFunc.REGEX_MATCHES.nullableArrayCall(type<List<String>?>(), text, regex)
+    AqlFunc.REGEX_MATCHES.nullableArrayCall(kListType<String>().nullable, text, regex)
 
 /**
  * Return the matches in the given string text, using the regex.
@@ -218,7 +218,7 @@ fun REGEX_MATCHES(text: Expression<String>, regex: Expression<String>) =
  */
 @KarangoInputMarker
 fun REGEX_MATCHES(text: Expression<String>, regex: Expression<String>, caseInsensitive: Expression<Boolean>) =
-    AqlFunc.REGEX_MATCHES.nullableArrayCall(type<List<String>?>(), text, regex, caseInsensitive)
+    AqlFunc.REGEX_MATCHES.nullableArrayCall(kListType<String>().nullable, text, regex, caseInsensitive)
 
 /**
  * Return the reverse of the string value.
@@ -234,7 +234,7 @@ fun REVERSE(value: Expression<String>) = AqlFunc.REVERSE.stringCall(value)
  * https://docs.arangodb.com/current/AQL/Functions/String.html#right
  */
 @KarangoInputMarker
-fun <T: Number> RIGHT(value: Expression<String>, n: Expression<T>) = AqlFunc.RIGHT.stringCall(value, n)
+fun <T : Number> RIGHT(value: Expression<String>, n: Expression<T>) = AqlFunc.RIGHT.stringCall(value, n)
 
 /**
  * Return the string value with whitespace stripped at the start only.
@@ -274,8 +274,7 @@ fun SHA512(expr: Expression<String>) = AqlFunc.SHA512.stringCall(expr)
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#split
  */
 @KarangoInputMarker
-fun SPLIT(value: Expression<String>, separator: Expression<String>)
-        = AqlFunc.SPLIT.arrayCall(type<List<String>>(), value, separator)
+fun SPLIT(value: Expression<String>, separator: Expression<String>) = AqlFunc.SPLIT.arrayCall(kListType<String>(), value, separator)
 
 /**
  * Split the given string value into a list of strings, using the separator.
@@ -284,8 +283,8 @@ fun SPLIT(value: Expression<String>, separator: Expression<String>)
  */
 @JvmName("SPLIT2")
 @KarangoInputMarker
-fun SPLIT(value: Expression<String>, separator: Expression<List<String>>)
-        = AqlFunc.SPLIT.arrayCall(type<List<String>>(), value, separator)
+fun SPLIT(value: Expression<String>, separator: Expression<List<String>>) =
+    AqlFunc.SPLIT.arrayCall(kListType<String>(), value, separator)
 
 /**
  * Split the given string value into a list of strings, using the separator.
@@ -293,8 +292,8 @@ fun SPLIT(value: Expression<String>, separator: Expression<List<String>>)
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#split
  */
 @KarangoInputMarker
-fun <T: Number> SPLIT(value: Expression<String>, separator: Expression<String>, limit: Expression<T>)
-        = AqlFunc.SPLIT.arrayCall(type<List<String>>(), value, separator, limit)
+fun <T : Number> SPLIT(value: Expression<String>, separator: Expression<String>, limit: Expression<T>) =
+    AqlFunc.SPLIT.arrayCall(kListType<String>(), value, separator, limit)
 
 /**
  * Split the given string value into a list of strings, using the separator.
@@ -303,8 +302,8 @@ fun <T: Number> SPLIT(value: Expression<String>, separator: Expression<String>, 
  */
 @JvmName("SPLIT2")
 @KarangoInputMarker
-fun <T: Number> SPLIT(value: Expression<String>, separator: Expression<List<String>>, limit: Expression<T>)
-        = AqlFunc.SPLIT.arrayCall(type<List<String>>(), value, separator, limit)
+fun <T : Number> SPLIT(value: Expression<String>, separator: Expression<List<String>>, limit: Expression<T>) =
+    AqlFunc.SPLIT.arrayCall(kListType<String>(), value, separator, limit)
 
 /**
  * Return the soundex fingerprint of value.
@@ -320,7 +319,7 @@ fun SOUNDEX(value: Expression<String>) = AqlFunc.SOUNDEX.stringCall(value)
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#substring
  */
 @KarangoInputMarker
-fun <T: Number> SUBSTRING(value: Expression<String>, offset: Expression<T>) = AqlFunc.SUBSTRING.stringCall(value, offset)
+fun <T : Number> SUBSTRING(value: Expression<String>, offset: Expression<T>) = AqlFunc.SUBSTRING.stringCall(value, offset)
 
 /**
  * Return a substring of value.
@@ -328,7 +327,7 @@ fun <T: Number> SUBSTRING(value: Expression<String>, offset: Expression<T>) = Aq
  * See https://docs.arangodb.com/current/AQL/Functions/String.html#substring
  */
 @KarangoInputMarker
-fun <T1: Number, T2: Number> SUBSTRING(value: Expression<String>, offset: Expression<T1>, length: Expression<T2>) =
+fun <T1 : Number, T2 : Number> SUBSTRING(value: Expression<String>, offset: Expression<T1>, length: Expression<T2>) =
     AqlFunc.SUBSTRING.stringCall(value, offset, length)
 
 /**

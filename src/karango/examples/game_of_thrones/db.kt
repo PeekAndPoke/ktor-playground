@@ -11,11 +11,11 @@ import de.peekandpoke.karango.vault.KarangoDriver
 import de.peekandpoke.ultra.vault.Database
 import de.peekandpoke.ultra.vault.hooks.WithTimestamps
 import de.peekandpoke.ultra.vault.hooks.WithUserRecord
-import de.peekandpoke.ultra.vault.type
+import de.peekandpoke.ultra.vault.kType
 
 internal val Database.characters get() = getRepository<CharactersRepository>()
 
-val Characters = EntityCollection<Character>("got_characters", type())
+val Characters = EntityCollection<Character>("got_characters", kType())
 
 @WithTimestamps
 @WithUserRecord
@@ -52,6 +52,6 @@ class CharactersRepository(driver: KarangoDriver) : EntityRepository<Character>(
 
 internal val Database.actors get() = getRepository<ActorsRepository>()
 
-val Actors = EntityCollection<Actor>("got_actors", type())
+val Actors = EntityCollection<Actor>("got_actors", kType())
 
 class ActorsRepository(driver: KarangoDriver) : EntityRepository<Actor>(driver, Actors)

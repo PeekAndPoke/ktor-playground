@@ -17,7 +17,7 @@ abstract class EntityRepository<T : Any>(
     /**
      * A reference to the type that is stored by the repository
      */
-    override val storedType: TypeRef<T> by lazy { coll.getType().down<T>() }
+    override val storedType: TypeRef<T> by lazy { coll.getType().unList }
 
     /**
      * Ensures that the repository is set up properly
@@ -170,5 +170,5 @@ abstract class EntityRepository<T : Any>(
      *
      * This is used to tell the deserialization, that we actually want [Stored] entities to be returned
      */
-    private fun TerminalExpr<T>.cast(): TerminalExpr<Stored<T>> = AS(coll.getType().down<T>().wrapWith<Stored<T>>().up())
+    private fun TerminalExpr<T>.cast(): TerminalExpr<Stored<T>> = AS(coll.getType().unList.wrapWith<Stored<T>>().list)
 }

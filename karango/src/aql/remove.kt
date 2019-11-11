@@ -4,6 +4,8 @@ package de.peekandpoke.karango.aql
 
 import de.peekandpoke.karango.ICollection
 import de.peekandpoke.ultra.vault.Stored
+import de.peekandpoke.ultra.vault.TypeRef
+import de.peekandpoke.ultra.vault.unList
 
 @Suppress("unused")
 @KarangoTerminalFuncMarker
@@ -26,7 +28,7 @@ class RemovePreStage internal constructor(private val what: Expression<*>) {
 
 internal class RemoveIn<T> internal constructor(private val expr: Expression<*>, private val collection: ICollection<T>) : TerminalExpr<T> {
 
-    override fun innerType() = collection.getType().down<T>()
+    override fun innerType(): TypeRef<T> = collection.getType().unList
 
     override fun getType() = collection.getType()
 

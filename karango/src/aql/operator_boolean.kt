@@ -3,7 +3,7 @@
 package de.peekandpoke.karango.aql
 
 import de.peekandpoke.ultra.vault.TypeRef
-import de.peekandpoke.ultra.vault.type
+import de.peekandpoke.ultra.vault.kType
 
 enum class BooleanOperator(val op: String) {
     EQ("=="),
@@ -41,13 +41,13 @@ data class ArrayOpExpr<T>(val expr: Expression<List<T>>, val op: ArrayOperator, 
 }
 
 inline infix fun <reified T> Expression<List<T>>.ANY(partial: PartialBooleanExpression<T>): Expression<Boolean> =
-    partial(ArrayOpExpr(this, ArrayOperator.ANY, type()))
+    partial(ArrayOpExpr(this, ArrayOperator.ANY, kType()))
 
 inline infix fun <reified T> Expression<List<T>>.NONE(partial: PartialBooleanExpression<T>): Expression<Boolean> =
-    partial(ArrayOpExpr(this, ArrayOperator.NONE, type()))
+    partial(ArrayOpExpr(this, ArrayOperator.NONE, kType()))
 
 inline infix fun <reified T> Expression<List<T>>.ALL(partial: PartialBooleanExpression<T>): Expression<Boolean> =
-    partial(ArrayOpExpr(this, ArrayOperator.ALL, type()))
+    partial(ArrayOpExpr(this, ArrayOperator.ALL, kType()))
 
 
 fun <T> EQ(value: T?): PartialBooleanExpression<T> = { x -> x EQ value }

@@ -1,7 +1,6 @@
 package de.peekandpoke.ultra.vault
 
-import java.lang.reflect.ParameterizedType
-import java.lang.reflect.Type
+import kotlin.reflect.KClassifier
 
 interface Repository<T> {
 
@@ -27,11 +26,7 @@ interface Repository<T> {
     /**
      * Checks whether the repository stores the given cls
      */
-    fun stores(type: Type): Boolean = when (val stored = storedType.getType()) {
-        is ParameterizedType -> stored.rawType == type
-
-        else -> storedType == type
-    }
+    fun stores(type: KClassifier): Boolean = type == storedType.type.classifier
 
     fun findById(id: String): Stored<T>?
 }

@@ -3,6 +3,8 @@
 package de.peekandpoke.karango.aql
 
 import de.peekandpoke.ultra.common.nthParamName
+import de.peekandpoke.ultra.vault.TypeRef
+import de.peekandpoke.ultra.vault.unList
 
 @KarangoDslMarker
 fun FOR(iteratorName: String) = ForLoop.For(iteratorName)
@@ -19,7 +21,8 @@ operator fun <T, R> Expression<List<T>>.invoke(builder: ForLoop.(Iter<T>) -> Ter
 @KarangoDslMarker
 data class Iter<T>(private val __name__: String, private val __inner__: Expression<List<T>>) : Expression<T> {
 
-    override fun getType() = __inner__.getType().down<T>()
+    override fun getType(): TypeRef<T> = __inner__.getType().unList
+
     override fun printAql(p: AqlPrinter) = p.name(__name__)
 }
 
@@ -52,7 +55,7 @@ class ForLoop internal constructor() : StatementBuilder {
     fun SORT(sort: Sort): Unit = run { sort.addStmt() }
 
     @KarangoDslMarker
-    fun <T> SORT(expr: Expression<T>, direction: Direction= Direction.ASC): Unit = SORT(expr.sort(direction))
+    fun <T> SORT(expr: Expression<T>, direction: Direction = Direction.ASC): Unit = SORT(expr.sort(direction))
 
     @KarangoDslMarker
     fun LIMIT(limit: Int): Unit = run { OffsetAndLimit(0, limit).addStmt() }

@@ -15,11 +15,11 @@ import de.peekandpoke.ultra.vault.Database
 import de.peekandpoke.ultra.vault.Stored
 import de.peekandpoke.ultra.vault.hooks.WithTimestamps
 import de.peekandpoke.ultra.vault.hooks.WithUserRecord
-import de.peekandpoke.ultra.vault.type
+import de.peekandpoke.ultra.vault.kType
 
 val Database.residentialProperties get() = getRepository(ResidentialPropertiesRepository::class.java)
 
-val ResidentialProperties = EntityCollection<ResidentialProperty>("residential_properties", type())
+val ResidentialProperties = EntityCollection<ResidentialProperty>("residential_properties", kType())
 
 @WithTimestamps
 @WithUserRecord

@@ -104,7 +104,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.9.9" level="project" />
     <orderEntry type="module-library" scope="RUNTIME">
       <library name="Gradle: de.peekandpoke.ultra:slumber:0.0.75">
         <CLASSES>
@@ -116,6 +115,7 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.9.9" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.9.0" level="project" />
     <orderEntry type="module-library" scope="RUNTIME">
       <library name="Gradle: de.peekandpoke.ultra:meta:0.0.75">
@@ -128,7 +128,6 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.9.9" level="project" />
     <orderEntry type="module-library" scope="RUNTIME">
       <library name="Gradle: de.peekandpoke.ultra:common:0.0.75">
         <CLASSES>
@@ -140,6 +139,7 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.9.9" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: com.squareup:kotlinpoet:1.0.1" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: me.eugeniomarletti.kotlin.metadata:kotlin-metadata:1.4.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: com.google.auto.service:auto-service:1.0-rc4" level="project" />

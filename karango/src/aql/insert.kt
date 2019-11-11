@@ -4,6 +4,8 @@ package de.peekandpoke.karango.aql
 
 import de.peekandpoke.karango.ICollection
 import de.peekandpoke.ultra.vault.Storable
+import de.peekandpoke.ultra.vault.TypeRef
+import de.peekandpoke.ultra.vault.unList
 
 @Suppress("unused")
 @KarangoTerminalFuncMarker
@@ -39,7 +41,7 @@ infix fun <T> InsertNewStorable<T>.INTO(collection: ICollection<T>): TerminalExp
 
 internal class InsertNewStorableInto<T>(private val new: Storable<T>, private val coll: ICollection<T>) : TerminalExpr<T> {
 
-    override fun innerType() = coll.getType().down<T>()
+    override fun innerType(): TypeRef<T> = coll.getType().unList
 
     override fun getType() = coll.getType()
 

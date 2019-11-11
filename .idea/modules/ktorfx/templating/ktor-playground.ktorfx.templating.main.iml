@@ -168,8 +168,8 @@
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlinx:atomicfu-common:0.13.0" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.9.9" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.9.0" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Gradle: me.eugeniomarletti.kotlin.metadata:kotlin-metadata:1.4.0" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.9.9" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: me.eugeniomarletti.kotlin.metadata:kotlin-metadata:1.4.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.9" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.9" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: org.webjars.npm:prismjs:1.16.0" level="project" />

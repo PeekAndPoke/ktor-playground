@@ -3,7 +3,7 @@
 package de.peekandpoke.karango.aql
 
 import de.peekandpoke.ultra.vault.TypeRef
-import de.peekandpoke.ultra.vault.type
+import de.peekandpoke.ultra.vault.kType
 
 @KarangoDslMarker
 fun <T> StatementBuilder.LET(name: String, value: Expression<T>): Expression<T> = LetExpr(name, value).addStmt().toExpression()
@@ -12,10 +12,10 @@ fun <T> StatementBuilder.LET(name: String, value: Expression<T>): Expression<T> 
 fun StatementBuilder.LET(name: String, @Suppress("UNUSED_PARAMETER") value: Nothing?): Expression<Any?> = LET(name, NullValue())
 
 @KarangoDslMarker
-inline fun <reified T> StatementBuilder.LET(name: String, value: T): Expression<T> = Let(name, value, type()).addStmt().toExpression()
+inline fun <reified T> StatementBuilder.LET(name: String, value: T): Expression<T> = Let(name, value, kType()).addStmt().toExpression()
 
 @KarangoDslMarker
-inline fun <reified T> StatementBuilder.LET(name: String, builder: () -> T): Expression<T> = Let(name, builder(), type()).addStmt().toExpression()
+inline fun <reified T> StatementBuilder.LET(name: String, builder: () -> T): Expression<T> = Let(name, builder(), kType()).addStmt().toExpression()
 
 /**
  * Let statement created from a user value

@@ -18,18 +18,18 @@ class Database(
     }
 
 
-    fun <T> hasRepositoryStoring(type: Class<T>): Boolean {
+    fun <T : Any> hasRepositoryStoring(type: Class<T>): Boolean {
         // todo put some caching in place
         return null != repoClassLookup.getOrPut(type) {
             @Suppress("UNCHECKED_CAST")
-            repositories.all().firstOrNull { it.stores(type) }?.let { it::class.java as Class<Repository<*>> }
+            repositories.all().firstOrNull { it.stores(type.kotlin) }?.let { it::class.java as Class<Repository<*>> }
         }
     }
 
-    fun <T> getRepositoryStoring(type: Class<T>): Repository<T> {
+    fun <T : Any> getRepositoryStoring(type: Class<T>): Repository<T> {
 
         val cls = repoClassLookup.getOrPut(type) {
-            repositories.all().firstOrNull { it.stores(type) }?.let { it::class.java }
+            repositories.all().firstOrNull { it.stores(type.kotlin) }?.let { it::class.java }
         }
 
         if (cls != null) {

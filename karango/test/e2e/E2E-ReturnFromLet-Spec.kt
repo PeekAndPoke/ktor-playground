@@ -3,6 +3,8 @@ package de.peekandpoke.karango.e2e
 import de.peekandpoke.karango.Cursor
 import de.peekandpoke.karango.aql.LET
 import de.peekandpoke.karango.aql.RETURN
+import de.peekandpoke.ultra.vault.TypeRef
+import de.peekandpoke.ultra.vault.kMapType
 import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
@@ -38,12 +40,12 @@ class `E2E-ReturnFromLet-Spec` : StringSpec({
 
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.innerType().toString() shouldBe "class java.lang.String"
+                result.query.ret.innerType() shouldBe TypeRef.String
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.getType().toString() shouldBe "java.util.List<java.lang.String>"
+                result.query.ret.getType() shouldBe TypeRef.String.list
             }
         }
     }
@@ -75,12 +77,12 @@ class `E2E-ReturnFromLet-Spec` : StringSpec({
 
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.String>"
+                result.query.ret.innerType() shouldBe TypeRef.String.list
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.getType().toString() shouldBe "java.util.List<java.util.List<java.lang.String>>"
+                result.query.ret.getType() shouldBe TypeRef.String.list.list
             }
         }
     }
@@ -112,14 +114,12 @@ class `E2E-ReturnFromLet-Spec` : StringSpec({
 
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.innerType().toString() shouldBe
-                        "java.util.Map<java.lang.String, java.lang.String>"
+                result.query.ret.innerType() shouldBe kMapType<String, String>()
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.getType().toString() shouldBe
-                        "java.util.List<java.util.Map<java.lang.String, java.lang.String>>"
+                result.query.ret.getType() shouldBe kMapType<String, String>().list
             }
         }
     }
@@ -156,14 +156,12 @@ class `E2E-ReturnFromLet-Spec` : StringSpec({
 
             withClue("TypeRef for deserialization") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.innerType().toString() shouldBe
-                        "java.util.List<java.util.Map<java.lang.String, java.lang.Integer>>"
+                result.query.ret.innerType() shouldBe kMapType<String, Int>().list
             }
 
             withClue("TypeRef of TerminalExpr") {
                 @Suppress("RemoveExplicitTypeArguments")
-                result.query.ret.getType().toString() shouldBe
-                        "java.util.List<java.util.List<java.util.Map<java.lang.String, java.lang.Integer>>>"
+                result.query.ret.getType() shouldBe kMapType<String, Int>().list.list
             }
         }
     }

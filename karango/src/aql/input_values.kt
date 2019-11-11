@@ -3,7 +3,8 @@
 package de.peekandpoke.karango.aql
 
 import de.peekandpoke.ultra.vault.TypeRef
-import de.peekandpoke.ultra.vault.type
+import de.peekandpoke.ultra.vault.kListType
+import de.peekandpoke.ultra.vault.kType
 
 /**
  * Guard function to prevent calls to .aql() on existing Expressions
@@ -45,7 +46,7 @@ inline fun <reified T> T.aql(name: String = "v"): Expression<T> = when (this) {
     // guard, so we do not wrap an Expression again
     is Expression<*> -> this as Expression<T>
     // otherwise we create a value expression
-    else -> Value(type(), this, name)
+    else -> Value(kType(), this, name)
 }
 
 /**
@@ -87,10 +88,10 @@ val Nothing?.aql: Expression<Any?>
     get() = this.aql()
 
 @KarangoInputMarker
-inline fun <reified T> ARRAY(vararg args: Expression<out T>): Expression<List<T>> = ArrayValue(type(), args.toList())
+inline fun <reified T> ARRAY(vararg args: Expression<out T>): Expression<List<T>> = ArrayValue(kListType(), args.toList())
 
 @KarangoInputMarker
-inline fun <reified T> OBJECT(vararg pairs: Pair<Expression<String>, Expression<out T>>) = ObjectValue(type(), pairs.toList())
+inline fun <reified T> OBJECT(vararg pairs: Pair<Expression<String>, Expression<out T>>) = ObjectValue(kType(), pairs.toList())
 
 data class Value<T>(private val type: TypeRef<T>, private val value: T, private val name: String = "v") : Expression<T> {
 

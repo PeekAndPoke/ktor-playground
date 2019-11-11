@@ -3,6 +3,7 @@ package de.peekandpoke.karango.e2e.functions_array
 import de.peekandpoke.karango.Cursor
 import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.e2e.*
+import de.peekandpoke.ultra.vault.TypeRef
 import io.kotlintest.assertSoftly
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
@@ -23,7 +24,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
             result.first() shouldBe listOf(1, 2, 3, 4, 5, 6)
 
-            result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Integer>"
+            result.query.ret.innerType() shouldBe TypeRef.Int.list
         }
     }
 
@@ -39,7 +40,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
             result.first() shouldBe listOf(1L, 2L, 3L, 4.5, 5.5, 6.5)
 
-            result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Number>"
+            result.query.ret.innerType() shouldBe TypeRef.Number.list
         }
     }
 
@@ -55,7 +56,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
             result.first() shouldBe listOf(1L, "a")
 
-            result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Object>"
+            result.query.ret.innerType() shouldBe TypeRef.Any.list
         }
     }
 
@@ -71,7 +72,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
             result.first() shouldBe listOf(1L, "a")
 
-            result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Object>"
+            result.query.ret.innerType() shouldBe TypeRef.Any.list
         }
     }
 
@@ -104,7 +105,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
             result.first() shouldBe listOf(10, 15, 20)
 
-            result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Integer>"
+            result.query.ret.innerType() shouldBe TypeRef.Int.list
         }
     }
 
@@ -138,7 +139,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
             result.first() shouldBe listOf(10L, 15L, "c", "d")
 
-            result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Object>"
+            result.query.ret.innerType() shouldBe TypeRef.Any.list
         }
     }
 
@@ -169,7 +170,7 @@ class `E2E-Func-Array-APPEND-Spec` : StringSpec({
 
             result.first() shouldBe listOf(10L, 15L, "c", "d")
 
-            result.query.ret.innerType().toString() shouldBe "java.util.List<java.lang.Object>"
+            result.query.ret.innerType() shouldBe TypeRef.Any.list
         }
     }
 

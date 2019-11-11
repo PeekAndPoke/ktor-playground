@@ -7,14 +7,14 @@ import de.peekandpoke.karango.vault.KarangoDriver
 import de.peekandpoke.ultra.vault.Database
 import de.peekandpoke.ultra.vault.hooks.WithTimestamps
 import de.peekandpoke.ultra.vault.hooks.WithUserRecord
-import de.peekandpoke.ultra.vault.type
+import de.peekandpoke.ultra.vault.kType
 
 @Karango
 data class TestName(
     val name: String
 )
 
-val TestNames = EntityCollection<TestName>("test-names", type())
+val TestNames = EntityCollection<TestName>("test-names", kType())
 
 @Karango
 data class TestPerson(
@@ -24,7 +24,7 @@ data class TestPerson(
     val books: List<TestBook> = listOf()
 )
 
-val TestPersons = EntityCollection<TestPerson>("test-persons", type())
+val TestPersons = EntityCollection<TestPerson>("test-persons", kType())
 
 @WithTimestamps
 @WithUserRecord

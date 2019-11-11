@@ -22,7 +22,7 @@ class CursorImpl<T>(
 ) : Cursor<T> {
 
     private val iterator = profiler.measureIterator {
-        It<T>(arangoCursor, query.ret.innerType().toKType(), codec, profiler)
+        It<T>(arangoCursor, query.ret.innerType().type, codec, profiler)
     }
 
     class It<X>(

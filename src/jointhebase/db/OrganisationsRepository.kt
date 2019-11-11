@@ -7,11 +7,11 @@ import de.peekandpoke.karango.vault.KarangoDriver
 import de.peekandpoke.ultra.vault.Database
 import de.peekandpoke.ultra.vault.hooks.WithTimestamps
 import de.peekandpoke.ultra.vault.hooks.WithUserRecord
-import de.peekandpoke.ultra.vault.type
+import de.peekandpoke.ultra.vault.kType
 
 val Database.organisations get() = getRepository(OrganisationsRepository::class.java)
 
-val Organisations = EntityCollection<Organisation>("organisations", type())
+val Organisations = EntityCollection<Organisation>("organisations", kType())
 
 @WithTimestamps
 @WithUserRecord

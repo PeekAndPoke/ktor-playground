@@ -1,6 +1,7 @@
 package de.peekandpoke.karango.aql
 
 import de.peekandpoke.ultra.vault.TypeRef
+import de.peekandpoke.ultra.vault.unList
 
 @DslMarker
 annotation class KarangoDslMarker
@@ -122,7 +123,7 @@ class TypeCastExpression<T>(private val type: TypeRef<T>, private val wrapped: E
  */
 class TerminalTypeCastExpression<T>(private val type: TypeRef<List<T>>, private val wrapped: TerminalExpr<*>) : TerminalExpr<T> {
 
-    override fun innerType() = type.down<T>()
+    override fun innerType(): TypeRef<T> = type.unList
 
     override fun getType() = type
 
