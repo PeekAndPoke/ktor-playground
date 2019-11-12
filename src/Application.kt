@@ -385,6 +385,10 @@ fun Application.module(testing: Boolean = false) {
 
             // mount application modules
             initKontainer.use(CmsPublic::class) { mount() }
+
+            get("/__test__") {
+                call.respond("OK")
+            }
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////

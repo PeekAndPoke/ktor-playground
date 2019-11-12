@@ -13,10 +13,12 @@ import kotlinx.html.title
 class RuntimeCollector : InsightsCollector {
 
     data class Data(
+        val jvmVersion: String,
         val maxMem: Long,
         val reservedMem: Long,
         val freeMem: Long,
-        val cpus: Int
+        val cpus: Int,
+        val systemProperties: Map<String, String>
     ) : InsightsCollectorData {
 
         override fun renderBar(template: InsightsBarTemplate) = with(template) {
@@ -55,12 +57,27 @@ class RuntimeCollector : InsightsCollector {
 
                 stats()
 
-                json(this@Data)
+                ui.segment {
+                    ui.header { +"System properties" }
+
+                    ui.list {
+                        systemProperties.forEach { (k, v) ->
+                            ui.item {
+                                +"$k: $v"
+                            }
+                        }
+                    }
+                }
             }
         }
 
         fun FlowContent.stats() {
             ui.horizontal.segments {
+
+                ui.compact.center.aligned.segment {
+                    ui.header { +"JVM" }
+                    +jvmVersion
+                }
 
                 ui.compact.center.aligned.segment {
                     ui.header { +"CPUs" }
@@ -91,10 +108,12 @@ class RuntimeCollector : InsightsCollector {
         val rt = Runtime.getRuntime()
 
         return Data(
+            System.getProperty("java.version"),
             rt.maxMemory(),
             rt.totalMemory(),
             rt.freeMemory(),
-            rt.availableProcessors()
+            rt.availableProcessors(),
+            System.getProperties().map { (k, v) -> k.toString() to v.toString() }.toMap()
         )
     }
 

@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: de.peekandpoke.ultra:security:0.0.80">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/de.peekandpoke.ultra/security/0.0.80/7cc11c61ef488805cf215649116dddf64ab687e4/security-0.0.80.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/de.peekandpoke.ultra/security/0.0.80/b2a1b3d9717a2b880bcf163bb98fcaa0b4bf8965/security-0.0.80-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
