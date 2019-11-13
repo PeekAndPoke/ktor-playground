@@ -57,19 +57,19 @@ class OperationBooleanSpec : StringSpec({
         row("LTE: expression and expression", 2.aql LTE 2.aql, "2 <= 2"),
 
         // IN Operation
-        row("IN: partial and array", ARRAY(1.aql, 2.aql) ALL IN(arrayOf(1)), "[1, 2] ALL IN [1]"),
-        row("IN: partial and collection", ARRAY(1.aql, 2.aql) ALL IN(listOf(1)), "[1, 2] ALL IN [1]"),
+        row("IN: partial and array", ARRAY(1.aql, 2.aql) ALL IN(arrayOf(1)), "[1, 2] ALL IN [ 1 ]"),
+        row("IN: partial and collection", ARRAY(1.aql, 2.aql) ALL IN(listOf(1)), "[1, 2] ALL IN [ 1 ]"),
         row("IN: partial and expression", ARRAY(1.aql, 2.aql) ALL IN(ARRAY(1.aql)), "[1, 2] ALL IN [1]"),
-        row("IN: expression and array", 1.aql IN arrayOf(1), "1 IN [1]"),
-        row("IN: expression and collection", 1.aql IN listOf(1), "1 IN [1]"),
+        row("IN: expression and array", 1.aql IN arrayOf(1), "1 IN [ 1 ]"),
+        row("IN: expression and collection", 1.aql IN listOf(1), "1 IN [ 1 ]"),
         row("IN: expression and expression", 1.aql IN ARRAY(1.aql), "1 IN [1]"),
 
         // NOT_IN Operation
-        row("NOT_IN: partial and array", ARRAY(1.aql, 2.aql) ALL NOT_IN(arrayOf(1)), "[1, 2] ALL NOT IN [1]"),
-        row("NOT_IN: partial and collection", ARRAY(1.aql, 2.aql) ALL NOT_IN(listOf(1)), "[1, 2] ALL NOT IN [1]"),
+        row("NOT_IN: partial and array", ARRAY(1.aql, 2.aql) ALL NOT_IN(arrayOf(1)), "[1, 2] ALL NOT IN [ 1 ]"),
+        row("NOT_IN: partial and collection", ARRAY(1.aql, 2.aql) ALL NOT_IN(listOf(1)), "[1, 2] ALL NOT IN [ 1 ]"),
         row("NOT_IN: partial and expression", ARRAY(1.aql, 2.aql) ALL NOT_IN(ARRAY(1.aql)), "[1, 2] ALL NOT IN [1]"),
-        row("NOT_IN: expression and array", 1.aql NOT_IN arrayOf(1), "1 NOT IN [1]"),
-        row("NOT_IN: expression and collection", 1.aql NOT_IN listOf(1), "1 NOT IN [1]"),
+        row("NOT_IN: expression and array", 1.aql NOT_IN arrayOf(1), "1 NOT IN [ 1 ]"),
+        row("NOT_IN: expression and collection", 1.aql NOT_IN listOf(1), "1 NOT IN [ 1 ]"),
         row("NOT_IN: expression and expression", 1.aql NOT_IN ARRAY(1.aql), "1 NOT IN [1]"),
 
         // LIKE Operation
@@ -104,7 +104,6 @@ class OperationBooleanSpec : StringSpec({
     for ((description, expression, printed) in samples) {
 
         "operation $description ($printed)" {
-
             expression.printRawQuery() shouldBe printed
         }
     }

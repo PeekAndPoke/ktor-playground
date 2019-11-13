@@ -2,9 +2,9 @@
 
 package de.peekandpoke.karango.aql
 
-import de.peekandpoke.ultra.vault.TypeRef
-import de.peekandpoke.ultra.vault.kListType
-import de.peekandpoke.ultra.vault.kType
+import de.peekandpoke.ultra.common.TypeRef
+import de.peekandpoke.ultra.common.kListType
+import de.peekandpoke.ultra.common.kType
 
 /**
  * Guard function to prevent calls to .aql() on existing Expressions

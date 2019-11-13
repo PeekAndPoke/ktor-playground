@@ -19,9 +19,7 @@ typealias AcceptRule = Rule<String>
  */
 data class FormElementId(val value: String) {
 
-    val asFormId by lazy {
-        value.replace("[^a-zA-Z0-9]".toRegex(), "-")
-    }
+    val asFormId = value.replace("[^a-zA-Z0-9]".toRegex(), "-")
 
     operator fun plus(str: String) = when {
 

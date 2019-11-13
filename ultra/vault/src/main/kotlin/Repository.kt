@@ -1,5 +1,6 @@
 package de.peekandpoke.ultra.vault
 
+import de.peekandpoke.ultra.common.TypeRef
 import kotlin.reflect.KClassifier
 
 interface Repository<T> {

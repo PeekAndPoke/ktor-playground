@@ -4,10 +4,10 @@ import de.peekandpoke.karango.EntityCollection
 import de.peekandpoke.karango.Karango
 import de.peekandpoke.karango.vault.EntityRepository
 import de.peekandpoke.karango.vault.KarangoDriver
+import de.peekandpoke.ultra.common.kType
 import de.peekandpoke.ultra.vault.Database
 import de.peekandpoke.ultra.vault.hooks.WithTimestamps
 import de.peekandpoke.ultra.vault.hooks.WithUserRecord
-import de.peekandpoke.ultra.vault.kType
 
 @Karango
 data class TestName(

@@ -2,8 +2,8 @@
 
 package de.peekandpoke.karango.aql
 
-import de.peekandpoke.ultra.vault.TypeRef
-import de.peekandpoke.ultra.vault.kType
+import de.peekandpoke.ultra.common.TypeRef
+import de.peekandpoke.ultra.common.kType
 
 @KarangoDslMarker
 fun <T> StatementBuilder.LET(name: String, value: Expression<T>): Expression<T> = LetExpr(name, value).addStmt().toExpression()

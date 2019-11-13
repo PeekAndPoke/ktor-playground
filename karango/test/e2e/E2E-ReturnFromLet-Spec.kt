@@ -3,8 +3,8 @@ package de.peekandpoke.karango.e2e
 import de.peekandpoke.karango.Cursor
 import de.peekandpoke.karango.aql.LET
 import de.peekandpoke.karango.aql.RETURN
-import de.peekandpoke.ultra.vault.TypeRef
-import de.peekandpoke.ultra.vault.kMapType
+import de.peekandpoke.ultra.common.TypeRef
+import de.peekandpoke.ultra.common.kMapType
 import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe

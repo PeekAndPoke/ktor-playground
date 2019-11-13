@@ -2,7 +2,7 @@
 
 package de.peekandpoke.karango.aql
 
-import de.peekandpoke.ultra.vault.kListType
+import de.peekandpoke.ultra.common.kListType
 
 /**
  * Return the number of characters in value (not byte length).

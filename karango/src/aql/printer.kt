@@ -1,5 +1,6 @@
 package de.peekandpoke.karango.aql
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import kotlin.math.max
 
 /**
@@ -39,11 +40,10 @@ class AqlPrinter {
          *
          * This is a debugging helper and e.g. used in the unit tests.
          */
-        val raw: String by lazy {
+        val raw: String by lazy(LazyThreadSafetyMode.NONE) {
 
             vars.entries.fold(query) { acc, (key, value) ->
-                // TODO: convert value to JSON
-                acc.replace("@$key", value.toString())
+                acc.replace("@$key", jsonPrinter.writeValueAsString(value))
             }
         }
     }
@@ -52,6 +52,8 @@ class AqlPrinter {
      * Internal static helpers
      */
     companion object {
+        private val jsonPrinter = ObjectMapper().writerWithDefaultPrettyPrinter()
+
         internal fun raw(expr: Printable): String = sandboxQuery(expr).raw
         internal fun sandbox(expr: Printable): String = sandboxQuery(expr).query
         internal fun sandboxQuery(expr: Printable): Result = AqlPrinter().append(expr).build()

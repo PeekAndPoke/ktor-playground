@@ -2,7 +2,7 @@
 
 package de.peekandpoke.karango.aql
 
-import de.peekandpoke.ultra.vault.kListType
+import de.peekandpoke.ultra.common.kListType
 
 enum class PercentileMethod(val method: String) {
     @KarangoInputMarker

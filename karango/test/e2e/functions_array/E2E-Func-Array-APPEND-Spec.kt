@@ -3,7 +3,7 @@ package de.peekandpoke.karango.e2e.functions_array
 import de.peekandpoke.karango.Cursor
 import de.peekandpoke.karango.aql.*
 import de.peekandpoke.karango.e2e.*
-import de.peekandpoke.ultra.vault.TypeRef
+import de.peekandpoke.ultra.common.TypeRef
 import io.kotlintest.assertSoftly
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec

@@ -40,7 +40,7 @@ class CursorImpl<T>(
 
             return profiler.measureDeserializer {
                 @Suppress("UNCHECKED_CAST")
-                return@measureDeserializer codec.awakeOrNull(type, next) as X
+                return@measureDeserializer codec.awake(type, next) as X
             }
         }
     }

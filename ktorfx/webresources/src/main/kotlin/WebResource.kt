@@ -5,11 +5,8 @@ package de.peekandpoke.ktorfx.webresources
  */
 data class WebResource(val uri: String, val cacheKey: String? = null, val integrity: String? = null) {
 
-    val fullUri by lazy {
-
-        when (cacheKey) {
-            null -> uri
-            else -> "$uri?$cacheKey"
-        }
+    val fullUri = when (cacheKey) {
+        null -> uri
+        else -> "$uri?$cacheKey"
     }
 }

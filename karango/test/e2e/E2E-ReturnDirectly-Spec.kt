@@ -4,9 +4,9 @@ import de.peekandpoke.karango.aql.ARRAY
 import de.peekandpoke.karango.aql.OBJECT
 import de.peekandpoke.karango.aql.RETURN
 import de.peekandpoke.karango.aql.aql
-import de.peekandpoke.ultra.vault.TypeRef
-import de.peekandpoke.ultra.vault.kMapType
-import de.peekandpoke.ultra.vault.kType
+import de.peekandpoke.ultra.common.TypeRef
+import de.peekandpoke.ultra.common.kMapType
+import de.peekandpoke.ultra.common.kType
 import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe

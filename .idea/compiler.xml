@@ -11,66 +11,66 @@
       <module name="ktor-playground.formidable.test" target="1.8" />
       <module name="ktor-playground.frozen.main" target="1.8" />
       <module name="ktor-playground.frozen.test" target="1.8" />
-      <module name="ktor-playground.karango.main" target="1.8" />
-      <module name="ktor-playground.karango.test" target="1.8" />
-      <module name="ktor-playground.karango_dev.main" target="1.8" />
-      <module name="ktor-playground.karango_dev.test" target="1.8" />
+      <module name="ktor-playground.karango.main" target="11" />
+      <module name="ktor-playground.karango.test" target="11" />
+      <module name="ktor-playground.karango_dev.main" target="11" />
+      <module name="ktor-playground.karango_dev.test" target="11" />
       <module name="ktor-playground.ktor-playground.main" target="1.8" />
       <module name="ktor-playground.ktor-playground.test" target="1.8" />
       <module name="ktor-playground.ktor_tools.main" target="1.8" />
       <module name="ktor-playground.ktor_tools.test" target="1.8" />
-      <module name="ktor-playground.ktorfx.broker.main" target="1.8" />
-      <module name="ktor-playground.ktorfx.broker.test" target="1.8" />
-      <module name="ktor-playground.ktorfx.common.main" target="1.8" />
-      <module name="ktor-playground.ktorfx.common.test" target="1.8" />
+      <module name="ktor-playground.ktorfx.broker.main" target="11" />
+      <module name="ktor-playground.ktorfx.broker.test" target="11" />
+      <module name="ktor-playground.ktorfx.common.main" target="11" />
+      <module name="ktor-playground.ktorfx.common.test" target="11" />
       <module name="ktor-playground.ktorfx.depot.main" target="1.8" />
       <module name="ktor-playground.ktorfx.depot.test" target="1.8" />
-      <module name="ktor-playground.ktorfx.flashsession.main" target="1.8" />
-      <module name="ktor-playground.ktorfx.flashsession.test" target="1.8" />
-      <module name="ktor-playground.ktorfx.formidable.main" target="1.8" />
-      <module name="ktor-playground.ktorfx.formidable.test" target="1.8" />
+      <module name="ktor-playground.ktorfx.flashsession.main" target="11" />
+      <module name="ktor-playground.ktorfx.flashsession.test" target="11" />
+      <module name="ktor-playground.ktorfx.formidable.main" target="11" />
+      <module name="ktor-playground.ktorfx.formidable.test" target="11" />
       <module name="ktor-playground.ktorfx.i18n.main" target="1.8" />
       <module name="ktor-playground.ktorfx.i18n.test" target="1.8" />
-      <module name="ktor-playground.ktorfx.insights.main" target="1.8" />
-      <module name="ktor-playground.ktorfx.insights.test" target="1.8" />
+      <module name="ktor-playground.ktorfx.insights.main" target="11" />
+      <module name="ktor-playground.ktorfx.insights.test" target="11" />
       <module name="ktor-playground.ktorfx.logging.main" target="1.8" />
       <module name="ktor-playground.ktorfx.logging.test" target="1.8" />
-      <module name="ktor-playground.ktorfx.main" target="1.8" />
-      <module name="ktor-playground.ktorfx.prismjs.main" target="1.8" />
-      <module name="ktor-playground.ktorfx.prismjs.test" target="1.8" />
-      <module name="ktor-playground.ktorfx.security.main" target="1.8" />
-      <module name="ktor-playground.ktorfx.security.test" target="1.8" />
-      <module name="ktor-playground.ktorfx.semanticui.main" target="1.8" />
-      <module name="ktor-playground.ktorfx.semanticui.test" target="1.8" />
-      <module name="ktor-playground.ktorfx.templating.main" target="1.8" />
-      <module name="ktor-playground.ktorfx.templating.test" target="1.8" />
-      <module name="ktor-playground.ktorfx.test" target="1.8" />
-      <module name="ktor-playground.ktorfx.webjars.main" target="1.8" />
-      <module name="ktor-playground.ktorfx.webjars.test" target="1.8" />
-      <module name="ktor-playground.ktorfx.webresources.main" target="1.8" />
-      <module name="ktor-playground.ktorfx.webresources.test" target="1.8" />
-      <module name="ktor-playground.main" target="1.8" />
+      <module name="ktor-playground.ktorfx.main" target="11" />
+      <module name="ktor-playground.ktorfx.prismjs.main" target="11" />
+      <module name="ktor-playground.ktorfx.prismjs.test" target="11" />
+      <module name="ktor-playground.ktorfx.security.main" target="11" />
+      <module name="ktor-playground.ktorfx.security.test" target="11" />
+      <module name="ktor-playground.ktorfx.semanticui.main" target="11" />
+      <module name="ktor-playground.ktorfx.semanticui.test" target="11" />
+      <module name="ktor-playground.ktorfx.templating.main" target="11" />
+      <module name="ktor-playground.ktorfx.templating.test" target="11" />
+      <module name="ktor-playground.ktorfx.test" target="11" />
+      <module name="ktor-playground.ktorfx.webjars.main" target="11" />
+      <module name="ktor-playground.ktorfx.webjars.test" target="11" />
+      <module name="ktor-playground.ktorfx.webresources.main" target="11" />
+      <module name="ktor-playground.ktorfx.webresources.test" target="11" />
+      <module name="ktor-playground.main" target="11" />
       <module name="ktor-playground.mod_semanticui.main" target="1.8" />
       <module name="ktor-playground.mod_semanticui.test" target="1.8" />
       <module name="ktor-playground.mutator.main" target="1.8" />
       <module name="ktor-playground.mutator.test" target="1.8" />
       <module name="ktor-playground.polyglot.main" target="1.8" />
       <module name="ktor-playground.polyglot.test" target="1.8" />
-      <module name="ktor-playground.test" target="1.8" />
+      <module name="ktor-playground.test" target="11" />
       <module name="ktor-playground.test_module.main" target="1.8" />
       <module name="ktor-playground.test_module.test" target="1.8" />
-      <module name="ktor-playground.ultra.depot.main" target="1.8" />
-      <module name="ktor-playground.ultra.depot.test" target="1.8" />
+      <module name="ktor-playground.ultra.depot.main" target="11" />
+      <module name="ktor-playground.ultra.depot.test" target="11" />
       <module name="ktor-playground.ultra.insights.main" target="1.8" />
       <module name="ktor-playground.ultra.insights.test" target="1.8" />
-      <module name="ktor-playground.ultra.logging.main" target="1.8" />
-      <module name="ktor-playground.ultra.logging.test" target="1.8" />
-      <module name="ktor-playground.ultra.main" target="1.8" />
-      <module name="ktor-playground.ultra.polyglot.main" target="1.8" />
-      <module name="ktor-playground.ultra.polyglot.test" target="1.8" />
-      <module name="ktor-playground.ultra.test" target="1.8" />
-      <module name="ktor-playground.ultra.vault.main" target="1.8" />
-      <module name="ktor-playground.ultra.vault.test" target="1.8" />
+      <module name="ktor-playground.ultra.logging.main" target="11" />
+      <module name="ktor-playground.ultra.logging.test" target="11" />
+      <module name="ktor-playground.ultra.main" target="11" />
+      <module name="ktor-playground.ultra.polyglot.main" target="11" />
+      <module name="ktor-playground.ultra.polyglot.test" target="11" />
+      <module name="ktor-playground.ultra.test" target="11" />
+      <module name="ktor-playground.ultra.vault.main" target="11" />
+      <module name="ktor-playground.ultra.vault.test" target="11" />
       <module name="ktor-playground.vault.main" target="1.8" />
       <module name="ktor-playground.vault.test" target="1.8" />
     </bytecodeTargetLevel>

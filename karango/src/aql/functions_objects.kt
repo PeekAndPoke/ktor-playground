@@ -2,7 +2,7 @@
 
 package de.peekandpoke.karango.aql
 
-import de.peekandpoke.ultra.vault.kType
+import de.peekandpoke.ultra.common.kType
 
 /**
  * Merge the documents document1 to documentN into a single document. If document attribute keys are ambiguous,

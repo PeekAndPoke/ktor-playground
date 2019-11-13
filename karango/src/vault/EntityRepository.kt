@@ -2,6 +2,8 @@ package de.peekandpoke.karango.vault
 
 import de.peekandpoke.karango.*
 import de.peekandpoke.karango.aql.*
+import de.peekandpoke.ultra.common.TypeRef
+import de.peekandpoke.ultra.common.unList
 import de.peekandpoke.ultra.vault.*
 
 abstract class EntityRepository<T : Any>(
@@ -17,7 +19,7 @@ abstract class EntityRepository<T : Any>(
     /**
      * A reference to the type that is stored by the repository
      */
-    override val storedType: TypeRef<T> by lazy { coll.getType().unList }
+    override val storedType: TypeRef<T> = coll.getType().unList
 
     /**
      * Ensures that the repository is set up properly

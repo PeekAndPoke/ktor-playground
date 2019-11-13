@@ -3,7 +3,7 @@
 package de.peekandpoke.karango
 
 import de.peekandpoke.karango.aql.*
-import de.peekandpoke.ultra.vault.TypeRef
+import de.peekandpoke.ultra.common.TypeRef
 
 interface ICollection<T> : Expression<List<T>>, Aliased
 

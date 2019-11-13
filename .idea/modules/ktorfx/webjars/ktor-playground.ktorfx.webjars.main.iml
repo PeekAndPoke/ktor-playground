@@ -40,7 +40,7 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_11">
     <output url="file://$MODULE_DIR$/../../../../ktorfx/webjars/out/production/classes" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../ktorfx/webjars/build/generated/source/kapt/main">

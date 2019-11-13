@@ -2,9 +2,9 @@
 
 package de.peekandpoke.karango.aql
 
+import de.peekandpoke.ultra.common.TypeRef
 import de.peekandpoke.ultra.common.nthParamName
-import de.peekandpoke.ultra.vault.TypeRef
-import de.peekandpoke.ultra.vault.unList
+import de.peekandpoke.ultra.common.unList
 
 @KarangoDslMarker
 fun FOR(iteratorName: String) = ForLoop.For(iteratorName)

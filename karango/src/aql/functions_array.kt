@@ -2,8 +2,8 @@
 
 package de.peekandpoke.karango.aql
 
-import de.peekandpoke.ultra.vault.kListType
-import de.peekandpoke.ultra.vault.unList
+import de.peekandpoke.ultra.common.kListType
+import de.peekandpoke.ultra.common.unList
 
 /**
  * Add all elements of an array to another array. All values are added at the end of the array (right side).

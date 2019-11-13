@@ -378,7 +378,7 @@ fun Application.module(testing: Boolean = false) {
             installKontainer(wwwKontainerBlueprint)
 
             // instrument the pipeline with insights collectors
-            instrumentWithInsights()
+//            instrumentWithInsights()
 
             // mount the insights gui when present
             initKontainer.use(InsightsGui::class) { mount() }
