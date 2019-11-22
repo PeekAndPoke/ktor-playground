@@ -14,12 +14,16 @@ import kotlinx.html.HTML
 
 interface SimpleTemplate : Template<HTML> {
 
+    /** The Template tools */
     val tools: TemplateTools
-
+    /** Shorthand for accessing the i18n */
     val t: I18n
+    /** Shorthand for accessing the flash session */
     val flashSession: FlashSession
+    /** Shorthand for accessing the WebResources */
     val webResources: WebResources
-    val insights: InsightsBarRenderer?
+    /** Shorthand for accessing the insights bar renderer */
+    val insightsBarRenderer: InsightsBarRenderer?
 
     /**
      * The bread crumbs can be set by each template in order to:
@@ -28,13 +32,20 @@ interface SimpleTemplate : Template<HTML> {
      */
     var breadCrumbs: List<Any>
 
+    /** Placeholder for the page title */
     val pageTitle: Placeholder<HEAD>
 
+    /** Placeholder for the main menu */
     val mainMenu: Placeholder<FlowContent>
-    fun SemanticUi.menuColor(): SemanticUi
 
+    /** Return the background color of the main menu */
+    fun SemanticUi.mainMenuBgColor(): SemanticUi
+
+    /** Placeholder for the content */
     val content: Placeholder<FlowContent>
 
+    /** Placeholder for the styles */
     val styles: PlaceholderList<HEAD, HEAD>
+    /** Placeholder for the scripts */
     val scripts: PlaceholderList<FlowContent, FlowContent>
 }

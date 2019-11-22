@@ -8,10 +8,9 @@ import io.ktor.application.call
 import io.ktor.html.respondHtmlTemplate
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
+import io.ktor.response.respond
 import io.ktor.response.respondBytes
 import io.ktor.routing.Route
-import kotlinx.html.stream.appendHTML
-import java.io.StringWriter
 
 class InsightsGui(
     private val routes: InsightsGuiRoutes,
@@ -24,11 +23,12 @@ class InsightsGui(
 
             val guiData = insights.loadGuiData(application, bucketAndFile.bucket, bucketAndFile.filename)
 
-            call.respondBytes(ContentType.Text.Html, HttpStatusCode.OK) {
-
-                val content = InsightsBarTemplate(bucketAndFile, routes, guiData, StringWriter().appendHTML()).render()
-
-                content.toString().toByteArray()
+            if (guiData != null) {
+                call.respondBytes(ContentType.Text.Html, HttpStatusCode.OK) {
+                    InsightsBarTemplate(bucketAndFile, routes, guiData).render().toString().toByteArray()
+                }
+            } else {
+                call.respond(HttpStatusCode.NotFound)
             }
         }
 
@@ -36,10 +36,14 @@ class InsightsGui(
 
             val guiData = insights.loadGuiData(application, bucketAndFile.bucket, bucketAndFile.filename)
 
-            val template = kontainer.get(InsightsGuiTemplate::class)
+            if (guiData != null) {
+                val template = kontainer.get(InsightsGuiTemplate::class)
 
-            call.respondHtmlTemplate(template, HttpStatusCode.OK) {
-                render(guiData)
+                call.respondHtmlTemplate(template, HttpStatusCode.OK) {
+                    render(guiData)
+                }
+            } else {
+                call.respond(HttpStatusCode.NotFound)
             }
         }
     }

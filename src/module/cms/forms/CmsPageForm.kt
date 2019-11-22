@@ -22,6 +22,4 @@ class CmsPageForm(it: Storable<CmsPage>, mutator: CmsPageMutator) : StorableForm
     val id = field(target::name).acceptsNonBlank()
 
     val slug = field(target::slug).acceptsNonBlank()
-
-    val markup = field(target::markup).acceptsNonBlank()
 }

@@ -15,6 +15,6 @@ class WebResources(private val groups: Lookup<WebResourceGroup>) {
      *
      * If the group is not present a [WebResourceGroupNotFound] exception is thrown
      */
-    operator fun <T : WebResourceGroup> get(cls: KClass<T>): T = groups.get(cls)
+    operator fun <T : WebResourceGroup> get(cls: KClass<T>): T = groups.getOrNull(cls)
         ?: throw WebResourceGroupNotFound("Resource group '${cls.qualifiedName}' is not present.")
 }

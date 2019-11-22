@@ -42,7 +42,7 @@ class Database(
     }
 
     fun <T : Repository<*>> getRepository(cls: Class<T>): T {
-        return repositories.get(cls.kotlin)
+        return repositories.getOrNull(cls.kotlin)
             ?: throw VaultException("No repository of class '$cls' is registered.")
     }
 

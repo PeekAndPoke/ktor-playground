@@ -15,10 +15,7 @@ import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import de.peekandpoke.ktorfx.templating.respond
 import de.peekandpoke.ktorfx.webjars.BetterWebjars
 import de.peekandpoke.ktorfx.webresources.AppMeta
-import de.peekandpoke.module.cms.CmsAdmin
-import de.peekandpoke.module.cms.CmsPublic
-import de.peekandpoke.module.cms.cmsAdmin
-import de.peekandpoke.module.cms.cmsPublic
+import de.peekandpoke.module.cms.*
 import de.peekandpoke.module.demos.forms.FormDemos
 import de.peekandpoke.module.demos.forms.formDemos
 import de.peekandpoke.module.depot.DepotAdmin
@@ -102,6 +99,7 @@ private val commonKontainerBlueprint by lazy {
         singleton(AdminWebResources::class)
 
         // helper modules
+        cmsCommon()
         cmsAdmin()
         cmsPublic()
 
@@ -378,7 +376,7 @@ fun Application.module(testing: Boolean = false) {
             installKontainer(wwwKontainerBlueprint)
 
             // instrument the pipeline with insights collectors
-//            instrumentWithInsights()
+            instrumentWithInsights()
 
             // mount the insights gui when present
             initKontainer.use(InsightsGui::class) { mount() }

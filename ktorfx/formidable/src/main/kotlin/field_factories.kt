@@ -44,8 +44,11 @@ fun <T, E : FormElement> Form.list(prop: KMutableProperty0<MutableList<T>>, elem
             children = list.mapIndexed { idx, _ ->
                 // Create a temp form to propagate the field name
                 val tmp = ListElementForm(prop.name + "." + idx.toString()).apply { setParent(this@list) }
+
                 // build the child element
-                tmp.elementBuilder(ListItem({ list[idx] }, { list[idx] = it }))
+                tmp.elementBuilder(
+                    ListItem({ list[idx] }, { list[idx] = it })
+                )
             }
         )
     )

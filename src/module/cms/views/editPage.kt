@@ -30,8 +30,6 @@ internal fun SimpleTemplate.editPage(create: Boolean, form: CmsPageForm) {
 
             textInput(form.slug, label = "Slug")
 
-            textArea(form.markup, label = "Markup")
-
             ui.button Submit { +"Submit" }
         }
     }

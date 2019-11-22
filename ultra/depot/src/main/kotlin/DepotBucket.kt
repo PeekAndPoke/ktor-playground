@@ -12,7 +12,7 @@ interface DepotBucket {
 
     fun listNewest(limit: Int = 100): List<DepotFile>
 
-    fun getFile(name: String): DepotFile
+    fun getFile(name: String): DepotFile?
 
     fun putFile(name: String, contents: String): DepotFile
 }

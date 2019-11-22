@@ -89,23 +89,12 @@ class FieldListFactoriesSpec : StringSpec({
             )
         )
 
-        println(form.nested.strings.getId())
-
         assertSoftly {
             form.getId() shouldBe FormElementId("some-object")
             form.isValid() shouldBe true
 
             form.nested.getId() shouldBe FormElementId("some-object.nested")
             form.nested.isValid() shouldBe true
-
-            println("-----------------------------------------------------------------------------------------")
-            println("form.nested.isValid()")
-            println(form.nested.isValid())
-            println("form.nested.strings.isValid()")
-            println(form.nested.strings.isValid())
-            form.nested.strings.forEach {
-                println(it.isValid())
-            }
 
             form.nested.strings.getId() shouldBe FormElementId("some-object.nested.strings")
             form.nested.strings.isValid() shouldBe true

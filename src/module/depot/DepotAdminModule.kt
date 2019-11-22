@@ -12,9 +12,11 @@ import de.peekandpoke.module.depot.views.repositories
 import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
 import io.ktor.application.call
+import io.ktor.features.NotFoundException
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
+import io.ktor.util.KtorExperimentalAPI
 
 fun KontainerBuilder.depotAdmin() = module(DepotAdminModule)
 
@@ -51,6 +53,7 @@ class DepotAdminRoutes(converter: OutgoingConverter, depotAdminMountPoint: Strin
 
 class DepotAdmin(val routes: DepotAdminRoutes) {
 
+    @KtorExperimentalAPI
     fun Route.mount() {
 
         get(routes.index) {
@@ -90,14 +93,16 @@ class DepotAdmin(val routes: DepotAdminRoutes) {
 
             val repository = depot.get(data.repository)
             val bucket = repository.get(data.bucket)
-            val file = bucket.getFile(data.file)
 
 //            call.response.header(
 //                HttpHeaders.ContentDisposition,
 //                ContentDisposition.Attachment.withParameter(ContentDisposition.Parameters.FileName, file.name).toString()
 //            )
 
-            call.respond(file.getContentBytes())
+            when (val file = bucket.getFile(data.file)) {
+                null -> throw NotFoundException()
+                else -> call.respond(file.getContentBytes())
+            }
         }
     }
 }

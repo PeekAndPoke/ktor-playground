@@ -1,52 +1,25 @@
-package de.peekandpoke.ktorfx.templating
+package de.peekandpoke.ktorfx.templating.semanticui
 
-import de.peekandpoke.ktorfx.flashsession.FlashSession
-import de.peekandpoke.ktorfx.insights.gui.InsightsBarRenderer
-import de.peekandpoke.ktorfx.insights.gui.insightsBar
-import de.peekandpoke.ktorfx.semanticui.SemanticUi
 import de.peekandpoke.ktorfx.semanticui.semanticUi
 import de.peekandpoke.ktorfx.semanticui.ui
-import de.peekandpoke.ktorfx.webresources.WebResources
+import de.peekandpoke.ktorfx.templating.SimpleTemplateBase
+import de.peekandpoke.ktorfx.templating.TemplateTools
 import de.peekandpoke.ktorfx.webresources.css
 import de.peekandpoke.ktorfx.webresources.js
-import de.peekandpoke.ultra.polyglot.I18n
-import io.ktor.html.Placeholder
-import io.ktor.html.PlaceholderList
 import io.ktor.html.each
 import io.ktor.html.insert
 import kotlinx.html.*
 import kotlin.system.measureNanoTime
 
-open class SimpleTemplateImpl(
+open class SemanticUiAdminTemplate(
 
-    final override val tools: TemplateTools
+    tools: TemplateTools
 
-) : SimpleTemplate {
-
-    final override val t: I18n = tools.i18n
-    final override val flashSession: FlashSession = tools.flashSession
-    final override val webResources: WebResources = tools.webResources
-    final override val insights: InsightsBarRenderer? = tools.insightsBar
-
-    private val flashSessionEntries = flashSession.pull()
-
-    override var breadCrumbs: List<Any> = listOf()
-
-    final override val pageTitle = Placeholder<HEAD>()
-
-    final override val mainMenu = Placeholder<FlowContent>()
-    override fun SemanticUi.menuColor(): SemanticUi = violet
-
-    final override val content = Placeholder<FlowContent>()
-
-    final override val styles = PlaceholderList<HEAD, HEAD>()
-    final override val scripts = PlaceholderList<FlowContent, FlowContent>()
-
-    val insightsBar = Placeholder<FlowContent>()
+) : SimpleTemplateBase(tools) {
 
     init {
         pageTitle {
-            title { +"Default Template" }
+            title { +"Admin" }
         }
 
         styles {
@@ -57,18 +30,7 @@ open class SimpleTemplateImpl(
             js(webResources.semanticUi)
         }
 
-        if (insights != null) {
-            styles {
-                css(webResources.insightsBar)
-            }
-            scripts {
-                js(webResources.insightsBar)
-            }
-
-            insightsBar {
-                insights.render(this)
-            }
-        }
+        initInsights()
     }
 
     override fun HTML.apply() {
@@ -98,7 +60,7 @@ open class SimpleTemplateImpl(
 
             body {
 
-                ui.sidebar.vertical.left.inverted.menuColor().menu.visible.fixed {
+                ui.sidebar.vertical.left.inverted.mainMenuBgColor().menu.visible.fixed {
                     insert(mainMenu)
                 }
 

@@ -9,6 +9,6 @@ interface TemplateTools {
     val i18n: I18n
     val flashSession: FlashSession
     val webResources: WebResources
-    val insightsBar: InsightsBarRenderer?
+    val insightsBarRenderer: InsightsBarRenderer?
     val insightsCollector: TemplateInsightsCollector?
 }

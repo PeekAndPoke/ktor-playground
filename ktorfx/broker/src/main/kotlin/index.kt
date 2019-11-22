@@ -28,13 +28,11 @@ val KtorFX_Broker = module {
 }
 
 /**
- * Makes the data converter for incoming data available on an [ApplicationCall]
+ * Shorthand for getting the data converter for incoming from the kontainer
  */
 inline val ApplicationCall.incomingConverter: IncomingConverter get() = kontainer.get(IncomingConverter::class)
 
 /**
- * Makes the data converter for incoming data available on an [ApplicationCall]
+ * Shorthand for getting the data converter for incoming from the kontainer
  */
 inline val PipelineContext<Unit, ApplicationCall>.incomingConverter: IncomingConverter get() = call.incomingConverter
-
-

@@ -9,6 +9,6 @@ class TemplateToolsImpl(
     override val i18n: I18n,
     override val flashSession: FlashSession,
     override val webResources: WebResources,
-    override val insightsBar: InsightsBarRenderer?,
+    override val insightsBarRenderer: InsightsBarRenderer?,
     override val insightsCollector: TemplateInsightsCollector?
 ) : TemplateTools

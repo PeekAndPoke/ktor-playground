@@ -36,7 +36,7 @@ class Insights(
     val filename = "$dateTime.$ts.json"
 
     fun <T : InsightsCollector, R> use(cls: KClass<T>, block: T.() -> R?): R? {
-        return collectors.get(cls)?.block()
+        return collectors.get(cls).block()
     }
 
     fun finish(call: ApplicationCall) {
@@ -73,12 +73,13 @@ class Insights(
      *
      *  TODO: inject logger and remove parameter [application]
      */
-    fun loadGuiData(application: Application, bucket: String, filename: String): InsightsGuiData {
+    fun loadGuiData(application: Application, bucket: String, filename: String): InsightsGuiData? {
 
         // get all newest files
         val files = repository.get(bucket).listNewest()
         // get the actual file
-        val file = repository.get(bucket).getFile(filename)
+        val file = repository.get(bucket).getFile(filename) ?: return null
+
         val fileIdx = files.indexOf(file)
         // get the previous and next file
         val nextFile = if (fileIdx > 0) files[fileIdx - 1] else null

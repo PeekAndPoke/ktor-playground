@@ -7,12 +7,13 @@ import io.ktor.html.each
 import io.ktor.html.insert
 import io.ktor.http.isSuccess
 import kotlinx.html.*
+import kotlinx.html.stream.appendHTML
+import java.io.StringWriter
 
 class InsightsBarTemplate(
     private val data: InsightsGuiRoutes.BucketAndFile,
     private val routes: InsightsGuiRoutes,
-    private val guiData: InsightsGuiData,
-    private val consumer: TagConsumer<Appendable>
+    private val guiData: InsightsGuiData
 ) {
 
     val status = PlaceholderList<FlowContent, FlowContent>()
@@ -20,6 +21,8 @@ class InsightsBarTemplate(
     val left = PlaceholderList<FlowContent, FlowContent>()
 
     val right = PlaceholderList<FlowContent, FlowContent>()
+
+    private val consumer: TagConsumer<Appendable> = StringWriter().appendHTML()
 
     init {
 

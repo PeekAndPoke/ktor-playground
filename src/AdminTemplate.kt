@@ -5,8 +5,8 @@ import de.peekandpoke.jointhebase.admin.views.JtbAdminMenu
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.noui
 import de.peekandpoke.ktorfx.semanticui.ui
-import de.peekandpoke.ktorfx.templating.SimpleTemplateImpl
 import de.peekandpoke.ktorfx.templating.TemplateTools
+import de.peekandpoke.ktorfx.templating.semanticui.SemanticUiAdminTemplate
 import de.peekandpoke.ktorfx.webresources.css
 import de.peekandpoke.ktorfx.webresources.js
 import de.peekandpoke.module.cms.CmsAdmin
@@ -35,7 +35,7 @@ class AdminTemplate(
     private val semanticUi: SemanticUi,
     private val formDemos: FormDemos
 
-) : SimpleTemplateImpl(tools) {
+) : SemanticUiAdminTemplate(tools) {
 
     init {
 

@@ -5,7 +5,7 @@ import kotlin.reflect.KClass
 
 class Depot(private val drivers: Lookup<DepotRepository>) {
 
-    fun <T : DepotRepository> get(driver: KClass<T>): T = drivers.get(driver)
+    fun <T : DepotRepository> get(driver: KClass<T>): T = drivers.getOrNull(driver)
         ?: throw DepotException("There is no driver '${driver.qualifiedName}' registered in the depot")
 
     @Suppress("UNCHECKED_CAST")

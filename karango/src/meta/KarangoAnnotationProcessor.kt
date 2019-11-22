@@ -3,20 +3,16 @@ package de.peekandpoke.karango.meta
 import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.asClassName
 import de.peekandpoke.karango.Karango
-import de.peekandpoke.ultra.meta.ProcessorUtils
+import de.peekandpoke.ultra.meta.KotlinProcessor
 import de.peekandpoke.ultra.vault.Ref
-import me.eugeniomarletti.kotlin.processing.KotlinAbstractProcessor
 import java.io.File
 import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
 
-@Suppress("unused")
 @AutoService(Processor::class)
-open class KarangoAnnotationProcessor : KotlinAbstractProcessor(), ProcessorUtils {
-
-    override val logPrefix: String = "[Karango] "
+open class KarangoAnnotationProcessor : KotlinProcessor("[Karango]") {
 
     override fun getSupportedSourceVersion(): SourceVersion = SourceVersion.latestSupported()
 

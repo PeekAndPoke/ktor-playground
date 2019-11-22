@@ -16,6 +16,7 @@ import io.ktor.routing.Route
 import io.ktor.routing.Routing
 import io.ktor.routing.RoutingResolveTrace
 import io.ktor.util.AttributeKey
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.system.measureNanoTime
@@ -95,7 +96,7 @@ fun Route.instrumentWithInsights() {
             kontainer.use(Insights::class) {
                 use(PipelinePhasesCollector::class) { record("Setup", ns) }
 
-                launch {
+                launch(Dispatchers.IO) {
                     delay(1)
                     finish(call)
                 }

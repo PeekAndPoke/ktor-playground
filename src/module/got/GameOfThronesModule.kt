@@ -63,8 +63,6 @@ class GameOfThrones(val routes: GameOfThronesRoutes) {
 
             val form = CharacterForm.of(data.character)
 
-            println(data.character)
-
             if (form.submit(call)) {
                 if (form.isModified) {
 

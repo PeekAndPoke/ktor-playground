@@ -22,8 +22,15 @@ abstract class FileSystemRepository(override val name: String, dir: String) : De
             return listFiles().sortedBy { it.lastModifiedAt }.reversed().take(limit)
         }
 
-        override fun getFile(name: String): DepotFile {
-            return FsFile(this, name, File(root, name))
+        override fun getFile(name: String): DepotFile? {
+
+            // TODO: [SECURITY] ... prevent path traversal! check for any slashes and dot-dots
+            val file = File(root, name)
+
+            return when {
+                file.exists() && file.isFile -> FsFile(this, name, File(root, name))
+                else -> null
+            }
         }
 
         override fun putFile(name: String, contents: String): DepotFile {

@@ -1,6 +1,7 @@
 package de.peekandpoke.ktorfx.templating
 
 import de.peekandpoke.ktorfx.common.kontainer
+import de.peekandpoke.ktorfx.templating.semanticui.SemanticUiPlainTemplate
 import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
 import io.ktor.application.ApplicationCall
@@ -20,7 +21,7 @@ val KtorFX_Templating = module {
     /**
      * Overwrite this one with an application specific implementation of [SimpleTemplate]
      */
-    prototype(SimpleTemplate::class, SimpleTemplateImpl::class)
+    prototype(SimpleTemplate::class, SemanticUiPlainTemplate::class)
 
     /**
      * Override this one with an application specific implementation of [TemplateTools]
@@ -33,7 +34,13 @@ val KtorFX_Templating = module {
     dynamic(TemplateInsightsCollector::class)
 }
 
+/**
+ * Shorthand for getting a new instance of the default template
+ */
 inline val ApplicationCall.defaultTemplate: SimpleTemplate get() = kontainer.get(SimpleTemplate::class)
+/**
+ * Shorthand for getting a new instance of the default template
+ */
 inline val PipelineContext<Unit, ApplicationCall>.defaultTemplate: SimpleTemplate get() = call.defaultTemplate
 
 /**
