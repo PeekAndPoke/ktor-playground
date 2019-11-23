@@ -8,7 +8,7 @@
         </compilerSettings>
         <compilerArguments>
           <option name="destination" value="$MODULE_DIR$/../../../../ultra/polyglot/build/classes/kotlin/main" />
-          <option name="classpath" value="$MAVEN_REPOSITORY$/de/peekandpoke/ultra/kontainer/0.0.93/kontainer-0.0.93.jar:/home/gerk/.m2/repository/de/peekandpoke/ultra/common/0.0.93/common-0.0.93.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.3.60/5cb6bf19bab36ab9d10b216356e869250c686a09/kotlin-stdlib-jdk8-1.3.60.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.module/jackson-module-kotlin/2.10.1/dbf6b074958ba8d80bc9552e7690bbbfe7ad79d3/jackson-module-kotlin-2.10.1.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.3.60/56dc1da0b87932ae08941153c917bd19947e08bc/kotlin-reflect-1.3.60.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.3.60/a42a01c0338795930e0a7d8f9d19acafdd1c50ee/kotlin-stdlib-jdk7-1.3.60.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-coroutines-core/1.3.2/c14f0ab931be503b44a600693df8b3f67b0af0f3/kotlinx-coroutines-core-1.3.2.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.3.60/984644b61450add3bcef8cf20f948fec458b420d/kotlin-stdlib-1.3.60.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.10.1/18eee15ffc662d27538d5b6ee84e4c92c0a9d03e/jackson-databind-2.10.1.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.10.1/54d72475c0d6819f2d0e9a09d25c3ed876a4972f/jackson-annotations-2.10.1.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.3.60/538bd29b2d5a7d278a7188f89c3b84183fa37f75/kotlin-stdlib-common-1.3.60.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.10.1/2c8b5e26ba40e5f91eb37a24075a2028b402c5f9/jackson-core-2.10.1.jar" />
+          <option name="classpath" value="$MAVEN_REPOSITORY$/de/peekandpoke/ultra/kontainer/0.0.99/kontainer-0.0.99.jar:/home/gerk/.m2/repository/de/peekandpoke/ultra/common/0.0.99/common-0.0.99.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.3.60/5cb6bf19bab36ab9d10b216356e869250c686a09/kotlin-stdlib-jdk8-1.3.60.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.module/jackson-module-kotlin/2.10.1/dbf6b074958ba8d80bc9552e7690bbbfe7ad79d3/jackson-module-kotlin-2.10.1.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.3.60/56dc1da0b87932ae08941153c917bd19947e08bc/kotlin-reflect-1.3.60.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.3.60/a42a01c0338795930e0a7d8f9d19acafdd1c50ee/kotlin-stdlib-jdk7-1.3.60.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-coroutines-core/1.3.2/c14f0ab931be503b44a600693df8b3f67b0af0f3/kotlinx-coroutines-core-1.3.2.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.3.60/984644b61450add3bcef8cf20f948fec458b420d/kotlin-stdlib-1.3.60.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.10.1/18eee15ffc662d27538d5b6ee84e4c92c0a9d03e/jackson-databind-2.10.1.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.10.1/54d72475c0d6819f2d0e9a09d25c3ed876a4972f/jackson-annotations-2.10.1.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.3.60/538bd29b2d5a7d278a7188f89c3b84183fa37f75/kotlin-stdlib-common-1.3.60.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar:/home/gerk/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.10.1/2c8b5e26ba40e5f91eb37a24075a2028b402c5f9/jackson-core-2.10.1.jar" />
           <option name="noStdlib" value="true" />
           <option name="noReflect" value="true" />
           <option name="moduleName" value="polyglot" />
@@ -40,7 +40,7 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_11">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/../../../../ultra/polyglot/out/production/classes" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../ultra/polyglot/build/generated/source/kapt/main">
@@ -65,24 +65,24 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Gradle: de.peekandpoke.ultra:kontainer:0.0.93">
+      <library name="Gradle: de.peekandpoke.ultra:kontainer:0.0.99">
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/de/peekandpoke/ultra/kontainer/0.0.93/kontainer-0.0.93.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/de/peekandpoke/ultra/kontainer/0.0.99/kontainer-0.0.99.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MAVEN_REPOSITORY$/de/peekandpoke/ultra/kontainer/0.0.93/kontainer-0.0.93-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/de/peekandpoke/ultra/kontainer/0.0.99/kontainer-0.0.99-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Gradle: de.peekandpoke.ultra:common:0.0.93">
+      <library name="Gradle: de.peekandpoke.ultra:common:0.0.99">
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/de/peekandpoke/ultra/common/0.0.93/common-0.0.93.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/de/peekandpoke/ultra/common/0.0.99/common-0.0.99.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MAVEN_REPOSITORY$/de/peekandpoke/ultra/common/0.0.93/common-0.0.93-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/de/peekandpoke/ultra/common/0.0.99/common-0.0.99-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

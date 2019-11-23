@@ -22,9 +22,11 @@ abstract class CmsElement<T : CmsElement.Data>(private val cls: KClass<T>) : Cms
          */
         companion object : Polymorphic.Parent {
             override val childTypes: List<KClass<*>>
-                get() = ClassIndex.getSubclasses(Data::class.java).map { it.kotlin }
+                // TODO: we need a way to force the class loader thing
+                get() = ClassIndex.getSubclasses(Data::class.java, Data::class.java.classLoader).map { it.kotlin }
         }
     }
+
 
     override fun canHandle(data: T): Boolean = data::class == cls
 }
@@ -38,7 +40,8 @@ abstract class CmsLayout<T : CmsLayout.Data>(private val cls: KClass<T>) : CmsIt
          */
         companion object : Polymorphic.Parent {
             override val childTypes: List<KClass<*>>
-                get() = ClassIndex.getSubclasses(Data::class.java).map { it.kotlin }
+                // TODO: we need a way to force the class loader thing
+                get() = ClassIndex.getSubclasses(Data::class.java, Data::class.java.classLoader).map { it.kotlin }
         }
     }
 

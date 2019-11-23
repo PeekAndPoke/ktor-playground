@@ -5,7 +5,6 @@ import de.peekandpoke.ktorfx.common.texts.PeopleI18n
 import de.peekandpoke.ktorfx.formidable.*
 import de.peekandpoke.ultra.vault.New
 import de.peekandpoke.ultra.vault.Storable
-import de.peekandpoke.ultra.vault.value
 
 class ActorForm(it: Storable<Actor>, mutator: ActorMutator) : StorableForm<Actor, ActorMutator>(it, mutator) {
 

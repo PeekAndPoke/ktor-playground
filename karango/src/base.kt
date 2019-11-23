@@ -19,9 +19,9 @@ abstract class Collection<T>(private val name_: String, private val type: TypeRe
     override fun printAql(p: AqlPrinter) = p.name(name_)
 }
 
-class EntityCollection<T>(name: String, type: TypeRef<List<T>>) : Collection<T>(name, type), IEntityCollection<T>
+class EntityCollection<T>(name: String, type: TypeRef<T>) : Collection<T>(name, type.list), IEntityCollection<T>
 
-class EdgeCollection<T>(name: String, type: TypeRef<List<T>>) : Collection<T>(name, type), IEdgeCollection<T>
+class EdgeCollection<T>(name: String, type: TypeRef<T>) : Collection<T>(name, type.list), IEdgeCollection<T>
 
 inline val <T> Iter<T>._id inline get() = PropertyPath.start(this).append<String, String>("_id")
 

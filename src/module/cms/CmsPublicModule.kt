@@ -13,10 +13,7 @@ import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.util.KtorExperimentalAPI
 import io.ultra.ktor_tools.database
-import kotlinx.html.FlowContent
-import kotlinx.html.div
-import kotlinx.html.h1
-import kotlinx.html.h3
+import kotlinx.html.*
 
 fun KontainerBuilder.cmsPublic() = module(CmsPublicModule)
 
@@ -85,6 +82,9 @@ class CmsPublic {
 
             respond {
                 content {
+
+                    h2 { +"TEST2" }
+
                     cms.apply { render(data) }
                 }
             }
