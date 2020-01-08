@@ -1,7 +1,7 @@
 package de.peekandpoke.module.cms
 
 import de.peekandpoke.ktorfx.common.kontainer
-import de.peekandpoke.module.cms.elements.Cms
+import de.peekandpoke.module.cms.layouts.LandingPageLayout
 import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
 import io.ktor.application.ApplicationCall
@@ -11,15 +11,14 @@ import io.ktor.util.pipeline.PipelineContext
 fun KontainerBuilder.cmsCommon() = module(CmsCommonModule)
 
 val CmsCommonModule = module {
-
-    singleton(Cms::class)
-
-    // register cms layouts
-    singleton(LandingPageLayout::class)
-
-    // register cms elements
-    singleton(GreetAllElement::class)
-    singleton(GreetElement::class)
+    singleton0(Cms::class) {
+        Cms(
+            mapOf(
+                CmsLayout.Empty::class to CmsLayout.Empty,
+                LandingPageLayout::class to LandingPageLayout.Empty
+            )
+        )
+    }
 }
 
 /**

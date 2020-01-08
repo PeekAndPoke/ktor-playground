@@ -15,4 +15,6 @@ val Ultra_Polyglot = module {
     dynamic0 { I18nLocaleSelector("en", "en") }
 }
 
-fun String.translatable(vararg replacements: Pair<String, String?>): Translatable = Translatable(this, replacements.toList())
+fun String?.translatable(vararg replacements: Pair<String, String?>) = Translatable(this ?: "", replacements.toList())
+
+fun String?.untranslated() = Translatable.untranslated(this ?: "")

@@ -38,6 +38,7 @@ val KtorFX_Templating = module {
  * Shorthand for getting a new instance of the default template
  */
 inline val ApplicationCall.defaultTemplate: SimpleTemplate get() = kontainer.get(SimpleTemplate::class)
+
 /**
  * Shorthand for getting a new instance of the default template
  */

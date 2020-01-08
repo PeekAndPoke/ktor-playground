@@ -236,11 +236,18 @@ abstract class MutatorForm<T : Any, M : Mutator<T>>(target: M, name: String = ""
 
 abstract class StorableForm<T : Any, M : Mutator<T>>(
 
-    private val stored: Storable<T>,
+    private val storable: Storable<T>,
     mutator: M,
-    name: String = "${stored.value::class.java.simpleName}[${stored._key}]"
+    name: String = key(storable)
 
 ) : MutatorFormBase<T, M>(mutator, name) {
 
-    val result: Storable<T> get() = stored.withValue(target.getResult())
+    val result: Storable<T> get() = storable.withValue(target.getResult())
+
+    companion object {
+
+        fun <T : Any> key(storable: Storable<T>): String {
+            return "${storable.value::class.java.simpleName}[${storable._key}]"
+        }
+    }
 }

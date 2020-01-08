@@ -26,7 +26,10 @@ class I18n(private val texts: I18nTexts, private val selector: I18nLocaleSelecto
         return res
     }
 
-    operator fun get(unit: Translatable): String = get(unit.key, unit.replacements)
+    operator fun get(unit: Translatable): String = when (unit.untranslated) {
+        false -> get(unit.key, unit.replacements)
+        else -> unit.key
+    }
 
     fun withLocale(locale: String): I18n = I18n(texts, selector.copy(locale = locale))
 }

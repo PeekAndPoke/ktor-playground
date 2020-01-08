@@ -6,6 +6,7 @@ import io.ktor.http.Parameters
 import java.math.BigDecimal
 import java.math.BigInteger
 import kotlin.reflect.KMutableProperty0
+import kotlin.reflect.KProperty0
 
 class ListItem<T>(
     private val getter: () -> T,
@@ -33,7 +34,8 @@ class ListField<T : FormElement>(private val name: String, private val parent: F
 
 internal class ListElementForm(name: String) : Form(name)
 
-fun <T, E : FormElement> Form.list(prop: KMutableProperty0<MutableList<T>>, elementBuilder: Form.(ListItem<T>) -> E): ListField<E> {
+
+fun <T, E : FormElement> Form.list(prop: KProperty0<MutableList<T>>, elementBuilder: Form.(ListItem<T>) -> E): ListField<E> {
 
     val list = prop.getter()
 
@@ -47,7 +49,37 @@ fun <T, E : FormElement> Form.list(prop: KMutableProperty0<MutableList<T>>, elem
 
                 // build the child element
                 tmp.elementBuilder(
-                    ListItem({ list[idx] }, { list[idx] = it })
+                    ListItem(
+                        { list[idx] },
+                        { list[idx] = it }
+                    )
+                )
+            }
+        )
+    )
+}
+
+fun <T, E : FormElement> Form.list(prop: KMutableProperty0<List<T>>, elementBuilder: Form.(ListItem<T>) -> E): ListField<E> {
+
+    val list = prop.getter().toMutableList()
+
+    return addElement(
+        ListField(
+            name = prop.name,
+            parent = this,
+            children = list.mapIndexed { idx, _ ->
+                // Create a temp form to propagate the field name
+                val tmp = ListElementForm(prop.name + "." + idx.toString()).apply { setParent(this@list) }
+
+                // build the child element
+                tmp.elementBuilder(
+                    ListItem(
+                        { list[idx] },
+                        {
+                            list[idx] = it
+                            prop.set(list)
+                        }
+                    )
                 )
             }
         )
@@ -505,3 +537,4 @@ fun Form.field(prop: KMutableProperty0<List<BigDecimal>>, separator: String = ",
 fun Form.field(prop: KMutableProperty0<List<BigDecimal>?>, separator: String = ",") =
     separatedListField(prop, { it.toString() }, { it.toBigDecimal() }, separator)
         .acceptsBigDecimalsCommaSeparated(separator)
+

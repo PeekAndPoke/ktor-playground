@@ -17,11 +17,7 @@ interface FlashSession {
 
     companion object {
 
-        fun of(session: CurrentSession): FlashSession = when {
-            session.get<Data>() != null -> SimpleFlashSession(session)
-
-            else -> NullFlashSession()
-        }
+        fun of(session: CurrentSession): FlashSession = SimpleFlashSession(session)
 
         fun register(config: Sessions.Configuration) {
 

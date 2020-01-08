@@ -3,9 +3,11 @@ package de.peekandpoke.module.cms
 import de.peekandpoke.ktorfx.broker.OutgoingConverter
 import de.peekandpoke.ktorfx.broker.Routes
 import de.peekandpoke.ktorfx.broker.getOrPost
+import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ktorfx.flashsession.flashSession
 import de.peekandpoke.ktorfx.flashsession.success
 import de.peekandpoke.ktorfx.templating.respond
+import de.peekandpoke.module.cms.forms.CmsPageChangeLayoutForm
 import de.peekandpoke.module.cms.forms.CmsPageForm
 import de.peekandpoke.module.cms.views.editPage
 import de.peekandpoke.module.cms.views.index
@@ -14,10 +16,12 @@ import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
 import de.peekandpoke.ultra.vault.New
 import de.peekandpoke.ultra.vault.Stored
+import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.response.respondRedirect
 import io.ktor.routing.Route
 import io.ktor.routing.get
+import io.ktor.util.pipeline.PipelineContext
 import io.ultra.ktor_tools.database
 
 fun KontainerBuilder.cmsAdmin() = module(CmsAdminModule)
@@ -33,6 +37,8 @@ val CmsAdminModule = module {
     // database
     singleton(CmsPagesRepository::class)
 }
+
+val PipelineContext<Unit, ApplicationCall>.cmsAdminRoutes: CmsAdminRoutes get() = kontainer.get(CmsAdminRoutes::class)
 
 class CmsAdminRoutes(converter: OutgoingConverter, cmsAdminMountPoint: String) : Routes(converter, cmsAdminMountPoint) {
 
@@ -77,7 +83,23 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
                 return@getOrPost call.respondRedirect(routes.pages)
             }
 
-            respond { editPage(false, form) }
+            val changeLayoutForm = CmsPageChangeLayoutForm(cms, data.page)
+
+            if (changeLayoutForm.submit(call)) {
+                val modified = database.cmsPages.save(data.page) {
+                    it.mutate {
+                        layout += cms.getLayout(changeLayoutForm.result.layout)
+                    }
+                }
+
+                flashSession.success("Layout was changed to '${changeLayoutForm.result.layout}'")
+
+                // TODO: reload page ... redirect to same page
+            }
+
+            respond {
+                editPage(false, form, changeLayoutForm)
+            }
         }
 
         getOrPost(routes.createPage) {
@@ -99,7 +121,6 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
             respond {
                 editPage(true, form)
             }
-
         }
     }
 }

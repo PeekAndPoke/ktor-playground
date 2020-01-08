@@ -8,7 +8,7 @@ import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ultra.polyglot.I18n
 import kotlinx.html.*
 
-fun <T : Form> FlowContent.formidable(i18n: I18n, form: T, configure: FORM.() -> Unit = {}, block: FormidableViewBuilder.(T) -> Unit) {
+fun <T : Form> FlowContent.formidable(i18n: I18n, form: T, configure: FORM.() -> Unit = {}, block: FormidableViewBuilder.(T) -> Any?) {
 
     ui.form Form {
         // default is post

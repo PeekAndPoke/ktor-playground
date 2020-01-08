@@ -48,6 +48,20 @@ abstract class EntityRepository<T : Any>(
     }
 
     /**
+     * Save the given [stored] and applying the given [modify] before storing it.
+     *
+     * Returns the saved version
+     */
+    fun save(stored: Stored<T>, modify: (T) -> T): Stored<T> {
+
+        return save(
+            stored.withValue(
+                modify(stored.value)
+            )
+        )
+    }
+
+    /**
      * Inserts the given object into the database and returns the saved version
      */
     fun save(new: T): Stored<T> = save(New(new))
