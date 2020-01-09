@@ -32,6 +32,7 @@ data class HeroElement(
                         img(src = "https://picsum.photos/500/600") {}
                     }
                 }
+
             }
         }
     }
