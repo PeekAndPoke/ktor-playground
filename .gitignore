@@ -6,6 +6,10 @@
 dataSources.ids
 datasources.xml
 
+#generated web asset files
+/web/semantic/dist/*
+/resources/assets/www/*
+
 /.gradle
 /out
 */out

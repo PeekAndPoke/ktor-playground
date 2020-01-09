@@ -8,6 +8,8 @@ val WebResources.www get() = get(WwwWebResources::class)
 
 class WwwWebResources(cacheBuster: CacheBuster) : WebResourceGroup(cacheBuster, {
 
+    resourceCss("/assets/www/semantic.css")
     resourceCss("/assets/css/www.css")
 
+    resourceJs("/assets/www/semantic.js")
 })

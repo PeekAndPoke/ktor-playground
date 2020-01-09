@@ -8,10 +8,10 @@
       "themes": "src/themes/"
     },
     "output": {
-      "packaged": "./../resources/assets/www/",
-      "uncompressed": "dist/components/",
-      "compressed": "dist/components/",
-      "themes": "dist/themes/"
+      "packaged": "./../../resources/assets/www/",
+      "uncompressed": "./../../resources/assets/www/components/",
+      "compressed": "./../../resources/assets/www/components/",
+      "themes": "./../../resources/assets/www/themes/"
     },
     "clean": "dist/"
   },

@@ -1,3 +1,7 @@
 /*******************************
      User Global Variables
 *******************************/
+
+@pageFont: DomainDisplay, sans-serif;
+@headerFont: FoundersGroteskX, sans-serif;
+
