@@ -6,6 +6,24 @@ import kotlinx.html.*
 
 @SemanticUiDslMarker val FlowContent.noui get() = SemanticUi(this, mutableListOf(""))
 
+@Suppress("EnumEntryName")
+enum class SemanticColor {
+    none,
+    red,
+    orange,
+    yellow,
+    olive,
+    green,
+    teal,
+    blue,
+    violet,
+    purple,
+    pink,
+    brown,
+    grey,
+    black,
+}
+
 @Suppress("FunctionName", "PropertyName")
 class SemanticUi(private val parent: FlowContent, private val cssClasses: MutableList<String>) {
 
@@ -33,15 +51,17 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
 
     @SemanticUiTagMarker infix fun Label(flow: LABEL.() -> Unit) = renderLabel(flow)
 
+    @SemanticUiTagMarker infix fun P(flow: P.() -> Unit) = renderP(flow)
+
     @SemanticUiTagMarker infix fun Submit(flow: BUTTON.() -> Unit) = renderSubmitButton(flow)
 
     @SemanticUiTagMarker infix fun Table(flow: TABLE.() -> Unit) = renderTable(flow)
 
     // dynamic class
 
-    @SemanticUiCssMarker fun with(cls: String) = this + cls
+    @SemanticUiCssMarker fun with(vararg cls: String) = this + cls
 
-    @SemanticUiCssMarker fun with(cls: String, flow: FlowContent.() -> Unit) = (this + cls).renderDiv(flow)
+    @SemanticUiCssMarker fun with(vararg cls: String, flow: FlowContent.() -> Unit) = (this + cls).renderDiv(flow)
 
     // conditional classes
 
@@ -229,6 +249,8 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
 
     private operator fun plus(cls: String) = apply { cssClasses.add(cls) }
 
+    private operator fun plus(classes: Array<out String>) = apply { cssClasses.addAll(classes) }
+
     private fun renderH1(flow: H1.() -> Unit) = parent.h1(classes = cssClasses.joinToString(" "), block = flow)
 
     private fun renderH2(flow: H2.() -> Unit) = parent.h2(classes = cssClasses.joinToString(" "), block = flow)
@@ -253,6 +275,8 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
     private fun renderForm(flow: FORM.() -> Unit) = parent.form(classes = cssClasses.joinToString(" "), block = flow)
 
     private fun renderLabel(flow: LABEL.() -> Unit) = parent.label(classes = cssClasses.joinToString(" "), block = flow)
+
+    private fun renderP(flow: P.() -> Unit) = parent.p(classes = cssClasses.joinToString(" "), block = flow)
 
     private fun renderTable(flow: TABLE.() -> Unit) = parent.table(classes = cssClasses.joinToString(" "), block = flow)
 }

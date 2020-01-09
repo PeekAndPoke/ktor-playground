@@ -26,6 +26,7 @@ import de.peekandpoke.module.semanticui.SemanticUi
 import de.peekandpoke.module.semanticui.semanticUi
 import de.peekandpoke.resources.AdminWebResources
 import de.peekandpoke.resources.AppI18n
+import de.peekandpoke.resources.WwwWebResources
 import de.peekandpoke.ultra.kontainer.KontainerBlueprint
 import de.peekandpoke.ultra.kontainer.kontainer
 import de.peekandpoke.ultra.polyglot.I18nLocaleSelector
@@ -97,6 +98,7 @@ private val commonKontainerBlueprint by lazy {
 
         // web resources
         singleton(AdminWebResources::class)
+        singleton(WwwWebResources::class)
 
         // helper modules
         cmsCommon()

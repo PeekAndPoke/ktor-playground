@@ -1,0 +1,75 @@
+@font-face {
+    font-family: DomainDisplay;
+    src: url("../fonts/DomaineDisplay-Regular.otf") format("opentype");
+}
+
+@font-face {
+    font-family: FoundersGroteskX;
+    src: url("../fonts/FoundersGroteskX-Condensed-Semibold.otf") format("opentype");
+}
+
+body {
+    font-family: DomainDisplay, serif;
+}
+
+#header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+
+    z-index: 1000;
+    background-color: white;
+
+    border-bottom: 1px solid grey;
+}
+
+#header > .grid {
+    padding: 0 5%;
+}
+
+#header .the-base-logo {
+    font-family: FoundersGroteskX, serif;
+    font-size: 3.3em;
+}
+
+#pull-down {
+    margin-top: 80px;
+}
+
+.segment-stack .ui.segment {
+    margin: 0;
+}
+
+.hero-element h1.ui.header {
+    font-size: 6em;
+    text-transform: uppercase;
+}
+
+.hero-element > .segment {
+    height: 80vh;
+}
+
+.hero-element .grid {
+    height: 100%;
+}
+
+.hero-element img {
+    height: 100%
+}
+
+.text-element > .segment,
+.headline-element > .segment,
+.text-image-element > .segment {
+    padding: 50px 8%;
+}
+
+.text-element p {
+    font-size: 2em;
+}
+
+.text-image-element img {
+    width: 100%
+}
+

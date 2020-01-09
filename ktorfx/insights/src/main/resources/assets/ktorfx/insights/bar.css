@@ -8,6 +8,9 @@
 }
 
 .insights-bar {
+
+    font-family: Arial, serif !important;
+
     position: fixed;
     bottom: 0;
     z-index: 10000;
