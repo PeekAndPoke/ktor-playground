@@ -66,7 +66,15 @@ gulp.task('build-docs', 'Build all files and add to SUI Docs', buildDocs);
       RTL
 ---------------*/
 
-if(config.rtl) {
+if (config.rtl) {
   gulp.task('watch-rtl', 'Watch files as RTL', watchRTL);
   gulp.task('build-rtl', 'Build all files as RTL', buildRTL);
 }
+
+
+//////////////////////////////////////////////////
+// COPY TO RESOURCES folder
+
+gulp.task('copy', function () {
+  gulp.src('./dist/semantic.min.css').pipe(gulp.dest('./../../resources/assets/frontend'))
+});
