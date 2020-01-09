@@ -19,3 +19,4 @@ datasources.xml
 /tmp
 .attach_pid*
 hs_err_pid*
+node_modules
