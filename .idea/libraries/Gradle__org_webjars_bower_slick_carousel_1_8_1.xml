@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.webjars.bower:slick-carousel:1.8.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.webjars.bower/slick-carousel/1.8.1/ecbe7ebae9d7908b3ef725b79e009d9bff714aae/slick-carousel-1.8.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.webjars.bower/slick-carousel/1.8.1/b04f3ee8f5e43fa3b162981b50bb72fe1acabb33/slick-carousel-1.8.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

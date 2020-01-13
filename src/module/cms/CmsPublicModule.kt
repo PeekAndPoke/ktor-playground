@@ -28,8 +28,6 @@ class CmsPublic {
 
             val page = database.cmsPages.findBySlug(path) ?: throw NotFoundException("Cms page '$path' not found")
 
-            println(page)
-
             respond {
                 content {
                     page.value.layout.apply { render() }

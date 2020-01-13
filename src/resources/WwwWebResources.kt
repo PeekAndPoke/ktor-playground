@@ -11,5 +11,11 @@ class WwwWebResources(cacheBuster: CacheBuster) : WebResourceGroup(cacheBuster, 
     resourceCss("/assets/www/semantic.css")
     resourceCss("/assets/css/www.css")
 
+    webjarCss("/vendor/slick-carousel/slick/slick.css")
+    webjarCss("/vendor/slick-carousel/slick/slick-theme.css")
+    webjarJs("/vendor/slick-carousel/slick/slick.min.js")
+
     resourceJs("/assets/www/semantic.js")
+    resourceJs("/assets/js/www.js")
+
 })

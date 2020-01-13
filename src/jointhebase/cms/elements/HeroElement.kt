@@ -8,9 +8,10 @@ import kotlinx.html.div
 import kotlinx.html.img
 
 data class HeroElement(
-    val background: SemanticColor,
-    val headline: String,
-    val subHeadline: String
+    val background: SemanticColor = SemanticColor.none,
+    val headline: String = "",
+    val text: String = "",
+    val images: List<String> = listOf()  // TODO: Use more specific type than "String" for image urls
 ) : CmsElement {
 
     override fun FlowContent.render() {
@@ -23,16 +24,23 @@ data class HeroElement(
 
                     ui.column {
                         ui.red.header H1 { +headline }
-                        ui.red.header H2 { +subHeadline }
+                        ui.red.header H3 { +text }
                     }
 
                     // TODO: image carousel: http://kenwheeler.github.io/slick/
 
                     ui.column.right.aligned {
-                        img(src = "https://picsum.photos/500/600") {}
+
+                        div {
+                            // TODO: helper class for Slick data
+                            attributes["data-slick"] = "{\"slidesToShow\": 1, \"dots\": true, \"infinite\": true}"
+
+                            images.forEach {
+                                img(src = it) {}
+                            }
+                        }
                     }
                 }
-
             }
         }
     }

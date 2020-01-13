@@ -9,11 +9,19 @@ import kotlinx.html.div
 import kotlinx.html.img
 
 data class TextImageElement(
-    val background: SemanticColor,
-    val textLeft: Boolean,
-    val headline: String,
-    val text: String
+    val background: SemanticColor = SemanticColor.none,
+    val layout: Layout = Layout.ImageLeft,
+    val headline: String = "",
+    val text: String = "",
+    val images: List<String> = listOf()
 ) : CmsElement {
+
+    enum class Layout {
+        ImageLeft,
+        ImageRight,
+        ImageTop,
+        ImageBottom
+    }
 
     override fun FlowContent.render() {
 
@@ -21,15 +29,25 @@ data class TextImageElement(
 
             ui.basic.segment.given(background != SemanticColor.none) { inverted.with(background.toString()) }.then {
 
-                when (textLeft) {
-                    true -> ui.two.column.grid {
+                when (layout) {
+                    Layout.ImageRight -> ui.two.column.grid {
                         ui.column { text() }
                         ui.column { image() }
                     }
 
-                    else -> ui.two.column.grid {
+                    Layout.ImageLeft -> ui.two.column.grid {
                         ui.column { image() }
                         ui.column { text() }
+                    }
+
+                    Layout.ImageTop -> {
+                        image()
+                        text()
+                    }
+
+                    Layout.ImageBottom -> {
+                        text()
+                        image()
                     }
                 }
             }
@@ -42,7 +60,23 @@ data class TextImageElement(
     }
 
     private fun DIV.image() {
-        // TODO: image url
-        img(src = "https://picsum.photos/600/400")
+
+        when {
+            images.isEmpty() -> {
+                // noop
+            }
+
+            images.size == 1 -> img(src = images[0])
+
+            else -> {
+                div {
+                    attributes["data-slick"] = "{\"slidesToShow\": 1, \"dots\": true, \"infinite\": true}"
+
+                    images.forEach {
+                        img(src = it)
+                    }
+                }
+            }
+        }
     }
 }

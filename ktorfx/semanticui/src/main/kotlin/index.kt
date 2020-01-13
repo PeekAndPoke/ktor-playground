@@ -13,9 +13,10 @@ val KtorFX_SemanticUi = module {
 }
 
 class SemanticUiWebResources(cacheBuster: CacheBuster) : WebResourceGroup(cacheBuster, {
+
     webjarCss("/vendor/Semantic-UI/semantic.css")
 
-    webjarJs("/vendor/jquery/jquery.min.js")
+    webjarJs("/vendor/jquery/dist/jquery.min.js")
     webjarJs("/vendor/Semantic-UI/semantic.js")
 })
 

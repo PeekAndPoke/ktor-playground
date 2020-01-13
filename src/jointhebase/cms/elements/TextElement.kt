@@ -8,8 +8,9 @@ import kotlinx.html.div
 import kotlinx.html.p
 
 data class TextElement(
-    val background: SemanticColor,
-    val text: String
+    val background: SemanticColor = SemanticColor.none,
+    val headline: String = "",
+    val text: String = ""
 ) : CmsElement {
 
     override fun FlowContent.render() {
@@ -17,8 +18,13 @@ data class TextElement(
         div(classes = "text-element") {
 
             ui.basic.segment.given(background != SemanticColor.none) { inverted.with(background.toString()) }.then {
-                p {
-                    +text
+
+                if (headline.isNotBlank()) {
+                    ui.header H2 { +headline }
+                }
+
+                if (text.isNotBlank()) {
+                    p { +text }
                 }
             }
         }

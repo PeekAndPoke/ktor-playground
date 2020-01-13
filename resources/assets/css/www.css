@@ -1,15 +1,23 @@
 @font-face {
     font-family: DomainDisplay;
     src: url("../fonts/DomaineDisplay-Regular.otf") format("opentype");
+    font-weight: normal;
 }
 
 @font-face {
     font-family: FoundersGroteskX;
-    src: url("../fonts/FoundersGroteskX-Condensed-Semibold.otf") format("opentype");
+    src: url("../fonts/test/founders-grotesk-x-condensed-test-regular.woff") format("woff");
+    font-weight: normal;
 }
 
+/*@font-face {*/
+/*    font-family: FoundersGroteskX;*/
+/*    src: url("../fonts/test/founders-grotesk-x-condensed-test-bold.woff") format("woff");*/
+/*    font-weight: bold;*/
+/*}*/
+
 body {
-    /*font-family: DomainDisplay, serif;*/
+    font-family: DomainDisplay, sans-serif;
 }
 
 #header {
@@ -17,7 +25,7 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 80px;
+    height: 7rem;
 
     z-index: 1000;
     background-color: white;
@@ -30,21 +38,22 @@ body {
 }
 
 #header .the-base-logo {
-    font-family: FoundersGroteskX, serif;
+    font-family: FoundersGroteskX, sans-serif;
     font-size: 3.3em;
 }
 
 #pull-down {
-    margin-top: 80px;
+    margin-top: 7rem;
 }
 
-.segment-stack .ui.segment {
-    margin: 0;
-}
-
-.hero-element h1.ui.header {
-    font-size: 6em;
+div.ui.button, button.ui.button {
+    /* TODO: can we do this in the semantic variables */
+    font-family: FoundersGroteskX, sans-serif;
     text-transform: uppercase;
+}
+
+.segment-stack > .ui.segment {
+    margin: 0;
 }
 
 .hero-element > .segment {
@@ -55,12 +64,23 @@ body {
     height: 100%;
 }
 
+.hero-element h1.ui.header {
+    font-size: 6em;
+    text-transform: uppercase;
+}
+
+.hero-element h3.ui.header {
+    font-family: DomainDisplay, sans-serif;
+}
+
 .hero-element img {
     height: 100%
 }
 
+.divider-element > .segment,
+.gallery-element > .segment,
+.list-element > .segment,
 .text-element > .segment,
-.headline-element > .segment,
 .text-image-element > .segment {
     padding: 50px 8%;
 }
@@ -73,3 +93,30 @@ body {
     width: 100%
 }
 
+.gallery-element .item img {
+    width: 100%;
+}
+
+.gallery-element.SideBySideSlider > .segment {
+    margin: 0 -25% 0 -25%;
+}
+
+.gallery-element.SideBySideSlider .item {
+    padding: 0 10px;
+}
+
+.divider-element > .segment > div.one {
+    height: 3em;
+}
+
+.divider-element > .segment > div.two {
+    height: 6em;
+}
+
+.divider-element > .segment > div.three {
+    height: 9em;
+}
+
+.divider-element > .segment > div.four {
+    height: 12em;
+}

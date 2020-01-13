@@ -6,21 +6,28 @@ import de.peekandpoke.module.cms.CmsElement
 import kotlinx.html.FlowContent
 import kotlinx.html.div
 
-data class HeadlineElement(
-    val background: SemanticColor,
-    val text: String
+data class DividerElement(
+    val background: SemanticColor = SemanticColor.none,
+    val height: Height = Height.one
 ) : CmsElement {
+
+    @Suppress("EnumEntryName")
+    enum class Height {
+        one,
+        two,
+        three,
+        four
+    }
 
     override fun FlowContent.render() {
 
-        div(classes = "headline-element") {
+        div(classes = "divider-element") {
 
             ui.basic.segment.given(background != SemanticColor.none) { inverted.with(background.toString()) }.then {
-                ui.header H1 {
-                    +text
+                ui.with(height.toString()) {
+                    // noop
                 }
             }
         }
-
     }
 }

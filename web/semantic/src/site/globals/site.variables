@@ -2,6 +2,44 @@
      User Global Variables
 *******************************/
 
+/*-------------------
+       Fonts
+--------------------*/
+
 @pageFont: DomainDisplay, sans-serif;
 @headerFont: FoundersGroteskX, sans-serif;
 
+
+/*-------------------
+      Site Colors
+--------------------*/
+
+/*---  Colors  ---*/
+@red: #f06e69; // THE BASE Brand -> light red
+@orange: #F2711C;
+@yellow: #FBBD08;
+@olive: #003232; // THE BASE Brand -> dark green
+@green: #0acdaa; // THE BASE Brand -> light green
+@teal: #96b4e6; // THE BASE Brand -> light blue
+@blue: #0a3264; // THE BASE Brand -> dark blue
+@violet: #2d193c; // THE BASE Brand -> dark violet
+@purple: #A333C8;
+@pink: #E03997;
+@brown: #A5673F;
+@grey: #767676;
+@black: #000000; // THE BASE Brand
+
+/*---  Light Colors  ---*/
+@lightRed: lighten(@red, 10%);
+@lightOrange: #FF851B;
+@lightYellow: #FFE21F;
+@lightOlive: lighten(@olive, 10%);
+@lightGreen: lighten(@green, 10%);
+@lightTeal: lighten(@teal, 10%);
+@lightBlue: lighten(@blue, 10%);
+@lightViolet: lighten(@violet, 10%);
+@lightPurple: #DC73FF;
+@lightPink: #FF8EDF;
+@lightBrown: #D67C1C;
+@lightGrey: #DCDDDE;
+@lightBlack: lighten(@black, 10%);

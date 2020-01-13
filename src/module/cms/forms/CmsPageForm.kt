@@ -1,6 +1,6 @@
 package de.peekandpoke.module.cms.forms
 
-import de.peekandpoke._sortme_.camelCaseDivide
+import de.peekandpoke._sortme_.karsten.camelCaseDivide
 import de.peekandpoke.ktorfx.formidable.*
 import de.peekandpoke.module.cms.Cms
 import de.peekandpoke.module.cms.CmsPage
