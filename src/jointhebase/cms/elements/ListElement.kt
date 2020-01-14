@@ -4,6 +4,7 @@ import de.peekandpoke.ktorfx.semanticui.SemanticColor
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.module.cms.CmsElement
+import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
 import kotlinx.html.div
 import kotlinx.html.p
@@ -15,6 +16,10 @@ data class ListElement(
     val text: String = "",
     val items: List<Item> = listOf()
 ) : CmsElement {
+
+    companion object : Polymorphic.Child {
+        override val identifier = "list-element"
+    }
 
     data class Item(
         val icon: String = "", // TODO: use a better data-type

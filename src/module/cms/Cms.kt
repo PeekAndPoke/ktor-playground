@@ -1,7 +1,11 @@
 package de.peekandpoke.module.cms
 
+import de.peekandpoke.ktorfx.templating.vm.View
+import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
+import kotlinx.html.div
+import kotlinx.html.style
 import org.atteo.classindex.IndexSubclasses
 import kotlin.reflect.KClass
 
@@ -42,6 +46,14 @@ interface CmsElement : CmsItem {
             // noop
         }
     }
+
+    suspend fun editVm(vm: ViewModelBuilder): View = vm.view {
+        div {
+            style = "background-color: pink; padding: 20px; margin-bottom: 2px;"
+
+            +"editVm() is not implemented for CmsElement '${this@CmsElement::class.qualifiedName}'"
+        }
+    }
 }
 
 @IndexSubclasses
@@ -60,8 +72,21 @@ interface CmsLayout : CmsItem {
     }
 
     class EmptyLayout : CmsLayout {
+
+        override val elements: List<CmsElement> = listOf()
+
         override fun FlowContent.render() {
             // noop
+        }
+    }
+
+    val elements: List<CmsElement>
+
+    suspend fun editVm(vm: ViewModelBuilder): View = vm.view {
+        div {
+            style = "background-color: pink; padding: 20px; margin-bottom: 2px;"
+
+            +"editVm() is not implemented for CmsElement '${this@CmsLayout::class.qualifiedName}'"
         }
     }
 }

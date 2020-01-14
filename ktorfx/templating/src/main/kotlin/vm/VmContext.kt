@@ -1,10 +1,66 @@
 package de.peekandpoke.ktorfx.templating.vm
 
+import de.peekandpoke.ktorfx.templating.defaultTemplate
+import io.ktor.application.ApplicationCall
+import io.ktor.application.call
+import io.ktor.html.respondHtmlTemplate
+import io.ktor.http.HttpStatusCode
+import io.ktor.util.pipeline.PipelineContext
+import kotlinx.html.FlowContent
 
-class VmContext(private val path: String) {
+/**
+ * Responds with the default template
+ */
+suspend fun PipelineContext<Unit, ApplicationCall>.respond(vm: ViewModel) {
 
-    fun child(stepIn: String, block: VmContext.() -> Any?) {
+    // TODO: catch exceptions ... ViewModelAction
+    val view = vm.handle(call)
 
-        VmContext(this.path + "." + stepIn).block()
+    val status = HttpStatusCode.OK
+
+    call.respondHtmlTemplate(
+        defaultTemplate,
+        status,
+        {
+            content {
+                view.render(this)
+            }
+        }
+    )
+}
+
+
+fun viewModel(fn: suspend (vm: ViewModelBuilder) -> View) = ViewModel(fn)
+
+class ViewModel(private val fn: suspend (vm: ViewModelBuilder) -> View) {
+
+    suspend fun handle(call: ApplicationCall): View = fn(ViewModelBuilder(call))
+}
+
+class ViewModelBuilder internal constructor(val call: ApplicationCall, val path: String = "") {
+
+    fun view(fn: FlowContent.() -> Any?) = View(fn)
+
+    suspend fun child(name: String, block: suspend (vm: ViewModelBuilder) -> View): View {
+
+        return block(
+            ViewModelBuilder(call, appendToPath(name))
+        )
     }
+
+    private fun appendToPath(name: String) = when {
+        path.isEmpty() -> name
+        else -> "$path.$name"
+    }
+}
+
+class View(private val block: FlowContent.() -> Any?) : ViewModelAction() {
+
+    fun render(flow: FlowContent) {
+        flow.block()
+    }
+}
+
+sealed class ViewModelAction {
+    class Custom(block: ApplicationCall.() -> Any) : ViewModelAction()
 }

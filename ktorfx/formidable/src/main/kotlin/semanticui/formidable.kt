@@ -150,5 +150,9 @@ class FormidableViewBuilder(private val i18n: I18n, val form: FORM) {
             errors(field)
         }
     }
+
+    fun FlowContent.submitButton(label: String) {
+        ui.button Submit { +label }
+    }
 }
 

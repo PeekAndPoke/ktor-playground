@@ -3,6 +3,7 @@ package de.peekandpoke.jointhebase.cms.elements
 import de.peekandpoke.ktorfx.semanticui.SemanticColor
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.module.cms.CmsElement
+import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.DIV
 import kotlinx.html.FlowContent
 import kotlinx.html.div
@@ -15,6 +16,10 @@ data class TextImageElement(
     val text: String = "",
     val images: List<String> = listOf()
 ) : CmsElement {
+
+    companion object : Polymorphic.Child {
+        override val identifier = "text-image-element"
+    }
 
     enum class Layout {
         ImageLeft,

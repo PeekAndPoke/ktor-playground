@@ -4,6 +4,8 @@ import de.peekandpoke._sortme_.karsten.LoremIpsum
 import de.peekandpoke.jointhebase.cms.elements.*
 import de.peekandpoke.ktorfx.semanticui.SemanticColor
 import de.peekandpoke.ktorfx.semanticui.ui
+import de.peekandpoke.ktorfx.templating.vm.View
+import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
 import de.peekandpoke.module.cms.CmsElement
 import de.peekandpoke.module.cms.CmsLayout
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
@@ -13,13 +15,13 @@ import kotlinx.html.id
 import kotlinx.html.p
 
 data class LandingPageLayout(
-    val hero: HeroElement = HeroElement(
-        SemanticColor.blue,
-        "The cities that never sleep",
-        LoremIpsum.words(15),
-        LoremIpsum.imageUrls(3, 500, 600)
-    ),
-    val elements: List<CmsElement> = listOf(
+    override val elements: List<CmsElement> = listOf(
+        HeroElement(
+            SemanticColor.blue,
+            "The cities that never sleep",
+            LoremIpsum.words(15),
+            LoremIpsum.imageUrls(3, 500, 600)
+        ),
         TextElement(
             SemanticColor.red,
             "",
@@ -218,7 +220,7 @@ data class LandingPageLayout(
 
             id = "header"
 
-            ui.padded.three.column.grid {
+            ui.padded.three.column.stackable.grid {
 
                 ui.column {
                     p {
@@ -244,11 +246,26 @@ data class LandingPageLayout(
 
         div(classes = "segment-stack") {
 
-            hero.apply { render() }
-
             elements.forEach {
                 it.apply { render() }
             }
+        }
+    }
+
+    override suspend fun editVm(vm: ViewModelBuilder): View {
+
+        val children = elements.mapIndexed { idx, element ->
+            vm.child("element-$idx") { vmb ->
+                element.editVm(vmb)
+            }
+        }
+
+        return vm.view {
+            div {
+                +"H A L L O !"
+            }
+
+            children.forEach { it.render(this) }
         }
     }
 }

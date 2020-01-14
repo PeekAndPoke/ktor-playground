@@ -10,12 +10,6 @@
     font-weight: normal;
 }
 
-/*@font-face {*/
-/*    font-family: FoundersGroteskX;*/
-/*    src: url("../fonts/test/founders-grotesk-x-condensed-test-bold.woff") format("woff");*/
-/*    font-weight: bold;*/
-/*}*/
-
 body {
     font-family: DomainDisplay, sans-serif;
 }

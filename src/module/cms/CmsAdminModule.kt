@@ -7,6 +7,8 @@ import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ktorfx.flashsession.flashSession
 import de.peekandpoke.ktorfx.flashsession.success
 import de.peekandpoke.ktorfx.templating.respond
+import de.peekandpoke.ktorfx.templating.vm.respond
+import de.peekandpoke.ktorfx.templating.vm.viewModel
 import de.peekandpoke.module.cms.forms.CmsPageChangeLayoutForm
 import de.peekandpoke.module.cms.forms.CmsPageForm
 import de.peekandpoke.module.cms.views.editPage
@@ -97,9 +99,19 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
                 // TODO: reload page ... redirect to same page
             }
 
-            respond {
-                editPage(false, form, changeLayoutForm)
+            val layout = data.page.value.layout
+
+            val view = viewModel { vmb ->
+                vmb.child("layout") {
+                    layout.editVm(vmb)
+                }
             }
+
+            respond(view)
+
+//            respond {
+//                editPage(false, form, changeLayoutForm)
+//            }
         }
 
         getOrPost(routes.createPage) {

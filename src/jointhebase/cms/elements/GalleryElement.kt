@@ -3,6 +3,7 @@ package de.peekandpoke.jointhebase.cms.elements
 import de.peekandpoke.ktorfx.semanticui.SemanticColor
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.module.cms.CmsElement
+import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.*
 
 data class GalleryElement(
@@ -11,6 +12,10 @@ data class GalleryElement(
     val headline: String = "",
     val items: List<Item> = listOf()
 ) : CmsElement {
+
+    companion object : Polymorphic.Child {
+        override val identifier = "gallery-element"
+    }
 
     data class Item(
         val headline: String = "",

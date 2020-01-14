@@ -38,6 +38,8 @@ data class Stored<T>(
         Ref(value, _id, _key, _rev, _meta)
     }
 
+    fun modify(fn: (oldValue: T) -> T) = withValue(fn(value))
+
     override fun withValue(newValue: T): Stored<T> = copy(value = newValue)
 
     override fun withMeta(newMeta: StorableMeta): Stored<T> = copy(_meta = newMeta)

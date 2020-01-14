@@ -4,13 +4,17 @@ import de.peekandpoke.ktorfx.semanticui.SemanticColor
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.module.cms.CmsElement
+import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
 import kotlinx.html.div
 
 data class FooterElement(
     val background: SemanticColor = SemanticColor.none
-
 ) : CmsElement {
+
+    companion object : Polymorphic.Child {
+        override val identifier = "footer-element"
+    }
 
     override fun FlowContent.render() {
 
