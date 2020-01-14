@@ -1,5 +1,6 @@
 package de.peekandpoke.ktorfx.templating.vm
 
+import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import de.peekandpoke.ktorfx.templating.defaultTemplate
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
@@ -13,21 +14,27 @@ import kotlinx.html.FlowContent
 /**
  * Responds with the default template
  */
-suspend fun PipelineContext<Unit, ApplicationCall>.respond(vm: ViewModel) {
+suspend fun PipelineContext<Unit, ApplicationCall>.respond(vm: ViewModel, customize: SimpleTemplate.() -> Unit = {}) {
 
     try {
         val view = vm.handle(call)
-
         val status = HttpStatusCode.OK
 
         call.respondHtmlTemplate(
             defaultTemplate,
             status,
-            { content { view.render(this) } }
+            {
+                customize()
+
+                content { view.render(this) }
+            }
         )
+
     } catch (action: ViewModelAction) {
         when (action) {
-            is ViewModelAction.Reload -> call.respondRedirect(call.request.uri, action.permanent)
+            is ViewModelAction.Reload -> call.respondRedirect(call.request.uri)
+
+            is ViewModelAction.Redirect -> call.respondRedirect(action.uri)
         }
     }
 }
@@ -44,8 +51,12 @@ class ViewModelBuilder internal constructor(val call: ApplicationCall, val path:
 
     fun view(fn: FlowContent.() -> Any?) = View(fn)
 
-    fun reload(permanent: Boolean = false) {
-        throw ViewModelAction.Reload(permanent)
+    fun reload(): Nothing {
+        throw ViewModelAction.Reload
+    }
+
+    fun redirect(uri: String): Nothing {
+        throw ViewModelAction.Redirect(uri)
     }
 
     suspend fun child(name: String, block: suspend (vm: ViewModelBuilder) -> View): View {
@@ -69,5 +80,6 @@ class View(private val block: FlowContent.() -> Any?) : ViewModelAction() {
 }
 
 sealed class ViewModelAction : Throwable() {
-    data class Reload(val permanent: Boolean = false) : ViewModelAction()
+    data class Redirect(val uri: String) : ViewModelAction()
+    object Reload : ViewModelAction()
 }

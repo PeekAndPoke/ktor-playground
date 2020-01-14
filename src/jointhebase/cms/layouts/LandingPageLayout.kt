@@ -268,10 +268,6 @@ data class LandingPageLayout(
         }
 
         return vm.view {
-            div {
-                +"H A L L O !"
-            }
-
             children.forEach { it.render(this) }
         }
     }

@@ -1,6 +1,5 @@
 package de.peekandpoke.module.cms
 
-import de.peekandpoke._sortme_.karsten.respondReload
 import de.peekandpoke.ktorfx.broker.OutgoingConverter
 import de.peekandpoke.ktorfx.broker.Routes
 import de.peekandpoke.ktorfx.broker.getOrPost
@@ -9,12 +8,12 @@ import de.peekandpoke.ktorfx.flashsession.flashSession
 import de.peekandpoke.ktorfx.flashsession.success
 import de.peekandpoke.ktorfx.templating.respond
 import de.peekandpoke.ktorfx.templating.vm.respond
-import de.peekandpoke.ktorfx.templating.vm.viewModel
-import de.peekandpoke.module.cms.forms.CmsPageChangeLayoutForm
 import de.peekandpoke.module.cms.forms.CmsPageForm
+import de.peekandpoke.module.cms.views.CmsMenu
 import de.peekandpoke.module.cms.views.editPage
 import de.peekandpoke.module.cms.views.index
 import de.peekandpoke.module.cms.views.pages
+import de.peekandpoke.module.cms.vm.vm
 import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
 import de.peekandpoke.ultra.vault.New
@@ -26,6 +25,7 @@ import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.util.pipeline.PipelineContext
 import io.ultra.ktor_tools.database
+import kotlinx.html.title
 
 fun KontainerBuilder.cmsAdmin() = module(CmsAdminModule)
 
@@ -41,7 +41,9 @@ val CmsAdminModule = module {
     singleton(CmsPagesRepository::class)
 }
 
-val PipelineContext<Unit, ApplicationCall>.cmsAdminRoutes: CmsAdminRoutes get() = kontainer.get(CmsAdminRoutes::class)
+val ApplicationCall.cmsAdminRoutes: CmsAdminRoutes get() = kontainer.get(CmsAdminRoutes::class)
+
+val PipelineContext<Unit, ApplicationCall>.cmsAdminRoutes: CmsAdminRoutes get() = call.cmsAdminRoutes
 
 class CmsAdminRoutes(converter: OutgoingConverter, cmsAdminMountPoint: String) : Routes(converter, cmsAdminMountPoint) {
 
@@ -75,60 +77,14 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
 
         getOrPost(routes.editPage) { data ->
 
-            val form = CmsPageForm.of(data.page)
+            respond(call.vm(data.page)) {
 
-            if (form.submit(call)) {
-                if (form.isModified) {
-                    val saved = database.cmsPages.save(form.result)
-                    flashSession.success("Page '${saved.value.name}' was saved")
-                }
+                breadCrumbs = listOf(CmsMenu.PAGES)
 
-                return@getOrPost call.respondRedirect(routes.pages)
-            }
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            val changeLayoutForm = CmsPageChangeLayoutForm(cms, data.page)
-
-            if (changeLayoutForm.submit(call)) {
-                val saved = database.cmsPages.save(data.page) {
-                    it.mutate {
-                        layout += cms.getLayout(changeLayoutForm.result.layout)
-                    }
-                }
-
-                flashSession.success("Layout of '${saved.value.name}' was changed to '${changeLayoutForm.result.layout}'")
-
-                return@getOrPost call.respondReload()
-            }
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            val pageLayout = data.page.value.layout
-
-            val view = viewModel { vmb ->
-                vmb.child("layout") {
-
-                    pageLayout.editVm(vmb) { changed ->
-
-                        val saved = database.cmsPages.save(data.page) {
-                            it.mutate {
-                                layout += changed
-                            }
-                        }
-
-                        flashSession.success("Changes of page '${saved.value.name}' where saved")
-
-                        vmb.reload()
-                    }
+                pageTitle {
+                    title { +"CMS Edit Page" }
                 }
             }
-
-            respond(view)
-
-//            respond {
-//                editPage(false, form, changeLayoutForm)
-//            }
         }
 
         getOrPost(routes.createPage) {
