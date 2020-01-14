@@ -5,6 +5,8 @@ import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.html.respondHtmlTemplate
 import io.ktor.http.HttpStatusCode
+import io.ktor.request.uri
+import io.ktor.response.respondRedirect
 import io.ktor.util.pipeline.PipelineContext
 import kotlinx.html.FlowContent
 
@@ -13,20 +15,21 @@ import kotlinx.html.FlowContent
  */
 suspend fun PipelineContext<Unit, ApplicationCall>.respond(vm: ViewModel) {
 
-    // TODO: catch exceptions ... ViewModelAction
-    val view = vm.handle(call)
+    try {
+        val view = vm.handle(call)
 
-    val status = HttpStatusCode.OK
+        val status = HttpStatusCode.OK
 
-    call.respondHtmlTemplate(
-        defaultTemplate,
-        status,
-        {
-            content {
-                view.render(this)
-            }
+        call.respondHtmlTemplate(
+            defaultTemplate,
+            status,
+            { content { view.render(this) } }
+        )
+    } catch (action: ViewModelAction) {
+        when (action) {
+            is ViewModelAction.Reload -> call.respondRedirect(call.request.uri, action.permanent)
         }
-    )
+    }
 }
 
 
@@ -40,6 +43,10 @@ class ViewModel(private val fn: suspend (vm: ViewModelBuilder) -> View) {
 class ViewModelBuilder internal constructor(val call: ApplicationCall, val path: String = "") {
 
     fun view(fn: FlowContent.() -> Any?) = View(fn)
+
+    fun reload(permanent: Boolean = false) {
+        throw ViewModelAction.Reload(permanent)
+    }
 
     suspend fun child(name: String, block: suspend (vm: ViewModelBuilder) -> View): View {
 
@@ -61,6 +68,6 @@ class View(private val block: FlowContent.() -> Any?) : ViewModelAction() {
     }
 }
 
-sealed class ViewModelAction {
-    class Custom(block: ApplicationCall.() -> Any) : ViewModelAction()
+sealed class ViewModelAction : Throwable() {
+    data class Reload(val permanent: Boolean = false) : ViewModelAction()
 }

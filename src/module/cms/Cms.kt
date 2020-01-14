@@ -47,7 +47,7 @@ interface CmsElement : CmsItem {
         }
     }
 
-    suspend fun editVm(vm: ViewModelBuilder): View = vm.view {
+    suspend fun editVm(vm: ViewModelBuilder, onChange: (CmsElement) -> Unit): View = vm.view {
         div {
             style = "background-color: pink; padding: 20px; margin-bottom: 2px;"
 
@@ -82,7 +82,7 @@ interface CmsLayout : CmsItem {
 
     val elements: List<CmsElement>
 
-    suspend fun editVm(vm: ViewModelBuilder): View = vm.view {
+    suspend fun editVm(vm: ViewModelBuilder, onChange: (CmsLayout) -> Unit): View = vm.view {
         div {
             style = "background-color: pink; padding: 20px; margin-bottom: 2px;"
 

@@ -1,6 +1,7 @@
 package de.peekandpoke.jointhebase.cms.layouts
 
 import de.peekandpoke._sortme_.karsten.LoremIpsum
+import de.peekandpoke._sortme_.karsten.replaceAt
 import de.peekandpoke.jointhebase.cms.elements.*
 import de.peekandpoke.ktorfx.semanticui.SemanticColor
 import de.peekandpoke.ktorfx.semanticui.ui
@@ -252,11 +253,17 @@ data class LandingPageLayout(
         }
     }
 
-    override suspend fun editVm(vm: ViewModelBuilder): View {
+    override suspend fun editVm(vm: ViewModelBuilder, onChange: (CmsLayout) -> Unit): View {
 
         val children = elements.mapIndexed { idx, element ->
             vm.child("element-$idx") { vmb ->
-                element.editVm(vmb)
+
+                // Create a VM for each element. Propagate changes to the outside world.
+                element.editVm(vmb) { changed ->
+                    onChange(
+                        copy(elements = elements.replaceAt(idx, changed))
+                    )
+                }
             }
         }
 

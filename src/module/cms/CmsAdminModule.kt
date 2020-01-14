@@ -1,5 +1,6 @@
 package de.peekandpoke.module.cms
 
+import de.peekandpoke._sortme_.karsten.respondReload
 import de.peekandpoke.ktorfx.broker.OutgoingConverter
 import de.peekandpoke.ktorfx.broker.Routes
 import de.peekandpoke.ktorfx.broker.getOrPost
@@ -79,31 +80,47 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
             if (form.submit(call)) {
                 if (form.isModified) {
                     val saved = database.cmsPages.save(form.result)
-                    flashSession.success("Page ${saved.value.name} was saved")
+                    flashSession.success("Page '${saved.value.name}' was saved")
                 }
 
                 return@getOrPost call.respondRedirect(routes.pages)
             }
 
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
             val changeLayoutForm = CmsPageChangeLayoutForm(cms, data.page)
 
             if (changeLayoutForm.submit(call)) {
-                val modified = database.cmsPages.save(data.page) {
+                val saved = database.cmsPages.save(data.page) {
                     it.mutate {
                         layout += cms.getLayout(changeLayoutForm.result.layout)
                     }
                 }
 
-                flashSession.success("Layout was changed to '${changeLayoutForm.result.layout}'")
+                flashSession.success("Layout of '${saved.value.name}' was changed to '${changeLayoutForm.result.layout}'")
 
-                // TODO: reload page ... redirect to same page
+                return@getOrPost call.respondReload()
             }
 
-            val layout = data.page.value.layout
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            val pageLayout = data.page.value.layout
 
             val view = viewModel { vmb ->
                 vmb.child("layout") {
-                    layout.editVm(vmb)
+
+                    pageLayout.editVm(vmb) { changed ->
+
+                        val saved = database.cmsPages.save(data.page) {
+                            it.mutate {
+                                layout += changed
+                            }
+                        }
+
+                        flashSession.success("Changes of page '${saved.value.name}' where saved")
+
+                        vmb.reload()
+                    }
                 }
             }
 

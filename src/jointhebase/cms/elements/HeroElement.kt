@@ -61,21 +61,19 @@ data class HeroElement(
         }
     }
 
-    override suspend fun editVm(vm: ViewModelBuilder): View {
+    override suspend fun editVm(vm: ViewModelBuilder, onChange: (CmsElement) -> Unit): View {
 
         val form = HeroElementForm(this, vm.path)
 
         if (form.submit(vm.call)) {
             if (form.isModified) {
-                throw Exception("Yeah")
+                onChange(form.result)
             }
         }
 
         return vm.view {
             ui.segment {
-                ui.header H3 {
-                    +"Hero Element"
-                }
+                ui.header H3 { +"Hero Element" }
 
                 formidable(vm.call.i18n, form) {
 
