@@ -1,7 +1,7 @@
 package de.peekandpoke.module.cms
 
-import de.peekandpoke.jointhebase.cms.layouts.LandingPageLayout
 import de.peekandpoke.ktorfx.common.kontainer
+import de.peekandpoke.module.cms.layouts.LandingPageLayout
 import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
 import io.ktor.application.ApplicationCall

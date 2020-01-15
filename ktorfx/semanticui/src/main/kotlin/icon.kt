@@ -18,7 +18,7 @@ class SemanticIcon(private val parent: FlowContent) {
         else -> parent.i(classes = "${cssClasses.plus(classes).joinToString(" ")} $classes")
     }
 
-    @SemanticUiConditionalMarker fun custom(cls: String) = render(cls)
+    @SemanticUiConditionalMarker fun custom(cls: String) = render("$cls icon")
 
     // conditional classes
 
@@ -961,6 +961,8 @@ class SemanticIcon(private val parent: FlowContent) {
     @SemanticUiCssMarker fun check_square() = render("check square icon")
 
     @SemanticUiCssMarker fun check_square_outline() = render("check square outline icon")
+
+    @SemanticUiCssMarker fun close() = render("close icon")
 
     @SemanticUiCssMarker fun cloud() = render("cloud icon")
 

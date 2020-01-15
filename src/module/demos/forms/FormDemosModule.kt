@@ -7,7 +7,7 @@ import de.peekandpoke.ktorfx.broker.getOrPost
 import de.peekandpoke.ktorfx.common.i18n
 import de.peekandpoke.ktorfx.common.texts.forms
 import de.peekandpoke.ktorfx.formidable.*
-import de.peekandpoke.ktorfx.formidable.semanticui.formidable
+import de.peekandpoke.ktorfx.formidable.rendering.formidable
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.respond

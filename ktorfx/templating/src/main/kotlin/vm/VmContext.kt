@@ -72,7 +72,7 @@ class ViewModelBuilder internal constructor(val call: ApplicationCall, val path:
     }
 }
 
-class View(private val block: FlowContent.() -> Any?) : ViewModelAction() {
+class View(private val block: FlowContent.() -> Any?) {
 
     fun render(flow: FlowContent) {
         flow.block()

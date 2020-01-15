@@ -1,9 +1,10 @@
-package de.peekandpoke.ktorfx.formidable.semanticui
+package de.peekandpoke.ktorfx.formidable.rendering
 
 import de.peekandpoke.ktorfx.formidable.Form
 import de.peekandpoke.ktorfx.formidable.FormField
 import de.peekandpoke.ktorfx.formidable.FormFieldWithOptions
 import de.peekandpoke.ktorfx.formidable.HiddenFormField
+import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ultra.polyglot.I18n
 import kotlinx.html.*
@@ -22,9 +23,7 @@ fun <T : Form> FlowContent.formidable(i18n: I18n, form: T, configure: FORM.() ->
 
         // render all hidden fields
         builder.apply {
-            form.hiddenFields.forEach {
-                hidden(it)
-            }
+            hiddenFields(form)
         }
 
         // apply the builder block
@@ -34,6 +33,12 @@ fun <T : Form> FlowContent.formidable(i18n: I18n, form: T, configure: FORM.() ->
 
 
 class FormidableViewBuilder(private val i18n: I18n, val form: FORM) {
+
+    fun FlowContent.hiddenFields(form: Form) {
+        form.hiddenFields.forEach {
+            hidden(it)
+        }
+    }
 
     fun <T> FlowContent.label(field: FormField<T>, label: String?) {
 
@@ -153,6 +158,21 @@ class FormidableViewBuilder(private val i18n: I18n, val form: FORM) {
 
     fun FlowContent.submitButton(label: String) {
         ui.button Submit { +label }
+    }
+
+    fun DIV.editableListItem() {
+        attributes["data-formidable"] = "item"
+
+        ui.field {
+            ui Label {
+                +"Actions"
+            }
+            ui.small.icon.button {
+                attributes["data-formidable"] = "remove"
+                title = "Remove item"
+                icon.close()
+            }
+        }
     }
 }
 

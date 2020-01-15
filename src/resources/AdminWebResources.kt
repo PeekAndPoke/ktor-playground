@@ -10,4 +10,5 @@ class AdminWebResources(cacheBuster: CacheBuster) : WebResourceGroup(cacheBuster
 
     resourceCss("/assets/css/admin.css")
 
+    resourceJs("/assets/formidable/formidable.js")
 })

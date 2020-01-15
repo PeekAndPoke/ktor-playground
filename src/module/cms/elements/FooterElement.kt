@@ -1,13 +1,22 @@
-package de.peekandpoke.jointhebase.cms.elements
+package de.peekandpoke.module.cms.elements
 
+import de.peekandpoke.ktorfx.common.i18n
+import de.peekandpoke.ktorfx.formidable.MutatorForm
+import de.peekandpoke.ktorfx.formidable.rendering.formidable
 import de.peekandpoke.ktorfx.semanticui.SemanticColor
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
+import de.peekandpoke.ktorfx.templating.vm.View
+import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
 import de.peekandpoke.module.cms.CmsElement
+import de.peekandpoke.module.cms.forms.theBaseColors
+import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
+import kotlinx.html.a
 import kotlinx.html.div
 
+@Mutable
 data class FooterElement(
     val background: SemanticColor = SemanticColor.none
 ) : CmsElement {
@@ -15,6 +24,12 @@ data class FooterElement(
     companion object : Polymorphic.Child {
         override val identifier = "footer-element"
     }
+
+    inner class VmForm(name: String) : MutatorForm<FooterElement, FooterElementMutator>(mutator(), name) {
+
+        val background = theBaseColors(target::background)
+    }
+
 
     override fun FlowContent.render() {
 
@@ -63,6 +78,35 @@ data class FooterElement(
                         icon.copyright_outline()
                         +"2020 The Base - Future Of Living"
                     }
+                }
+            }
+        }
+    }
+
+    override suspend fun editVm(vm: ViewModelBuilder, onChange: (CmsElement) -> Unit): View {
+
+        val form = VmForm(vm.path)
+
+        if (form.submit(vm.call)) {
+            if (form.isModified) {
+                onChange(form.result)
+            }
+        }
+
+        return vm.view {
+            ui.segment {
+
+                a {
+                    attributes["name"] = vm.path
+                }
+
+                ui.header H3 { +"Footer" }
+
+                formidable(vm.call.i18n, form) {
+
+                    selectInput(form.background, "Background-Color")
+
+                    submitButton("Submit")
                 }
             }
         }

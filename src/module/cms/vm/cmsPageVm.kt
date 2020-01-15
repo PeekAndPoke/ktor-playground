@@ -3,7 +3,7 @@ package de.peekandpoke.module.cms.vm
 import de.peekandpoke.ktorfx.common.i18n
 import de.peekandpoke.ktorfx.flashsession.flashSession
 import de.peekandpoke.ktorfx.flashsession.success
-import de.peekandpoke.ktorfx.formidable.semanticui.formidable
+import de.peekandpoke.ktorfx.formidable.rendering.formidable
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.viewModel
 import de.peekandpoke.module.cms.*
@@ -67,36 +67,35 @@ suspend fun ApplicationCall.vm(storedPage: Stored<CmsPage>) = viewModel { vmb ->
             +"Edit Page ${form.id.value} (${form.result._key})"
         }
 
-        ui.header H2 {
-            +"General settings"
-        }
+        ui.header H2 { +"General settings" }
 
-        formidable(i18n, form) {
+        ui.segment {
 
-            ui.two.fields {
-                textInput(form.id, label = "Name")
-                textInput(form.slug, label = "Slug")
+            formidable(i18n, form) {
+
+                ui.two.fields {
+                    textInput(form.id, label = "Name")
+                    textInput(form.slug, label = "Slug")
+                }
+
+                ui.button Submit { +"Submit" }
             }
-
-            ui.button Submit { +"Submit" }
         }
 
-        ui.header H2 {
-            +"Select Layout"
-        }
+        ui.header H2 { +"Select Layout" }
 
-        formidable(i18n, changeLayoutForm) {
+        ui.segment {
+            formidable(i18n, changeLayoutForm) {
 
-            ui.two.fields {
-                selectInput(it.layout, label = "Layout")
+                ui.two.fields {
+                    selectInput(it.layout, label = "Layout")
+                }
+
+                ui.button Submit { +"Change layout" }
             }
-
-            ui.button Submit { +"Change" }
         }
 
-        ui.header H2 {
-            +"Page Elements"
-        }
+        ui.header H2 { +"Page Elements" }
 
         layoutView.render(this)
     }

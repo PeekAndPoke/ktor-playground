@@ -1,11 +1,24 @@
-package de.peekandpoke.jointhebase.cms.elements
+package de.peekandpoke.module.cms.elements
 
+import de.peekandpoke.ktorfx.common.i18n
+import de.peekandpoke.ktorfx.formidable.MutatorForm
+import de.peekandpoke.ktorfx.formidable.enum
+import de.peekandpoke.ktorfx.formidable.field
+import de.peekandpoke.ktorfx.formidable.rendering.formidable
+import de.peekandpoke.ktorfx.formidable.withOptions
 import de.peekandpoke.ktorfx.semanticui.SemanticColor
+import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
+import de.peekandpoke.ktorfx.templating.vm.View
+import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
 import de.peekandpoke.module.cms.CmsElement
+import de.peekandpoke.module.cms.forms.theBaseColors
+import de.peekandpoke.ultra.mutator.Mutable
+import de.peekandpoke.ultra.polyglot.untranslated
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.*
 
+@Mutable
 data class GalleryElement(
     val background: SemanticColor = SemanticColor.none,
     val layout: Layout = Layout.SideBySideSlider,
@@ -28,6 +41,20 @@ data class GalleryElement(
         FullWidthSlider,
         ThreeColumns,
         FiveColumns
+    }
+
+    inner class VmForm(name: String) : MutatorForm<GalleryElement, GalleryElementMutator>(mutator(), name) {
+
+        val background = theBaseColors(target::background)
+
+        val layout = enum(target::layout).withOptions(
+            Layout.SideBySideSlider to "Side by side Slider".untranslated(),
+            Layout.FullWidthSlider to "Full Width Slider".untranslated(),
+            Layout.ThreeColumns to "Three Columns Gallery".untranslated(),
+            Layout.FiveColumns to "Five Columns Gallery".untranslated()
+        )
+
+        val headline = field(target::headline)
     }
 
     override fun FlowContent.render() {
@@ -131,6 +158,42 @@ data class GalleryElement(
         if (it.text.isNotBlank()) {
             p {
                 +it.text
+            }
+        }
+    }
+
+    override suspend fun editVm(vm: ViewModelBuilder, onChange: (CmsElement) -> Unit): View {
+
+        val form = VmForm(vm.path)
+
+        if (form.submit(vm.call)) {
+            if (form.isModified) {
+                onChange(form.result)
+            }
+        }
+
+        return vm.view {
+            ui.segment {
+
+                a {
+                    attributes["name"] = vm.path
+                }
+
+                ui.header H3 {
+                    icon.images()
+                    +"Gallery '$headline'"
+                }
+
+                formidable(vm.call.i18n, form) {
+
+                    selectInput(form.background, "Background-Color")
+
+                    selectInput(form.layout, "Layout")
+
+                    textInput(form.headline, "Headline")
+
+                    submitButton("Submit")
+                }
             }
         }
     }

@@ -1,6 +1,6 @@
 package de.peekandpoke.ktorfx.formidable
 
-import de.peekandpoke.ktorfx.formidable.semanticui.FormidableViewBuilder
+import de.peekandpoke.ktorfx.formidable.rendering.FormidableViewBuilder
 import de.peekandpoke.ultra.polyglot.Translatable
 import io.ktor.http.Parameters
 

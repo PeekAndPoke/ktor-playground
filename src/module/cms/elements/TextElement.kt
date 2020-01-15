@@ -1,61 +1,55 @@
-package de.peekandpoke.jointhebase.cms.elements
+package de.peekandpoke.module.cms.elements
 
 import de.peekandpoke.ktorfx.common.i18n
 import de.peekandpoke.ktorfx.formidable.MutatorForm
 import de.peekandpoke.ktorfx.formidable.field
-import de.peekandpoke.ktorfx.formidable.semanticui.formidable
+import de.peekandpoke.ktorfx.formidable.rendering.formidable
 import de.peekandpoke.ktorfx.semanticui.SemanticColor
+import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
 import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
 import de.peekandpoke.module.cms.CmsElement
+import de.peekandpoke.module.cms.forms.theBaseColors
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
+import kotlinx.html.a
 import kotlinx.html.div
-import kotlinx.html.img
+import kotlinx.html.p
 
 @Mutable
-data class HeroElement(
+data class TextElement(
     val background: SemanticColor = SemanticColor.none,
     val headline: String = "",
-    val text: String = "",
-    val images: List<String> = listOf()  // TODO: Use more specific type than "String" for image urls
+    val text: String = ""
 ) : CmsElement {
 
     companion object : Polymorphic.Child {
-        override val identifier = "hero-element"
+        override val identifier = "text-element"
     }
 
-    class HeroElementForm(elem: HeroElement, name: String) : MutatorForm<HeroElement, HeroElementMutator>(elem.mutator(), name) {
+    inner class VmForm(name: String) : MutatorForm<TextElement, TextElementMutator>(mutator(), name) {
+
+        val background = theBaseColors(target::background)
 
         val headline = field(target::headline)
+
+        val text = field(target::text)
     }
 
     override fun FlowContent.render() {
 
-        div(classes = "hero-element") {
+        div(classes = "text-element") {
 
-            ui.basic.inverted.segment.with(background.toString()) {
+            ui.basic.segment.given(background != SemanticColor.none) { inverted.with(background.toString()) }.then {
 
-                ui.two.column.grid {
+                if (headline.isNotBlank()) {
+                    ui.header H2 { +headline }
+                }
 
-                    ui.column {
-                        ui.red.header H1 { +headline }
-                        ui.red.header H3 { +text }
-                    }
-
-                    ui.column.right.aligned {
-
-                        div {
-                            // TODO: helper class for Slick data
-                            attributes["data-slick"] = "{\"slidesToShow\": 1, \"dots\": true, \"infinite\": true}"
-
-                            images.forEach {
-                                img(src = it) {}
-                            }
-                        }
-                    }
+                if (text.isNotBlank()) {
+                    p { +text }
                 }
             }
         }
@@ -63,7 +57,7 @@ data class HeroElement(
 
     override suspend fun editVm(vm: ViewModelBuilder, onChange: (CmsElement) -> Unit): View {
 
-        val form = HeroElementForm(this, vm.path)
+        val form = VmForm(vm.path)
 
         if (form.submit(vm.call)) {
             if (form.isModified) {
@@ -73,11 +67,23 @@ data class HeroElement(
 
         return vm.view {
             ui.segment {
-                ui.header H3 { +"Hero Element" }
+
+                a {
+                    attributes["name"] = vm.path
+                }
+
+                ui.header H3 {
+                    icon.quote_right()
+                    +"Text '$headline'"
+                }
 
                 formidable(vm.call.i18n, form) {
 
+                    selectInput(form.background, "Background-Color")
+
                     textInput(form.headline, "Headline")
+
+                    textArea(form.text, "Text")
 
                     submitButton("Submit")
                 }

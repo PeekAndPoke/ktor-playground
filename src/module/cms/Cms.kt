@@ -73,6 +73,10 @@ interface CmsLayout : CmsItem {
 
     class EmptyLayout : CmsLayout {
 
+        companion object : Polymorphic.Child {
+            override val identifier = "empty-layout"
+        }
+
         override val elements: List<CmsElement> = listOf()
 
         override fun FlowContent.render() {

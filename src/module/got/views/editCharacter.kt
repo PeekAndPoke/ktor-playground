@@ -3,7 +3,7 @@ package de.peekandpoke.module.got.views
 import de.peekandpoke.karango.examples.game_of_thrones.Character
 import de.peekandpoke.ktorfx.common.texts.forms
 import de.peekandpoke.ktorfx.common.texts.people
-import de.peekandpoke.ktorfx.formidable.semanticui.formidable
+import de.peekandpoke.ktorfx.formidable.rendering.formidable
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import de.peekandpoke.module.got.CharacterForm

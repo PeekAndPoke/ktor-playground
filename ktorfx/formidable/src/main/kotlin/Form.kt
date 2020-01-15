@@ -19,7 +19,7 @@ abstract class Form(private val name: String) : FormElement {
     /**
      * All hidden fields of the form
      */
-    val hiddenFields get(): List<HiddenFormField<*>> = _children.filterIsInstance<HiddenFormField<*>>()
+    val hiddenFields get(): List<HiddenFormField<*>> = children.filterIsInstance<HiddenFormField<*>>()
 
     /**
      * The parent of this form
@@ -29,7 +29,7 @@ abstract class Form(private val name: String) : FormElement {
     /**
      * List of all child elements
      */
-    private val _children: MutableList<FormElement> = mutableListOf()
+    protected open val children: MutableList<FormElement> = mutableListOf()
 
     /**
      * Flag that tracks if the form was submitted
@@ -63,7 +63,7 @@ abstract class Form(private val name: String) : FormElement {
      * Disables the check that looks for the special hidden field that identifies that form
      */
     fun disableSubmissionCheck() {
-        _children.removeAll { it is SubmissionCheckField }
+        children.removeAll { it is SubmissionCheckField }
     }
 
     /**
@@ -117,7 +117,7 @@ abstract class Form(private val name: String) : FormElement {
 
         isSubmitted = true
 
-        _children.forEach {
+        children.forEach {
             it.submit(params)
         }
     }
@@ -130,12 +130,14 @@ abstract class Form(private val name: String) : FormElement {
     /**
      * Return true when the form is valid, meaning that all of the children are valid
      */
-    override fun isValid(): Boolean = isSubmitted && _children.all { it.isValid() }
+    override fun isValid(): Boolean = isSubmitted && children.all {
+        it.isValid()
+    }
 
     /**
      * Adds the given [FormElement] as a child
      */
-    fun <T : FormElement> addElement(element: T): T = element.apply { _children.add(this) }
+    fun <T : FormElement> addElement(element: T): T = element.apply { children.add(this) }
 
     /**
      * Adds a form field
@@ -175,7 +177,7 @@ abstract class Form(private val name: String) : FormElement {
         // The submission check might also be disabled manually.
         // So we try to find a the submission check field and validate it.
         // When there is no such field we return true.
-        return _children.filterIsInstance<SubmissionCheckField>().firstOrNull()
+        return children.filterIsInstance<SubmissionCheckField>().firstOrNull()
             ?.isSubmitted(params)
             ?: true
     }
@@ -217,7 +219,7 @@ abstract class Form(private val name: String) : FormElement {
     /**
      * Checks if there already is a csrf field in the children
      */
-    private fun hasCsrfField() = _children.filterIsInstance<CsrfFormField>().isNotEmpty()
+    private fun hasCsrfField() = children.filterIsInstance<CsrfFormField>().isNotEmpty()
 }
 
 fun <T : Form> T.noCsrf(): T = apply { disableCsrfCheck() }

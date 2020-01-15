@@ -2,131 +2,11 @@
 
 package de.peekandpoke.ktorfx.formidable
 
-import io.ktor.http.Parameters
 import java.math.BigDecimal
 import java.math.BigInteger
+import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty0
-import kotlin.reflect.KProperty0
 
-class ListItem<T>(
-    private val getter: () -> T,
-    private val setter: (T) -> Unit
-) {
-    var value: T
-        get() = getter()
-        set(value) = setter(value)
-}
-
-class ListField<T : FormElement>(private val name: String, private val parent: Form, val children: List<T>) : FormElement, Iterable<T> {
-
-    override fun getId(): FormElementId = parent.getId() + name
-
-    override fun iterator(): Iterator<T> = children.iterator()
-
-    override fun submit(params: Parameters) {
-        forEach {
-            it.submit(params)
-        }
-    }
-
-    override fun isValid(): Boolean = all { it.isValid() }
-}
-
-internal class ListElementForm(name: String) : Form(name)
-
-
-fun <T, E : FormElement> Form.list(prop: KProperty0<MutableList<T>>, elementBuilder: Form.(ListItem<T>) -> E): ListField<E> {
-
-    val list = prop.getter()
-
-    return addElement(
-        ListField(
-            name = prop.name,
-            parent = this,
-            children = list.mapIndexed { idx, _ ->
-                // Create a temp form to propagate the field name
-                val tmp = ListElementForm(prop.name + "." + idx.toString()).apply { setParent(this@list) }
-
-                // build the child element
-                tmp.elementBuilder(
-                    ListItem(
-                        { list[idx] },
-                        { list[idx] = it }
-                    )
-                )
-            }
-        )
-    )
-}
-
-fun <T, E : FormElement> Form.list(prop: KMutableProperty0<List<T>>, elementBuilder: Form.(ListItem<T>) -> E): ListField<E> {
-
-    val list = prop.getter().toMutableList()
-
-    return addElement(
-        ListField(
-            name = prop.name,
-            parent = this,
-            children = list.mapIndexed { idx, _ ->
-                // Create a temp form to propagate the field name
-                val tmp = ListElementForm(prop.name + "." + idx.toString()).apply { setParent(this@list) }
-
-                // build the child element
-                tmp.elementBuilder(
-                    ListItem(
-                        { list[idx] },
-                        {
-                            list[idx] = it
-                            prop.set(list)
-                        }
-                    )
-                )
-            }
-        )
-    )
-}
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Helpers for comma separates lists
-/////
-
-/**
- * Adds a field for list and displays the values as a comma separated list
- */
-@JvmName("separatedListField_List")
-fun <T> Form.separatedListField(
-    prop: KMutableProperty0<List<T>>,
-    toStr: (T) -> String,
-    fromStr: (String) -> T,
-    separator: String
-): FormField<List<T>> = add(
-    FormFieldImpl(
-        parent = this,
-        prop = prop,
-        toStr = { it.joinToString(separator, transform = toStr) },
-        fromStr = { str -> str.split(separator).map(String::trim).filter(String::isNotEmpty).map(fromStr) }
-    )
-)
-
-
-/**
- * Adds a field for list and displays the values as a comma separated list
- */
-@JvmName("separatedListField_List?")
-fun <T> Form.separatedListField(
-    prop: KMutableProperty0<List<T>?>,
-    toStr: (T) -> String,
-    fromStr: (String) -> T,
-    separator: String
-): FormField<List<T>?> = add(
-    FormFieldImpl(
-        parent = this,
-        prop = prop,
-        toStr = { it?.joinToString(separator, transform = toStr) ?: "" },
-        fromStr = { str -> str.split(separator).map(String::trim).filter(String::isNotEmpty).map(fromStr) }
-    )
-)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // BOOLEAN fields
@@ -538,3 +418,28 @@ fun Form.field(prop: KMutableProperty0<List<BigDecimal>?>, separator: String = "
     separatedListField(prop, { it.toString() }, { it.toBigDecimal() }, separator)
         .acceptsBigDecimalsCommaSeparated(separator)
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ENUM fields
+/////
+
+/**
+ * Adds a field for am Enum property
+ */
+@JvmName("field_Enum")
+fun <T : Enum<T>> Form.enum(prop: KMutableProperty0<T>): FormField<T> {
+
+    val cls = prop.returnType.classifier as KClass<*>
+    val enumValues = cls.java.enumConstants
+
+    return add(
+        FormFieldImpl(
+            this,
+            prop,
+            { it.toString() },
+            {
+                @Suppress("UNCHECKED_CAST")
+                enumValues.firstOrNull { enumValue -> enumValue.toString() == it } as T
+            }
+        )
+    )
+}

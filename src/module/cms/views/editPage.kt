@@ -1,6 +1,6 @@
 package de.peekandpoke.module.cms.views
 
-import de.peekandpoke.ktorfx.formidable.semanticui.formidable
+import de.peekandpoke.ktorfx.formidable.rendering.formidable
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import de.peekandpoke.module.cms.forms.CmsPageForm

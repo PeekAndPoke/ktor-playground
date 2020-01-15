@@ -81,6 +81,7 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
     @SemanticUiCssMarker val circular get() = this + "circular"
     @SemanticUiCssMarker val compact get() = this + "compact"
     @SemanticUiCssMarker val disabled get() = this + "disabled"
+    @SemanticUiCssMarker val divider get() = this + "divider"
     @SemanticUiCssMarker val dividing get() = this + "dividing"
     @SemanticUiCssMarker val down get() = this + "down"
     @SemanticUiCssMarker val floated get() = this + "floated"

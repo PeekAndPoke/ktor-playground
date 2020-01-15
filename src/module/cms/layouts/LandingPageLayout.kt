@@ -1,14 +1,14 @@
-package de.peekandpoke.jointhebase.cms.layouts
+package de.peekandpoke.module.cms.layouts
 
 import de.peekandpoke._sortme_.karsten.LoremIpsum
 import de.peekandpoke._sortme_.karsten.replaceAt
-import de.peekandpoke.jointhebase.cms.elements.*
 import de.peekandpoke.ktorfx.semanticui.SemanticColor
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
 import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
 import de.peekandpoke.module.cms.CmsElement
 import de.peekandpoke.module.cms.CmsLayout
+import de.peekandpoke.module.cms.elements.*
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
 import kotlinx.html.div
@@ -141,27 +141,27 @@ data class LandingPageLayout(
             "",
             listOf(
                 ListElement.Item(
-                    "check circle outline icon",
+                    "check circle outline",
                     LoremIpsum.words(10, 5)
                 ),
                 ListElement.Item(
-                    "check circle outline icon",
+                    "check circle outline",
                     LoremIpsum.words(10, 5)
                 ),
                 ListElement.Item(
-                    "check circle outline icon",
+                    "check circle outline",
                     LoremIpsum.words(10, 5)
                 ),
                 ListElement.Item(
-                    "check circle outline icon",
+                    "check circle outline",
                     LoremIpsum.words(10, 5)
                 ),
                 ListElement.Item(
-                    "check circle outline icon",
+                    "check circle outline",
                     LoremIpsum.words(10, 5)
                 ),
                 ListElement.Item(
-                    "check circle outline icon",
+                    "check circle outline",
                     LoremIpsum.words(10, 5)
                 )
             )
