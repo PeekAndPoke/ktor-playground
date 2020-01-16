@@ -13,10 +13,7 @@ import de.peekandpoke.module.cms.forms.theBaseColors
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.polyglot.untranslated
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
-import kotlinx.html.FlowContent
-import kotlinx.html.a
-import kotlinx.html.div
-import kotlinx.html.p
+import kotlinx.html.*
 
 @Mutable
 data class ListElement(
@@ -139,34 +136,46 @@ data class ListElement(
 
                     textArea(form.text, "Text")
 
-                    ui.header H4 { +"Items" }
+                    ui.basic.segment {
 
-                    ui.three.column.grid {
+                        ui.header H4 { +"Items" }
 
                         val renderItem = { item: ItemForm ->
                             ui.column {
-                                listFieldActions()
+                                listFieldItem()
 
-                                textInput(item.icon, "Icon")
-                                textArea(item.text, "Text")
+                                ui.attached.segment {
+                                    textInput(item.icon, "Icon")
+                                    textArea(item.text, "Text")
+                                }
+
+                                ui.bottom.attached.buttons {
+                                    ui.icon.button {
+                                        listFieldRemoveAction()
+                                        title = "Remove Item"
+                                        icon.close()
+                                    }
+                                }
                             }
                         }
 
-                        form.items.forEach(renderItem)
+                        ui.three.column.grid {
+                            listFieldContainer(form.items) { dummy -> renderItem(dummy) }
 
-                        listFieldDummy(form.items) { dummy -> renderItem(dummy) }
+                            form.items.forEach(renderItem)
 
-                        ui.column {
-                            ui.attached.icon.button {
-                                listAddAction()
-                                icon.plus()
+                            ui.column {
+                                listFieldAddAction()
+                                ui.icon.header {
+                                    icon.plus()
+                                }
                             }
                         }
                     }
 
-                    ui.divider { }
-
-                    submitButton("Submit")
+                    ui.attached.segment {
+                        submitButton("Submit")
+                    }
                 }
             }
         }

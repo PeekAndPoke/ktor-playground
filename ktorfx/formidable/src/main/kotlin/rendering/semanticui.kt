@@ -1,7 +1,6 @@
 package de.peekandpoke.ktorfx.formidable.rendering
 
 import de.peekandpoke.ktorfx.formidable.*
-import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ultra.polyglot.I18n
 import kotlinx.html.*
@@ -160,22 +159,17 @@ class FormidableViewBuilder(private val i18n: I18n, val form: FORM) {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Helper for editable lists (remove, add via Javascript)
 
-    fun FlowContent.listFieldActions() {
+    fun FlowContent.listFieldItem() {
         attributes["data-formidable"] = "item"
-
-        ui.field {
-            ui Label {
-                +"Actions"
-            }
-            ui.small.icon.button {
-                attributes["data-formidable"] = "remove"
-                title = "Remove item"
-                icon.close()
-            }
-        }
     }
 
-    fun <T, E : FormElement> FlowContent.listFieldDummy(list: MutableListField<T, E>, block: FlowContent.(E) -> Any?) {
+    fun FlowContent.listFieldRemoveAction() {
+        attributes["data-formidable"] = "remove"
+    }
+
+    fun <T, E : FormElement> FlowContent.listFieldContainer(list: MutableListField<T, E>, block: FlowContent.(E) -> Any?) {
+
+        attributes["data-formidable"] = "container"
 
         div {
             style = "display: none;"
@@ -187,7 +181,7 @@ class FormidableViewBuilder(private val i18n: I18n, val form: FORM) {
         }
     }
 
-    fun FlowContent.listAddAction() {
+    fun FlowContent.listFieldAddAction() {
         attributes["data-formidable"] = "add"
     }
 }
