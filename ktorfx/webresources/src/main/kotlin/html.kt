@@ -11,7 +11,7 @@ import kotlinx.html.script
 fun FlowOrMetaDataContent.css(group: WebResourceGroup) = group.css.forEach { css ->
 
     link(rel = "stylesheet", href = css.fullUri) {
-        css.integrity?.let { integrity = it }
+//        css.integrity?.let { integrity = it }
     }
 }
 
@@ -20,6 +20,6 @@ fun FlowOrMetaDataContent.css(group: WebResourceGroup) = group.css.forEach { css
  */
 fun FlowOrMetaDataContent.js(group: WebResourceGroup) = group.js.forEach { js ->
     script(type = ScriptType.textJavaScript, src = js.fullUri) {
-        js.integrity?.let { integrity = it }
+        //        js.integrity?.let { integrity = it }
     }
 }

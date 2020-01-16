@@ -51,7 +51,7 @@ data class ListElement(
 
         val text = field(target::text)
 
-        val items = list(target::items, Item().mutator()) { element ->
+        val items = list(target::items, { Item().mutator() }) { element ->
             subForm(
                 ItemForm(element.value)
             )
@@ -60,9 +60,9 @@ data class ListElement(
 
     class ItemForm(item: ListElement_ItemMutator) : MutatorForm<Item, ListElement_ItemMutator>(item) {
 
-        val icon = field(target::icon)
+        val icon = field(target::icon).acceptsNonBlank().trimmed()
 
-        val text = field(target::text)
+        val text = field(target::text).acceptsNonBlank().trimmed()
     }
 
     override fun FlowContent.render() {
@@ -166,8 +166,11 @@ data class ListElement(
 
                             ui.column {
                                 listFieldAddAction()
-                                ui.icon.header {
-                                    icon.plus()
+
+                                ui.placeholder.raised.segment {
+                                    ui.icon.header {
+                                        icon.plus()
+                                    }
                                 }
                             }
                         }

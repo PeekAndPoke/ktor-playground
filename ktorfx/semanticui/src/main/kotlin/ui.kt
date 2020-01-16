@@ -108,6 +108,7 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
     @SemanticUiCssMarker val placeholder get() = this + "placeholder"
     @SemanticUiCssMarker val cards get() = this + "cards"
     @SemanticUiCssMarker val card get() = this + "card"
+    @SemanticUiCssMarker val raised get() = this + "raised"
 
     // display sizes
 

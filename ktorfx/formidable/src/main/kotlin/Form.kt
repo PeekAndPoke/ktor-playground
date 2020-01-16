@@ -109,14 +109,23 @@ abstract class Form(private val name: String) : FormElement {
      */
     override fun submit(params: Parameters) {
 
+        // Prevent double submission
+        if (isSubmitted) {
+            return
+        }
+
+        // Check if this particular form was submitted
         if (!checkSubmission(params)) {
             return
         }
 
+        // Check security (e.g. csrf protection)
         checkSecuritySetup()
 
+        // Mark the form as submitted
         isSubmitted = true
 
+        // Propagate to all children
         children.forEach {
             it.submit(params)
         }

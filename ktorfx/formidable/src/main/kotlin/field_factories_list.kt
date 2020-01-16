@@ -69,7 +69,7 @@ open class StaticListField<T, E : FormElement>(
     protected val elementBuilder: Form.(ListItem<T>) -> E
 ) : Form(prop.name), Iterable<E> {
 
-    private val list = prop.getter()
+    protected val list = prop.getter()
 
     val items = list.mapIndexed { idx, _ ->
         // Create a temp form to propagate the field name
@@ -87,11 +87,6 @@ open class StaticListField<T, E : FormElement>(
     }.toMutableList()
 
     override fun submit(params: Parameters) {
-
-        // The user is able to remove items from the list.
-        // We have to reflect these changes by removing the form items from the list
-        removeItems(params)
-
         // submit all the param to all items
         items.forEach {
             it.submit(params)
@@ -105,8 +100,39 @@ open class StaticListField<T, E : FormElement>(
     }
 
     override fun iterator(): Iterator<E> = items.iterator()
+}
 
-    private fun removeItems(params: Parameters) {
+open class MutableListField<T, E : FormElement>(
+    prop: KProperty0<MutableList<T>>,
+    elementBuilder: Form.(ListItem<T>) -> E,
+    private val dummyProvider: () -> T
+) : StaticListField<T, E>(prop, elementBuilder) {
+
+    val dummyItem by lazy {
+
+        val tmp = subForm(
+            ListElementForm("[DUMMY]")
+        )
+
+        tmp.elementBuilder(
+            ListItem({ dummyProvider() }, {})
+        )
+    }
+
+    override fun submit(params: Parameters) {
+        // The user is able to remove items from the list.
+        // We have to reflect these changes by removing these items from the list.
+        removeRemovedItems(params)
+
+        // The user is able to add items to the list.
+        // We have to reflect these changes by adding these items to the list.
+        addAdditionalItems(params)
+
+        // Submit to the items
+        super.submit(params)
+    }
+
+    private fun removeRemovedItems(params: Parameters) {
 
         val paramNames = params.names()
 
@@ -132,23 +158,46 @@ open class StaticListField<T, E : FormElement>(
                 list.removeAt(idx)
             }
     }
-}
 
-open class MutableListField<T, E : FormElement>(
-    prop: KProperty0<MutableList<T>>,
-    elementBuilder: Form.(ListItem<T>) -> E,
-    private val dummy: T
-) : StaticListField<T, E>(prop, elementBuilder) {
+    private fun addAdditionalItems(params: Parameters) {
 
-    val dummyItem by lazy {
+        val names = params.names()
 
-        val tmp = subForm(
-            ListElementForm("[DUMMY]")
-        )
+        val id = this.getId().value
 
-        tmp.elementBuilder(
-            ListItem({ dummy }, {})
-        )
+        // get the names of all additional items
+        val matchedNames = names
+            .filter { it.startsWith(id) }
+            .filter { it.contains("[ADD-") }.mapNotNull {
+
+                val match = "(\\[ADD-.+])".toRegex().find(it)
+
+                match?.groupValues?.get(1)
+            }
+            .distinct()
+
+        // Create the additional items from the matched names
+        val additionalItems = matchedNames.map { matchedName ->
+
+            val tmp = subForm(
+                ListElementForm(matchedName)
+            )
+
+            // add a new item to list
+            list.add(dummyProvider())
+
+            val idx = list.size - 1
+
+            tmp.elementBuilder(
+                ListItem(
+                    { list[idx] },
+                    { list[idx] = it }
+                )
+            )
+        }
+
+        // Add the additional items to the items
+        items.addAll(additionalItems)
     }
 }
 
@@ -171,10 +220,18 @@ fun <T, E : FormElement> Form.list(prop: KProperty0<MutableList<T>>, elementBuil
     )
 }
 
-fun <T, E : FormElement> Form.list(prop: KProperty0<MutableList<T>>, dummy: T, elementBuilder: Form.(ListItem<T>) -> E): MutableListField<T, E> {
+fun <T, E : FormElement> Form.list(
+    prop: KProperty0<MutableList<T>>,
+    dummyProvider: () -> T,
+    elementBuilder: Form.(ListItem<T>) -> E
+): MutableListField<T, E> {
 
     return subForm(
-        MutableListField(prop = prop, elementBuilder = elementBuilder, dummy = dummy)
+        MutableListField(
+            prop = prop,
+            elementBuilder = elementBuilder,
+            dummyProvider = dummyProvider
+        )
     )
 }
 
