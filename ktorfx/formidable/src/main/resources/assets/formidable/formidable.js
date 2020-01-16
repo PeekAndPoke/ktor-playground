@@ -1,10 +1,9 @@
 $.fn.formidableListField = function () {
-    console.log(this);
+    // console.log(this);
 
     // Get the next additional id from the dom
     let nextAdditionalId = parseInt(this.attr("data-formidable-next-id") || 1);
-
-    console.log("nextAdditionalId", nextAdditionalId);
+    // console.log("nextAdditionalId", nextAdditionalId);
 
     // Link all remove buttons
     this.find("[data-formidable=remove]").on("click", function () {
@@ -22,18 +21,18 @@ $.fn.formidableListField = function () {
     this.find("[data-formidable=add]").on("click", function () {
 
         let $this = $(this);
-        console.log($this);
+        // console.log($this);
 
         let $container = $this.closest("[data-formidable=container]").first();
-        console.log("container", $container);
+        // console.log("container", $container);
 
         // Get the dummy item
         let $dummy = $container.find("[data-formidable=dummy]").first();
-        console.log("dummy", $dummy);
+        // console.log("dummy", $dummy);
 
         // Get direct children of the dummy element. This the actual content we want to attach to the container.
         let $dummyChildren = $dummy.children();
-        console.log("dummyChildren", $dummyChildren);
+        // console.log("dummyChildren", $dummyChildren);
 
         // Get a clone of the dummy
         let $clone = $dummyChildren.clone(true, true);
@@ -47,7 +46,7 @@ $.fn.formidableListField = function () {
 
             // is this one of the form fields within the clone?
             if (name.indexOf("[DUMMY]") !== -1) {
-                console.log($cloneChild);
+                // console.log($cloneChild);
                 $cloneChild.attr("name", name.split("[DUMMY]").join(`[ADD-${nextAdditionalId}]`));
                 $cloneChild.attr("id", id.split("-DUMMY-").join(`-ADD-${nextAdditionalId}-`));
             }
