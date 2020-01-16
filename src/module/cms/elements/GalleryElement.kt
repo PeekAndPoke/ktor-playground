@@ -173,25 +173,25 @@ data class GalleryElement(
         }
 
         return vm.view {
-            ui.segment {
+            formidable(vm.call.i18n, form) {
 
-                a {
-                    attributes["name"] = vm.path
-                }
+                ui.top.attached.blue.segment {
 
-                ui.header H3 {
-                    icon.images()
-                    +"Gallery '$headline'"
-                }
+                    a { attributes["name"] = vm.path }
 
-                formidable(vm.call.i18n, form) {
+                    ui.header H3 {
+                        icon.images()
+                        +"Gallery '$headline'"
+                    }
 
                     selectInput(form.background, "Background-Color")
 
                     selectInput(form.layout, "Layout")
 
                     textInput(form.headline, "Headline")
+                }
 
+                ui.bottom.attached.segment {
                     submitButton("Submit")
                 }
             }

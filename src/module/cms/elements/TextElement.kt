@@ -66,25 +66,26 @@ data class TextElement(
         }
 
         return vm.view {
-            ui.segment {
 
-                a {
-                    attributes["name"] = vm.path
-                }
+            formidable(vm.call.i18n, form) {
 
-                ui.header H3 {
-                    icon.quote_right()
-                    +"Text '$headline'"
-                }
+                ui.top.attached.blue.segment {
 
-                formidable(vm.call.i18n, form) {
+                    a { attributes["name"] = vm.path }
+
+                    ui.header H3 {
+                        icon.quote_right()
+                        +"Text '$headline'"
+                    }
 
                     selectInput(form.background, "Background-Color")
 
                     textInput(form.headline, "Headline")
 
                     textArea(form.text, "Text")
+                }
 
+                ui.bottom.attached.segment {
                     submitButton("Submit")
                 }
             }

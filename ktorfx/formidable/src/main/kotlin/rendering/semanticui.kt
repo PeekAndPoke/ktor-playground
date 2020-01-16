@@ -170,6 +170,7 @@ class FormidableViewBuilder(private val i18n: I18n, val form: FORM) {
     fun <T, E : FormElement> FlowContent.listFieldContainer(list: MutableListField<T, E>, block: FlowContent.(E) -> Any?) {
 
         attributes["data-formidable"] = "container"
+        attributes["data-formidable-next-id"] = list.nextAdditionalId.toString()
 
         div {
             style = "display: none;"

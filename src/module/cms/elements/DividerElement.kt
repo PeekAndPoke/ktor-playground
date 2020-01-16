@@ -72,23 +72,24 @@ data class DividerElement(
         }
 
         return vm.view {
-            ui.segment {
 
-                a {
-                    attributes["name"] = vm.path
-                }
+            formidable(vm.call.i18n, form) {
 
-                ui.header H3 {
-                    icon.arrows_alternate_vertical()
-                    +"Divider"
-                }
+                ui.top.attached.blue.segment {
 
-                formidable(vm.call.i18n, form) {
+                    a { attributes["name"] = vm.path }
+
+                    ui.header H3 {
+                        icon.arrows_alternate_vertical()
+                        +"Divider"
+                    }
 
                     selectInput(form.background, "Background-Color")
 
                     textInput(form.height, "Height")
+                }
 
+                ui.bottom.attached.segment {
                     submitButton("Submit")
                 }
             }

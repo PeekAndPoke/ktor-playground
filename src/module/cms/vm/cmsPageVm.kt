@@ -67,31 +67,35 @@ suspend fun ApplicationCall.vm(storedPage: Stored<CmsPage>) = viewModel { vmb ->
             +"Edit Page ${form.id.value} (${form.result._key})"
         }
 
-        ui.header H2 { +"General settings" }
+        formidable(i18n, form) {
 
-        ui.segment {
+            ui.header H2 { +"General settings" }
 
-            formidable(i18n, form) {
+            ui.top.attached.segment {
 
                 ui.two.fields {
                     textInput(form.id, label = "Name")
                     textInput(form.slug, label = "Slug")
                 }
+            }
 
-                ui.button Submit { +"Submit" }
+            ui.bottom.attached.segment {
+                submitButton("Save Page")
             }
         }
 
-        ui.header H2 { +"Select Layout" }
+        formidable(i18n, changeLayoutForm) {
 
-        ui.segment {
-            formidable(i18n, changeLayoutForm) {
+            ui.header H2 { +"Select Layout" }
 
+            ui.top.attached.segment {
                 ui.two.fields {
                     selectInput(it.layout, label = "Layout")
                 }
+            }
 
-                ui.button Submit { +"Change layout" }
+            ui.bottom.attached.segment {
+                submitButton("Change Layout")
             }
         }
 

@@ -115,18 +115,17 @@ data class ListElement(
         }
 
         return vm.view {
-            ui.segment {
 
-                a {
-                    attributes["name"] = vm.path
-                }
+            formidable(vm.call.i18n, form) {
 
-                ui.header H3 {
-                    icon.list()
-                    +"List '$headline'"
-                }
+                ui.top.attached.blue.segment {
 
-                formidable(vm.call.i18n, form) {
+                    a { attributes["name"] = vm.path }
+
+                    ui.header H3 {
+                        icon.list()
+                        +"List '$headline'"
+                    }
 
                     selectInput(form.background, "Background-Color")
 
@@ -136,49 +135,46 @@ data class ListElement(
 
                     textArea(form.text, "Text")
 
-                    ui.basic.segment {
+                    ui.header H4 { +"Items" }
 
-                        ui.header H4 { +"Items" }
+                    val renderItem = { item: ItemForm ->
+                        ui.column {
+                            listFieldItem()
 
-                        val renderItem = { item: ItemForm ->
-                            ui.column {
-                                listFieldItem()
-
-                                ui.attached.segment {
-                                    textInput(item.icon, "Icon")
-                                    textArea(item.text, "Text")
-                                }
-
-                                ui.bottom.attached.buttons {
-                                    ui.icon.button {
-                                        listFieldRemoveAction()
-                                        title = "Remove Item"
-                                        icon.close()
-                                    }
-                                }
+                            ui.attached.segment {
+                                textInput(item.icon, "Icon")
+                                textArea(item.text, "Text")
                             }
-                        }
 
-                        ui.three.column.grid {
-                            listFieldContainer(form.items) { dummy -> renderItem(dummy) }
-
-                            form.items.forEach(renderItem)
-
-                            ui.column {
-                                listFieldAddAction()
-
-                                ui.placeholder.raised.segment {
-                                    ui.icon.header {
-                                        icon.plus()
-                                    }
+                            ui.bottom.attached.buttons {
+                                ui.icon.button {
+                                    listFieldRemoveAction()
+                                    title = "Remove Item"
+                                    icon.close()
                                 }
                             }
                         }
                     }
 
-                    ui.attached.segment {
-                        submitButton("Submit")
+                    ui.three.column.grid {
+                        listFieldContainer(form.items) { dummy -> renderItem(dummy) }
+
+                        form.items.forEach(renderItem)
+
+                        ui.column {
+                            listFieldAddAction()
+
+                            ui.placeholder.raised.segment {
+                                ui.icon.header {
+                                    icon.plus()
+                                }
+                            }
+                        }
                     }
+                }
+
+                ui.bottom.attached.segment {
+                    submitButton("Submit")
                 }
             }
         }

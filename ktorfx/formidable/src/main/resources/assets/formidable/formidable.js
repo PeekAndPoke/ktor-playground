@@ -1,8 +1,10 @@
 $.fn.formidableListField = function () {
     console.log(this);
 
-    // TODO: check for any additional fields that are already present !
-    let additionalCounter = 0;
+    // Get the next additional id from the dom
+    let nextAdditionalId = parseInt(this.attr("data-formidable-next-id") || 1);
+
+    console.log("nextAdditionalId", nextAdditionalId);
 
     // Link all remove buttons
     this.find("[data-formidable=remove]").on("click", function () {
@@ -46,13 +48,13 @@ $.fn.formidableListField = function () {
             // is this one of the form fields within the clone?
             if (name.indexOf("[DUMMY]") !== -1) {
                 console.log($cloneChild);
-                $cloneChild.attr("name", name.split("[DUMMY]").join(`[ADD-${additionalCounter}]`));
-                $cloneChild.attr("id", id.split("-DUMMY-").join(`-ADD-${additionalCounter}-`));
+                $cloneChild.attr("name", name.split("[DUMMY]").join(`[ADD-${nextAdditionalId}]`));
+                $cloneChild.attr("id", id.split("-DUMMY-").join(`-ADD-${nextAdditionalId}-`));
             }
         });
 
         // Increase the internal counter
-        additionalCounter++;
+        nextAdditionalId++;
 
         // Append the clone before the "add" button
         $clone.insertBefore($this);

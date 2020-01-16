@@ -78,13 +78,15 @@ data class HeroElement(
         }
 
         return vm.view {
-            ui.segment {
-                ui.header H3 {
-                    icon.html5()
-                    +"Hero"
-                }
 
-                formidable(vm.call.i18n, form) {
+            formidable(vm.call.i18n, form) {
+
+                ui.top.attached.blue.segment {
+
+                    ui.header H3 {
+                        icon.html5()
+                        +"Hero"
+                    }
 
                     selectInput(form.background, "Background-Color")
 
@@ -92,6 +94,9 @@ data class HeroElement(
 
                     textArea(form.text, "Text")
 
+                }
+
+                ui.bottom.attached.segment {
                     submitButton("Submit")
                 }
             }

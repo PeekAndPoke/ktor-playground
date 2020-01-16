@@ -49,6 +49,11 @@ fun <T> Form.separatedListField(
 // Helpers for real lists
 /////
 
+/**
+ * Internal helper class that hosts List elements in [ListField] or [MutableListField]
+ */
+internal class ListElementForm(name: String) : Form(name)
+
 class ListField<T : FormElement>(private val name: String, private val parent: Form, val children: List<T>) : FormElement, Iterable<T> {
 
     override fun getId(): FormElementId = parent.getId() + name
@@ -108,6 +113,22 @@ open class MutableListField<T, E : FormElement>(
     private val dummyProvider: () -> T
 ) : StaticListField<T, E>(prop, elementBuilder) {
 
+    /**
+     * Get the ID of the first additional field.
+     *
+     * This value is increased by [addAdditionalItems]
+     * This value is picked up by javascript.
+     */
+    val nextAdditionalId get() = _nextAdditionalId
+
+    /**
+     * private backing field for [nextAdditionalId]
+     */
+    private var _nextAdditionalId = 1
+
+    /**
+     * The dummy item is invisibly rendered into the page.
+     */
     val dummyItem by lazy {
 
         val tmp = subForm(
@@ -119,9 +140,11 @@ open class MutableListField<T, E : FormElement>(
         )
     }
 
+    /**
+     * Special handling for submitting this list field
+     */
     override fun submit(params: Parameters) {
-        // The user is able to remove items from the list.
-        // We have to reflect these changes by removing these items from the list.
+
         removeRemovedItems(params)
 
         // The user is able to add items to the list.
@@ -132,6 +155,12 @@ open class MutableListField<T, E : FormElement>(
         super.submit(params)
     }
 
+    /**
+     * Removes list items that where removed by this user.
+     *
+     * The user is able to remove items from the list.
+     * We have to reflect these changes by removing these items from the list.
+     */
     private fun removeRemovedItems(params: Parameters) {
 
         val paramNames = params.names()
@@ -159,35 +188,47 @@ open class MutableListField<T, E : FormElement>(
             }
     }
 
+    /**
+     * Adds list items for the items that where added by the user.
+     *
+     * The user is able to add items to the list.
+     * We have to reflect these changes by adding these items to the list.
+     */
     private fun addAdditionalItems(params: Parameters) {
 
         val names = params.names()
 
         val id = this.getId().value
 
-        // get the names of all additional items
+        // Get the names of all additional items
         val matchedNames = names
-            .filter { it.startsWith(id) }
-            .filter { it.contains("[ADD-") }.mapNotNull {
+            // Only get the parameters that belong to this exact list field
+            .filter { it.startsWith("$id.[ADD-") }
+            // Try to filter out the additional IDs
+            .mapNotNull {
 
-                val match = "(\\[ADD-.+])".toRegex().find(it)
+                val match = "\\[ADD-(.+)]".toRegex().find(it)
 
-                match?.groupValues?.get(1)
+                match?.groupValues?.get(1)?.toIntOrNull()
             }
             .distinct()
+
+        // Update the nextAdditionalId depending on what we found above
+        _nextAdditionalId = (matchedNames.max() ?: 0) + 1
 
         // Create the additional items from the matched names
         val additionalItems = matchedNames.map { matchedName ->
 
             val tmp = subForm(
-                ListElementForm(matchedName)
+                ListElementForm("[ADD-$matchedName]")
             )
 
-            // add a new item to list
+            // Add a new item to list
             list.add(dummyProvider())
-
+            // The index of the new item
             val idx = list.size - 1
 
+            // Create the child element
             tmp.elementBuilder(
                 ListItem(
                     { list[idx] },
@@ -196,13 +237,13 @@ open class MutableListField<T, E : FormElement>(
             )
         }
 
-        // Add the additional items to the items
+        // Add the additional items to our items field.
+        // This is needed to be able to [submit] to these newly created fields
         items.addAll(additionalItems)
     }
 }
 
 
-internal class ListElementForm(name: String) : Form(name)
 
 class ListItem<T>(
     private val getter: () -> T,

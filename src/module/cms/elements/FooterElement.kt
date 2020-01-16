@@ -94,18 +94,19 @@ data class FooterElement(
         }
 
         return vm.view {
-            ui.segment {
 
-                a {
-                    attributes["name"] = vm.path
-                }
+            formidable(vm.call.i18n, form) {
 
-                ui.header H3 { +"Footer" }
+                ui.top.attached.blue.segment {
 
-                formidable(vm.call.i18n, form) {
+                    a { attributes["name"] = vm.path }
+
+                    ui.header H3 { +"Footer" }
 
                     selectInput(form.background, "Background-Color")
+                }
 
+                ui.bottom.attached.segment {
                     submitButton("Submit")
                 }
             }
