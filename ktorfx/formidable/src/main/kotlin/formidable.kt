@@ -25,6 +25,8 @@ data class FormElementId(val value: String) {
 
         value.isEmpty() -> FormElementId(str)
 
+        str.isEmpty() -> this
+
         else -> FormElementId("$value.$str")
     }
 }

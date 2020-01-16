@@ -54,7 +54,7 @@ data class ListElement(
 
         val text = field(target::text)
 
-        val items = list(target::items) { element ->
+        val items = list(target::items, Item().mutator()) { element ->
             subForm(
                 ItemForm(element.value)
             )
@@ -143,12 +143,23 @@ data class ListElement(
 
                     ui.three.column.grid {
 
-                        form.items.forEach { item ->
+                        val renderItem = { item: ItemForm ->
                             ui.column {
-                                editableListItem()
+                                listFieldActions()
 
                                 textInput(item.icon, "Icon")
                                 textArea(item.text, "Text")
+                            }
+                        }
+
+                        form.items.forEach(renderItem)
+
+                        listFieldDummy(form.items) { dummy -> renderItem(dummy) }
+
+                        ui.column {
+                            ui.attached.icon.button {
+                                listAddAction()
+                                icon.plus()
                             }
                         }
                     }

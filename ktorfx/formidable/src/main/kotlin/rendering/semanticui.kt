@@ -1,9 +1,6 @@
 package de.peekandpoke.ktorfx.formidable.rendering
 
-import de.peekandpoke.ktorfx.formidable.Form
-import de.peekandpoke.ktorfx.formidable.FormField
-import de.peekandpoke.ktorfx.formidable.FormFieldWithOptions
-import de.peekandpoke.ktorfx.formidable.HiddenFormField
+import de.peekandpoke.ktorfx.formidable.*
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ultra.polyglot.I18n
@@ -160,7 +157,10 @@ class FormidableViewBuilder(private val i18n: I18n, val form: FORM) {
         ui.button Submit { +label }
     }
 
-    fun DIV.editableListItem() {
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Helper for editable lists (remove, add via Javascript)
+
+    fun FlowContent.listFieldActions() {
         attributes["data-formidable"] = "item"
 
         ui.field {
@@ -173,6 +173,22 @@ class FormidableViewBuilder(private val i18n: I18n, val form: FORM) {
                 icon.close()
             }
         }
+    }
+
+    fun <T, E : FormElement> FlowContent.listFieldDummy(list: MutableListField<T, E>, block: FlowContent.(E) -> Any?) {
+
+        div {
+            style = "display: none;"
+            attributes["data-formidable"] = "dummy"
+
+            block(
+                list.dummyItem
+            )
+        }
+    }
+
+    fun FlowContent.listAddAction() {
+        attributes["data-formidable"] = "add"
     }
 }
 

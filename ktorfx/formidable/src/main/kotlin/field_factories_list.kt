@@ -64,9 +64,9 @@ class ListField<T : FormElement>(private val name: String, private val parent: F
     override fun isValid(): Boolean = all { it.isValid() }
 }
 
-class MutableListField<T, E : FormElement>(
+open class StaticListField<T, E : FormElement>(
     prop: KProperty0<MutableList<T>>,
-    private val elementBuilder: Form.(ListItem<T>) -> E
+    protected val elementBuilder: Form.(ListItem<T>) -> E
 ) : Form(prop.name), Iterable<E> {
 
     private val list = prop.getter()
@@ -87,6 +87,26 @@ class MutableListField<T, E : FormElement>(
     }.toMutableList()
 
     override fun submit(params: Parameters) {
+
+        // The user is able to remove items from the list.
+        // We have to reflect these changes by removing the form items from the list
+        removeItems(params)
+
+        // submit all the param to all items
+        items.forEach {
+            it.submit(params)
+        }
+    }
+
+    override fun isValid(): Boolean {
+        return items.all {
+            it.isValid()
+        }
+    }
+
+    override fun iterator(): Iterator<E> = items.iterator()
+
+    private fun removeItems(params: Parameters) {
 
         val paramNames = params.names()
 
@@ -111,21 +131,27 @@ class MutableListField<T, E : FormElement>(
                 // remove item from the list
                 list.removeAt(idx)
             }
-
-        // submit all the param to all items
-        items.forEach {
-            it.submit(params)
-        }
     }
-
-    override fun isValid(): Boolean {
-        return items.all {
-            it.isValid()
-        }
-    }
-
-    override fun iterator(): Iterator<E> = items.iterator()
 }
+
+open class MutableListField<T, E : FormElement>(
+    prop: KProperty0<MutableList<T>>,
+    elementBuilder: Form.(ListItem<T>) -> E,
+    private val dummy: T
+) : StaticListField<T, E>(prop, elementBuilder) {
+
+    val dummyItem by lazy {
+
+        val tmp = subForm(
+            ListElementForm("[DUMMY]")
+        )
+
+        tmp.elementBuilder(
+            ListItem({ dummy }, {})
+        )
+    }
+}
+
 
 internal class ListElementForm(name: String) : Form(name)
 
@@ -138,10 +164,17 @@ class ListItem<T>(
         set(value) = setter(value)
 }
 
-fun <T, E : FormElement> Form.list(prop: KProperty0<MutableList<T>>, elementBuilder: Form.(ListItem<T>) -> E): MutableListField<T, E> {
+fun <T, E : FormElement> Form.list(prop: KProperty0<MutableList<T>>, elementBuilder: Form.(ListItem<T>) -> E): StaticListField<T, E> {
 
     return subForm(
-        MutableListField(prop = prop, elementBuilder = elementBuilder)
+        StaticListField(prop = prop, elementBuilder = elementBuilder)
+    )
+}
+
+fun <T, E : FormElement> Form.list(prop: KProperty0<MutableList<T>>, dummy: T, elementBuilder: Form.(ListItem<T>) -> E): MutableListField<T, E> {
+
+    return subForm(
+        MutableListField(prop = prop, elementBuilder = elementBuilder, dummy = dummy)
     )
 }
 
