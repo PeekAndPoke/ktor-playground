@@ -17,10 +17,9 @@ import io.ktor.response.respond
 import io.ktor.util.AttributeKey
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.cio.KtorDefaultPool
+import io.ktor.util.cio.toByteReadChannel
 import io.ktor.util.pipeline.PipelineContext
-import kotlinx.coroutines.io.ByteReadChannel
-import kotlinx.coroutines.io.jvm.javaio.toByteReadChannel
-import kotlinx.io.core.ExperimentalIoApi
+import io.ktor.utils.io.ByteReadChannel
 import org.webjars.MultipleMatchesException
 import org.webjars.WebJarAssetLocator
 import java.io.InputStream
@@ -128,6 +127,5 @@ private class InputStreamContent(
     }
 
     @KtorExperimentalAPI
-    @ExperimentalIoApi
     override fun readFrom(): ByteReadChannel = input.toByteReadChannel(pool = KtorDefaultPool)
 }

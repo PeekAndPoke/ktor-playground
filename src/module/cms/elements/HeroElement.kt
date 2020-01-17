@@ -3,6 +3,7 @@ package de.peekandpoke.module.cms.elements
 import de.peekandpoke.ktorfx.common.i18n
 import de.peekandpoke.ktorfx.formidable.MutatorForm
 import de.peekandpoke.ktorfx.formidable.field
+import de.peekandpoke.ktorfx.formidable.list
 import de.peekandpoke.ktorfx.formidable.rendering.formidable
 import de.peekandpoke.ktorfx.semanticui.SemanticColor
 import de.peekandpoke.ktorfx.semanticui.icon
@@ -10,19 +11,23 @@ import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
 import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
 import de.peekandpoke.module.cms.CmsElement
+import de.peekandpoke.module.cms.domain.Image
+import de.peekandpoke.module.cms.domain.mutator
+import de.peekandpoke.module.cms.forms.ImageForm
 import de.peekandpoke.module.cms.forms.theBaseColors
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
 import kotlinx.html.div
 import kotlinx.html.img
+import kotlinx.html.style
 
 @Mutable
 data class HeroElement(
     val background: SemanticColor = SemanticColor.none,
     val headline: String = "",
     val text: String = "",
-    val images: List<String> = listOf()  // TODO: Use more specific type than "String" for image urls
+    val images: List<Image> = listOf()
 ) : CmsElement {
 
     companion object : Polymorphic.Child {
@@ -36,6 +41,12 @@ data class HeroElement(
         val headline = field(target::headline)
 
         val text = field(target::text)
+
+        val images = list(target::images, { Image().mutator() }) { item ->
+            subForm(
+                ImageForm(item.value)
+            )
+        }
     }
 
     override fun FlowContent.render() {
@@ -58,7 +69,7 @@ data class HeroElement(
                             attributes["data-slick"] = "{\"slidesToShow\": 1, \"dots\": true, \"infinite\": true}"
 
                             images.forEach {
-                                img(src = it) {}
+                                img(src = it.url, alt = it.alt)
                             }
                         }
                     }
@@ -94,6 +105,17 @@ data class HeroElement(
 
                     textArea(form.text, "Text")
 
+                    ui.header H4 { +"Images" }
+
+                    listFieldAsGrid(form.images) { item ->
+
+                        textInput(item.url, "Url")
+                        textInput(item.alt, "Alt Text")
+
+                        img(src = item.url.textValue, alt = item.alt.textValue) {
+                            style = "max-width: 100%; max-height: 200px;"
+                        }
+                    }
                 }
 
                 ui.bottom.attached.segment {

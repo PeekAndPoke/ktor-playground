@@ -27,7 +27,7 @@ interface FlashSession {
 
                 val jackson = ObjectMapper().registerKotlinModule()
 
-                serializer = object : SessionSerializer {
+                serializer = object : SessionSerializer<Data> {
 
                     override fun deserialize(text: String): Data = try {
                         jackson.readValue(text)
@@ -35,7 +35,7 @@ interface FlashSession {
                         Data()
                     }
 
-                    override fun serialize(session: Any): String = jackson.writeValueAsString(session)
+                    override fun serialize(session: Data): String = jackson.writeValueAsString(session)
                 }
             }
         }

@@ -71,20 +71,30 @@ interface CmsLayout : CmsItem {
         override val defaultType: KClass<*> = Empty::class
     }
 
-    class EmptyLayout : CmsLayout {
+    data class EmptyLayout(
+        override val elements: List<CmsElement> = listOf()
+    ) : CmsLayout {
 
         companion object : Polymorphic.Child {
             override val identifier = "empty-layout"
         }
 
-        override val elements: List<CmsElement> = listOf()
+        override fun withElements(elements: List<CmsElement>): EmptyLayout = copy(elements = elements)
 
         override fun FlowContent.render() {
             // noop
         }
     }
 
+    /**
+     * The list of cms elements on the page.
+     */
     val elements: List<CmsElement>
+
+    /**
+     * Creates a copy of the layout and sets the elements.
+     */
+    fun withElements(elements: List<CmsElement>): CmsLayout
 
     suspend fun editVm(vm: ViewModelBuilder, onChange: (CmsLayout) -> Unit): View = vm.view {
         div {

@@ -1,17 +1,16 @@
 package de.peekandpoke.module.cms.elements
 
 import de.peekandpoke.ktorfx.common.i18n
-import de.peekandpoke.ktorfx.formidable.MutatorForm
-import de.peekandpoke.ktorfx.formidable.enum
-import de.peekandpoke.ktorfx.formidable.field
+import de.peekandpoke.ktorfx.formidable.*
 import de.peekandpoke.ktorfx.formidable.rendering.formidable
-import de.peekandpoke.ktorfx.formidable.withOptions
 import de.peekandpoke.ktorfx.semanticui.SemanticColor
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
 import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
 import de.peekandpoke.module.cms.CmsElement
+import de.peekandpoke.module.cms.domain.Image
+import de.peekandpoke.module.cms.forms.ImageForm
 import de.peekandpoke.module.cms.forms.theBaseColors
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.polyglot.untranslated
@@ -23,6 +22,7 @@ data class GalleryElement(
     val background: SemanticColor = SemanticColor.none,
     val layout: Layout = Layout.SideBySideSlider,
     val headline: String = "",
+    val text: String = "",
     val items: List<Item> = listOf()
 ) : CmsElement {
 
@@ -33,7 +33,7 @@ data class GalleryElement(
     data class Item(
         val headline: String = "",
         val text: String = "",
-        val image: String = ""  // TODO: use better type
+        val image: Image = Image()
     )
 
     enum class Layout {
@@ -55,6 +55,25 @@ data class GalleryElement(
         )
 
         val headline = field(target::headline)
+
+        val text = field(target::text)
+
+        val items = list(target::items, { Item().mutator() }) { item ->
+            subForm(
+                ItemForm(item.value)
+            )
+        }
+    }
+
+    class ItemForm(item: GalleryElement_ItemMutator) : MutatorForm<Item, GalleryElement_ItemMutator>(item) {
+
+        val headline = field(target::headline)
+
+        val text = field(target::text)
+
+        val image = subForm(
+            ImageForm(target.image)
+        )
     }
 
     override fun FlowContent.render() {
@@ -67,6 +86,12 @@ data class GalleryElement(
                 if (headline.isNotBlank()) {
                     ui.header H2 {
                         +headline
+                    }
+                }
+
+                if (text.isNotBlank()) {
+                    ui.attached.segment P {
+                        +text
                     }
                 }
 
@@ -141,8 +166,8 @@ data class GalleryElement(
     }
 
     private fun DIV.image(it: Item) {
-        if (it.image.isNotBlank()) {
-            img(src = it.image) {}
+        if (it.image.url.isNotBlank()) {
+            img(src = it.image.url, alt = it.image.alt) {}
         }
     }
 
@@ -184,11 +209,29 @@ data class GalleryElement(
                         +"Gallery '$headline'"
                     }
 
-                    selectInput(form.background, "Background-Color")
-
-                    selectInput(form.layout, "Layout")
+                    ui.two.fields {
+                        selectInput(form.background, "Background-Color")
+                        selectInput(form.layout, "Layout")
+                    }
 
                     textInput(form.headline, "Headline")
+
+                    textArea(form.text, "Text")
+
+                    ui.header H4 { +"Gallery Items" }
+
+                    listFieldAsGrid(form.items) { item ->
+
+                        textInput(item.headline, "Headline")
+                        textInput(item.text, "Text")
+
+                        textInput(item.image.url, "Image Url")
+                        textInput(item.image.alt, "Image Alt")
+
+                        img(src = item.image.url.textValue, alt = item.image.alt.textValue) {
+                            style = "max-width: 100%; max-height: 200px;"
+                        }
+                    }
                 }
 
                 ui.bottom.attached.segment {

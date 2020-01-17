@@ -60,7 +60,6 @@ import kotlinx.html.body
 import kotlinx.html.div
 import kotlinx.html.pre
 import java.net.InetAddress
-import java.time.Duration
 import java.util.*
 import kotlin.collections.set
 
@@ -230,13 +229,6 @@ fun Application.module(testing: Boolean = false) {
 
     install(BetterWebjars) {
         loader = Application::class.java.classLoader
-    }
-
-    install(io.ktor.websocket.WebSockets) {
-        pingPeriod = Duration.ofSeconds(15)
-        timeout = Duration.ofSeconds(15)
-        maxFrameSize = Long.MAX_VALUE
-        masking = false
     }
 
     install(PartialContent) {

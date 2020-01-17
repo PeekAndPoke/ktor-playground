@@ -1,6 +1,7 @@
 package de.peekandpoke.ktorfx.formidable.rendering
 
 import de.peekandpoke.ktorfx.formidable.*
+import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ultra.polyglot.I18n
 import kotlinx.html.*
@@ -158,6 +159,48 @@ class FormidableViewBuilder(private val i18n: I18n, val form: FORM) {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Helper for editable lists (remove, add via Javascript)
+
+    fun <T, E : FormElement> FlowContent.listFieldAsGrid(
+        field: MutableListField<T, E>,
+        render: FlowContent.(E) -> Any?
+    ) {
+
+        val renderItem: FlowContent.(E) -> Unit = { item: E ->
+            ui.column {
+                listFieldItem()
+
+                ui.top.attached.segment {
+                    render(item)
+                }
+
+                ui.bottom.attached.buttons {
+                    ui.icon.button {
+                        listFieldRemoveAction()
+                        title = "Remove Item"
+                        icon.close()
+                    }
+                }
+            }
+        }
+
+        ui.three.column.grid {
+            listFieldContainer(field) { dummy -> renderItem(dummy) }
+
+            field.forEach {
+                renderItem(it)
+            }
+
+            ui.column {
+                listFieldAddAction()
+
+                ui.placeholder.raised.segment {
+                    ui.icon.header {
+                        icon.plus()
+                    }
+                }
+            }
+        }
+    }
 
     fun FlowContent.listFieldItem() {
         attributes["data-formidable"] = "item"

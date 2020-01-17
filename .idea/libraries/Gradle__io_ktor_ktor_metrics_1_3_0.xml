@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: io.ktor:ktor-metrics:1.3.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-metrics/1.3.0/ebeeae644c277c7e978238ed4adea38635ee6dac/ktor-metrics-1.3.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-metrics/1.3.0/7f00d59188abcded8736a0e0e05040d99c6adbba/ktor-metrics-1.3.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

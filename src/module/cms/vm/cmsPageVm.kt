@@ -6,7 +6,10 @@ import de.peekandpoke.ktorfx.flashsession.success
 import de.peekandpoke.ktorfx.formidable.rendering.formidable
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.viewModel
-import de.peekandpoke.module.cms.*
+import de.peekandpoke.module.cms.CmsPage
+import de.peekandpoke.module.cms.cms
+import de.peekandpoke.module.cms.cmsAdminRoutes
+import de.peekandpoke.module.cms.cmsPages
 import de.peekandpoke.module.cms.forms.CmsPageChangeLayoutForm
 import de.peekandpoke.module.cms.forms.CmsPageForm
 import de.peekandpoke.ultra.vault.Stored
@@ -32,10 +35,13 @@ suspend fun ApplicationCall.vm(storedPage: Stored<CmsPage>) = viewModel { vmb ->
     val changeLayoutForm = CmsPageChangeLayoutForm(cms, storedPage)
 
     if (changeLayoutForm.submit(this)) {
-        val saved = database.cmsPages.save(storedPage) {
-            it.mutate {
-                layout += cms.getLayout(changeLayoutForm.result.layout)
-            }
+
+        val saved = database.cmsPages.save(storedPage) { page ->
+
+            val newLayout = cms.getLayout(changeLayoutForm.result.layout)
+                .withElements(storedPage.value.layout.elements)
+
+            page.copy(layout = newLayout)
         }
 
         flashSession.success("Layout of '${saved.value.name}' was changed to '${changeLayoutForm.result.layout}'")
@@ -49,11 +55,7 @@ suspend fun ApplicationCall.vm(storedPage: Stored<CmsPage>) = viewModel { vmb ->
 
         storedPage.value.layout.editVm(it) { changed ->
 
-            val saved = database.cmsPages.save(storedPage) { page ->
-                page.mutate {
-                    layout += changed
-                }
-            }
+            val saved = database.cmsPages.save(storedPage) { page -> page.copy(layout = changed) }
 
             flashSession.success("Changes of page '${saved.value.name}' where saved")
 

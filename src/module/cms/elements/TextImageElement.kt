@@ -1,17 +1,17 @@
 package de.peekandpoke.module.cms.elements
 
 import de.peekandpoke.ktorfx.common.i18n
-import de.peekandpoke.ktorfx.formidable.MutatorForm
-import de.peekandpoke.ktorfx.formidable.enum
-import de.peekandpoke.ktorfx.formidable.field
+import de.peekandpoke.ktorfx.formidable.*
 import de.peekandpoke.ktorfx.formidable.rendering.formidable
-import de.peekandpoke.ktorfx.formidable.withOptions
 import de.peekandpoke.ktorfx.semanticui.SemanticColor
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
 import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
 import de.peekandpoke.module.cms.CmsElement
+import de.peekandpoke.module.cms.domain.Image
+import de.peekandpoke.module.cms.domain.mutator
+import de.peekandpoke.module.cms.forms.ImageForm
 import de.peekandpoke.module.cms.forms.theBaseColors
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.polyglot.untranslated
@@ -24,7 +24,7 @@ data class TextImageElement(
     val layout: Layout = Layout.ImageLeft,
     val headline: String = "",
     val text: String = "",
-    val images: List<String> = listOf()
+    val images: List<Image> = listOf()
 ) : CmsElement {
 
     companion object : Polymorphic.Child {
@@ -52,6 +52,12 @@ data class TextImageElement(
         val headline = field(target::headline)
 
         val text = field(target::text)
+
+        val images = list(target::images, { Image().mutator() }) { item ->
+            subForm(
+                ImageForm(item.value)
+            )
+        }
     }
 
     override fun FlowContent.render() {
@@ -97,14 +103,14 @@ data class TextImageElement(
                 // noop
             }
 
-            images.size == 1 -> img(src = images[0])
+            images.size == 1 -> img(src = images[0].url, alt = images[0].alt)
 
             else -> {
                 div {
                     attributes["data-slick"] = "{\"slidesToShow\": 1, \"dots\": true, \"infinite\": true}"
 
                     images.forEach {
-                        img(src = it)
+                        img(src = it.url, alt = it.alt)
                     }
                 }
             }
@@ -134,13 +140,26 @@ data class TextImageElement(
                         +"Text And Image '$headline'"
                     }
 
-                    selectInput(form.background, "Background-Color")
-
-                    selectInput(form.layout, "Layout")
+                    ui.two.fields {
+                        selectInput(form.background, "Background-Color")
+                        selectInput(form.layout, "Layout")
+                    }
 
                     textInput(form.headline, "Headline")
 
                     textArea(form.text, "Text")
+
+                    ui.header H4 { +"Images" }
+
+                    listFieldAsGrid(form.images) { item ->
+
+                        textInput(item.url, "Url")
+                        textInput(item.alt, "Alt Text")
+
+                        img(src = item.url.textValue, alt = item.alt.textValue) {
+                            style = "max-width: 100%; max-height: 200px;"
+                        }
+                    }
                 }
 
                 ui.bottom.attached.segment {

@@ -13,7 +13,10 @@ import de.peekandpoke.module.cms.forms.theBaseColors
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.polyglot.untranslated
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
-import kotlinx.html.*
+import kotlinx.html.FlowContent
+import kotlinx.html.a
+import kotlinx.html.div
+import kotlinx.html.p
 
 @Mutable
 data class ListElement(
@@ -29,7 +32,8 @@ data class ListElement(
     }
 
     data class Item(
-        val icon: String = "", // TODO: use a better data-type
+        val icon: String = "",
+        val iconColor: SemanticColor = SemanticColor.none,
         val text: String = ""
     )
 
@@ -62,6 +66,8 @@ data class ListElement(
 
         val icon = field(target::icon).acceptsNonBlank().trimmed()
 
+        val iconColor = theBaseColors(target::iconColor)
+
         val text = field(target::text).acceptsNonBlank().trimmed()
     }
 
@@ -83,25 +89,24 @@ data class ListElement(
                     Layout.TwoColumns ->
                         ui.two.column.grid {
                             items.forEach {
-                                ui.column {
-                                    icon.custom(it.icon)
-                                    +it.text
-                                }
+                                ui.column { renderItem(it) }
                             }
                         }
 
                     Layout.ThreeColumns ->
                         ui.three.column.grid {
                             items.forEach {
-                                ui.column {
-                                    icon.custom(it.icon)
-                                    +it.text
-                                }
+                                ui.column { renderItem(it) }
                             }
                         }
                 }
             }
         }
+    }
+
+    private fun FlowContent.renderItem(item: Item) {
+        icon.with(item.iconColor.toString()).custom(item.icon)
+        +item.text
     }
 
     override suspend fun editVm(vm: ViewModelBuilder, onChange: (CmsElement) -> Unit): View {
@@ -137,39 +142,12 @@ data class ListElement(
 
                     ui.header H4 { +"Items" }
 
-                    val renderItem = { item: ItemForm ->
-                        ui.column {
-                            listFieldItem()
-
-                            ui.attached.segment {
-                                textInput(item.icon, "Icon")
-                                textArea(item.text, "Text")
-                            }
-
-                            ui.bottom.attached.buttons {
-                                ui.icon.button {
-                                    listFieldRemoveAction()
-                                    title = "Remove Item"
-                                    icon.close()
-                                }
-                            }
+                    listFieldAsGrid(form.items) { item ->
+                        ui.two.fields {
+                            textInput(item.icon, "Icon")
+                            selectInput(item.iconColor, "Color")
                         }
-                    }
-
-                    ui.three.column.grid {
-                        listFieldContainer(form.items) { dummy -> renderItem(dummy) }
-
-                        form.items.forEach(renderItem)
-
-                        ui.column {
-                            listFieldAddAction()
-
-                            ui.placeholder.raised.segment {
-                                ui.icon.header {
-                                    icon.plus()
-                                }
-                            }
-                        }
+                        textArea(item.text, "Text")
                     }
                 }
 

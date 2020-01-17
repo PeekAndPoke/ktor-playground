@@ -20,6 +20,8 @@ class SemanticIcon(private val parent: FlowContent) {
 
     @SemanticUiConditionalMarker fun custom(cls: String) = render("$cls icon")
 
+    @SemanticUiConditionalMarker fun with(cls: String) = this + cls
+
     // conditional classes
 
     @SemanticUiConditionalMarker fun given(condition: Boolean, action: SemanticIcon.() -> SemanticIcon) = when (condition) {

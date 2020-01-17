@@ -84,9 +84,10 @@ data class DividerElement(
                         +"Divider"
                     }
 
-                    selectInput(form.background, "Background-Color")
-
-                    textInput(form.height, "Height")
+                    ui.two.fields {
+                        selectInput(form.background, "Background-Color")
+                        selectInput(form.height, "Height")
+                    }
                 }
 
                 ui.bottom.attached.segment {

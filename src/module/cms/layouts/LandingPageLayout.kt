@@ -8,6 +8,7 @@ import de.peekandpoke.ktorfx.templating.vm.View
 import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
 import de.peekandpoke.module.cms.CmsElement
 import de.peekandpoke.module.cms.CmsLayout
+import de.peekandpoke.module.cms.domain.Image
 import de.peekandpoke.module.cms.elements.*
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
@@ -21,7 +22,9 @@ data class LandingPageLayout(
             SemanticColor.blue,
             "The cities that never sleep",
             LoremIpsum.words(15),
-            LoremIpsum.imageUrls(3, 500, 600)
+            LoremIpsum.imageUrls(3, 500, 600).map {
+                Image(it, LoremIpsum.words(10, 5))
+            }
         ),
         TextElement(
             SemanticColor.red,
@@ -38,56 +41,21 @@ data class LandingPageLayout(
             TextImageElement.Layout.ImageRight,
             "Sit Amet Consect",
             LoremIpsum.words(25, 5),
-            LoremIpsum.imageUrls(1, 600, 400)
+            listOf()
         ),
         TextImageElement(
             SemanticColor.none,
             TextImageElement.Layout.ImageLeft,
             "Sit Amet Consect",
             LoremIpsum.words(25, 5),
-            LoremIpsum.imageUrls(3, 600, 400)
+            listOf()
         ),
         GalleryElement(
             SemanticColor.none,
             GalleryElement.Layout.SideBySideSlider,
             "",
-            listOf(
-                GalleryElement.Item(
-                    "Dine together 1",
-                    LoremIpsum.words(25, 5),
-                    LoremIpsum.imageUrl(300, 200)
-                ),
-                GalleryElement.Item(
-                    "Dine together 2",
-                    LoremIpsum.words(25, 5),
-                    LoremIpsum.imageUrl(300, 200)
-                ),
-                GalleryElement.Item(
-                    "Dine together 3",
-                    LoremIpsum.words(25, 5),
-                    LoremIpsum.imageUrl(300, 200)
-                ),
-                GalleryElement.Item(
-                    "Dine together 4",
-                    LoremIpsum.words(25, 5),
-                    LoremIpsum.imageUrl(300, 200)
-                ),
-                GalleryElement.Item(
-                    "Dine together 5",
-                    LoremIpsum.words(25, 5),
-                    LoremIpsum.imageUrl(300, 200)
-                ),
-                GalleryElement.Item(
-                    "Dine together 6",
-                    LoremIpsum.words(25, 5),
-                    LoremIpsum.imageUrl(300, 200)
-                ),
-                GalleryElement.Item(
-                    "Dine together 7",
-                    LoremIpsum.words(25, 5),
-                    LoremIpsum.imageUrl(300, 200)
-                )
-            )
+            "",
+            listOf()
         ),
         DividerElement(
             SemanticColor.violet,
@@ -98,110 +66,35 @@ data class LandingPageLayout(
             TextImageElement.Layout.ImageBottom,
             "It's all in, so let us stay!",
             LoremIpsum(30),
-            LoremIpsum.imageUrls(10, 800, 500)
+            listOf()
         ),
         GalleryElement(
             SemanticColor.none,
             GalleryElement.Layout.ThreeColumns,
             "Extra, Not ordinary",
-            (1..9).map {
-                GalleryElement.Item(
-                    LoremIpsum(3),
-                    LoremIpsum(15),
-                    LoremIpsum.imageUrl(400, 200)
-                )
-            }
+            "",
+            listOf()
         ),
         GalleryElement(
             SemanticColor.olive,
             GalleryElement.Layout.ThreeColumns,
             "Now Bases are coming",
-            listOf(
-                GalleryElement.Item(
-                    "Frankfurt, Germany",
-                    "",
-                    LoremIpsum.imageUrl(400, 300)
-                ),
-                GalleryElement.Item(
-                    "Lisbon, Portugal",
-                    "",
-                    LoremIpsum.imageUrl(400, 300)
-                ),
-                GalleryElement.Item(
-                    "Amsterdam, Netherlands",
-                    "",
-                    LoremIpsum.imageUrl(400, 300)
-                )
-            )
+            "",
+            listOf()
         ),
         ListElement(
             SemanticColor.none,
             ListElement.Layout.TwoColumns,
             "Become a partner",
             "",
-            listOf(
-                ListElement.Item(
-                    "check circle outline",
-                    LoremIpsum.words(10, 5)
-                ),
-                ListElement.Item(
-                    "check circle outline",
-                    LoremIpsum.words(10, 5)
-                ),
-                ListElement.Item(
-                    "check circle outline",
-                    LoremIpsum.words(10, 5)
-                ),
-                ListElement.Item(
-                    "check circle outline",
-                    LoremIpsum.words(10, 5)
-                ),
-                ListElement.Item(
-                    "check circle outline",
-                    LoremIpsum.words(10, 5)
-                ),
-                ListElement.Item(
-                    "check circle outline",
-                    LoremIpsum.words(10, 5)
-                )
-            )
+            listOf()
         ),
         GalleryElement(
             SemanticColor.blue,
             GalleryElement.Layout.FiveColumns,
             "Working together",
-            listOf(
-                GalleryElement.Item(
-                    image = LoremIpsum.imageUrl(200, 100)
-                ),
-                GalleryElement.Item(
-                    image = LoremIpsum.imageUrl(200, 100)
-                ),
-                GalleryElement.Item(
-                    image = LoremIpsum.imageUrl(200, 100)
-                ),
-                GalleryElement.Item(
-                    image = LoremIpsum.imageUrl(200, 100)
-                ),
-                GalleryElement.Item(
-                    image = LoremIpsum.imageUrl(200, 100)
-                ),
-                GalleryElement.Item(
-                    image = LoremIpsum.imageUrl(200, 100)
-                ),
-                GalleryElement.Item(
-                    image = LoremIpsum.imageUrl(200, 100)
-                ),
-                GalleryElement.Item(
-                    image = LoremIpsum.imageUrl(200, 100)
-                ),
-                GalleryElement.Item(
-                    image = LoremIpsum.imageUrl(200, 100)
-                ),
-                GalleryElement.Item(
-                    image = LoremIpsum.imageUrl(200, 100)
-                )
-            )
+            "",
+            listOf()
         ),
         FooterElement(
             SemanticColor.red
@@ -215,10 +108,11 @@ data class LandingPageLayout(
         override val identifier = "landing-page"
     }
 
+    override fun withElements(elements: List<CmsElement>): LandingPageLayout = copy(elements = elements)
+
     override fun FlowContent.render() {
 
         ui.basic.segment {
-
             id = "header"
 
             ui.padded.three.column.stackable.grid {

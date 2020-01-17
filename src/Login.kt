@@ -39,11 +39,11 @@ fun Route.login(authName: String, users: UserHashedTableAuth) {
             userParamName = userField
             passwordParamName = passwordField
 
-            challenge = FormAuthChallenge.Redirect {
+            challenge {
                 // remember the url the was requested in a session
-                sessions.set(LoginSession(request.uri))
+                call.sessions.set(LoginSession(call.request.uri))
                 // redirect to the login page
-                loginUri
+                call.respondRedirect(loginUri)
             }
 
             validate {
