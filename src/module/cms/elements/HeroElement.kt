@@ -64,12 +64,23 @@ data class HeroElement(
 
                     ui.column.right.aligned {
 
-                        div {
-                            // TODO: helper class for Slick data
-                            attributes["data-slick"] = "{\"slidesToShow\": 1, \"dots\": true, \"infinite\": true}"
+                        div(classes = "image-container") {
 
-                            images.forEach {
-                                img(src = it.url, alt = it.alt)
+                            when (images.size) {
+                                0 -> {
+                                    // noop
+                                }
+
+                                1 -> img(src = images[0].url, alt = images[0].alt)
+
+                                else -> {
+                                    // TODO: helper class for Slick data
+                                    attributes["data-slick"] = "{\"slidesToShow\": 1, \"dots\": true, \"infinite\": true}"
+
+                                    images.forEach {
+                                        img(src = it.url, alt = it.alt)
+                                    }
+                                }
                             }
                         }
                     }
@@ -78,13 +89,13 @@ data class HeroElement(
         }
     }
 
-    override suspend fun editVm(vm: ViewModelBuilder, onChange: (CmsElement) -> Unit): View {
+    override suspend fun editVm(vm: ViewModelBuilder, actions: CmsElement.EditActions): View {
 
         val form = VmForm(vm.path)
 
         if (form.submit(vm.call)) {
             if (form.isModified) {
-                onChange(form.result)
+                actions.modify(form.result)
             }
         }
 
@@ -92,7 +103,7 @@ data class HeroElement(
 
             formidable(vm.call.i18n, form) {
 
-                ui.top.attached.blue.segment {
+                ui.attached.segment {
 
                     ui.header H3 {
                         icon.html5()

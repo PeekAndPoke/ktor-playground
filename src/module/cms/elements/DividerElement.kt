@@ -61,13 +61,13 @@ data class DividerElement(
         }
     }
 
-    override suspend fun editVm(vm: ViewModelBuilder, onChange: (CmsElement) -> Unit): View {
+    override suspend fun editVm(vm: ViewModelBuilder, actions: CmsElement.EditActions): View {
 
         val form = VmForm(vm.path)
 
         if (form.submit(vm.call)) {
             if (form.isModified) {
-                onChange(form.result)
+                actions.modify(form.result)
             }
         }
 
@@ -75,7 +75,7 @@ data class DividerElement(
 
             formidable(vm.call.i18n, form) {
 
-                ui.top.attached.blue.segment {
+                ui.attached.segment {
 
                     a { attributes["name"] = vm.path }
 

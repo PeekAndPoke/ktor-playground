@@ -10,7 +10,8 @@ import org.atteo.classindex.IndexSubclasses
 import kotlin.reflect.KClass
 
 data class Cms(
-    val layouts: Map<KClass<out CmsLayout>, CmsLayout>
+    val layouts: Map<KClass<out CmsLayout>, CmsLayout>,
+    val elements: Map<KClass<out CmsElement>, CmsElement>
 ) {
 
     fun getLayout(cls: String): CmsLayout {
@@ -19,6 +20,14 @@ data class Cms(
             .filter { it.first.qualifiedName == cls }
             .map { it.second }
             .firstOrNull() ?: CmsLayout.Empty
+    }
+
+    fun getElement(cls: String): CmsElement {
+
+        return elements.toList()
+            .filter { it.first.qualifiedName == cls }
+            .map { it.second }
+            .firstOrNull() ?: CmsElement.Empty
     }
 }
 
@@ -47,7 +56,20 @@ interface CmsElement : CmsItem {
         }
     }
 
-    suspend fun editVm(vm: ViewModelBuilder, onChange: (CmsElement) -> Unit): View = vm.view {
+    /**
+     * Actions passed to [editVm]
+     */
+    interface EditActions {
+        fun modify(it: CmsElement): Nothing
+
+        fun delete(): Nothing
+
+        fun addBefore(it: CmsElement): Nothing
+
+        fun addAfter(it: CmsElement): Nothing
+    }
+
+    suspend fun editVm(vm: ViewModelBuilder, actions: EditActions): View = vm.view {
         div {
             style = "background-color: pink; padding: 20px; margin-bottom: 2px;"
 
@@ -71,6 +93,9 @@ interface CmsLayout : CmsItem {
         override val defaultType: KClass<*> = Empty::class
     }
 
+    /**
+     * Empty default layout
+     */
     data class EmptyLayout(
         override val elements: List<CmsElement> = listOf()
     ) : CmsLayout {
@@ -96,7 +121,7 @@ interface CmsLayout : CmsItem {
      */
     fun withElements(elements: List<CmsElement>): CmsLayout
 
-    suspend fun editVm(vm: ViewModelBuilder, onChange: (CmsLayout) -> Unit): View = vm.view {
+    suspend fun editVm(vm: ViewModelBuilder, onChange: (CmsLayout) -> Nothing): View = vm.view {
         div {
             style = "background-color: pink; padding: 20px; margin-bottom: 2px;"
 

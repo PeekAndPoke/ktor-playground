@@ -4,7 +4,6 @@ package de.peekandpoke.ktorfx.formidable
 
 import java.math.BigDecimal
 import java.math.BigInteger
-import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty0
 
 
@@ -417,29 +416,3 @@ fun Form.field(prop: KMutableProperty0<List<BigDecimal>>, separator: String = ",
 fun Form.field(prop: KMutableProperty0<List<BigDecimal>?>, separator: String = ",") =
     separatedListField(prop, { it.toString() }, { it.toBigDecimal() }, separator)
         .acceptsBigDecimalsCommaSeparated(separator)
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// ENUM fields
-/////
-
-/**
- * Adds a field for am Enum property
- */
-@JvmName("field_Enum")
-fun <T : Enum<T>> Form.enum(prop: KMutableProperty0<T>): FormField<T> {
-
-    val cls = prop.returnType.classifier as KClass<*>
-    val enumValues = cls.java.enumConstants
-
-    return add(
-        FormFieldImpl(
-            this,
-            prop,
-            { it.toString() },
-            {
-                @Suppress("UNCHECKED_CAST")
-                enumValues.firstOrNull { enumValue -> enumValue.toString() == it } as T
-            }
-        )
-    )
-}

@@ -153,8 +153,36 @@ class FormidableViewBuilder(private val i18n: I18n, val form: FORM) {
         }
     }
 
-    fun FlowContent.submitButton(label: String) {
-        ui.button Submit { +label }
+    fun FlowContent.submitButton(field: ButtonField, title: String) {
+
+        ui.button Submit {
+            id = field.getId().asFormId
+            name = field.getId().value
+            value = field.value
+
+            +title
+        }
+    }
+
+    fun FlowContent.confirmButton(field: ButtonField, title: String, confirmation: String) {
+
+        ui.button Submit {
+            id = field.getId().asFormId
+            name = field.getId().value
+            value = field.value
+            onClick = "return confirm(\"${confirmation.split("\"").joinToString("\\\"")}\")"
+
+            +title
+        }
+    }
+
+    fun FlowContent.submitButton(label: String, value: String? = null) {
+        ui.button Submit {
+            value?.let {
+                this.value = value
+            }
+            +label
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

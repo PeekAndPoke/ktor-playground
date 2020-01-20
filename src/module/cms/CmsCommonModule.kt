@@ -1,6 +1,7 @@
 package de.peekandpoke.module.cms
 
 import de.peekandpoke.ktorfx.common.kontainer
+import de.peekandpoke.module.cms.elements.*
 import de.peekandpoke.module.cms.layouts.LandingPageLayout
 import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
@@ -13,9 +14,20 @@ fun KontainerBuilder.cmsCommon() = module(CmsCommonModule)
 val CmsCommonModule = module {
     singleton0(Cms::class) {
         Cms(
+            // available layouts
             mapOf(
                 CmsLayout.Empty::class to CmsLayout.Empty,
                 LandingPageLayout::class to LandingPageLayout.Empty
+            ),
+            // available elements
+            mapOf(
+                DividerElement::class to DividerElement(),
+                FooterElement::class to FooterElement(),
+                GalleryElement::class to GalleryElement(),
+                HeroElement::class to HeroElement(),
+                ListElement::class to ListElement(),
+                TextElement::class to TextElement(),
+                TextImageElement::class to TextImageElement()
             )
         )
     }

@@ -41,7 +41,6 @@ body {
 }
 
 div.ui.button, button.ui.button {
-    /* TODO: can we do this in the semantic variables */
     font-family: FoundersGroteskX, sans-serif;
     text-transform: uppercase;
 }
@@ -54,10 +53,6 @@ div.ui.button, button.ui.button {
     height: 80vh;
 }
 
-.hero-element .grid {
-    height: 100%;
-}
-
 .hero-element h1.ui.header {
     font-size: 6em;
     text-transform: uppercase;
@@ -65,6 +60,14 @@ div.ui.button, button.ui.button {
 
 .hero-element h3.ui.header {
     font-family: DomainDisplay, sans-serif;
+}
+
+.hero-element .grid, .hero-element .grid .ui.column {
+    height: 100%;
+}
+
+.hero-element .image-container, .hero-element .image-container .slick-list {
+    height: 100%;
 }
 
 .hero-element img {
