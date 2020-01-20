@@ -63,6 +63,10 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
 
     @SemanticUiCssMarker fun with(vararg cls: String, flow: FlowContent.() -> Unit) = (this + cls).renderDiv(flow)
 
+    @SemanticUiCssMarker fun color(color: SemanticColor) = with(color.toString())
+
+    @SemanticUiCssMarker fun color(color: SemanticColor, flow: FlowContent.() -> Unit) = with(color.toString(), flow = flow)
+
     // conditional classes
 
     @SemanticUiConditionalMarker fun given(condition: Boolean, action: SemanticUi.() -> SemanticUi) = when (condition) {

@@ -27,6 +27,11 @@ echo " Run semantic less watcher"
 echo "---------------------------"
 gulp --gulpfile semantic/gulpfile.js watch &
 
+echo "---------------------------"
+echo " Run the base less watcher"
+echo "---------------------------"
+npm run watch:thebase &
+
 ########################################################################
 
 echo ">> Waiting ... in dir `pwd` <<"

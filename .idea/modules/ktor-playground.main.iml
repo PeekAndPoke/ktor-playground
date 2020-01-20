@@ -51,6 +51,7 @@
     </content>
     <content url="file://$MODULE_DIR$/../../resources">
       <sourceFolder url="file://$MODULE_DIR$/../../resources" type="java-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/../../resources/assets/www/semantic" />
     </content>
     <content url="file://$MODULE_DIR$/../../src">
       <sourceFolder url="file://$MODULE_DIR$/../../src" isTestSource="false" />

@@ -9,6 +9,8 @@
 @pageFont: DomainDisplay, sans-serif;
 @headerFont: FoundersGroteskX, sans-serif;
 
+// No google fonts
+@importGoogleFonts: false;
 
 /*-------------------
       Site Colors

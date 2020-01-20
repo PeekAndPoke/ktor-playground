@@ -53,15 +53,6 @@ div.ui.button, button.ui.button {
     height: 80vh;
 }
 
-.hero-element h1.ui.header {
-    font-size: 6em;
-    text-transform: uppercase;
-}
-
-.hero-element h3.ui.header {
-    font-family: DomainDisplay, sans-serif;
-}
-
 .hero-element .grid, .hero-element .grid .ui.column {
     height: 100%;
 }

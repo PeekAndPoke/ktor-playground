@@ -53,44 +53,34 @@ data class HeroElement(
 
         div(classes = "hero-element") {
 
-            ui.basic.inverted.segment.with(background.toString()) {
+            ui.basic.inverted.segment.color(background) {
 
-                ui.two.column.grid {
+                ui.container {
+                    ui.two.column.grid {
 
-                    ui.column {
-                        ui.red.header H1 { +headline }
-                        ui.red.header H3 { +text }
-
-                        ui.red.text {
-                            +"I am red"
+                        ui.column {
+                            ui.red.header H1 { +headline }
+                            ui.red.text P { +text }
                         }
 
-                        ui.green.text {
-                            +"I am green"
-                        }
+                        ui.column.right.aligned {
 
-                        ui.blue.text {
-                            +"I am blue"
-                        }
-                    }
+                            div(classes = "image-container") {
 
-                    ui.column.right.aligned {
+                                when (images.size) {
+                                    0 -> {
+                                        // noop
+                                    }
 
-                        div(classes = "image-container") {
+                                    1 -> img(src = images[0].url, alt = images[0].alt)
 
-                            when (images.size) {
-                                0 -> {
-                                    // noop
-                                }
+                                    else -> {
+                                        // TODO: helper class for Slick data
+                                        attributes["data-slick"] = "{\"slidesToShow\": 1, \"dots\": true, \"infinite\": true}"
 
-                                1 -> img(src = images[0].url, alt = images[0].alt)
-
-                                else -> {
-                                    // TODO: helper class for Slick data
-                                    attributes["data-slick"] = "{\"slidesToShow\": 1, \"dots\": true, \"infinite\": true}"
-
-                                    images.forEach {
-                                        img(src = it.url, alt = it.alt)
+                                        images.forEach {
+                                            img(src = it.url, alt = it.alt)
+                                        }
                                     }
                                 }
                             }

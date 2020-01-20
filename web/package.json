@@ -6,7 +6,11 @@
   "dependencies": {
     "semantic-ui": "^2.4.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "less-watch-compiler": "^1.14.4",
+    "opencollective-postinstall": "^2.0.2",
+    "shelljs": "^0.8.3"
+  },
   "browserslist": [
     "defaults",
     "not IE 11",
@@ -15,7 +19,8 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "./console/watch-sources"
+    "watch": "./console/watch-sources",
+    "watch:thebase": "less-watch-compiler thebase ./../resources/assets/www/thebase thebase.less --source-map"
   },
   "author": "",
   "license": "ISC"
