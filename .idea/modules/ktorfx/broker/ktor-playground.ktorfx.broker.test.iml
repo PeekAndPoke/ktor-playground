@@ -113,7 +113,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="Gradle: io.kotlintest:kotlintest-core:3.2.1" level="project" />
-    <orderEntry type="library" name="Gradle: io.kotlintest:kotlintest-assertions:3.2.1" level="project" />
     <orderEntry type="module-library" scope="RUNTIME">
       <library name="Gradle: de.peekandpoke.ultra:mutator:0.0.105">
         <CLASSES>
@@ -125,6 +124,7 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Gradle: io.kotlintest:kotlintest-assertions:3.2.1" level="project" />
     <orderEntry type="module-library" scope="RUNTIME">
       <library name="Gradle: de.peekandpoke.ultra:security:0.0.105">
         <CLASSES>

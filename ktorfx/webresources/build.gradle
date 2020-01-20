@@ -37,6 +37,9 @@ dependencies {
     // include for server side
     implementation "io.ktor:ktor-html-builder:$ktor_version"
 
+    // ultra
+    compile project(":ultra:logging")
+
     // ktorfx
     implementation project(":ktorfx:common")
 

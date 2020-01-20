@@ -60,6 +60,18 @@ data class HeroElement(
                     ui.column {
                         ui.red.header H1 { +headline }
                         ui.red.header H3 { +text }
+
+                        ui.red.text {
+                            +"I am red"
+                        }
+
+                        ui.green.text {
+                            +"I am green"
+                        }
+
+                        ui.blue.text {
+                            +"I am blue"
+                        }
                     }
 
                     ui.column.right.aligned {

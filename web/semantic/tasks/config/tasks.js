@@ -96,18 +96,17 @@ module.exports = {
           if(error.filename.match(/theme.less/)) {
             if(error.line == 5) {
               element  = regExp.variable.exec(error.message)[1];
-              if(element) {
+              if (element) {
                 console.error('Missing theme.config value for ', element);
               }
               console.error('Most likely new UI was added in an update. You will need to add missing elements from theme.config.example');
             }
-            if(error.line == 46) {
+            if (error.line == 46) {
               element = regExp.element.exec(error.message)[1];
-              theme   = regExp.theme.exec(error.message)[1];
+              theme = regExp.theme.exec(error.message)[1];
               console.error(theme + ' is not an available theme for ' + element);
             }
-          }
-          else {
+          } else {
             console.log(error);
           }
           this.emit('end');
@@ -115,23 +114,23 @@ module.exports = {
       }
     },
 
-    /* What Browsers to Prefix */
-    prefix: {
-      browsers: [
-        'last 2 versions',
-        '> 1%',
-        'opera 12.1',
-        'bb 10',
-        'android 4'
-      ]
-    },
+    // /* What Browsers to Prefix */
+    // prefix: {
+    //   browsers: [
+    //     'last 2 versions',
+    //     '> 1%',
+    //     'opera 12.1',
+    //     'bb 10',
+    //     'android 4'
+    //   ]
+    // },
 
     /* File Renames */
     rename: {
-      minJS     : { extname : '.min.js' },
-      minCSS    : { extname : '.min.css' },
-      rtlCSS    : { extname : '.rtl.css' },
-      rtlMinCSS : { extname : '.rtl.min.css' }
+      minJS: {extname: '.min.js'},
+      minCSS: {extname: '.min.css'},
+      rtlCSS: {extname: '.rtl.css'},
+      rtlMinCSS: {extname: '.rtl.min.css'}
     },
 
     /* Minified CSS Concat */

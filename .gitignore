@@ -8,7 +8,7 @@ datasources.xml
 
 #generated web asset files
 /web/semantic/dist/*
-/resources/assets/www/*
+/resources/assets/www/semantic/*
 
 /.gradle
 /out

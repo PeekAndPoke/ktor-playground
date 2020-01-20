@@ -44,7 +44,7 @@ class FieldListFactoriesSpec : StringSpec({
             form.strings.getId() shouldBe FormElementId("form.strings")
             form.strings.isValid() shouldBe true
 
-            form.strings.children[0].getId() shouldBe FormElementId("form.strings.0.value")
+            form.strings.items[0].getId() shouldBe FormElementId("form.strings.0.value")
 
             listWithStrings.strings shouldBe listOf("NEW", "VALUE")
         }

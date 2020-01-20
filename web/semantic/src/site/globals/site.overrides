@@ -1,3 +1,22 @@
 /*******************************
          Site Overrides
 *******************************/
+
+@text-colors: blue, green, orange, pink, purple, red, teal, yellow, black, grey, white;
+
+// loop definition
+.coloredText(@list, @i: 1) when (@i <= length(@list)) {
+  // extract the right color from the list
+  @color: extract(@list, @i);
+
+  // apply the background to the selector
+  .ui.@{color}.text {
+    color: @@color;
+  }
+
+  // recursive call for the next color
+  .coloredText(@list, @i + 1);
+}
+
+// application
+.coloredText(@text-colors);

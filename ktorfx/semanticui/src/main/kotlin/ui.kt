@@ -72,6 +72,10 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
 
     @SemanticUiConditionalMarker val then get() = this
 
+    // custom non semantic
+
+    @SemanticUiCssMarker val text get() = this + "text"
+
     // misc
 
     @SemanticUiCssMarker val active get() = this + "active"

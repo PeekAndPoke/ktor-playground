@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -e
+
+./console/banner
+
+trap "exit" INT TERM ERR
+trap "kill 0" EXIT
+
+echo "-------------------------"
+echo "  Watching source files  "
+echo "-------------------------"
+echo ""
+
+echo "--------------------------"
+echo " Install npm dependencies "
+echo "--------------------------"
+npm install
+
+echo "-----------------------------------"
+echo " Run full semantic gulp build once "
+echo "-----------------------------------"
+gulp --gulpfile semantic/gulpfile.js build
+
+echo "---------------------------"
+echo " Run semantic less watcher"
+echo "---------------------------"
+gulp --gulpfile semantic/gulpfile.js watch &
+
+########################################################################
+
+echo ">> Waiting ... in dir `pwd` <<"
+sleep infinity

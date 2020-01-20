@@ -17,5 +17,4 @@ class WwwWebResources(cacheBuster: CacheBuster) : WebResourceGroup(cacheBuster, 
 
     resourceJs("/assets/www/semantic.js")
     resourceJs("/assets/js/www.js")
-
 })

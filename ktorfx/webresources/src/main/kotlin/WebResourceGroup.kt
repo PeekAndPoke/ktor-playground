@@ -77,8 +77,10 @@ abstract class WebResourceGroup(
 
         private fun String.toInputStream(): InputStream {
 
-            // TODO: check if resource is null and throw a custom exception if it is so
-            return loader.getResourceAsStream(this.trimStart('/'))
+            val stream = loader.getResourceAsStream(this.trimStart('/'))
+
+            // TODO: custom exception
+            return stream ?: error("Resource '$this' is not present")
         }
     }
 }
