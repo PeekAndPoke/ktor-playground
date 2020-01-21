@@ -78,6 +78,7 @@ data class HeroElement(
     }
 
     private fun FlowContent.renderImageRight() {
+
         ui.container {
             ui.grid {
 

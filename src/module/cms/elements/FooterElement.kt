@@ -2,14 +2,16 @@ package de.peekandpoke.module.cms.elements
 
 import de.peekandpoke.ktorfx.common.i18n
 import de.peekandpoke.ktorfx.formidable.MutatorForm
+import de.peekandpoke.ktorfx.formidable.field
 import de.peekandpoke.ktorfx.formidable.rendering.formidable
-import de.peekandpoke.ktorfx.semanticui.SemanticColor
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
 import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
 import de.peekandpoke.module.cms.CmsElement
-import de.peekandpoke.module.cms.forms.theBaseColors
+import de.peekandpoke.module.cms.elements.common.ElementStyle
+import de.peekandpoke.module.cms.elements.common.nl2br
+import de.peekandpoke.module.cms.elements.common.partial
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
@@ -18,7 +20,8 @@ import kotlinx.html.div
 
 @Mutable
 data class FooterElement(
-    val background: SemanticColor = SemanticColor.default
+    val styling: ElementStyle = ElementStyle.default,
+    val headline: String = ""
 ) : CmsElement {
 
     companion object : Polymorphic.Child {
@@ -27,60 +30,69 @@ data class FooterElement(
 
     inner class VmForm(name: String) : MutatorForm<FooterElement, FooterElementMutator>(mutator(), name) {
 
-        val background = theBaseColors(target::background)
-    }
+        val styling = subForm(
+            ElementStyle.Form(target.styling)
+        )
 
+        val headline = field(target::headline)
+    }
 
     override fun FlowContent.render() {
 
-        ui.basic.inverted.segment.with(background.toString()) {
+        ui.basic.segment
+            .with("footer-element")
+            .given(styling.backgroundColor.isSet) { inverted.color(styling.backgroundColor) }.then {
 
-            ui.three.column.grid {
+                ui.container {
+                    ui.three.column.grid.color(styling.textColor).text {
 
-                ui.row {
-
-                    ui.column {
-
-                        div {
-                            +"See you soon"
-                        }
-                    }
-
-                    ui.column {
-                        +"Contact"
-                    }
-
-                    ui.column {
-                        +"Let's meet up no matter where"
-                    }
-                }
-
-                ui.row {
-                    ui.column {
-                        ui.horizontal.list {
-                            ui.item {
-                                +"Legal Notice"
+                        ui.row {
+                            ui.column {
+                                div(classes = "see-you") {
+                                    nl2br(headline)
+                                }
                             }
-                            ui.item {
-                                +"Data Privacy"
+
+                            ui.center.aligned.column {
+                                ui.header H3 {
+                                    +"Contact"
+                                }
                             }
-                            ui.item {
-                                +"Disclaimer"
+
+                            ui.right.aligned.column {
+                                +"Let's meet up no matter where"
                             }
                         }
-                    }
 
-                    ui.column {
-                        +"The Base"
-                    }
+                        ui.row.with("last-row") {
+                            ui.column {
+                                ui.horizontal.list {
+                                    ui.item {
+                                        +"Legal Notice"
+                                    }
+                                    ui.item {
+                                        +"Data Privacy"
+                                    }
+                                    ui.item {
+                                        +"Disclaimer"
+                                    }
+                                }
+                            }
 
-                    ui.column {
-                        icon.copyright_outline()
-                        +"2020 The Base - Future Of Living"
+                            ui.center.aligned.column {
+                                ui.header.with("the-base-logo") {
+                                    +"THE BASE"
+                                }
+                            }
+
+                            ui.right.aligned.column {
+                                icon.copyright_outline()
+                                +"2020 The Base - Future Of Living"
+                            }
+                        }
                     }
                 }
             }
-        }
     }
 
     override suspend fun editVm(vm: ViewModelBuilder, actions: CmsElement.EditActions): View {
@@ -101,9 +113,16 @@ data class FooterElement(
 
                     a { attributes["name"] = vm.path }
 
-                    ui.header H3 { +"Footer" }
+                    ui.header H3 {
+                        icon.arrow_circle_down()
+                        +"Footer"
+                    }
 
-                    selectInput(form.background, "Background-Color")
+                    partial(this, form.styling)
+
+                    ui.divider {}
+
+                    textArea(form.headline, "Headline")
                 }
 
                 ui.bottom.attached.segment {
