@@ -8,7 +8,7 @@ internal fun SimpleTemplate.index() {
 
     breadCrumbs = listOf(CmsMenu.INDEX)
 
-    pageTitle {
+    pageHead {
         title { +"CMS" }
     }
 

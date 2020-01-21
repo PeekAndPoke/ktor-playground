@@ -8,7 +8,7 @@ internal fun SimpleTemplate.index() {
 
     breadCrumbs = listOf(DepotMenu.INDEX)
 
-    pageTitle {
+    pageHead {
         title { +"Depot" }
     }
 

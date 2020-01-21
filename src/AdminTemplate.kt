@@ -39,6 +39,9 @@ class AdminTemplate(
 
     init {
 
+        loadDefaultJQuery()
+        loadDefaultSemanticUi()
+
         styles {
             css(webResources.admin)
         }

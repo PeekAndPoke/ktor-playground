@@ -1,11 +1,8 @@
 package de.peekandpoke.ktorfx.templating.semanticui
 
-import de.peekandpoke.ktorfx.semanticui.semanticUi
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.SimpleTemplateBase
 import de.peekandpoke.ktorfx.templating.TemplateTools
-import de.peekandpoke.ktorfx.webresources.css
-import de.peekandpoke.ktorfx.webresources.js
 import io.ktor.html.each
 import io.ktor.html.insert
 import kotlinx.html.*
@@ -18,16 +15,8 @@ open class SemanticUiAdminTemplate(
 ) : SimpleTemplateBase(tools) {
 
     init {
-        pageTitle {
+        pageHead {
             title { +"Admin" }
-        }
-
-        styles {
-            css(webResources.semanticUi)
-        }
-
-        scripts {
-            js(webResources.semanticUi)
         }
 
         initInsights()
@@ -41,7 +30,7 @@ open class SemanticUiAdminTemplate(
 
                 meta { charset = "utf-8" }
 
-                insert(pageTitle)
+                each(pageHead) { insert(it) }
 
                 each(styles) { insert(it) }
 

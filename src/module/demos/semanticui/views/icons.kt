@@ -15,7 +15,7 @@ internal fun SimpleTemplate.icons() {
 
     breadCrumbs = listOf(SemanticUiMenu.Icons)
 
-    pageTitle {
+    pageHead {
         title { +"SemanticUI Icons" }
     }
 

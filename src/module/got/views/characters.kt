@@ -13,7 +13,7 @@ internal fun SimpleTemplate.characters(routes: GameOfThronesRoutes, characters: 
 
     breadCrumbs = listOf(GameOfThronesMenu.CHARACTERS)
 
-    pageTitle {
+    pageHead {
         title { +t { got.title_characters() } }
     }
 

@@ -33,7 +33,7 @@ interface SimpleTemplate : Template<HTML> {
     var breadCrumbs: List<Any>
 
     /** Placeholder for the page title */
-    val pageTitle: Placeholder<HEAD>
+    val pageHead: PlaceholderList<HEAD, HEAD>
 
     /** Placeholder for the main menu */
     val mainMenu: Placeholder<FlowContent>

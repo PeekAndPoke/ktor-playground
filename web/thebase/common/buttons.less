@@ -1,0 +1,35 @@
+@import "colors";
+
+div.ui.button, button.ui.button {
+  font-family: FoundersGroteskX, sans-serif;
+  text-transform: uppercase;
+  font-size: 1.5em;
+  line-height: 0.3em;
+
+  transition-duration: 0.2s;
+  transition-timing-function: ease-in;
+}
+
+// loop definition
+.coloredButton(@list, @i: 1) when (@i <= length(@list)) {
+  // extract the right color from the list
+  @color: extract(@list, @i);
+
+  // apply the background to the selector
+  div.ui.@{color}.button, button.ui.@{color}.button {
+    color: white;
+    border: 1px solid @@color;
+
+    &:hover {
+      border: 1px solid @@color;
+      background-color: white;
+      color: @@color;
+    }
+  }
+
+  // recursive call for the next color
+  .coloredButton(@list, @i + 1);
+}
+
+.coloredButton(@semantic-colors);
+

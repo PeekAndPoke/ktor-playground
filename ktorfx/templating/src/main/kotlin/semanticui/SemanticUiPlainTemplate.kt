@@ -1,13 +1,13 @@
 package de.peekandpoke.ktorfx.templating.semanticui
 
-import de.peekandpoke.ktorfx.semanticui.semanticUi
 import de.peekandpoke.ktorfx.templating.SimpleTemplateBase
 import de.peekandpoke.ktorfx.templating.TemplateTools
-import de.peekandpoke.ktorfx.webresources.css
-import de.peekandpoke.ktorfx.webresources.js
 import io.ktor.html.each
 import io.ktor.html.insert
-import kotlinx.html.*
+import kotlinx.html.HTML
+import kotlinx.html.body
+import kotlinx.html.head
+import kotlinx.html.meta
 import kotlin.system.measureNanoTime
 
 open class SemanticUiPlainTemplate(
@@ -15,22 +15,6 @@ open class SemanticUiPlainTemplate(
     tools: TemplateTools
 
 ) : SimpleTemplateBase(tools) {
-
-    init {
-        pageTitle {
-            title { +"Admin" }
-        }
-
-        styles {
-            css(webResources.semanticUi)
-        }
-
-        scripts {
-            js(webResources.semanticUi)
-        }
-
-        initInsights()
-    }
 
     override fun HTML.apply() {
 
@@ -40,7 +24,7 @@ open class SemanticUiPlainTemplate(
 
                 meta { charset = "utf-8" }
 
-                insert(pageTitle)
+                each(pageHead) { insert(it) }
 
                 each(styles) { insert(it) }
             }

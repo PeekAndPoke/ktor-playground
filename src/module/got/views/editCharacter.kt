@@ -16,7 +16,7 @@ fun SimpleTemplate.editCharacter(routes: GameOfThronesRoutes, character: Stored<
 
     breadCrumbs = listOf(GameOfThronesMenu.CHARACTERS, GameOfThronesMenu.EDIT_CHARACTER)
 
-    pageTitle {
+    pageHead {
         title { +"GoT Edit Characters" }
     }
 

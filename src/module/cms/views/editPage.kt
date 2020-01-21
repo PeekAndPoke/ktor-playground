@@ -10,7 +10,7 @@ internal fun SimpleTemplate.editPage(create: Boolean, form: CmsPageForm) {
 
     breadCrumbs = listOf(CmsMenu.PAGES)
 
-    pageTitle {
+    pageHead {
         title { +"CMS Edit Page" }
     }
 

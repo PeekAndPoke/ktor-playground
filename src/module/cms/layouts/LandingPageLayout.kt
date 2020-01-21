@@ -19,9 +19,9 @@ import de.peekandpoke.module.cms.cms
 import de.peekandpoke.ultra.polyglot.untranslated
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
+import kotlinx.html.a
 import kotlinx.html.div
 import kotlinx.html.id
-import kotlinx.html.p
 
 data class LandingPageLayout(
     override val elements: List<CmsElement> = listOf()
@@ -70,21 +70,36 @@ data class LandingPageLayout(
         ui.basic.segment {
             id = "header"
 
-            ui.padded.three.column.stackable.grid {
+            ui.container {
+                ui.three.column.stackable.grid {
 
-                ui.column {
-                    p {
-                        +"Menu"
+                    ui.left.aligned.column {
+                        id = "main-menu"
+
+                        ui.horizontal.list.blue.text {
+                            ui.item {
+                                a(href = "about") { +"About" }
+                            }
+                            ui.item {
+                                a(href = "about") { +"Location" }
+                            }
+                            ui.item {
+                                a(href = "about") { +"Partner" }
+                            }
+                            ui.item {
+                                a(href = "about") { +"Jobs" }
+                            }
+                        }
                     }
-                }
-                ui.column.center.aligned {
-                    ui.red.header.with("the-base-logo") {
-                        +"THE BASE"
+                    ui.center.aligned.column {
+                        ui.red.header.with("the-base-logo") {
+                            +"THE BASE"
+                        }
                     }
-                }
-                ui.column.right.aligned {
-                    ui.red.button {
-                        +"Book Now"
+                    ui.right.aligned.column {
+                        ui.blue.button {
+                            +"Book"
+                        }
                     }
                 }
             }
@@ -201,7 +216,7 @@ data class LandingPageLayout(
                 ui.divider {}
 
                 formidable(vmb.call.i18n, addElement) {
-                    selectInput(addElement.select)
+                    selectInput(addElement.select, "Add element")
 
                     ui.two.buttons {
                         submitButton(addElement.before, "Add before")

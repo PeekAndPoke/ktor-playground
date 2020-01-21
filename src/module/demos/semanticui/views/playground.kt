@@ -8,7 +8,7 @@ internal fun SimpleTemplate.playground() {
 
     breadCrumbs = listOf(SemanticUiMenu.Playground)
 
-    pageTitle {
+    pageHead {
         title { +"SemanticUI Playground" }
     }
 

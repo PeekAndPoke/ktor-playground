@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "./console/watch-sources",
+    "watch:all": "./console/watch-sources",
     "watch:thebase": "less-watch-compiler thebase ./../resources/assets/www/thebase thebase.less --source-map"
   },
   "author": "",

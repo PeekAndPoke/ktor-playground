@@ -12,7 +12,7 @@ internal fun SimpleTemplate.files(mod: DepotAdmin, repository: DepotRepository, 
 
     breadCrumbs = listOf(DepotMenu.REPOSITORIES, DepotMenu.BUCKETS, DepotMenu.FILES)
 
-    pageTitle {
+    pageHead {
         title { +"Depot Files" }
     }
 

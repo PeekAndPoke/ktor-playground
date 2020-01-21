@@ -10,59 +10,27 @@
     font-weight: normal;
 }
 
+@font-face {
+    font-family: FoundersGroteskX;
+    src: url("../fonts/test/founders-grotesk-x-condensed-test-semibold.woff") format("woff");
+    font-weight: bold;
+}
+
 body {
     font-family: DomainDisplay, sans-serif;
 }
 
-#header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 7rem;
-
-    z-index: 1000;
-    background-color: white;
-
-    border-bottom: 1px solid grey;
-}
-
-#header > .grid {
-    padding: 0 5%;
-}
-
-#header .the-base-logo {
-    font-family: FoundersGroteskX, sans-serif;
-    font-size: 3.3em;
-}
-
 #pull-down {
-    margin-top: 7rem;
+    margin-top: 6rem;
 }
 
-div.ui.button, button.ui.button {
-    font-family: FoundersGroteskX, sans-serif;
-    text-transform: uppercase;
+
+.segment-stack {
+    width: 100%;
 }
 
 .segment-stack > .ui.segment {
     margin: 0;
-}
-
-.hero-element > .segment {
-    height: 80vh;
-}
-
-.hero-element .grid, .hero-element .grid .ui.column {
-    height: 100%;
-}
-
-.hero-element .image-container, .hero-element .image-container .slick-list {
-    height: 100%;
-}
-
-.hero-element img {
-    height: 100%
 }
 
 .divider-element > .segment,

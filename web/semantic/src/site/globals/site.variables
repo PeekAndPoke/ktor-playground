@@ -2,9 +2,9 @@
      User Global Variables
 *******************************/
 
-/*-------------------
-       Fonts
---------------------*/
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Fonts
+/////
 
 @pageFont: DomainDisplay, sans-serif;
 @headerFont: FoundersGroteskX, sans-serif;
@@ -12,9 +12,16 @@
 // No google fonts
 @importGoogleFonts: false;
 
-/*-------------------
-      Site Colors
---------------------*/
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Responsive container sizes
+/////
+
+@computerBreakpoint: 1440px;
+@largeMonitorBreakpoint: 1440px;
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Colors
+/////
 
 /*---  Colors  ---*/
 @red: #f06e69; // THE BASE Brand -> light red
@@ -45,3 +52,9 @@
 @lightBrown: #D67C1C;
 @lightGrey: #DCDDDE;
 @lightBlack: lighten(@black, 10%);
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Links
+/////
+
+@linkColor: @blue;

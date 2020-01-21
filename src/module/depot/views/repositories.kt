@@ -10,7 +10,7 @@ internal fun SimpleTemplate.repositories(mod: DepotAdmin, repositories: List<Dep
 
     breadCrumbs = listOf(DepotMenu.REPOSITORIES)
 
-    pageTitle {
+    pageHead {
         title { +"Depot Repositories" }
     }
 

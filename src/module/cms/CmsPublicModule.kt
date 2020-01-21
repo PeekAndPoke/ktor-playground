@@ -10,6 +10,7 @@ import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.util.KtorExperimentalAPI
 import io.ultra.ktor_tools.database
+import kotlinx.html.title
 
 fun KontainerBuilder.cmsPublic() = module(CmsPublicModule)
 
@@ -29,6 +30,11 @@ class CmsPublic {
             val page = database.cmsPages.findBySlug(path) ?: throw NotFoundException("Cms page '$path' not found")
 
             respond {
+
+                pageHead {
+                    title { +page.value.name }
+                }
+
                 content {
                     page.value.layout.apply { render() }
                 }

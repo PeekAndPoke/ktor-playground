@@ -81,7 +81,7 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
 
                 breadCrumbs = listOf(CmsMenu.PAGES)
 
-                pageTitle {
+                pageHead {
                     title { +"CMS Edit Page" }
                 }
             }

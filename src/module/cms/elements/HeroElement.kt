@@ -1,5 +1,6 @@
 package de.peekandpoke.module.cms.elements
 
+import de.peekandpoke._sortme_.karsten.slickOptions
 import de.peekandpoke.ktorfx.common.i18n
 import de.peekandpoke.ktorfx.formidable.MutatorForm
 import de.peekandpoke.ktorfx.formidable.field
@@ -56,14 +57,14 @@ data class HeroElement(
             ui.basic.inverted.segment.color(background) {
 
                 ui.container {
-                    ui.two.column.grid {
+                    ui.grid {
 
-                        ui.column {
+                        ui.nine.wide.column {
                             ui.red.header H1 { +headline }
                             ui.red.text P { +text }
                         }
 
-                        ui.column.right.aligned {
+                        ui.seven.wide.column.right.aligned {
 
                             div(classes = "image-container") {
 
@@ -75,8 +76,14 @@ data class HeroElement(
                                     1 -> img(src = images[0].url, alt = images[0].alt)
 
                                     else -> {
-                                        // TODO: helper class for Slick data
-                                        attributes["data-slick"] = "{\"slidesToShow\": 1, \"dots\": true, \"infinite\": true}"
+                                        slickOptions(
+                                            slidesToShow = 1,
+                                            dots = true,
+                                            infinite = true,
+                                            fade = true,
+                                            arrows = false,
+                                            autoplay = true
+                                        )
 
                                         images.forEach {
                                             img(src = it.url, alt = it.alt)

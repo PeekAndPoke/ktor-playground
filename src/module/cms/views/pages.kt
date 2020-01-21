@@ -11,7 +11,7 @@ internal fun SimpleTemplate.pages(mod: CmsAdmin, pages: List<Stored<CmsPage>>) {
 
     breadCrumbs = listOf(CmsMenu.PAGES)
 
-    pageTitle {
+    pageHead {
         title { +"CMS Pages" }
     }
 

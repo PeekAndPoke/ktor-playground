@@ -7,7 +7,7 @@ internal fun SimpleTemplate.index() {
 
     breadCrumbs = listOf(SemanticUiMenu.Index)
 
-    pageTitle {
+    pageHead {
         title { +"SemanticUI Showcase" }
     }
 

@@ -4,18 +4,17 @@ import de.peekandpoke.ktorfx.templating.TemplateTools
 import de.peekandpoke.ktorfx.templating.semanticui.SemanticUiPlainTemplate
 import de.peekandpoke.ktorfx.webresources.css
 import de.peekandpoke.ktorfx.webresources.js
-import de.peekandpoke.module.cms.CmsPublic
 import de.peekandpoke.resources.www
 
 class WwwTemplate(
 
-    tools: TemplateTools,
-
-    private val cms: CmsPublic
+    tools: TemplateTools
 
 ) : SemanticUiPlainTemplate(tools) {
 
     init {
+
+        loadDefaultJQuery()
 
         styles {
             css(webResources.www)
@@ -24,6 +23,8 @@ class WwwTemplate(
         scripts {
             js(webResources.www)
         }
+
+        initInsights()
 
         mainMenu {
         }

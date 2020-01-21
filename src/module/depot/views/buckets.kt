@@ -11,7 +11,7 @@ internal fun SimpleTemplate.buckets(mod: DepotAdmin, repository: DepotRepository
 
     breadCrumbs = listOf(DepotMenu.REPOSITORIES, DepotMenu.BUCKETS)
 
-    pageTitle {
+    pageHead {
         title { +"Depot Buckets" }
     }
 

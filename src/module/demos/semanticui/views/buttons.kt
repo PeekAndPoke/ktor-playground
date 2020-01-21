@@ -15,7 +15,7 @@ internal fun SimpleTemplate.buttons() {
 
     breadCrumbs = listOf(SemanticUiMenu.Buttons)
 
-    pageTitle {
+    pageHead {
         title { +"SemanticUI Buttons" }
     }
 
