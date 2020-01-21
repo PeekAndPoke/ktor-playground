@@ -9,10 +9,11 @@ import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
 import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
 import de.peekandpoke.module.cms.CmsElement
+import de.peekandpoke.module.cms.elements.common.ElementStyle
 import de.peekandpoke.module.cms.elements.common.nl2br
+import de.peekandpoke.module.cms.elements.common.partial
 import de.peekandpoke.module.cms.forms.theBaseColors
 import de.peekandpoke.ultra.mutator.Mutable
-import de.peekandpoke.ultra.polyglot.untranslated
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
 import kotlinx.html.a
@@ -20,11 +21,12 @@ import kotlinx.html.div
 
 @Mutable
 data class ListElement(
-    val background: SemanticColor = SemanticColor.default,
-    val layout: Layout = Layout.TwoColumns,
+    val styling: ElementStyle = ElementStyle.default,
     val headline: String = "",
     val text: String = "",
-    val items: List<Item> = listOf()
+    val items1: List<Item> = listOf(),
+    val items2: List<Item> = listOf(),
+    val items3: List<Item> = listOf()
 ) : CmsElement {
 
     companion object : Polymorphic.Child {
@@ -37,29 +39,21 @@ data class ListElement(
         val text: String = ""
     )
 
-    enum class Layout {
-        TwoColumns,
-        ThreeColumns
-    }
-
     inner class VmForm(name: String) : MutatorForm<ListElement, ListElementMutator>(mutator(), name) {
 
-        val background = theBaseColors(target::background)
-
-        val layout = enum(target::layout).withOptions(
-            Layout.TwoColumns to "Two Columns".untranslated(),
-            Layout.ThreeColumns to "Three Columns".untranslated()
+        val styling = subForm(
+            ElementStyle.Form(target.styling)
         )
 
         val headline = field(target::headline)
 
         val text = field(target::text)
 
-        val items = list(target::items, { Item().mutator() }) { element ->
-            subForm(
-                ItemForm(element.value)
-            )
-        }
+        val items1 = list(target::items1, { Item().mutator() }) { element -> subForm(ItemForm(element.value)) }
+
+        val items2 = list(target::items2, { Item().mutator() }) { element -> subForm(ItemForm(element.value)) }
+
+        val items3 = list(target::items3, { Item().mutator() }) { element -> subForm(ItemForm(element.value)) }
     }
 
     class ItemForm(item: ListElement_ItemMutator) : MutatorForm<Item, ListElement_ItemMutator>(item) {
@@ -73,40 +67,60 @@ data class ListElement(
 
     override fun FlowContent.render() {
 
+        val columns = listOf(items1, items2, items3).filter { it.isNotEmpty() }
+
+        val numCols = when (columns.size) {
+            0 -> "zero"
+            1 -> "one"
+            2 -> "two"
+            else -> "three"
+        }
+
         div(classes = "list-element") {
 
-            ui.basic.segment.given(background != SemanticColor.default) { inverted.with(background.toString()) }.then {
+            ui.basic.segment.given(styling.backgroundColor.isSet) { inverted.color(styling.backgroundColor) }.then {
 
-                if (headline.isNotBlank()) {
-                    ui.header H2 { nl2br(headline) }
-                }
+                ui.container {
 
-                if (text.isNotBlank()) {
-                    ui.text P { nl2br(text) }
-                }
+                    if (headline.isNotBlank()) {
+                        ui.header H2 { nl2br(headline) }
+                    }
 
-                when (layout) {
-                    Layout.TwoColumns ->
-                        ui.two.column.grid {
-                            items.forEach {
-                                ui.column { renderItem(it) }
+                    if (text.isNotBlank()) {
+                        ui.text P { nl2br(text) }
+                    }
+
+                    ui.with(numCols).column.grid {
+
+                        columns.forEach { column ->
+                            ui.column {
+                                ui.list {
+
+                                    column.forEach { item ->
+
+                                        ui.item {
+                                            // TODO: icon sizes in "icon" helper class
+                                            // TODO: color helpers in "icon" helper class
+                                            icon.with("huge").with(item.iconColor.toString()).custom(item.icon)
+
+                                            ui.content P {
+                                                nl2br(item.text)
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
-
-                    Layout.ThreeColumns ->
-                        ui.three.column.grid {
-                            items.forEach {
-                                ui.column { renderItem(it) }
-                            }
-                        }
+                    }
                 }
             }
         }
     }
 
     private fun FlowContent.renderItem(item: Item) {
-        icon.with(item.iconColor.toString()).custom(item.icon)
-        +item.text
+        icon.with("huge").with(item.iconColor.toString()).custom(item.icon)
+
+        nl2br(item.text)
     }
 
     override suspend fun editVm(vm: ViewModelBuilder, actions: CmsElement.EditActions): View {
@@ -132,23 +146,34 @@ data class ListElement(
                         +"List '$headline'"
                     }
 
-                    selectInput(form.background, "Background-Color")
+                    partial(this, form.styling)
 
-                    selectInput(form.layout, "Layout")
+                    ui.divider {}
 
                     textInput(form.headline, "Headline")
 
                     textArea(form.text, "Text")
 
-                    ui.header H4 { +"Items" }
+                    val renderItem: FlowContent.(ItemForm) -> Unit = { item ->
 
-                    listFieldAsGrid(form.items) { item ->
                         ui.two.fields {
                             textInput(item.icon, "Icon")
                             selectInput(item.iconColor, "Color")
                         }
                         textArea(item.text, "Text")
                     }
+
+                    ui.header H4 { +"Items in column #1" }
+
+                    listFieldAsGrid(form.items1, renderItem)
+
+                    ui.header H4 { +"Items in column #2" }
+
+                    listFieldAsGrid(form.items2, renderItem)
+
+                    ui.header H4 { +"Items in column #3" }
+
+                    listFieldAsGrid(form.items3, renderItem)
                 }
 
                 ui.bottom.attached.segment {
