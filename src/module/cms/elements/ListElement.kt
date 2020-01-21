@@ -9,6 +9,7 @@ import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
 import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
 import de.peekandpoke.module.cms.CmsElement
+import de.peekandpoke.module.cms.elements.common.nl2br
 import de.peekandpoke.module.cms.forms.theBaseColors
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.polyglot.untranslated
@@ -16,11 +17,10 @@ import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
 import kotlinx.html.a
 import kotlinx.html.div
-import kotlinx.html.p
 
 @Mutable
 data class ListElement(
-    val background: SemanticColor = SemanticColor.none,
+    val background: SemanticColor = SemanticColor.default,
     val layout: Layout = Layout.TwoColumns,
     val headline: String = "",
     val text: String = "",
@@ -33,7 +33,7 @@ data class ListElement(
 
     data class Item(
         val icon: String = "",
-        val iconColor: SemanticColor = SemanticColor.none,
+        val iconColor: SemanticColor = SemanticColor.default,
         val text: String = ""
     )
 
@@ -75,14 +75,14 @@ data class ListElement(
 
         div(classes = "list-element") {
 
-            ui.basic.segment.given(background != SemanticColor.none) { inverted.with(background.toString()) }.then {
+            ui.basic.segment.given(background != SemanticColor.default) { inverted.with(background.toString()) }.then {
 
                 if (headline.isNotBlank()) {
-                    ui.header H2 { +headline }
+                    ui.header H2 { nl2br(headline) }
                 }
 
                 if (text.isNotBlank()) {
-                    p { +text }
+                    ui.text P { nl2br(text) }
                 }
 
                 when (layout) {

@@ -8,7 +8,8 @@ import kotlinx.html.*
 
 @Suppress("EnumEntryName")
 enum class SemanticColor {
-    none,
+    default,
+    white,
     red,
     orange,
     yellow,
@@ -21,7 +22,9 @@ enum class SemanticColor {
     pink,
     brown,
     grey,
-    black,
+    black;
+
+    val isSet get() = this != default
 }
 
 @Suppress("FunctionName", "PropertyName")
@@ -63,7 +66,10 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
 
     @SemanticUiCssMarker fun with(vararg cls: String, flow: FlowContent.() -> Unit) = (this + cls).renderDiv(flow)
 
-    @SemanticUiCssMarker fun color(color: SemanticColor) = with(color.toString())
+    @SemanticUiCssMarker fun color(color: SemanticColor) = when {
+        color.isSet -> with(color.toString())
+        else -> this
+    }
 
     @SemanticUiCssMarker fun color(color: SemanticColor, flow: FlowContent.() -> Unit) = with(color.toString(), flow = flow)
 

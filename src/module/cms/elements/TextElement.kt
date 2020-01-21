@@ -4,23 +4,23 @@ import de.peekandpoke.ktorfx.common.i18n
 import de.peekandpoke.ktorfx.formidable.MutatorForm
 import de.peekandpoke.ktorfx.formidable.field
 import de.peekandpoke.ktorfx.formidable.rendering.formidable
-import de.peekandpoke.ktorfx.semanticui.SemanticColor
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
 import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
 import de.peekandpoke.module.cms.CmsElement
-import de.peekandpoke.module.cms.forms.theBaseColors
+import de.peekandpoke.module.cms.elements.common.ElementStyle
+import de.peekandpoke.module.cms.elements.common.nl2br
+import de.peekandpoke.module.cms.elements.common.partial
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
 import kotlinx.html.a
 import kotlinx.html.div
-import kotlinx.html.p
 
 @Mutable
 data class TextElement(
-    val background: SemanticColor = SemanticColor.none,
+    val styling: ElementStyle = ElementStyle.default,
     val headline: String = "",
     val text: String = ""
 ) : CmsElement {
@@ -31,7 +31,9 @@ data class TextElement(
 
     inner class VmForm(name: String) : MutatorForm<TextElement, TextElementMutator>(mutator(), name) {
 
-        val background = theBaseColors(target::background)
+        val styling = subForm(
+            ElementStyle.Form(target.styling)
+        )
 
         val headline = field(target::headline)
 
@@ -42,14 +44,16 @@ data class TextElement(
 
         div(classes = "text-element") {
 
-            ui.basic.segment.given(background != SemanticColor.none) { inverted.with(background.toString()) }.then {
+            ui.basic.segment.given(styling.backgroundColor.isSet) { inverted.color(styling.backgroundColor) }.then {
 
-                if (headline.isNotBlank()) {
-                    ui.header H2 { +headline }
-                }
+                ui.container {
+                    if (headline.isNotBlank()) {
+                        ui.color(styling.textColor).header H2 { nl2br(headline) }
+                    }
 
-                if (text.isNotBlank()) {
-                    p { +text }
+                    if (text.isNotBlank()) {
+                        ui.color(styling.textColor).text P { nl2br(text) }
+                    }
                 }
             }
         }
@@ -78,9 +82,11 @@ data class TextElement(
                         +"Text '$headline'"
                     }
 
-                    selectInput(form.background, "Background-Color")
+                    partial(this, form.styling)
 
-                    textInput(form.headline, "Headline")
+                    ui.divider {}
+
+                    textArea(form.headline, "Headline")
 
                     textArea(form.text, "Text")
                 }

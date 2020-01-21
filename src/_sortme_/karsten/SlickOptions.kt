@@ -8,6 +8,7 @@ import kotlin.reflect.full.memberProperties
  */
 fun FlowContent.slickOptions(
     slidesToShow: Int = 1,
+    slidesToScroll: Int = 1,
     infinite: Boolean = true,
     dots: Boolean = true,
     appendDots: String? = null,
@@ -19,6 +20,7 @@ fun FlowContent.slickOptions(
 ) {
     val it = SlickOptions(
         slidesToShow = slidesToShow,
+        slidesToScroll = slidesToScroll,
         infinite = infinite,
         dots = dots,
         appendDots = appendDots,
@@ -34,6 +36,7 @@ fun FlowContent.slickOptions(
 
 data class SlickOptions(
     val slidesToShow: Int = 1,
+    val slidesToScroll: Int = 1,
     val infinite: Boolean = true,
     val dots: Boolean = true,
     val appendDots: String? = null,

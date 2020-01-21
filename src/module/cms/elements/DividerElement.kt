@@ -21,7 +21,7 @@ import kotlinx.html.div
 
 @Mutable
 data class DividerElement(
-    val background: SemanticColor = SemanticColor.none,
+    val background: SemanticColor = SemanticColor.default,
     val height: Height = Height.one
 ) : CmsElement {
 
@@ -53,7 +53,7 @@ data class DividerElement(
 
         div(classes = "divider-element") {
 
-            ui.basic.segment.given(background != SemanticColor.none) { inverted.with(background.toString()) }.then {
+            ui.basic.segment.given(background.isSet) { inverted.color(background) }.then {
                 ui.with(height.toString()) {
                     // noop
                 }

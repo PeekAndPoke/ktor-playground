@@ -1,9 +1,9 @@
 package de.peekandpoke.module.cms.elements
 
+import de.peekandpoke._sortme_.karsten.slickOptions
 import de.peekandpoke.ktorfx.common.i18n
 import de.peekandpoke.ktorfx.formidable.*
 import de.peekandpoke.ktorfx.formidable.rendering.formidable
-import de.peekandpoke.ktorfx.semanticui.SemanticColor
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
@@ -11,8 +11,10 @@ import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
 import de.peekandpoke.module.cms.CmsElement
 import de.peekandpoke.module.cms.domain.Image
 import de.peekandpoke.module.cms.domain.mutator
+import de.peekandpoke.module.cms.elements.common.ElementStyle
+import de.peekandpoke.module.cms.elements.common.nl2br
+import de.peekandpoke.module.cms.elements.common.partial
 import de.peekandpoke.module.cms.forms.ImageForm
-import de.peekandpoke.module.cms.forms.theBaseColors
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.polyglot.untranslated
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
@@ -20,7 +22,7 @@ import kotlinx.html.*
 
 @Mutable
 data class TextImageElement(
-    val background: SemanticColor = SemanticColor.none,
+    val styling: ElementStyle = ElementStyle.default,
     val layout: Layout = Layout.ImageLeft,
     val headline: String = "",
     val text: String = "",
@@ -40,7 +42,9 @@ data class TextImageElement(
 
     inner class VmForm(name: String) : MutatorForm<TextImageElement, TextImageElementMutator>(mutator(), name) {
 
-        val background = theBaseColors(target::background)
+        val styling = subForm(
+            ElementStyle.Form(target.styling)
+        )
 
         val layout = enum(target::layout).withOptions(
             Layout.ImageLeft to "Image Left".untranslated(),
@@ -64,39 +68,46 @@ data class TextImageElement(
 
         div(classes = "text-image-element") {
 
-            ui.basic.segment.given(background != SemanticColor.none) { inverted.with(background.toString()) }.then {
+            ui.basic.segment.given(styling.backgroundColor.isSet) { inverted.color(styling.backgroundColor) }.then {
 
-                when (layout) {
-                    Layout.ImageRight -> ui.two.column.grid {
-                        ui.column { text() }
-                        ui.column { image() }
-                    }
+                ui.container {
+                    when (layout) {
+                        Layout.ImageRight -> ui.two.column.grid {
+                            ui.column { textH3() }
+                            ui.column { images() }
+                        }
 
-                    Layout.ImageLeft -> ui.two.column.grid {
-                        ui.column { image() }
-                        ui.column { text() }
-                    }
+                        Layout.ImageLeft -> ui.two.column.grid {
+                            ui.column { images() }
+                            ui.column { textH3() }
+                        }
 
-                    Layout.ImageTop -> {
-                        image()
-                        text()
-                    }
+                        Layout.ImageTop -> {
+                            images()
+                            textH2()
+                        }
 
-                    Layout.ImageBottom -> {
-                        text()
-                        image()
+                        Layout.ImageBottom -> {
+                            textH2()
+                            images()
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun DIV.text() {
-        ui.header H3 { +headline }
-        ui.item P { +text }
+    private fun DIV.textH2() {
+        ui.header H2 { nl2br(headline) }
+        ui.item P { nl2br(text) }
     }
 
-    private fun DIV.image() {
+    private fun DIV.textH3() {
+        ui.header H3 { nl2br(headline) }
+        ui.item P { nl2br(text) }
+    }
+
+    private fun DIV.images() {
 
         when {
             images.isEmpty() -> {
@@ -107,7 +118,11 @@ data class TextImageElement(
 
             else -> {
                 div {
-                    attributes["data-slick"] = "{\"slidesToShow\": 1, \"dots\": true, \"infinite\": true}"
+                    slickOptions(
+                        slidesToShow = 1,
+                        dots = true,
+                        infinite = true
+                    )
 
                     images.forEach {
                         img(src = it.url, alt = it.alt)
@@ -140,26 +155,19 @@ data class TextImageElement(
                         +"Text And Image '$headline'"
                     }
 
-                    ui.two.fields {
-                        selectInput(form.background, "Background-Color")
-                        selectInput(form.layout, "Layout")
-                    }
+                    partial(this, form.styling)
 
-                    textInput(form.headline, "Headline")
+                    ui.divider {}
+
+                    selectInput(form.layout, "Layout")
+
+                    textArea(form.headline, "Headline")
 
                     textArea(form.text, "Text")
 
                     ui.header H4 { +"Images" }
 
-                    listFieldAsGrid(form.images) { item ->
-
-                        textInput(item.url, "Url")
-                        textInput(item.alt, "Alt Text")
-
-                        img(src = item.url.textValue, alt = item.alt.textValue) {
-                            style = "max-width: 100%; max-height: 200px;"
-                        }
-                    }
+                    partial(this, form.images)
                 }
 
                 ui.bottom.attached.segment {

@@ -18,7 +18,7 @@ import kotlinx.html.div
 
 @Mutable
 data class FooterElement(
-    val background: SemanticColor = SemanticColor.none
+    val background: SemanticColor = SemanticColor.default
 ) : CmsElement {
 
     companion object : Polymorphic.Child {

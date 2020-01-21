@@ -2,11 +2,8 @@ package de.peekandpoke.module.cms.elements
 
 import de.peekandpoke._sortme_.karsten.slickOptions
 import de.peekandpoke.ktorfx.common.i18n
-import de.peekandpoke.ktorfx.formidable.MutatorForm
-import de.peekandpoke.ktorfx.formidable.field
-import de.peekandpoke.ktorfx.formidable.list
+import de.peekandpoke.ktorfx.formidable.*
 import de.peekandpoke.ktorfx.formidable.rendering.formidable
-import de.peekandpoke.ktorfx.semanticui.SemanticColor
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
@@ -14,18 +11,21 @@ import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
 import de.peekandpoke.module.cms.CmsElement
 import de.peekandpoke.module.cms.domain.Image
 import de.peekandpoke.module.cms.domain.mutator
+import de.peekandpoke.module.cms.elements.common.ElementStyle
+import de.peekandpoke.module.cms.elements.common.nl2br
+import de.peekandpoke.module.cms.elements.common.partial
 import de.peekandpoke.module.cms.forms.ImageForm
-import de.peekandpoke.module.cms.forms.theBaseColors
 import de.peekandpoke.ultra.mutator.Mutable
+import de.peekandpoke.ultra.polyglot.untranslated
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
 import kotlinx.html.div
 import kotlinx.html.img
-import kotlinx.html.style
 
 @Mutable
 data class HeroElement(
-    val background: SemanticColor = SemanticColor.none,
+    val styling: ElementStyle = ElementStyle.default,
+    val layout: Layout = Layout.ImageRight,
     val headline: String = "",
     val text: String = "",
     val images: List<Image> = listOf()
@@ -35,9 +35,21 @@ data class HeroElement(
         override val identifier = "hero-element"
     }
 
+    enum class Layout {
+        ImageRight,
+        FullSizeImage
+    }
+
     inner class VmForm(name: String) : MutatorForm<HeroElement, HeroElementMutator>(mutator(), name) {
 
-        val background = theBaseColors(target::background)
+        val styling = subForm(
+            ElementStyle.Form(target.styling)
+        )
+
+        val layout = enum(target::layout).withOptions(
+            Layout.ImageRight to "Image on the right".untranslated(),
+            Layout.FullSizeImage to "Full size image".untranslated()
+        )
 
         val headline = field(target::headline)
 
@@ -54,41 +66,49 @@ data class HeroElement(
 
         div(classes = "hero-element") {
 
-            ui.basic.inverted.segment.color(background) {
+            ui.basic.inverted.segment.color(styling.backgroundColor) {
 
-                ui.container {
-                    ui.grid {
+                when (layout) {
+                    Layout.ImageRight -> renderImageRight()
 
-                        ui.nine.wide.column {
-                            ui.red.header H1 { +headline }
-                            ui.red.text P { +text }
-                        }
+                    Layout.FullSizeImage -> renderFullSizeImage()
+                }
+            }
+        }
+    }
 
-                        ui.seven.wide.column.right.aligned {
+    private fun FlowContent.renderImageRight() {
+        ui.container {
+            ui.grid {
 
-                            div(classes = "image-container") {
+                ui.nine.wide.column {
+                    ui.color(styling.textColor).header H1 { nl2br(headline) }
+                    ui.color(styling.textColor).text P { nl2br(text) }
+                }
 
-                                when (images.size) {
-                                    0 -> {
-                                        // noop
-                                    }
+                ui.seven.wide.column.right.aligned {
 
-                                    1 -> img(src = images[0].url, alt = images[0].alt)
+                    div(classes = "image-container") {
 
-                                    else -> {
-                                        slickOptions(
-                                            slidesToShow = 1,
-                                            dots = true,
-                                            infinite = true,
-                                            fade = true,
-                                            arrows = false,
-                                            autoplay = true
-                                        )
+                        when (images.size) {
+                            0 -> {
+                                // noop
+                            }
 
-                                        images.forEach {
-                                            img(src = it.url, alt = it.alt)
-                                        }
-                                    }
+                            1 -> img(src = images[0].url, alt = images[0].alt)
+
+                            else -> {
+                                slickOptions(
+                                    slidesToShow = 1,
+                                    dots = true,
+                                    infinite = true,
+                                    fade = true,
+                                    arrows = false,
+                                    autoplay = true
+                                )
+
+                                images.forEach {
+                                    img(src = it.url, alt = it.alt)
                                 }
                             }
                         }
@@ -96,6 +116,10 @@ data class HeroElement(
                 }
             }
         }
+    }
+
+    private fun FlowContent.renderFullSizeImage() {
+        +"TODO"
     }
 
     override suspend fun editVm(vm: ViewModelBuilder, actions: CmsElement.EditActions): View {
@@ -119,23 +143,19 @@ data class HeroElement(
                         +"Hero"
                     }
 
-                    selectInput(form.background, "Background-Color")
+                    partial(this, form.styling)
 
-                    textInput(form.headline, "Headline")
+                    selectInput(form.layout, "Layout")
+
+                    ui.divider {}
+
+                    textArea(form.headline, "Headline")
 
                     textArea(form.text, "Text")
 
                     ui.header H4 { +"Images" }
 
-                    listFieldAsGrid(form.images) { item ->
-
-                        textInput(item.url, "Url")
-                        textInput(item.alt, "Alt Text")
-
-                        img(src = item.url.textValue, alt = item.alt.textValue) {
-                            style = "max-width: 100%; max-height: 200px;"
-                        }
-                    }
+                    partial(this, form.images)
                 }
 
                 ui.bottom.attached.segment {

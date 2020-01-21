@@ -1,0 +1,41 @@
+@import "variables";
+
+.segment-stack .gallery-element {
+
+  .item img {
+    width: 100%;
+  }
+
+  h3.ui.header {
+    font-size: 1.3em;
+  }
+
+  p.ui.text {
+    font-size: 1.3em;
+  }
+
+  &.SideBySideSlider {
+
+    & > .segment {
+      // make the image slider "stick" out a bit on the sides
+      margin: 0 -15% 0 -15%;
+      padding-bottom: @segment-bottom-padding;
+    }
+
+    .item {
+      padding: 0 20px;
+    }
+  }
+
+  &.ThreeColumns {
+    & > .segment {
+      padding-bottom: @segment-bottom-padding;
+    }
+  }
+
+  &.FiveColumns {
+    & > .segment {
+      padding-bottom: @segment-bottom-padding;
+    }
+  }
+}

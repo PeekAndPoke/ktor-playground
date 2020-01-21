@@ -16,7 +16,7 @@
 // Responsive container sizes
 /////
 
-@computerBreakpoint: 1440px;
+@computerBreakpoint: 1200px;
 @largeMonitorBreakpoint: 1440px;
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,6 +37,7 @@
 @brown: #A5673F;
 @grey: #767676;
 @black: #000000; // THE BASE Brand
+@white: #FFFFFF; // THE BASE Brand
 
 /*---  Light Colors  ---*/
 @lightRed: lighten(@red, 10%);
@@ -52,6 +53,7 @@
 @lightBrown: #D67C1C;
 @lightGrey: #DCDDDE;
 @lightBlack: lighten(@black, 10%);
+@lightWhite: lighten(@white, 10%);
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Links

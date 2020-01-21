@@ -29,7 +29,7 @@ fun <T : Form> FlowContent.formidable(i18n: I18n, form: T, configure: FORM.() ->
 }
 
 
-class FormidableViewBuilder(private val i18n: I18n, val form: FORM) {
+class FormidableViewBuilder(val i18n: I18n, val form: FORM) {
 
     fun FlowContent.hiddenFields(form: Form) {
         form.hiddenFields.forEach {
