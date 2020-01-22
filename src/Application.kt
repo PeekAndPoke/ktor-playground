@@ -1,7 +1,8 @@
 package de.peekandpoke
 
 import com.fasterxml.jackson.databind.SerializationFeature
-import de.peekandpoke.jointhebase.admin.JtbAdmin
+import com.thebase.admin.TheBaseAdmin
+import de.peekandpoke.demos.forms.FormDemos
 import de.peekandpoke.ktorfx.common.provide
 import de.peekandpoke.ktorfx.flashsession.FlashSession
 import de.peekandpoke.ktorfx.insights.gui.InsightsGui
@@ -13,10 +14,9 @@ import de.peekandpoke.ktorfx.webjars.BetterWebjars
 import de.peekandpoke.ktorfx.webresources.AppMeta
 import de.peekandpoke.module.cms.CmsAdmin
 import de.peekandpoke.module.cms.CmsPublic
-import de.peekandpoke.module.demos.forms.FormDemos
-import de.peekandpoke.module.depot.DepotAdmin
 import de.peekandpoke.module.got.GameOfThrones
 import de.peekandpoke.module.semanticui.SemanticUi
+import de.peekandpoke.modules.depot.DepotAdmin
 import de.peekandpoke.ultra.kontainer.KontainerBlueprint
 import de.peekandpoke.ultra.polyglot.I18nLocaleSelector
 import de.peekandpoke.ultra.security.user.StaticUserRecordProvider
@@ -342,7 +342,7 @@ fun Application.module(testing: Boolean = false) {
                 initKontainer.use(InsightsGui::class) { mount() }
 
                 // mount main modules
-                initKontainer.use(JtbAdmin::class) { mount() }
+                initKontainer.use(TheBaseAdmin::class) { mount() }
 
                 // mount helper modules
                 initKontainer.use(CmsAdmin::class) { mount() }

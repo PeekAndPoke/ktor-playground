@@ -30,7 +30,7 @@ interface QueryProfiler {
         val queryLanguage: String,
         val query: String
     ) {
-        var vars: Map<String, Any>? = null
+        var vars: Map<String, Any?>? = null
 
         val totalNs
             get() = measureQuery.totalNs +

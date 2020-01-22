@@ -12,6 +12,7 @@ import de.peekandpoke.karango.TypedQuery
 import de.peekandpoke.karango.aql.AqlBuilder
 import de.peekandpoke.karango.aql.TerminalExpr
 import de.peekandpoke.karango.slumber.KarangoCodec
+import de.peekandpoke.ultra.common.kMapType
 import de.peekandpoke.ultra.logging.Log
 import de.peekandpoke.ultra.logging.NullLog
 import de.peekandpoke.ultra.vault.Repository
@@ -55,9 +56,11 @@ class KarangoDriver(
             query = query.aql
         ) { entry ->
 
-            // TODO: nicer interface that avoid the type-cast here
             @Suppress("UNCHECKED_CAST")
-            val vars = entry.measureSerializer { codec.slumber(query.vars) } as Map<String, Any>
+            val vars = entry.measureSerializer {
+                // we specifically define that the values in the vars are nullable
+                codec.slumber(kMapType<String, Any?>().type, query.vars)
+            } as Map<String, Any?>
 
             entry.vars = vars
 

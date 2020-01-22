@@ -7,7 +7,7 @@
 
 ## LOGG - Logging improvements
 
-- ( ) karango appender
+- ( ) de.peekandpoke.demos.karango appender
 - ( ) FingerCrossed appender like in symfony
 - ( ) sentry.io appender (sending loggs to sentry when 500 error: https://sentry.io/for/kotlin/)
 

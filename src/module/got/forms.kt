@@ -1,6 +1,6 @@
 package de.peekandpoke.module.got
 
-import de.peekandpoke.karango.examples.game_of_thrones.*
+import de.peekandpoke.demos.karango.game_of_thrones.*
 import de.peekandpoke.ktorfx.common.texts.PeopleI18n
 import de.peekandpoke.ktorfx.formidable.*
 import de.peekandpoke.ultra.vault.New

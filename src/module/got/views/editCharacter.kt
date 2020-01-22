@@ -1,6 +1,6 @@
 package de.peekandpoke.module.got.views
 
-import de.peekandpoke.karango.examples.game_of_thrones.Character
+import de.peekandpoke.demos.karango.game_of_thrones.Character
 import de.peekandpoke.ktorfx.common.texts.forms
 import de.peekandpoke.ktorfx.common.texts.people
 import de.peekandpoke.ktorfx.formidable.rendering.formidable

@@ -1,16 +1,16 @@
 package de.peekandpoke
 
-import de.peekandpoke.jointhebase.joinTheBase
+import com.thebase.joinTheBase
+import de.peekandpoke.demos.forms.formDemos
 import de.peekandpoke.karango.karango
 import de.peekandpoke.ktorfx.security.KtorFXSecurityConfig
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import de.peekandpoke.module.cms.cmsAdmin
 import de.peekandpoke.module.cms.cmsCommon
 import de.peekandpoke.module.cms.cmsPublic
-import de.peekandpoke.module.demos.forms.formDemos
-import de.peekandpoke.module.depot.depotAdmin
 import de.peekandpoke.module.got.gameOfThrones
 import de.peekandpoke.module.semanticui.semanticUi
+import de.peekandpoke.modules.depot.depotAdmin
 import de.peekandpoke.resources.AdminWebResources
 import de.peekandpoke.resources.AppI18n
 import de.peekandpoke.resources.WwwWebResources

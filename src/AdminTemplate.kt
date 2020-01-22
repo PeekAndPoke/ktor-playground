@@ -1,7 +1,9 @@
 package de.peekandpoke
 
-import de.peekandpoke.jointhebase.admin.JtbAdmin
-import de.peekandpoke.jointhebase.admin.views.JtbAdminMenu
+import com.thebase.admin.TheBaseAdmin
+import com.thebase.admin.views.TheBaseAdminMenu
+import de.peekandpoke.demos.forms.FormDemos
+import de.peekandpoke.demos.forms.FormDemosMenu
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.noui
 import de.peekandpoke.ktorfx.semanticui.ui
@@ -11,14 +13,12 @@ import de.peekandpoke.ktorfx.webresources.css
 import de.peekandpoke.ktorfx.webresources.js
 import de.peekandpoke.module.cms.CmsAdmin
 import de.peekandpoke.module.cms.views.CmsMenu
-import de.peekandpoke.module.demos.forms.FormDemos
-import de.peekandpoke.module.demos.forms.FormDemosMenu
-import de.peekandpoke.module.depot.DepotAdmin
-import de.peekandpoke.module.depot.views.DepotMenu
 import de.peekandpoke.module.got.GameOfThrones
 import de.peekandpoke.module.got.views.GameOfThronesMenu
 import de.peekandpoke.module.semanticui.SemanticUi
 import de.peekandpoke.module.semanticui.views.SemanticUiMenu
+import de.peekandpoke.modules.depot.DepotAdmin
+import de.peekandpoke.modules.depot.views.DepotMenu
 import de.peekandpoke.resources.admin
 import kotlinx.html.div
 import kotlinx.html.script
@@ -28,7 +28,7 @@ class AdminTemplate(
 
     tools: TemplateTools,
 
-    val jtb: JtbAdmin,
+    val theBase: TheBaseAdmin,
     val cms: CmsAdmin,
     private val depot: DepotAdmin,
     private val gameOfThrones: GameOfThrones,
@@ -70,7 +70,7 @@ class AdminTemplate(
 
                 // JoinTheBase ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                ui.given(JtbAdminMenu has breadCrumbs) { active }.title.header.item H4 {
+                ui.given(TheBaseAdminMenu has breadCrumbs) { active }.title.header.item H4 {
                     icon.dropdown()
 
                     div {
@@ -78,10 +78,10 @@ class AdminTemplate(
                         +"The Base"
                     }
                 }
-                ui.given(JtbAdminMenu has breadCrumbs) { active }.content {
+                ui.given(TheBaseAdminMenu has breadCrumbs) { active }.content {
                     ui.accordion.transition.active {
                         // TODO: create a method in the Cms Admin Module that renders all menu entries
-                        ui.item.given(JtbAdminMenu.INDEX in breadCrumbs) { active } A { href = jtb.routes.index; +"Overview" }
+                        ui.item.given(TheBaseAdminMenu.INDEX in breadCrumbs) { active } A { href = theBase.routes.index; +"Overview" }
                     }
                 }
 

@@ -1,6 +1,6 @@
 package de.peekandpoke.module.got
 
-import de.peekandpoke.karango.examples.game_of_thrones.*
+import de.peekandpoke.demos.karango.game_of_thrones.*
 import de.peekandpoke.ktorfx.broker.OutgoingConverter
 import de.peekandpoke.ktorfx.broker.Routes
 import de.peekandpoke.ktorfx.broker.get
