@@ -1,4 +1,4 @@
-package de.peekandpoke.karango.examples
+package de.peekandpoke.demos.karango
 
 import de.peekandpoke.karango.Cursor
 
@@ -79,5 +79,5 @@ class DemoRunner private constructor(private val betweenSteps: BetweenSteps, pri
             betweenSteps.run()
         }
     }
-} 
+}
 

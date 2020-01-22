@@ -64,8 +64,8 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="Gradle: de.peekandpoke.ultra:kontainer:0.0.107" level="project" />
-    <orderEntry type="library" name="Gradle: de.peekandpoke.ultra:common:0.0.107" level="project" />
     <orderEntry type="library" name="Gradle: de.peekandpoke.ultra:mutator:0.0.107" level="project" />
+    <orderEntry type="library" name="Gradle: de.peekandpoke.ultra:common:0.0.107" level="project" />
     <orderEntry type="library" name="Gradle: de.peekandpoke.ultra:security:0.0.107" level="project" />
     <orderEntry type="library" name="Gradle: de.peekandpoke.ultra:slumber:0.0.107" level="project" />
     <orderEntry type="library" name="Gradle: de.peekandpoke.ultra:meta:0.0.107" level="project" />

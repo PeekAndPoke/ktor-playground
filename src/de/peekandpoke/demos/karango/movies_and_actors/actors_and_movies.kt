@@ -1,6 +1,6 @@
 @file:Suppress("LocalVariableName")
 
-package de.peekandpoke.karango.examples.movies_and_actors
+package de.peekandpoke.demos.karango.movies_and_actors
 
 import kotlin.system.exitProcess
 

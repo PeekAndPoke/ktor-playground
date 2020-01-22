@@ -1,4 +1,4 @@
-package de.peekandpoke.module.semanticui.views
+package de.peekandpoke.demos.semanticui.views
 
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import kotlinx.html.title

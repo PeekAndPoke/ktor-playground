@@ -1,12 +1,12 @@
-package de.peekandpoke.module.semanticui
+package de.peekandpoke.demos.semanticui
 
+import de.peekandpoke.demos.semanticui.views.buttons
+import de.peekandpoke.demos.semanticui.views.icons
+import de.peekandpoke.demos.semanticui.views.index
+import de.peekandpoke.demos.semanticui.views.playground
 import de.peekandpoke.ktorfx.broker.OutgoingConverter
 import de.peekandpoke.ktorfx.broker.Routes
 import de.peekandpoke.ktorfx.templating.respond
-import de.peekandpoke.module.semanticui.views.buttons
-import de.peekandpoke.module.semanticui.views.icons
-import de.peekandpoke.module.semanticui.views.index
-import de.peekandpoke.module.semanticui.views.playground
 import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
 import io.ktor.routing.Route

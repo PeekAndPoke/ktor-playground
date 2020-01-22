@@ -2,10 +2,10 @@ package de.peekandpoke.demos.karango.game_of_thrones
 
 import com.arangodb.ArangoDB
 import com.arangodb.ArangoDatabase
+import de.peekandpoke.demos.karango.printDivider
+import de.peekandpoke.demos.karango.printQueryResult
+import de.peekandpoke.demos.karango.runDemo
 import de.peekandpoke.karango.aql.*
-import de.peekandpoke.karango.examples.printDivider
-import de.peekandpoke.karango.examples.printQueryResult
-import de.peekandpoke.karango.examples.runDemo
 import de.peekandpoke.karango.vault.KarangoDriver
 import de.peekandpoke.ultra.kontainer.kontainer
 import de.peekandpoke.ultra.vault.*
