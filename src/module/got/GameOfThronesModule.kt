@@ -14,6 +14,7 @@ import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
 import de.peekandpoke.ultra.vault.Stored
 import io.ktor.application.call
+import io.ktor.config.ApplicationConfig
 import io.ktor.response.respondRedirect
 import io.ktor.routing.Route
 import io.ultra.ktor_tools.database
@@ -21,11 +22,10 @@ import io.ultra.ktor_tools.database
 fun KontainerBuilder.gameOfThrones() = module(GameOfThronesModule)
 
 val GameOfThronesModule = module {
-    // config
-    config("gotMountPoint", "/game-of-thrones")
 
     // application
     singleton(GameOfThronesRoutes::class)
+    singleton(GameOfThronesConfig::class)
     singleton(GameOfThrones::class)
     singleton(GotI18n::class)
 
@@ -34,7 +34,15 @@ val GameOfThronesModule = module {
     singleton(ActorsRepository::class)
 }
 
-class GameOfThronesRoutes(converter: OutgoingConverter, gotMountPoint: String) : Routes(converter, gotMountPoint) {
+@Suppress("EXPERIMENTAL_API_USAGE")
+class GameOfThronesConfig constructor(config: ApplicationConfig) {
+
+    private val entry = config.config("gameOfThrones")
+
+    val mountPoint: String = entry.property("mountPoint").getString()
+}
+
+class GameOfThronesRoutes(converter: OutgoingConverter, config: GameOfThronesConfig) : Routes(converter, config.mountPoint) {
 
     data class GetCharacters(val page: Int = 1, val epp: Int = 100)
 

@@ -47,20 +47,29 @@ data class FooterElement(
                     ui.three.column.grid.color(styling.textColor).text {
 
                         ui.row {
-                            ui.column {
+                            ui.six.wide.column {
                                 div(classes = "see-you") {
                                     nl2br(headline)
                                 }
                             }
 
-                            ui.center.aligned.column {
-                                ui.header H3 {
-                                    +"Contact"
+                            ui.five.wide.column {
+                                div(classes = "contact") {
+                                    ui.header H3 {
+                                        +"Contact"
+                                    }
+                                    ui.text P {
+                                        a(href = "mailto:hello@jointhebase.co") {
+                                            +"hello@jointhebase.co"
+                                        }
+                                    }
                                 }
                             }
 
-                            ui.right.aligned.column {
-                                +"Let's meet up no matter where"
+                            ui.five.wide.right.aligned.column {
+                                ui.header H3 {
+                                    +"Let's meet up no matter where"
+                                }
                             }
                         }
 

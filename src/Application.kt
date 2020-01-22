@@ -2,38 +2,26 @@ package de.peekandpoke
 
 import com.fasterxml.jackson.databind.SerializationFeature
 import de.peekandpoke.jointhebase.admin.JtbAdmin
-import de.peekandpoke.jointhebase.joinTheBase
-import de.peekandpoke.karango.karango
 import de.peekandpoke.ktorfx.common.provide
 import de.peekandpoke.ktorfx.flashsession.FlashSession
 import de.peekandpoke.ktorfx.insights.gui.InsightsGui
 import de.peekandpoke.ktorfx.insights.instrumentWithInsights
 import de.peekandpoke.ktorfx.insights.registerInsightsRouteTracer
-import de.peekandpoke.ktorfx.security.KtorFXSecurityConfig
 import de.peekandpoke.ktorfx.semanticui.ui
-import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import de.peekandpoke.ktorfx.templating.respond
 import de.peekandpoke.ktorfx.webjars.BetterWebjars
 import de.peekandpoke.ktorfx.webresources.AppMeta
-import de.peekandpoke.module.cms.*
+import de.peekandpoke.module.cms.CmsAdmin
+import de.peekandpoke.module.cms.CmsPublic
 import de.peekandpoke.module.demos.forms.FormDemos
-import de.peekandpoke.module.demos.forms.formDemos
 import de.peekandpoke.module.depot.DepotAdmin
-import de.peekandpoke.module.depot.depotAdmin
 import de.peekandpoke.module.got.GameOfThrones
-import de.peekandpoke.module.got.gameOfThrones
 import de.peekandpoke.module.semanticui.SemanticUi
-import de.peekandpoke.module.semanticui.semanticUi
-import de.peekandpoke.resources.AdminWebResources
-import de.peekandpoke.resources.AppI18n
-import de.peekandpoke.resources.WwwWebResources
 import de.peekandpoke.ultra.kontainer.KontainerBlueprint
-import de.peekandpoke.ultra.kontainer.kontainer
 import de.peekandpoke.ultra.polyglot.I18nLocaleSelector
 import de.peekandpoke.ultra.security.user.StaticUserRecordProvider
 import de.peekandpoke.ultra.security.user.UserRecord
 import de.peekandpoke.ultra.vault.Database
-import de.peekandpoke.ultra.vault.ultraVault
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.features.*
@@ -53,13 +41,10 @@ import io.ktor.sessions.*
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.getDigestFunction
 import io.ktor.util.hex
-import io.ultra.ktor_tools.KtorFXConfig
-import io.ultra.ktor_tools.ktorFx
 import io.ultra.ktor_tools.logger.logger
 import kotlinx.html.body
 import kotlinx.html.div
 import kotlinx.html.pre
-import java.net.InetAddress
 import java.util.*
 import kotlin.collections.set
 
@@ -67,74 +52,6 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 val AppMeta = object : AppMeta() {}
 
-private val commonKontainerBlueprint by lazy {
-
-    // TODO: get the config from application.environment.config
-
-    val config = KtorFXConfig(
-        KtorFXSecurityConfig("super-secret", 300_000)
-    )
-
-    kontainer {
-
-        // Database //////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ultraVault()
-
-        // Add karango and provide connection to arango database
-        karango()
-        instance(arangoDatabase)
-
-
-        // KtorFX ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ktorFx(config)
-        // create a app specific cache buster
-        instance(AppMeta.cacheBuster())
-
-        // application ///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // i18n
-        singleton(AppI18n::class)
-
-        // web resources
-        singleton(AdminWebResources::class)
-        singleton(WwwWebResources::class)
-
-        // helper modules
-        cmsCommon()
-        cmsAdmin()
-        cmsPublic()
-
-        depotAdmin()
-
-        // application modules
-        joinTheBase()
-        gameOfThrones()
-        semanticUi()
-        formDemos()
-
-    }
-}
-
-private fun systemKontainer() = commonKontainerBlueprint.useWith(
-    // user record provider
-    StaticUserRecordProvider(
-        UserRecord("system", InetAddress.getLocalHost().canonicalHostName)
-    )
-)
-
-val Application.wwwKontainerBlueprint by lazy {
-    commonKontainerBlueprint.extend {
-        // set default html template
-        prototype(SimpleTemplate::class, WwwTemplate::class)
-    }
-}
-
-val Application.adminKontainerBlueprint by lazy {
-    commonKontainerBlueprint.extend {
-        // set default html template
-        prototype(SimpleTemplate::class, AdminTemplate::class)
-    }
-}
 
 fun Route.installKontainer(blueprint: KontainerBlueprint) {
 
@@ -158,13 +75,14 @@ fun Route.installKontainer(blueprint: KontainerBlueprint) {
     }
 }
 
-
 @KtorExperimentalAPI
 @kotlin.jvm.JvmOverloads
 @Suppress("unused", "UNUSED_PARAMETER") // Referenced in application.conf
 fun Application.module(testing: Boolean = false) {
 
-    val initKontainer = systemKontainer()
+    val di = ApplicationDi(this)
+
+    val initKontainer = di.systemKontainer()
 
     // Ensure all database repositories are set up properly
     initKontainer.use(Database::class) { ensureRepositories() }
@@ -367,7 +285,7 @@ fun Application.module(testing: Boolean = false) {
         host("www.*".toRegex()) {
 
             // install the Kontainer into the pipeline
-            installKontainer(wwwKontainerBlueprint)
+            installKontainer(di.wwwKontainerBlueprint)
 
             // instrument the pipeline with insights collectors
             instrumentWithInsights()
@@ -390,7 +308,7 @@ fun Application.module(testing: Boolean = false) {
         host("admin.*".toRegex()) {
 
             // install the Kontainer into the pipeline
-            installKontainer(adminKontainerBlueprint)
+            installKontainer(di.adminKontainerBlueprint)
 
             // instrument the pipeline with insights collectors
             instrumentWithInsights()

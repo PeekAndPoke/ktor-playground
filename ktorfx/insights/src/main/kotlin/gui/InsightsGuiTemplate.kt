@@ -7,6 +7,7 @@ import de.peekandpoke.ktorfx.prismjs.Language
 import de.peekandpoke.ktorfx.prismjs.prism
 import de.peekandpoke.ktorfx.prismjs.prismJs
 import de.peekandpoke.ktorfx.semanticui.icon
+import de.peekandpoke.ktorfx.semanticui.jQuery
 import de.peekandpoke.ktorfx.semanticui.semanticUi
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.webresources.WebResources
@@ -32,12 +33,14 @@ class InsightsGuiTemplate(
 
     init {
         styles {
+            css(webResources.jQuery)
             css(webResources.semanticUi)
             css(webResources.prismJs)
             css(webResources.insightsGui)
         }
 
         scripts {
+            js(webResources.jQuery)
             js(webResources.semanticUi)
             js(webResources.prismJs)
             js(webResources.insightsGui)

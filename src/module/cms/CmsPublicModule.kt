@@ -3,6 +3,7 @@ package de.peekandpoke.module.cms
 import de.peekandpoke.ktorfx.templating.respond
 import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
+import de.peekandpoke.ultra.logging.Log
 import io.ktor.application.call
 import io.ktor.features.NotFoundException
 import io.ktor.request.uri
@@ -18,7 +19,9 @@ val CmsPublicModule = module {
     singleton(CmsPublic::class)
 }
 
-class CmsPublic {
+class CmsPublic(
+    private val log: Log
+) {
 
     @KtorExperimentalAPI
     fun Route.mount() {

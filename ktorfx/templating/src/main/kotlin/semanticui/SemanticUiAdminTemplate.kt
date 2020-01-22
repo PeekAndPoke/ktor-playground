@@ -18,8 +18,6 @@ open class SemanticUiAdminTemplate(
         pageHead {
             title { +"Admin" }
         }
-
-        initInsights()
     }
 
     override fun HTML.apply() {
