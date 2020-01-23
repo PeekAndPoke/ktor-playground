@@ -17,6 +17,7 @@ import de.peekandpoke.modules.cms.RenderCtx
 import de.peekandpoke.modules.cms.cms
 import de.peekandpoke.modules.cms.domain.CmsElement
 import de.peekandpoke.modules.cms.domain.CmsLayout
+import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.polyglot.untranslated
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
@@ -24,6 +25,7 @@ import kotlinx.html.a
 import kotlinx.html.div
 import kotlinx.html.id
 
+@Mutable
 data class LandingPageLayout(
     override val elements: List<CmsElement> = listOf()
 ) : CmsLayout {

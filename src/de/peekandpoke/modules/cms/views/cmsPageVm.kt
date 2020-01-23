@@ -8,7 +8,7 @@ import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.viewModel
 import de.peekandpoke.modules.cms.cms
 import de.peekandpoke.modules.cms.cmsAdminRoutes
-import de.peekandpoke.modules.cms.cmsPages
+import de.peekandpoke.modules.cms.db.cmsPages
 import de.peekandpoke.modules.cms.domain.CmsPage
 import de.peekandpoke.modules.cms.domain.CmsPageChangeLayoutForm
 import de.peekandpoke.modules.cms.domain.CmsPageForm

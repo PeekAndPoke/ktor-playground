@@ -1,6 +1,8 @@
 package de.peekandpoke.modules.cms
 
 import de.peekandpoke.ktorfx.common.kontainer
+import de.peekandpoke.modules.cms.db.CmsPagesRepository
+import de.peekandpoke.modules.cms.db.CmsSnippetsRepository
 import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
 import io.ktor.application.ApplicationCall
@@ -12,6 +14,10 @@ fun KontainerBuilder.cmsCommon() = module(CmsCommonModule)
 val CmsCommonModule = module {
     singleton(Cms::class)
     singleton(SemanticMarkdown::class)
+
+    // database
+    singleton(CmsPagesRepository::class)
+    singleton(CmsSnippetsRepository::class)
 }
 
 /**

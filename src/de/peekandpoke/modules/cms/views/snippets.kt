@@ -3,16 +3,16 @@ package de.peekandpoke.modules.cms.views
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import de.peekandpoke.modules.cms.CmsAdminRoutes
-import de.peekandpoke.modules.cms.domain.CmsPage
+import de.peekandpoke.modules.cms.domain.CmsSnippet
 import de.peekandpoke.ultra.vault.Stored
 import kotlinx.html.*
 
-internal fun SimpleTemplate.pages(routes: CmsAdminRoutes, pages: List<Stored<CmsPage>>) {
+internal fun SimpleTemplate.snippets(routes: CmsAdminRoutes, pages: List<Stored<CmsSnippet>>) {
 
-    breadCrumbs = listOf(CmsMenu.PAGES)
+    breadCrumbs = listOf(CmsMenu.SNIPPETS)
 
     pageHead {
-        title { +"CMS Pages" }
+        title { +"CMS Snippets" }
     }
 
     content {
@@ -20,8 +20,8 @@ internal fun SimpleTemplate.pages(routes: CmsAdminRoutes, pages: List<Stored<Cms
             +"Pages"
 
             ui.right.floated.basic.primary.button A {
-                href = routes.createPage
-                +"Create Page"
+                href = routes.createSnippet
+                +"Create Snippet"
             }
         }
 
@@ -30,7 +30,6 @@ internal fun SimpleTemplate.pages(routes: CmsAdminRoutes, pages: List<Stored<Cms
                 tr {
                     th { +"Id" }
                     th { +"Name" }
-                    th { +"Slug" }
                     th { +"Created at" }
                     th { +"Updated at" }
                     th { +"Last edit by" }
@@ -41,13 +40,10 @@ internal fun SimpleTemplate.pages(routes: CmsAdminRoutes, pages: List<Stored<Cms
                 pages.forEach {
                     tr {
                         td {
-                            a(href = routes.editPage(it)) { +it._id }
+                            +it._id // a(href = routes.editPage(it)) { +it._id }
                         }
                         td {
-                            a(href = routes.editPage(it)) { +it.value.name }
-                        }
-                        td {
-                            a(href = routes.editPage(it)) { +it.value.slug }
+                            +it.value.name // a(href = routes.editPage(it)) { +it.value.name }
                         }
                         td {
                             +(it._meta?.ts?.createdAt?.toString() ?: "n/a")
@@ -60,7 +56,6 @@ internal fun SimpleTemplate.pages(routes: CmsAdminRoutes, pages: List<Stored<Cms
                         }
                     }
                 }
-
             }
         }
     }

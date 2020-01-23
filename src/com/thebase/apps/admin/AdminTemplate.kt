@@ -99,6 +99,8 @@ class AdminTemplate(
                         ui.item.given(CmsMenu.INDEX in breadCrumbs) { active } A { href = cms.routes.index; +"Overview" }
 
                         ui.item.given(CmsMenu.PAGES in breadCrumbs) { active } A { href = cms.routes.pages; +"Pages" }
+
+                        ui.item.given(CmsMenu.SNIPPETS in breadCrumbs) { active } A { href = cms.routes.snippets; +"Snippets" }
                     }
                 }
 

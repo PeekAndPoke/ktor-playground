@@ -8,8 +8,12 @@ import de.peekandpoke.ktorfx.flashsession.flashSession
 import de.peekandpoke.ktorfx.flashsession.success
 import de.peekandpoke.ktorfx.templating.respond
 import de.peekandpoke.ktorfx.templating.vm.respond
+import de.peekandpoke.modules.cms.db.cmsPages
+import de.peekandpoke.modules.cms.db.cmsSnippets
 import de.peekandpoke.modules.cms.domain.CmsPage
 import de.peekandpoke.modules.cms.domain.CmsPageForm
+import de.peekandpoke.modules.cms.domain.CmsSnippet
+import de.peekandpoke.modules.cms.domain.CmsSnippetForm
 import de.peekandpoke.modules.cms.views.*
 import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
@@ -33,9 +37,6 @@ val CmsAdminModule = module {
     // application
     singleton(CmsAdminRoutes::class)
     singleton(CmsAdmin::class)
-
-    // database
-    singleton(CmsPagesRepository::class)
 }
 
 val ApplicationCall.cmsAdminRoutes: CmsAdminRoutes get() = kontainer.get(CmsAdminRoutes::class)
@@ -54,6 +55,10 @@ class CmsAdminRoutes(converter: OutgoingConverter, cmsAdminMountPoint: String) :
     fun editPage(page: Stored<CmsPage>) = editPage(EditPage(page))
 
     val createPage = route("/pages/create")
+
+    val snippets = route("/snippets")
+
+    val createSnippet = route("/snippets/create")
 }
 
 class CmsAdmin(val routes: CmsAdminRoutes) {
@@ -68,7 +73,7 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
 
         get(routes.pages) {
             respond {
-                pages(this@CmsAdmin, database.cmsPages.findAllSorted().toList())
+                pages(routes, database.cmsPages.findAllSorted().toList())
             }
         }
 
@@ -101,7 +106,34 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
             }
 
             respond {
-                editPage(true, form)
+                createPage(form)
+            }
+        }
+
+        get(routes.snippets) {
+            respond {
+                snippets(routes, database.cmsSnippets.findAllSorted().toList())
+            }
+        }
+
+        getOrPost(routes.createSnippet) {
+
+            val page = New(CmsSnippet())
+            val form = CmsSnippetForm.of(page)
+
+            if (form.submit(call)) {
+
+                if (form.isModified) {
+                    val saved = database.cmsSnippets.save(form.result)
+
+                    flashSession.success("Snippet ${saved.value.name} was created")
+                }
+
+                return@getOrPost call.respondRedirect(routes.snippets)
+            }
+
+            respond {
+                createSnippet(form)
             }
         }
     }
