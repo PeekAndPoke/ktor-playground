@@ -71,13 +71,13 @@ class FormidableViewBuilder(val i18n: I18n, val form: FORM) {
         }
     }
 
-    fun <T> FlowContent.textArea(field: FormField<T>, label: String? = null) {
+    fun <T> FlowContent.textArea(field: FormField<T>, label: String? = null, classes: String = "") {
 
         ui.field.given(field.hasErrors()) { error }.then {
 
             label(field, label)
 
-            textArea(classes = "form-control") {
+            textArea(classes = classes) {
                 id = field.getId().asFormId
                 name = field.getId().value
 

@@ -14,17 +14,18 @@ import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
 import de.peekandpoke.ultra.vault.Stored
 import io.ktor.application.call
-import io.ktor.config.ApplicationConfig
 import io.ktor.response.respondRedirect
 import io.ktor.routing.Route
+import io.ktor.util.KtorExperimentalAPI
 import io.ultra.ktor_tools.database
 
-fun KontainerBuilder.gameOfThrones() = module(GameOfThronesModule)
+@KtorExperimentalAPI
+fun KontainerBuilder.gameOfThrones(config: GameOfThronesConfig) = module(GameOfThronesModule, config)
 
-val GameOfThronesModule = module {
+@KtorExperimentalAPI
+val GameOfThronesModule = module { config: GameOfThronesConfig ->
 
-    // application
-    singleton(GameOfThronesConfig::class)
+    instance(config)
     singleton(GameOfThronesRoutes::class)
     singleton(GameOfThrones::class)
     singleton(GotI18n::class)
@@ -34,13 +35,9 @@ val GameOfThronesModule = module {
     singleton(ActorsRepository::class)
 }
 
-@Suppress("EXPERIMENTAL_API_USAGE")
-class GameOfThronesConfig constructor(config: ApplicationConfig) {
-
-    private val entry = config.config("gameOfThrones")
-
-    val mountPoint: String = entry.property("mountPoint").getString()
-}
+data class GameOfThronesConfig(
+    val mountPoint: String
+)
 
 class GameOfThronesRoutes(converter: OutgoingConverter, config: GameOfThronesConfig) : Routes(converter, config.mountPoint) {
 

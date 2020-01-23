@@ -3,7 +3,7 @@ package com.thebase.apps.cms.elements
 import com.thebase.apps.cms.elements.common.ElementStyle
 import com.thebase.apps.cms.elements.common.nl2br
 import com.thebase.apps.cms.elements.common.partial
-import de.peekandpoke.de.peekandpoke.modules.cms.domain.CmsElement
+import com.thebase.apps.cms.elements.common.styling
 import de.peekandpoke.ktorfx.common.i18n
 import de.peekandpoke.ktorfx.formidable.MutatorForm
 import de.peekandpoke.ktorfx.formidable.field
@@ -12,6 +12,8 @@ import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
 import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
+import de.peekandpoke.modules.cms.RenderCtx
+import de.peekandpoke.modules.cms.domain.CmsElement
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
@@ -21,7 +23,9 @@ import kotlinx.html.div
 @Mutable
 data class FooterElement(
     val styling: ElementStyle = ElementStyle.default,
-    val headline: String = ""
+    val headline: String = "",
+    val middle: String = "",
+    val right: String = ""
 ) : CmsElement {
 
     companion object : Polymorphic.Child {
@@ -30,14 +34,14 @@ data class FooterElement(
 
     inner class VmForm(name: String) : MutatorForm<FooterElement, FooterElementMutator>(mutator(), name) {
 
-        val styling = subForm(
-            ElementStyle.Form(target.styling)
-        )
+        val styling = styling(target.styling)
 
         val headline = field(target::headline)
+        val middle = field(target::middle)
+        val right = field(target::right)
     }
 
-    override fun FlowContent.render() {
+    override fun FlowContent.render(ctx: RenderCtx) {
 
         ui.basic.segment
             .with("footer-element")
@@ -54,22 +58,11 @@ data class FooterElement(
                             }
 
                             ui.five.wide.column {
-                                div(classes = "contact") {
-                                    ui.header H3 {
-                                        +"Contact"
-                                    }
-                                    ui.text P {
-                                        a(href = "mailto:hello@jointhebase.co") {
-                                            +"hello@jointhebase.co"
-                                        }
-                                    }
-                                }
+                                ctx.apply { markdown(middle) }
                             }
 
                             ui.five.wide.right.aligned.column {
-                                ui.header H3 {
-                                    +"Let's meet up no matter where"
-                                }
+                                ctx.apply { markdown(right) }
                             }
                         }
 
@@ -132,6 +125,11 @@ data class FooterElement(
                     ui.divider {}
 
                     textArea(form.headline, "Headline")
+
+                    ui.two.fields {
+                        textArea(form.middle, "Middle", "markdown-editor")
+                        textArea(form.right, "Right", "markdown-editor")
+                    }
                 }
 
                 ui.bottom.attached.segment {

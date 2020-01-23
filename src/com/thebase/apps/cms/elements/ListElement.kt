@@ -1,10 +1,6 @@
 package com.thebase.apps.cms.elements
 
-import com.thebase.apps.cms.elements.common.ElementStyle
-import com.thebase.apps.cms.elements.common.nl2br
-import com.thebase.apps.cms.elements.common.partial
-import com.thebase.apps.cms.elements.common.theBaseColors
-import de.peekandpoke.de.peekandpoke.modules.cms.domain.CmsElement
+import com.thebase.apps.cms.elements.common.*
 import de.peekandpoke.ktorfx.common.i18n
 import de.peekandpoke.ktorfx.formidable.*
 import de.peekandpoke.ktorfx.formidable.rendering.formidable
@@ -13,6 +9,8 @@ import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
 import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
+import de.peekandpoke.modules.cms.RenderCtx
+import de.peekandpoke.modules.cms.domain.CmsElement
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
@@ -41,43 +39,25 @@ data class ListElement(
 
     inner class VmForm(name: String) : MutatorForm<ListElement, ListElementMutator>(mutator(), name) {
 
-        val styling = subForm(
-            ElementStyle.Form(target.styling)
-        )
+        val styling = styling(target.styling)
 
         val headline = field(target::headline)
-
         val text = field(target::text)
 
-        val items1 = list(target::items1, { Item().mutator() }) { element ->
-            subForm(
-                ItemForm(element.value)
-            )
-        }
-
-        val items2 = list(target::items2, { Item().mutator() }) { element ->
-            subForm(
-                ItemForm(element.value)
-            )
-        }
-
-        val items3 = list(target::items3, { Item().mutator() }) { element ->
-            subForm(
-                ItemForm(element.value)
-            )
-        }
+        val items1 = list(target::items1, { Item().mutator() }) { element -> subForm(ItemForm(element.value)) }
+        val items2 = list(target::items2, { Item().mutator() }) { element -> subForm(ItemForm(element.value)) }
+        val items3 = list(target::items3, { Item().mutator() }) { element -> subForm(ItemForm(element.value)) }
     }
 
     class ItemForm(item: ListElement_ItemMutator) : MutatorForm<Item, ListElement_ItemMutator>(item) {
 
         val icon = field(target::icon).acceptsNonBlank().trimmed()
-
         val iconColor = theBaseColors(target::iconColor)
 
         val text = field(target::text).acceptsNonBlank().trimmed()
     }
 
-    override fun FlowContent.render() {
+    override fun FlowContent.render(ctx: RenderCtx) {
 
         val columns = listOf(items1, items2, items3).filter { it.isNotEmpty() }
 
@@ -99,7 +79,7 @@ data class ListElement(
                     }
 
                     if (text.isNotBlank()) {
-                        ui.text P { nl2br(text) }
+                        ui.text P { ctx.apply { markdown(text) } }
                     }
 
                     ui.with(numCols).column.grid {
@@ -127,12 +107,6 @@ data class ListElement(
                 }
             }
         }
-    }
-
-    private fun FlowContent.renderItem(item: Item) {
-        icon.with("huge").with(item.iconColor.toString()).custom(item.icon)
-
-        nl2br(item.text)
     }
 
     override suspend fun editVm(vm: ViewModelBuilder, actions: CmsElement.EditActions): View {
@@ -164,7 +138,7 @@ data class ListElement(
 
                     textInput(form.headline, "Headline")
 
-                    textArea(form.text, "Text")
+                    textArea(form.text, "Text", "markdown-editor")
 
                     val renderItem: FlowContent.(ItemForm) -> Unit = { item ->
 

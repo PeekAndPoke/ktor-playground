@@ -67,8 +67,12 @@ dependencies {
     implementation "io.ktor:ktor-client-jackson:$ktor_version"
     compile("com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version")
 
-    // webjars
+    // Stuff needed for cms
+    compile 'com.atlassian.commonmark:commonmark:0.14.0'
+    compile 'org.webjars.bower:simplemde-markdown-editor:1.11.2'
 
+
+    // Webjars for THE BASE
     compile 'org.webjars.bower:slick-carousel:1.8.1'
 
     // ultra

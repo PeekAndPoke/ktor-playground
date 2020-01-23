@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.webjars.bower:simplemde-markdown-editor:1.11.2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.webjars.bower/simplemde-markdown-editor/1.11.2/a2edc6ea91cebe1cd5dc70f5f10299bcee7df5eb/simplemde-markdown-editor-1.11.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.webjars.bower/simplemde-markdown-editor/1.11.2/b04f3ee8f5e43fa3b162981b50bb72fe1acabb33/simplemde-markdown-editor-1.11.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

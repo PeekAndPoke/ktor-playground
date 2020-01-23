@@ -1,20 +1,20 @@
 package com.thebase.apps.cms.elements
 
 import com.thebase._sortme_.karsten.slickOptions
-import com.thebase.apps.cms.elements.common.ElementStyle
-import com.thebase.apps.cms.elements.common.nl2br
-import com.thebase.apps.cms.elements.common.partial
-import de.peekandpoke.de.peekandpoke.modules.cms.domain.CmsElement
+import com.thebase.apps.cms.elements.common.*
 import de.peekandpoke.ktorfx.common.i18n
-import de.peekandpoke.ktorfx.formidable.*
+import de.peekandpoke.ktorfx.formidable.MutatorForm
+import de.peekandpoke.ktorfx.formidable.enum
+import de.peekandpoke.ktorfx.formidable.field
 import de.peekandpoke.ktorfx.formidable.rendering.formidable
+import de.peekandpoke.ktorfx.formidable.withOptions
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
 import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
+import de.peekandpoke.modules.cms.RenderCtx
+import de.peekandpoke.modules.cms.domain.CmsElement
 import de.peekandpoke.modules.cms.domain.Image
-import de.peekandpoke.modules.cms.domain.ImageForm
-import de.peekandpoke.modules.cms.domain.mutator
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.polyglot.untranslated
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
@@ -42,9 +42,7 @@ data class TextImageElement(
 
     inner class VmForm(name: String) : MutatorForm<TextImageElement, TextImageElementMutator>(mutator(), name) {
 
-        val styling = subForm(
-            ElementStyle.Form(target.styling)
-        )
+        val styling = styling(target.styling)
 
         val layout = enum(target::layout).withOptions(
             Layout.ImageLeft to "Image Left".untranslated(),
@@ -54,17 +52,12 @@ data class TextImageElement(
         )
 
         val headline = field(target::headline)
-
         val text = field(target::text)
 
-        val images = list(target::images, { Image().mutator() }) { item ->
-            subForm(
-                ImageForm(item.value)
-            )
-        }
+        val images = images(target::images)
     }
 
-    override fun FlowContent.render() {
+    override fun FlowContent.render(ctx: RenderCtx) {
 
         div(classes = "text-image-element") {
 
@@ -73,22 +66,22 @@ data class TextImageElement(
                 ui.container {
                     when (layout) {
                         Layout.ImageRight -> ui.two.column.grid {
-                            ui.column { textH3() }
+                            ui.column { textH3(ctx) }
                             ui.column { images() }
                         }
 
                         Layout.ImageLeft -> ui.two.column.grid {
                             ui.column { images() }
-                            ui.column { textH3() }
+                            ui.column { textH3(ctx) }
                         }
 
                         Layout.ImageTop -> {
                             images()
-                            textH2()
+                            textH2(ctx)
                         }
 
                         Layout.ImageBottom -> {
-                            textH2()
+                            textH2(ctx)
                             images()
                         }
                     }
@@ -97,14 +90,14 @@ data class TextImageElement(
         }
     }
 
-    private fun DIV.textH2() {
+    private fun DIV.textH2(ctx: RenderCtx) {
         ui.header H2 { nl2br(headline) }
-        ui.item P { nl2br(text) }
+        ui.color(styling.textColor).text { ctx.apply { markdown(text) } }
     }
 
-    private fun DIV.textH3() {
+    private fun DIV.textH3(ctx: RenderCtx) {
         ui.header H3 { nl2br(headline) }
-        ui.item P { nl2br(text) }
+        ui.color(styling.textColor).text { ctx.apply { markdown(text) } }
     }
 
     private fun DIV.images() {
@@ -163,7 +156,7 @@ data class TextImageElement(
 
                     textArea(form.headline, "Headline")
 
-                    textArea(form.text, "Text")
+                    textArea(form.text, "Text", "markdown-editor")
 
                     ui.header H4 { +"Images" }
 

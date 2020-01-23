@@ -1,5 +1,7 @@
 package de.peekandpoke.ktorfx.common
 
+import de.peekandpoke.ktorfx.common.config.AppConfig
+import de.peekandpoke.ktorfx.common.config.NullAppConfig
 import de.peekandpoke.ktorfx.common.texts.FormsI18n
 import de.peekandpoke.ktorfx.common.texts.PeopleI18n
 import de.peekandpoke.ultra.depot.Depot
@@ -27,6 +29,9 @@ val KtorFX_Common = module {
 
     // session
     dynamic(CurrentSession::class, NullCurrentSession::class)
+
+    // app config
+    instance(AppConfig::class, NullAppConfig)
 }
 
 /**

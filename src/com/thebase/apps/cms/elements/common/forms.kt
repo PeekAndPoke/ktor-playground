@@ -4,13 +4,16 @@ import de.peekandpoke.ktorfx.formidable.*
 import de.peekandpoke.ktorfx.formidable.rendering.FormidableViewBuilder
 import de.peekandpoke.ktorfx.semanticui.SemanticColor
 import de.peekandpoke.ktorfx.semanticui.ui
+import de.peekandpoke.modules.cms.domain.Image
 import de.peekandpoke.modules.cms.domain.ImageForm
 import de.peekandpoke.modules.cms.domain.ImageMutator
+import de.peekandpoke.modules.cms.domain.mutator
 import de.peekandpoke.ultra.polyglot.untranslated
 import kotlinx.html.FlowContent
 import kotlinx.html.img
 import kotlinx.html.style
 import kotlin.reflect.KMutableProperty0
+import kotlin.reflect.KProperty0
 
 fun Form.theBaseColors(prop: KMutableProperty0<SemanticColor>): FormFieldWithOptions<SemanticColor> = enum(prop).withOptions(
     SemanticColor.default to "default".untranslated(),
@@ -23,6 +26,14 @@ fun Form.theBaseColors(prop: KMutableProperty0<SemanticColor>): FormFieldWithOpt
     SemanticColor.blue to "dark blue".untranslated(),
     SemanticColor.black to "black".untranslated()
 )
+
+fun Form.styling(styling: ElementStyleMutator) = subForm(ElementStyle.Form(styling))
+
+fun Form.images(prop: KProperty0<MutableList<ImageMutator>>) = list(prop, { Image().mutator() }) { item ->
+    subForm(
+        ImageForm(item.value)
+    )
+}
 
 fun FormidableViewBuilder.partial(flow: FlowContent, form: ElementStyle.Form) = flow.apply {
 

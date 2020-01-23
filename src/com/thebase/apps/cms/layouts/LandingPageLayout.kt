@@ -4,8 +4,6 @@ import com.thebase._sortme_.karsten.addAt
 import com.thebase._sortme_.karsten.camelCaseDivide
 import com.thebase._sortme_.karsten.removeAt
 import com.thebase._sortme_.karsten.replaceAt
-import de.peekandpoke.de.peekandpoke.modules.cms.domain.CmsElement
-import de.peekandpoke.de.peekandpoke.modules.cms.domain.CmsLayout
 import de.peekandpoke.ktorfx.common.i18n
 import de.peekandpoke.ktorfx.formidable.Form
 import de.peekandpoke.ktorfx.formidable.button
@@ -15,7 +13,10 @@ import de.peekandpoke.ktorfx.formidable.withOptions
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
 import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
+import de.peekandpoke.modules.cms.RenderCtx
 import de.peekandpoke.modules.cms.cms
+import de.peekandpoke.modules.cms.domain.CmsElement
+import de.peekandpoke.modules.cms.domain.CmsLayout
 import de.peekandpoke.ultra.polyglot.untranslated
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
@@ -65,7 +66,7 @@ data class LandingPageLayout(
 
     override fun withElements(elements: List<CmsElement>): LandingPageLayout = copy(elements = elements)
 
-    override fun FlowContent.render() {
+    override fun FlowContent.render(ctx: RenderCtx) {
 
         ui.basic.segment {
             id = "header"
@@ -112,7 +113,7 @@ data class LandingPageLayout(
         div(classes = "segment-stack") {
 
             elements.forEach {
-                it.apply { render() }
+                it.apply { render(ctx) }
             }
         }
     }

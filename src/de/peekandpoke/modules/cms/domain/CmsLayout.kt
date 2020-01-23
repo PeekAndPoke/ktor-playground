@@ -1,7 +1,8 @@
-package de.peekandpoke.de.peekandpoke.modules.cms.domain
+package de.peekandpoke.modules.cms.domain
 
 import de.peekandpoke.ktorfx.templating.vm.View
 import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
+import de.peekandpoke.modules.cms.RenderCtx
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
 import kotlinx.html.div
@@ -37,7 +38,7 @@ interface CmsLayout : CmsItem {
 
         override fun withElements(elements: List<CmsElement>): EmptyLayout = copy(elements = elements)
 
-        override fun FlowContent.render() {
+        override fun FlowContent.render(ctx: RenderCtx) {
             // noop
         }
     }

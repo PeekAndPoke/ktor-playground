@@ -1,4 +1,4 @@
-package de.peekandpoke.de.peekandpoke.modules.cms.views
+package de.peekandpoke.modules.cms.views
 
 import de.peekandpoke.ktorfx.common.i18n
 import de.peekandpoke.ktorfx.flashsession.flashSession

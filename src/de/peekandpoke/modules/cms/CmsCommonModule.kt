@@ -11,6 +11,7 @@ fun KontainerBuilder.cmsCommon() = module(CmsCommonModule)
 
 val CmsCommonModule = module {
     singleton(Cms::class)
+    singleton(SemanticMarkdown::class)
 }
 
 /**

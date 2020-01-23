@@ -33,11 +33,12 @@ val KtorFX_Insights = module {
     dynamic(RequestCollector::class)
     dynamic(ResponseCollector::class)
     dynamic(RoutingCollector::class)
+    dynamic(AppConfigCollector::class)
     dynamic(KontainerCollector::class)
+    dynamic(RuntimeCollector::class)
     dynamic(LogCollector::class)
     dynamic(LogCollector.Appender::class)
     dynamic(PipelinePhasesCollector::class)
-    dynamic(RuntimeCollector::class)
     dynamic(VaultCollector::class)
 
     // Insights Bar

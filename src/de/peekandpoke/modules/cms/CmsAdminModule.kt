@@ -1,6 +1,5 @@
 package de.peekandpoke.modules.cms
 
-import de.peekandpoke.de.peekandpoke.modules.cms.views.vm
 import de.peekandpoke.ktorfx.broker.OutgoingConverter
 import de.peekandpoke.ktorfx.broker.Routes
 import de.peekandpoke.ktorfx.broker.getOrPost
@@ -11,10 +10,7 @@ import de.peekandpoke.ktorfx.templating.respond
 import de.peekandpoke.ktorfx.templating.vm.respond
 import de.peekandpoke.modules.cms.domain.CmsPage
 import de.peekandpoke.modules.cms.domain.CmsPageForm
-import de.peekandpoke.modules.cms.views.CmsMenu
-import de.peekandpoke.modules.cms.views.editPage
-import de.peekandpoke.modules.cms.views.index
-import de.peekandpoke.modules.cms.views.pages
+import de.peekandpoke.modules.cms.views.*
 import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
 import de.peekandpoke.ultra.vault.New

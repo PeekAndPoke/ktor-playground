@@ -3,7 +3,6 @@ package com.thebase.apps.cms.elements
 import com.thebase.apps.cms.elements.common.ElementStyle
 import com.thebase.apps.cms.elements.common.nl2br
 import com.thebase.apps.cms.elements.common.partial
-import de.peekandpoke.de.peekandpoke.modules.cms.domain.CmsElement
 import de.peekandpoke.ktorfx.common.i18n
 import de.peekandpoke.ktorfx.formidable.MutatorForm
 import de.peekandpoke.ktorfx.formidable.field
@@ -12,6 +11,8 @@ import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
 import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
+import de.peekandpoke.modules.cms.RenderCtx
+import de.peekandpoke.modules.cms.domain.CmsElement
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
@@ -40,7 +41,7 @@ data class TextElement(
         val text = field(target::text)
     }
 
-    override fun FlowContent.render() {
+    override fun FlowContent.render(ctx: RenderCtx) {
 
         div(classes = "text-element") {
 
@@ -53,7 +54,9 @@ data class TextElement(
                     }
 
                     if (text.isNotBlank()) {
-                        ui.color(styling.textColor).text P { nl2br(text) }
+                        ui.color(styling.textColor).text P {
+                            ctx.apply { markdown(text) }
+                        }
                     }
                 }
             }
@@ -89,7 +92,7 @@ data class TextElement(
 
                     textArea(form.headline, "Headline")
 
-                    textArea(form.text, "Text")
+                    textArea(form.text, "Text", "markdown-editor")
                 }
 
                 ui.bottom.attached.segment {

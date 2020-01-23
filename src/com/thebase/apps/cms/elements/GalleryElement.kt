@@ -4,7 +4,7 @@ import com.thebase._sortme_.karsten.slickOptions
 import com.thebase.apps.cms.elements.common.ElementStyle
 import com.thebase.apps.cms.elements.common.nl2br
 import com.thebase.apps.cms.elements.common.partial
-import de.peekandpoke.de.peekandpoke.modules.cms.domain.CmsElement
+import com.thebase.apps.cms.elements.common.styling
 import de.peekandpoke.ktorfx.common.i18n
 import de.peekandpoke.ktorfx.formidable.*
 import de.peekandpoke.ktorfx.formidable.rendering.formidable
@@ -12,6 +12,8 @@ import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
 import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
+import de.peekandpoke.modules.cms.RenderCtx
+import de.peekandpoke.modules.cms.domain.CmsElement
 import de.peekandpoke.modules.cms.domain.Image
 import de.peekandpoke.modules.cms.domain.ImageForm
 import de.peekandpoke.ultra.mutator.Mutable
@@ -47,9 +49,7 @@ data class GalleryElement(
 
     inner class VmForm(name: String) : MutatorForm<GalleryElement, GalleryElementMutator>(mutator(), name) {
 
-        val styling = subForm(
-            ElementStyle.Form(target.styling)
-        )
+        val styling = styling(target.styling)
 
         val layout = enum(target::layout).withOptions(
             Layout.SideBySideSlider to "Side by side Slider".untranslated(),
@@ -59,7 +59,6 @@ data class GalleryElement(
         )
 
         val headline = field(target::headline)
-
         val text = field(target::text)
 
         val items = list(target::items, { Item().mutator() }) { item ->
@@ -80,7 +79,7 @@ data class GalleryElement(
         )
     }
 
-    override fun FlowContent.render() {
+    override fun FlowContent.render(ctx: RenderCtx) {
 
         div {
             classes = setOf("gallery-element", layout.toString())

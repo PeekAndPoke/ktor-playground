@@ -49,6 +49,8 @@ class CmsPublic(
 
         val page = database.cmsPages.findBySlug(slug) ?: throw NotFoundException("Cms page '$slug' not found")
 
+        val ctx = RenderCtx(cms, call)
+
         respond {
 
             pageHead {
@@ -56,7 +58,7 @@ class CmsPublic(
             }
 
             content {
-                page.value.layout.apply { render() }
+                page.value.layout.apply { render(ctx) }
             }
         }
     }

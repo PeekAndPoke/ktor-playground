@@ -1,20 +1,20 @@
 package com.thebase.apps.cms.elements
 
 import com.thebase._sortme_.karsten.slickOptions
-import com.thebase.apps.cms.elements.common.ElementStyle
-import com.thebase.apps.cms.elements.common.nl2br
-import com.thebase.apps.cms.elements.common.partial
-import de.peekandpoke.de.peekandpoke.modules.cms.domain.CmsElement
+import com.thebase.apps.cms.elements.common.*
 import de.peekandpoke.ktorfx.common.i18n
-import de.peekandpoke.ktorfx.formidable.*
+import de.peekandpoke.ktorfx.formidable.MutatorForm
+import de.peekandpoke.ktorfx.formidable.enum
+import de.peekandpoke.ktorfx.formidable.field
 import de.peekandpoke.ktorfx.formidable.rendering.formidable
+import de.peekandpoke.ktorfx.formidable.withOptions
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
 import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
+import de.peekandpoke.modules.cms.RenderCtx
+import de.peekandpoke.modules.cms.domain.CmsElement
 import de.peekandpoke.modules.cms.domain.Image
-import de.peekandpoke.modules.cms.domain.ImageForm
-import de.peekandpoke.modules.cms.domain.mutator
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.polyglot.untranslated
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
@@ -42,9 +42,7 @@ data class HeroElement(
 
     inner class VmForm(name: String) : MutatorForm<HeroElement, HeroElementMutator>(mutator(), name) {
 
-        val styling = subForm(
-            ElementStyle.Form(target.styling)
-        )
+        val styling = styling(target.styling)
 
         val layout = enum(target::layout).withOptions(
             Layout.ImageRight to "Image on the right".untranslated(),
@@ -52,39 +50,35 @@ data class HeroElement(
         )
 
         val headline = field(target::headline)
-
         val text = field(target::text)
 
-        val images = list(target::images, { Image().mutator() }) { item ->
-            subForm(
-                ImageForm(item.value)
-            )
-        }
+        val images = images(target::images)
     }
 
-    override fun FlowContent.render() {
+    override fun FlowContent.render(ctx: RenderCtx) {
 
         div(classes = "hero-element") {
 
             ui.basic.inverted.segment.color(styling.backgroundColor) {
 
                 when (layout) {
-                    Layout.ImageRight -> renderImageRight()
-
+                    Layout.ImageRight -> renderImageRight(ctx)
                     Layout.FullSizeImage -> renderFullSizeImage()
                 }
             }
         }
     }
 
-    private fun FlowContent.renderImageRight() {
+    private fun FlowContent.renderImageRight(ctx: RenderCtx) {
 
         ui.container {
             ui.grid {
 
                 ui.nine.wide.column {
-                    ui.color(styling.textColor).header H1 { nl2br(headline) }
-                    ui.color(styling.textColor).text P { nl2br(text) }
+                    ui.color(styling.textColor).text.header H1 { nl2br(headline) }
+                    ui.color(styling.textColor).text {
+                        ctx.apply { markdown(text) }
+                    }
                 }
 
                 ui.seven.wide.column.right.aligned {
@@ -152,7 +146,7 @@ data class HeroElement(
 
                     textArea(form.headline, "Headline")
 
-                    textArea(form.text, "Text")
+                    textArea(form.text, "Text", "markdown-editor")
 
                     ui.header H4 { +"Images" }
 

@@ -1,7 +1,6 @@
 package com.thebase.apps.cms.elements
 
 import com.thebase.apps.cms.elements.common.theBaseColors
-import de.peekandpoke.de.peekandpoke.modules.cms.domain.CmsElement
 import de.peekandpoke.ktorfx.common.i18n
 import de.peekandpoke.ktorfx.formidable.MutatorForm
 import de.peekandpoke.ktorfx.formidable.enum
@@ -12,6 +11,8 @@ import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
 import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
+import de.peekandpoke.modules.cms.RenderCtx
+import de.peekandpoke.modules.cms.domain.CmsElement
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.polyglot.untranslated
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
@@ -49,7 +50,7 @@ data class DividerElement(
         )
     }
 
-    override fun FlowContent.render() {
+    override fun FlowContent.render(ctx: RenderCtx) {
 
         div(classes = "divider-element") {
 

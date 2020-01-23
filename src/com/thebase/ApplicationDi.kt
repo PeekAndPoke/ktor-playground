@@ -2,12 +2,15 @@ package com.thebase
 
 import com.thebase.apps.admin.AdminTemplate
 import com.thebase.apps.admin.AdminWebResources
+import com.thebase.config.TheBaseConfig
 import de.peekandpoke.com.thebase._sortme_.AppI18n
 import de.peekandpoke.com.thebase.apps.www.WwwTemplate
 import de.peekandpoke.com.thebase.apps.www.WwwWebResources
 import de.peekandpoke.demos.forms.formDemos
 import de.peekandpoke.demos.semanticui.semanticUi
 import de.peekandpoke.karango.karango
+import de.peekandpoke.ktorfx.common.config.AppConfig
+import de.peekandpoke.ktorfx.common.config.ConfigMapper
 import de.peekandpoke.ktorfx.security.KtorFXSecurityConfig
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import de.peekandpoke.ktorfx.webresources.AppMeta
@@ -23,11 +26,17 @@ import de.peekandpoke.ultra.vault.ultraVault
 import io.ktor.application.Application
 import io.ktor.application.ApplicationEnvironment
 import io.ktor.config.ApplicationConfig
+import io.ktor.util.KtorExperimentalAPI
 import io.ultra.ktor_tools.KtorFXConfig
 import io.ultra.ktor_tools.ktorFx
 import java.net.InetAddress
 
+@KtorExperimentalAPI
 class ApplicationDi(private val app: Application) {
+
+    private val configuration = ConfigMapper().map(app.environment.config, TheBaseConfig::class)
+
+    private val appMeta = object : AppMeta() {}
 
     fun systemKontainer() = commonKontainerBlueprint.useWith(
         // user record provider
@@ -35,8 +44,6 @@ class ApplicationDi(private val app: Application) {
             UserRecord("system", InetAddress.getLocalHost().canonicalHostName)
         )
     )
-
-    private val appMeta = object : AppMeta() {}
 
     val wwwKontainerBlueprint by lazy {
 
@@ -71,7 +78,6 @@ class ApplicationDi(private val app: Application) {
             karango()
             instance(arangoDatabase)
 
-
             // KtorFX ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ktorFx(config)
             // create a app specific cache buster
@@ -83,6 +89,9 @@ class ApplicationDi(private val app: Application) {
             instance(ApplicationEnvironment::class, app.environment)
             @Suppress("EXPERIMENTAL_API_USAGE")
             instance(ApplicationConfig::class, app.environment.config)
+
+            // configuration
+            instance(AppConfig::class, configuration)
 
             // i18n
             singleton(AppI18n::class)
@@ -100,7 +109,7 @@ class ApplicationDi(private val app: Application) {
 
             // application modules
             theBase()
-            gameOfThrones()
+            gameOfThrones(configuration.gameOfThrones)
             semanticUi()
             formDemos()
 

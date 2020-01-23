@@ -1,8 +1,12 @@
 package com.thebase._sortme_.karsten
 
+//  STRINGS  ////////////////////////////////////////////////
+
 fun String.camelCaseSplit() = "(?<=[a-z])(?=[A-Z])".toRegex().split(this)
 
 fun String.camelCaseDivide(divider: String = " ") = camelCaseSplit().joinToString(divider)
+
+//  LISTS  ////////////////////////////////////////////////
 
 fun <E> List<E>.replace(old: E, new: E): List<E> = when (val idx = indexOf(old)) {
     -1 -> this

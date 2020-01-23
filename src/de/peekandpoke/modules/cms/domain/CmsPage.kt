@@ -1,6 +1,5 @@
 package de.peekandpoke.modules.cms.domain
 
-import de.peekandpoke.de.peekandpoke.modules.cms.domain.CmsLayout
 import de.peekandpoke.karango.Karango
 import de.peekandpoke.ultra.mutator.Mutable
 
