@@ -57,7 +57,7 @@ class SemanticAttributeProvider : AttributeProvider {
         }
 
         if (classes != null) {
-            attributes["classes"] = classes
+            attributes["class"] = classes
         }
     }
 }

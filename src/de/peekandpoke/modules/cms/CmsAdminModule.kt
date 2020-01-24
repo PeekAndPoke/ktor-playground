@@ -47,18 +47,29 @@ class CmsAdminRoutes(converter: OutgoingConverter, cmsAdminMountPoint: String) :
 
     val index = route("")
 
+    ////  PAGES  ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     val pages = route("/pages")
+
+    val createPage = route("/pages/create")
 
     data class EditPage(val page: Stored<CmsPage>)
 
     val editPage = route<EditPage>("/pages/{page}/edit")
+
     fun editPage(page: Stored<CmsPage>) = editPage(EditPage(page))
 
-    val createPage = route("/pages/create")
+    ////  PAGES  ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     val snippets = route("/snippets")
 
     val createSnippet = route("/snippets/create")
+
+    data class EditSnippet(val snippet: Stored<CmsSnippet>)
+
+    val editSnippet = route<EditSnippet>("/snippets/{snippet}/edit")
+
+    fun editSnippet(snippet: Stored<CmsSnippet>) = editSnippet(EditSnippet(snippet))
 }
 
 class CmsAdmin(val routes: CmsAdminRoutes) {
@@ -67,7 +78,7 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
 
         get(routes.index) {
             respond {
-                index()
+                index(routes)
             }
         }
 
@@ -134,6 +145,18 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
 
             respond {
                 createSnippet(form)
+            }
+        }
+
+        getOrPost(routes.editSnippet) { data ->
+
+            respond(call.vm(data.snippet)) {
+
+                breadCrumbs = listOf(CmsMenu.PAGES)
+
+                pageHead {
+                    title { +"CMS Edit Snippet" }
+                }
             }
         }
     }

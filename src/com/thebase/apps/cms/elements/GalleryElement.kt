@@ -86,22 +86,22 @@ data class GalleryElement(
 
             ui.basic.segment.given(styling.backgroundColor.isSet) { inverted.color(styling.backgroundColor) }.then {
 
-                texts()
+                texts(ctx)
 
                 when (layout) {
-                    Layout.SideBySideSlider -> sideBySide()
+                    Layout.SideBySideSlider -> sideBySide(ctx)
 
-                    Layout.FullWidthSlider -> fullWidth()
+                    Layout.FullWidthSlider -> fullWidth(ctx)
 
-                    Layout.ThreeColumns -> threeColumns()
+                    Layout.ThreeColumns -> threeColumns(ctx)
 
-                    Layout.FiveColumns -> fiveColumns()
+                    Layout.FiveColumns -> fiveColumns(ctx)
                 }
             }
         }
     }
 
-    private fun DIV.texts() {
+    private fun DIV.texts(ctx: RenderCtx) {
 
         if (headline.isNotBlank() || text.isNotBlank()) {
 
@@ -113,15 +113,15 @@ data class GalleryElement(
                 }
 
                 if (text.isNotBlank()) {
-                    ui.color(styling.textColor).text P {
-                        nl2br(text)
+                    ui.color(styling.textColor).text {
+                        ctx.apply { markdown(text) }
                     }
                 }
             }
         }
     }
 
-    private fun DIV.sideBySide() {
+    private fun DIV.sideBySide(ctx: RenderCtx) {
         div {
             slickOptions(
                 slidesToShow = 5,
@@ -131,11 +131,11 @@ data class GalleryElement(
                 infinite = true
             )
 
-            images()
+            images(ctx)
         }
     }
 
-    private fun DIV.fullWidth() {
+    private fun DIV.fullWidth(ctx: RenderCtx) {
         div {
             slickOptions(
                 slidesToScroll = 1,
@@ -143,11 +143,11 @@ data class GalleryElement(
                 infinite = true
             )
 
-            images()
+            images(ctx)
         }
     }
 
-    private fun DIV.threeColumns() {
+    private fun DIV.threeColumns(ctx: RenderCtx) {
 
         ui.three.column.grid {
 
@@ -155,13 +155,13 @@ data class GalleryElement(
                 ui.center.aligned.column.item {
                     image(it)
                     headline(it)
-                    text(it)
+                    text(ctx, it)
                 }
             }
         }
     }
 
-    private fun DIV.fiveColumns() {
+    private fun DIV.fiveColumns(ctx: RenderCtx) {
 
         ui.five.column.grid {
 
@@ -169,19 +169,19 @@ data class GalleryElement(
                 ui.center.aligned.column.item {
                     image(it)
                     headline(it)
-                    text(it)
+                    text(ctx, it)
                 }
             }
         }
     }
 
-    private fun DIV.images() {
+    private fun DIV.images(ctx: RenderCtx) {
 
         items.forEach {
             ui.item {
                 image(it)
                 headline(it)
-                text(it)
+                text(ctx, it)
             }
         }
     }
@@ -200,10 +200,10 @@ data class GalleryElement(
         }
     }
 
-    private fun DIV.text(it: Item) {
+    private fun DIV.text(ctx: RenderCtx, it: Item) {
         if (it.text.isNotBlank()) {
-            ui.color(styling.textColor).text P {
-                nl2br(it.text)
+            ui.color(styling.textColor).text {
+                ctx.apply { markdown(it.text) }
             }
         }
     }
@@ -230,22 +230,24 @@ data class GalleryElement(
                         +"Gallery '$headline'"
                     }
 
-                    partial(this, form.styling)
+                    ui.three.fields {
+                        partial(this, form.styling)
+                        selectInput(form.layout, "Layout")
+                    }
 
                     ui.divider {}
 
-                    selectInput(form.layout, "Layout")
-
-                    textInput(form.headline, "Headline")
-
-                    textArea(form.text, "Text")
+                    ui.two.fields {
+                        textArea(form.headline, "Headline")
+                        textArea(form.text, "Text", "markdown-editor")
+                    }
 
                     ui.header H4 { +"Gallery Items" }
 
                     listFieldAsGrid(form.items) { item ->
 
                         textInput(item.headline, "Headline")
-                        textArea(item.text, "Text")
+                        textArea(item.text, "Text", "markdown-editor")
 
                         textInput(item.image.url, "Image Url")
                         textInput(item.image.alt, "Image Alt")

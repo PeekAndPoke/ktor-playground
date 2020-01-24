@@ -35,13 +35,21 @@ interface CmsElement : CmsItem {
      * Actions passed to [editVm]
      */
     interface EditActions {
-        fun modify(it: CmsElement): Nothing
+        fun modify(it: CmsElement): Nothing {
+            error("not implemented")
+        }
 
-        fun delete(): Nothing
+        fun delete(): Nothing {
+            error("not implemented")
+        }
 
-        fun addBefore(it: CmsElement): Nothing
+        fun addBefore(it: CmsElement): Nothing {
+            error("not implemented")
+        }
 
-        fun addAfter(it: CmsElement): Nothing
+        fun addAfter(it: CmsElement): Nothing {
+            error("not implemented")
+        }
     }
 
     suspend fun editVm(vm: ViewModelBuilder, actions: EditActions): View = vm.view {

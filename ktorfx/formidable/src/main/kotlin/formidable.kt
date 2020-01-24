@@ -147,4 +147,5 @@ interface CsrfFormField : HiddenFormField<String>
  */
 interface FormFieldWithOptions<T> : FormField<T> {
     val options: List<Pair<T, Translatable>>
+    val default: Translatable?
 }

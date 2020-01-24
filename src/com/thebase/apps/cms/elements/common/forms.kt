@@ -3,7 +3,6 @@ package com.thebase.apps.cms.elements.common
 import de.peekandpoke.ktorfx.formidable.*
 import de.peekandpoke.ktorfx.formidable.rendering.FormidableViewBuilder
 import de.peekandpoke.ktorfx.semanticui.SemanticColor
-import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.modules.cms.domain.Image
 import de.peekandpoke.modules.cms.domain.ImageForm
 import de.peekandpoke.modules.cms.domain.ImageMutator
@@ -36,11 +35,8 @@ fun Form.images(prop: KProperty0<MutableList<ImageMutator>>) = list(prop, { Imag
 }
 
 fun FormidableViewBuilder.partial(flow: FlowContent, form: ElementStyle.Form) = flow.apply {
-
-    ui.two.fields {
-        selectInput(form.textColor, "Text color")
-        selectInput(form.backgroundColor, "Background color")
-    }
+    selectInput(form.textColor, "Text color")
+    selectInput(form.backgroundColor, "Background color")
 }
 
 fun FormidableViewBuilder.partial(flow: FlowContent, images: MutableListField<ImageMutator, ImageForm>) = flow.apply {

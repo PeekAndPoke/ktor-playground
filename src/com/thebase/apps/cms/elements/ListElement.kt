@@ -79,7 +79,7 @@ data class ListElement(
                     }
 
                     if (text.isNotBlank()) {
-                        ui.text P { ctx.apply { markdown(text) } }
+                        div { ctx.apply { markdown(text) } }
                     }
 
                     ui.with(numCols).column.grid {
@@ -132,13 +132,16 @@ data class ListElement(
                         +"List '$headline'"
                     }
 
-                    partial(this, form.styling)
+                    ui.two.fields {
+                        partial(this, form.styling)
+                    }
 
                     ui.divider {}
 
-                    textInput(form.headline, "Headline")
-
-                    textArea(form.text, "Text", "markdown-editor")
+                    ui.two.fields {
+                        textArea(form.headline, "Headline")
+                        textArea(form.text, "Text", "markdown-editor")
+                    }
 
                     val renderItem: FlowContent.(ItemForm) -> Unit = { item ->
 

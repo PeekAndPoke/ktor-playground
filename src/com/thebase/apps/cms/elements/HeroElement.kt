@@ -138,15 +138,17 @@ data class HeroElement(
                         +"Hero"
                     }
 
-                    partial(this, form.styling)
-
-                    selectInput(form.layout, "Layout")
+                    ui.three.fields {
+                        partial(this, form.styling)
+                        selectInput(form.layout, "Layout")
+                    }
 
                     ui.divider {}
 
-                    textArea(form.headline, "Headline")
-
-                    textArea(form.text, "Text", "markdown-editor")
+                    ui.two.fields {
+                        textArea(form.headline, "Headline")
+                        textArea(form.text, "Text", "markdown-editor")
+                    }
 
                     ui.header H4 { +"Images" }
 

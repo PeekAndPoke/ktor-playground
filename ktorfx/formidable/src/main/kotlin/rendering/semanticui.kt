@@ -137,6 +137,12 @@ class FormidableViewBuilder(val i18n: I18n, val form: FORM) {
                 id = field.getId().asFormId
                 name = field.getId().value
 
+                field.default?.let {
+                    option {
+                        +i18n[it]
+                    }
+                }
+
                 field.options.forEach {
 
                     option {

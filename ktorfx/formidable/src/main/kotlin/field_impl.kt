@@ -19,6 +19,14 @@ fun <T> FormField<T>.withOptions(options: List<Pair<T, Translatable>>): FormFiel
     }
 
 /**
+ * Converts a [FormField] into a [FormFieldWithOptions]
+ */
+fun <T> FormField<T>.withOptions(default: Translatable, options: List<Pair<T, Translatable>>): FormFieldWithOptions<T> =
+    FormFieldWithOptionsImpl(this, options, default).also {
+        resultingInAnyOf(options.map { (k, _) -> k }.toSet())
+    }
+
+/**
  * Converts a [FormField] into a [HiddenFormField]
  */
 fun <T> FormField<T>.hidden(): HiddenFormField<T> = HiddenFormFieldImpl(this)
@@ -178,5 +186,6 @@ internal class SubmissionCheckFieldImpl(wrapped: FormField<String>) : Submission
  */
 internal class FormFieldWithOptionsImpl<T>(
     private val wrapped: FormField<T>,
-    override val options: List<Pair<T, Translatable>>
+    override val options: List<Pair<T, Translatable>>,
+    override val default: Translatable? = null
 ) : FormFieldWithOptions<T>, FormField<T> by wrapped

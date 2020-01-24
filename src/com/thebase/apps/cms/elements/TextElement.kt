@@ -50,11 +50,13 @@ data class TextElement(
                 ui.container {
 
                     if (headline.isNotBlank()) {
-                        ui.color(styling.textColor).header H2 { nl2br(headline) }
+                        ui.color(styling.textColor).header H2 {
+                            nl2br(headline)
+                        }
                     }
 
                     if (text.isNotBlank()) {
-                        ui.color(styling.textColor).text P {
+                        ui.color(styling.textColor).text {
                             ctx.apply { markdown(text) }
                         }
                     }
@@ -86,13 +88,16 @@ data class TextElement(
                         +"Text '$headline'"
                     }
 
-                    partial(this, form.styling)
+                    ui.two.fields {
+                        partial(this, form.styling)
+                    }
 
                     ui.divider {}
 
-                    textArea(form.headline, "Headline")
-
-                    textArea(form.text, "Text", "markdown-editor")
+                    ui.two.fields {
+                        textArea(form.headline, "Headline")
+                        textArea(form.text, "Text", "markdown-editor")
+                    }
                 }
 
                 ui.bottom.attached.segment {

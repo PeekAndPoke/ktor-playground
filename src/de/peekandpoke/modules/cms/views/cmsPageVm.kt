@@ -38,13 +38,14 @@ suspend fun ApplicationCall.vm(storedPage: Stored<CmsPage>) = viewModel { vmb ->
 
         val saved = database.cmsPages.save(storedPage) { page ->
 
-            val newLayout = cms.getLayout(changeLayoutForm.result.layout)
+            val newLayout = cms
+                .getLayout(changeLayoutForm.data.layout)
                 .withElements(storedPage.value.layout.elements)
 
             page.copy(layout = newLayout)
         }
 
-        flashSession.success("Layout of '${saved.value.name}' was changed to '${changeLayoutForm.result.layout}'")
+        flashSession.success("Layout of '${saved.value.name}' was changed to '${changeLayoutForm.data.layout}'")
 
         vmb.reload()
     }
@@ -69,37 +70,43 @@ suspend fun ApplicationCall.vm(storedPage: Stored<CmsPage>) = viewModel { vmb ->
             +"Edit Page ${form.name.value} (${form.result._key})"
         }
 
-        formidable(i18n, form) {
+        ui.two.column.grid {
+            ui.column {
+                formidable(i18n, form) {
 
-            ui.header H2 { +"General settings" }
+                    ui.header H2 { +"General settings" }
 
-            ui.top.attached.segment {
+                    ui.top.attached.segment {
+                        ui.two.fields {
+                            textInput(form.name, label = "Name")
+                            textInput(form.slug, label = "Slug")
+                        }
+                    }
 
-                ui.two.fields {
-                    textInput(form.name, label = "Name")
-                    textInput(form.slug, label = "Slug")
+                    ui.bottom.attached.segment {
+                        submitButton("Save Page")
+                    }
                 }
             }
 
-            ui.bottom.attached.segment {
-                submitButton("Save Page")
-            }
-        }
+            ui.column {
+                formidable(i18n, changeLayoutForm) {
 
-        formidable(i18n, changeLayoutForm) {
+                    ui.header H2 { +"Select Layout" }
 
-            ui.header H2 { +"Select Layout" }
+                    ui.top.attached.red.segment {
+                        ui.fields {
+                            selectInput(it.layout, label = "Layout")
+                        }
+                    }
 
-            ui.top.attached.segment {
-                ui.two.fields {
-                    selectInput(it.layout, label = "Layout")
+                    ui.bottom.attached.segment {
+                        submitButton("Change Layout")
+                    }
                 }
             }
-
-            ui.bottom.attached.segment {
-                submitButton("Change Layout")
-            }
         }
+
 
         ui.header H2 { +"Page Elements" }
 

@@ -62,7 +62,7 @@ data class FooterElement(
                             }
 
                             ui.five.wide.right.aligned.column {
-                                ctx.apply { markdown(right) }
+                                ui.header H3 { nl2br(right) }
                             }
                         }
 
@@ -120,15 +120,16 @@ data class FooterElement(
                         +"Footer"
                     }
 
-                    partial(this, form.styling)
+                    ui.two.fields {
+                        partial(this, form.styling)
+                    }
 
                     ui.divider {}
 
-                    textArea(form.headline, "Headline")
-
-                    ui.two.fields {
+                    ui.three.fields {
+                        textArea(form.headline, "Headline")
                         textArea(form.middle, "Middle", "markdown-editor")
-                        textArea(form.right, "Right", "markdown-editor")
+                        textArea(form.right, "Right")
                     }
                 }
 

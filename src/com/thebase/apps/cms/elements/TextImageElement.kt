@@ -148,15 +148,17 @@ data class TextImageElement(
                         +"Text And Image '$headline'"
                     }
 
-                    partial(this, form.styling)
+                    ui.three.fields {
+                        partial(this, form.styling)
+                        selectInput(form.layout, "Layout")
+                    }
 
                     ui.divider {}
 
-                    selectInput(form.layout, "Layout")
-
-                    textArea(form.headline, "Headline")
-
-                    textArea(form.text, "Text", "markdown-editor")
+                    ui.two.fields {
+                        textArea(form.headline, "Headline")
+                        textArea(form.text, "Text", "markdown-editor")
+                    }
 
                     ui.header H4 { +"Images" }
 

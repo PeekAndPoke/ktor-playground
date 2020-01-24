@@ -1,14 +1,28 @@
 
 .segment-stack .list-element {
 
-  .ui.list {
-    .ui.item {
-      margin-top: 20px;
-      vertical-align: middle;
+  .ui.grid {
 
-      p {
+    &.one.column {
+      padding: 0 25%;
+    }
+
+    .ui.list {
+      .ui.item {
+        padding: 10px 0;
         vertical-align: middle;
+
+        //border-top: 2px solid @black;
+        //
+        //&:first-child {
+        //  border-top: none;
+        //}
+
+        p {
+          vertical-align: middle;
+        }
       }
     }
   }
+
 }
