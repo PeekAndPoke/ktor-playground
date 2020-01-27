@@ -5,13 +5,13 @@ import de.peekandpoke.ktorfx.formidable.acceptsNonBlank
 import de.peekandpoke.ktorfx.formidable.field
 import de.peekandpoke.ktorfx.formidable.trimmed
 
-class ImageForm(it: ImageMutator) : MutatorForm<Image, ImageMutator>(it) {
+class LinkForm(it: LinkMutator) : MutatorForm<Link, LinkMutator>(it) {
 
     companion object {
-        fun of(it: Image) = ImageForm(it.mutator())
+        fun of(it: Link) = LinkForm(it.mutator())
     }
 
-    val url = field(target::url).trimmed().acceptsNonBlank()
+    val title = field(target::title).trimmed().acceptsNonBlank()
 
-    val alt = field(target::alt).trimmed().acceptsNonBlank()
+    val url = field(target::url).trimmed().acceptsNonBlank()
 }

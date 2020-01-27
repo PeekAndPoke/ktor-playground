@@ -17,7 +17,6 @@ import de.peekandpoke.modules.cms.domain.CmsElement
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
-import kotlinx.html.a
 import kotlinx.html.div
 
 @Mutable
@@ -32,7 +31,7 @@ data class FooterElement(
         override val identifier = "footer-element"
     }
 
-    override val name: String get() = "Footer '$headline'"
+    override val elementName: String get() = "Footer '$headline'"
 
     inner class VmForm(name: String) : MutatorForm<FooterElement, FooterElementMutator>(mutator(), name) {
 
@@ -111,13 +110,11 @@ data class FooterElement(
 
         return vm.view {
 
-            formidable(vm.call.i18n, form) {
+            formidable(vm.call.i18n, form, { action = "#element.${actions.index}" }) {
 
                 ui.attached.segment {
 
-                    a { attributes["name"] = vm.path }
-
-                    ui.header H3 {
+                    ui.header.given(form.isSubmitted() && form.isNotValid()) { red } H3 {
                         icon.arrow_circle_down()
                         +"Footer"
                     }

@@ -133,8 +133,6 @@ suspend fun ApplicationCall.vm(storedPage: Stored<CmsPage>) = viewModel { vmb ->
             }
         }
 
-        ui.header H2 { +"Page Elements" }
-
         layoutView.render(this)
     }
 }

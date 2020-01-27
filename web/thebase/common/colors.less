@@ -1,6 +1,6 @@
 @white: #FFFFFF;
 
-@semantic-colors: blue, green, orange, pink, purple, red, teal, yellow, black, grey, white;
+@semantic-colors: blue, violet, green, olive, orange, pink, purple, red, teal, yellow, brown, black, grey, white;
 
 .ui.white {
   &.header {
@@ -8,3 +8,25 @@
   }
 }
 
+
+// loop definition
+.coloredTexts(@list, @i: 1) when (@i <= length(@list)) {
+  // extract the right color from the list
+  @color: extract(@list, @i);
+
+  // apply the background to the selector
+  .ui.@{color}.text {
+    a {
+      color: @@color;
+    }
+
+    * {
+      color: @@color;
+    }
+  }
+
+  // recursive call for the next color
+  .coloredTexts(@list, @i + 1);
+}
+
+.coloredTexts(@semantic-colors);

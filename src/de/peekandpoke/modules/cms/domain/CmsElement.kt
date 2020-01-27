@@ -63,7 +63,7 @@ interface CmsElement : CmsItem {
         }
     }
 
-    val name: String get() = this::class.simpleName ?: "n/a"
+    val elementName: String get() = this::class.simpleName ?: "n/a"
 
     suspend fun editVm(vm: ViewModelBuilder, actions: EditActions): View = vm.view {
         div {

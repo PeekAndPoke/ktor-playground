@@ -34,7 +34,7 @@ data class GalleryElement(
         override val identifier = "gallery-element"
     }
 
-    override val name: String get() = "Gallery '$headline' - '$layout'"
+    override val elementName: String get() = "Gallery '$headline' - '$layout'"
 
     data class Item(
         val headline: String = "",
@@ -221,13 +221,12 @@ data class GalleryElement(
         }
 
         return vm.view {
-            formidable(vm.call.i18n, form) {
+
+            formidable(vm.call.i18n, form, { action = "#element.${actions.index}" }) {
 
                 ui.attached.segment {
 
-                    a { attributes["name"] = vm.path }
-
-                    ui.header H3 {
+                    ui.header.given(form.isSubmitted() && form.isNotValid()) { red } H3 {
                         icon.images()
                         +"Gallery '$headline'"
                     }

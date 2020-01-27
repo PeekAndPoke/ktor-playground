@@ -14,6 +14,7 @@ class TheBaseCmsModule : Cms.Module(
         DividerElement::class to DividerElement(),
         FooterElement::class to FooterElement(),
         GalleryElement::class to GalleryElement(),
+        HeaderElement::class to HeaderElement(),
         HeroElement::class to HeroElement(),
         ListElement::class to ListElement(),
         SnippetElement::class to SnippetElement(),

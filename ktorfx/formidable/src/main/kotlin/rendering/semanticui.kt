@@ -89,13 +89,13 @@ class FormidableViewBuilder(val i18n: I18n, val form: FORM) {
         }
     }
 
-    fun <T> FlowContent.textInput(field: FormField<T>, label: String? = null) {
+    fun <T> FlowContent.textInput(field: FormField<T>, label: String? = null, classes: String = "") {
 
         ui.field.given(field.hasErrors()) { error }.then {
 
             label(field, label)
 
-            textInput(classes = "form-control") {
+            textInput(classes = classes) {
                 id = field.getId().asFormId
                 name = field.getId().value
                 type = InputType.text
@@ -112,7 +112,7 @@ class FormidableViewBuilder(val i18n: I18n, val form: FORM) {
 
             label(field, label)
 
-            textInput(classes = "form-control") {
+            textInput {
                 id = field.getId().asFormId
                 name = field.getId().value
                 type = InputType.number
@@ -134,7 +134,7 @@ class FormidableViewBuilder(val i18n: I18n, val form: FORM) {
 
             label(field, label)
 
-            select(classes = "form-control") {
+            select {
                 id = field.getId().asFormId
                 name = field.getId().value
 

@@ -17,7 +17,6 @@ import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.polyglot.untranslated
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
-import kotlinx.html.a
 import kotlinx.html.div
 
 @Mutable
@@ -30,7 +29,7 @@ data class DividerElement(
         override val identifier = "divider-element"
     }
 
-    override val name: String get() = "Divider '$height'"
+    override val elementName: String get() = "Divider '$height'"
 
     @Suppress("EnumEntryName")
     enum class Height {
@@ -76,13 +75,11 @@ data class DividerElement(
 
         return vm.view {
 
-            formidable(vm.call.i18n, form) {
+            formidable(vm.call.i18n, form, { action = "#element.${actions.index}" }) {
 
                 ui.attached.segment {
 
-                    a { attributes["name"] = vm.path }
-
-                    ui.header H3 {
+                    ui.header.given(form.isSubmitted() && form.isNotValid()) { red } H3 {
                         icon.arrows_alternate_vertical()
                         +"Divider"
                     }

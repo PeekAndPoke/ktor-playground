@@ -3,6 +3,7 @@ package com.thebase.apps.cms.elements
 import com.thebase.apps.cms.elements.common.ElementStyle
 import com.thebase.apps.cms.elements.common.nl2br
 import com.thebase.apps.cms.elements.common.partial
+import com.thebase.apps.cms.elements.common.styling
 import de.peekandpoke.ktorfx.common.i18n
 import de.peekandpoke.ktorfx.formidable.MutatorForm
 import de.peekandpoke.ktorfx.formidable.field
@@ -16,7 +17,6 @@ import de.peekandpoke.modules.cms.domain.CmsElement
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
-import kotlinx.html.a
 import kotlinx.html.div
 
 @Mutable
@@ -30,13 +30,11 @@ data class TextElement(
         override val identifier = "text-element"
     }
 
-    override val name: String get() = "Text '$headline'"
+    override val elementName: String get() = "Text '$headline'"
 
     inner class VmForm(name: String) : MutatorForm<TextElement, TextElementMutator>(mutator(), name) {
 
-        val styling = subForm(
-            ElementStyle.Form(target.styling)
-        )
+        val styling = styling(target.styling)
 
         val headline = field(target::headline)
 
@@ -79,13 +77,11 @@ data class TextElement(
 
         return vm.view {
 
-            formidable(vm.call.i18n, form) {
+            formidable(vm.call.i18n, form, { action = "#element.${actions.index}" }) {
 
                 ui.attached.segment {
 
-                    a { attributes["name"] = vm.path }
-
-                    ui.header H3 {
+                    ui.header.given(form.isSubmitted() && form.isNotValid()) { red } H3 {
                         icon.quote_right()
                         +"Text '$headline'"
                     }

@@ -35,7 +35,7 @@ data class HeroElement(
         override val identifier = "hero-element"
     }
 
-    override val name: String get() = "Hero '$headline'"
+    override val elementName: String get() = "Hero '$headline'"
 
     enum class Layout {
         ImageRight,
@@ -131,11 +131,11 @@ data class HeroElement(
 
         return vm.view {
 
-            formidable(vm.call.i18n, form) {
+            formidable(vm.call.i18n, form, { action = "#element.${actions.index}" }) {
 
                 ui.attached.segment {
 
-                    ui.header H3 {
+                    ui.header.given(form.isSubmitted() && form.isNotValid()) { red } H3 {
                         icon.html5()
                         +"Hero"
                     }

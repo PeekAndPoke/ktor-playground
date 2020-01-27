@@ -18,10 +18,7 @@ import de.peekandpoke.modules.cms.domain.Image
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.polyglot.untranslated
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
-import kotlinx.html.DIV
-import kotlinx.html.FlowContent
-import kotlinx.html.div
-import kotlinx.html.img
+import kotlinx.html.*
 
 @Mutable
 data class TextImageElement(
@@ -36,7 +33,7 @@ data class TextImageElement(
         override val identifier = "text-image-element"
     }
 
-    override val name: String get() = "Text & Image '$headline'"
+    override val elementName: String get() = "Text & Image '$headline'"
 
     enum class Layout {
         ImageLeft,
@@ -146,8 +143,7 @@ data class TextImageElement(
 
                 ui.attached.segment {
 
-                    ui.header
-                        .given(form.isSubmitted() && form.isNotValid()) { red } H3 {
+                    ui.header.given(form.isSubmitted() && form.isNotValid()) { red } H3 {
                         icon.id_card_outline()
                         +"Text And Image '$headline'"
                     }
@@ -165,6 +161,10 @@ data class TextImageElement(
                     }
 
                     ui.header H4 { +"Images" }
+
+                    fileInput {
+                        classes = setOf("cloudinary")
+                    }
 
                     partial(this, form.images)
                 }

@@ -69,48 +69,6 @@ data class LandingPageLayout(
 
     override fun FlowContent.render(ctx: RenderCtx) {
 
-        ui.basic.segment {
-            id = "header"
-
-            ui.container {
-                ui.three.column.stackable.grid {
-
-                    ui.left.aligned.column {
-                        id = "main-menu"
-
-                        ui.horizontal.list.blue.text {
-                            ui.item {
-                                a(href = "about") { +"About" }
-                            }
-                            ui.item {
-                                a(href = "about") { +"Location" }
-                            }
-                            ui.item {
-                                a(href = "about") { +"Partner" }
-                            }
-                            ui.item {
-                                a(href = "about") { +"Jobs" }
-                            }
-                        }
-                    }
-                    ui.center.aligned.column {
-                        ui.red.header.with("the-base-logo") {
-                            +"THE BASE"
-                        }
-                    }
-                    ui.right.aligned.column {
-                        ui.blue.button {
-                            +"Book"
-                        }
-                    }
-                }
-            }
-        }
-
-        div {
-            id = "pull-down"
-        }
-
         div(classes = "segment-stack") {
 
             elements.forEach {
@@ -180,11 +138,13 @@ data class LandingPageLayout(
 
         return vm.view {
 
+            ui.header H2 { +"Page Elements" }
+
             ui.segment {
                 ol {
                     children.forEachIndexed { idx, pair ->
                         li {
-                            a(href = "#element.$idx") { +pair.first.name }
+                            a(href = "#element.$idx") { +pair.first.elementName }
                         }
                     }
                 }

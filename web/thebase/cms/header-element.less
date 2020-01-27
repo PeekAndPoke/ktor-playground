@@ -1,4 +1,6 @@
-#header {
+
+.segment-stack .header-element {
+
   position: fixed;
   top: 0;
   left: 0;
@@ -10,10 +12,24 @@
 
   box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.33);
 
+  .ui.container {
+    padding: 0;
+  }
+
   .ui.grid {
     .ui.column {
       // vertically centering everything
       margin: auto;
+
+      .ui.item {
+        margin-left: 30px;
+      }
+
+      .ui.button {
+        &:last-child {
+          margin: 0;
+        }
+      }
     }
   }
 

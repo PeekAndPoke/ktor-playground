@@ -14,7 +14,6 @@ import de.peekandpoke.modules.cms.domain.CmsElement
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
-import kotlinx.html.a
 import kotlinx.html.div
 
 @Mutable
@@ -31,7 +30,7 @@ data class ListElement(
         override val identifier = "list-element"
     }
 
-    override val name: String get() = "List '$headline'"
+    override val elementName: String get() = "List '$headline'"
 
     data class Item(
         val icon: String = "",
@@ -123,13 +122,11 @@ data class ListElement(
 
         return vm.view {
 
-            formidable(vm.call.i18n, form) {
+            formidable(vm.call.i18n, form, { action = "#element.${actions.index}" }) {
 
                 ui.attached.segment {
 
-                    a { attributes["name"] = vm.path }
-
-                    ui.header H3 {
+                    ui.header.given(form.isSubmitted() && form.isNotValid()) { red } H3 {
                         icon.list()
                         +"List '$headline'"
                     }

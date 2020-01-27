@@ -51,7 +51,6 @@ data class Ref<T>(
     override val _key: String,
     override val _rev: String,
     override val _meta: StorableMeta?
-
 ) : Storable<T>() {
 
     val asStored: Stored<T> by lazy {

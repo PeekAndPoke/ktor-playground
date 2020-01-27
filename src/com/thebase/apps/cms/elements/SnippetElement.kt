@@ -1,7 +1,7 @@
 package com.thebase.apps.cms.elements
 
 import de.peekandpoke.ktorfx.common.i18n
-import de.peekandpoke.ktorfx.formidable.MutatorForm
+import de.peekandpoke.ktorfx.formidable.Form
 import de.peekandpoke.ktorfx.formidable.field
 import de.peekandpoke.ktorfx.formidable.rendering.formidable
 import de.peekandpoke.ktorfx.formidable.withOptions
@@ -25,23 +25,23 @@ import kotlinx.html.a
 
 @Mutable
 data class SnippetElement(
-    val snippet: Ref<CmsSnippet>? = null
+    var snippet: Ref<CmsSnippet>? = null
 ) : CmsElement {
 
     companion object : Polymorphic.Child {
         override val identifier = "snippet-element"
     }
 
-    override val name: String get() = "Snippet '${snippet?._key}': ${snippet?.value?.name}"
+    override val elementName: String get() = "Snippet '${snippet?._key}': ${snippet?.value?.name}"
 
     override fun FlowContent.render(ctx: RenderCtx) {
         snippet?.value?.element?.apply { render(ctx) }
     }
 
-    inner class VmForm(name: String, snippets: List<Stored<CmsSnippet>>) : MutatorForm<SnippetElement, SnippetElementMutator>(mutator(), name) {
+    inner class VmForm(name: String, snippets: List<Stored<CmsSnippet>>) : Form(name) {
 
         val snippet = field(
-            target::snippet,
+            this@SnippetElement::snippet,
             { it?._key ?: "" },
             { snippets.firstOrNull { snippet -> snippet._key == it }?.asRef }
         ).withOptions(
@@ -50,22 +50,6 @@ data class SnippetElement(
         )
     }
 
-    //    class VmForm(name: String, element: SnippetElement, snippets: List<Stored<CmsSnippet>>) : Form(name) {
-//
-//        data class VmFormData(var snippet: Ref<CmsSnippet>?)
-//
-//        val data = VmFormData(element.snippet)
-//
-//        val snippet = field(
-//            data::snippet,
-//            { it?._key ?: "" },
-//            { snippets.firstOrNull { snippet -> snippet._key == it }?.asRef }
-//        ).withOptions(
-//            "---".untranslated(),
-//            snippets.map { it.asRef to it.value.name.untranslated() }
-//        )
-//    }
-//
     override suspend fun editVm(vm: ViewModelBuilder, actions: CmsElement.EditActions): View {
 
         val allSnippets = vm.call.database.cmsSnippets.findAllSorted().toList()
@@ -73,29 +57,25 @@ data class SnippetElement(
         val form = VmForm(vm.path, allSnippets)
 
         if (form.submit(vm.call)) {
-            if (form.isModified) {
-                actions.modify(form.result)
-            }
+            actions.modify(this)
         }
 
         return vm.view {
 
-            formidable(vm.call.i18n, form) {
+            formidable(vm.call.i18n, form, { action = "#element.${actions.index}" }) {
 
                 ui.attached.segment {
 
-                    a { attributes["name"] = vm.path }
-
-                    ui.header H3 {
+                    ui.header.given(form.isSubmitted() && form.isNotValid()) { red } H3 {
                         icon.quote_right()
                         +"Snippet '${snippet?.value?.name}'"
                     }
 
                     ui.divider {}
 
-                    if (snippet != null) {
+                    snippet?.apply {
                         icon.edit()
-                        a(href = vm.call.cmsAdminRoutes.editSnippet(snippet.asStored)) { +"Edit snippet '${snippet.value.name}'" }
+                        a(href = vm.call.cmsAdminRoutes.editSnippet(asStored)) { +"Edit snippet '${value.name}'" }
 
                         ui.divider {}
                     }
