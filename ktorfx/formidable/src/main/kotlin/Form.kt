@@ -137,11 +137,16 @@ abstract class Form(private val name: String) : FormElement {
     fun isSubmitted() = isSubmitted
 
     /**
-     * Return true when the form is valid, meaning that all of the children are valid
+     * Returns 'true' when the form is valid, meaning that all of the children are valid
      */
     override fun isValid(): Boolean = isSubmitted && children.all {
         it.isValid()
     }
+
+    /**
+     * Returns 'true' when the form is not valid, meaning that some of the children are invalid
+     */
+    fun isNotValid(): Boolean = !isValid()
 
     /**
      * Adds the given [FormElement] as a child

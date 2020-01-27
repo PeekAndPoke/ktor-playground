@@ -32,6 +32,8 @@ data class FooterElement(
         override val identifier = "footer-element"
     }
 
+    override val name: String get() = "Footer '$headline'"
+
     inner class VmForm(name: String) : MutatorForm<FooterElement, FooterElementMutator>(mutator(), name) {
 
         val styling = styling(target.styling)
@@ -43,9 +45,8 @@ data class FooterElement(
 
     override fun FlowContent.render(ctx: RenderCtx) {
 
-        ui.basic.segment
-            .with("footer-element")
-            .given(styling.backgroundColor.isSet) { inverted.color(styling.backgroundColor) }.then {
+        div(classes = "footer-element") {
+            ui.basic.segment.given(styling.backgroundColor.isSet) { inverted.color(styling.backgroundColor) }.then {
 
                 ui.container {
                     ui.three.column.grid.color(styling.textColor).text {
@@ -95,6 +96,7 @@ data class FooterElement(
                     }
                 }
             }
+        }
     }
 
     override suspend fun editVm(vm: ViewModelBuilder, actions: CmsElement.EditActions): View {

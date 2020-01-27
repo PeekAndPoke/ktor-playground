@@ -15,6 +15,7 @@ import de.peekandpoke.ktorfx.templating.respond
 import de.peekandpoke.ktorfx.webjars.BetterWebjars
 import de.peekandpoke.modules.cms.CmsAdmin
 import de.peekandpoke.modules.cms.CmsPublic
+import de.peekandpoke.modules.cms.cms
 import de.peekandpoke.modules.depot.DepotAdmin
 import de.peekandpoke.modules.got.GameOfThrones
 import de.peekandpoke.ultra.kontainer.KontainerBlueprint
@@ -189,63 +190,37 @@ fun Application.module(testing: Boolean = false) {
             cause.printStackTrace()
 
             respond(HttpStatusCode.InternalServerError) {
-
                 content {
-                    div {
-                        +"Internal Server Error"
-                    }
-
-                    pre {
-                        +(cause.toString())
-                    }
-
-                    pre {
-                        +cause.stackTrace.joinToString("\n")
-                    }
+                    div { +"Internal Server Error" }
+                    pre { +(cause.toString()) }
+                    pre { +cause.stackTrace.joinToString("\n") }
                 }
-
             }
         }
 
-        exception<AuthenticationException> {
-            call.respond(HttpStatusCode.Unauthorized)
-        }
+        exception<AuthenticationException> { call.respond(HttpStatusCode.Unauthorized) }
 
-        exception<AuthorizationException> {
-            call.respond(HttpStatusCode.Forbidden)
-        }
+        exception<AuthorizationException> { call.respond(HttpStatusCode.Forbidden) }
 
-        exception<BadRequestException> {
-            call.respond(HttpStatusCode.InternalServerError, "Bad Request ...")
-        }
+        exception<BadRequestException> { call.respond(HttpStatusCode.InternalServerError, "Bad Request") }
 
         exception<ParameterConversionException> { cause ->
-
             call.respondHtml(HttpStatusCode.NotFound) {
                 body {
-                    div {
-                        +"Not found"
-                    }
-                    div {
-                        +cause.toString()
-                    }
+                    div { +"Not found" }
+                    div { +cause.toString() }
                 }
             }
         }
 
-        status(HttpStatusCode.NotFound) { cause ->
-
-            call.respondHtml(HttpStatusCode.NotFound) {
-                body {
-                    div {
-                        +"Not found"
-                    }
-                    div {
-                        +cause.toString()
-                    }
-                }
-            }
-        }
+//        status(HttpStatusCode.NotFound) { cause ->
+//            call.respondHtml(HttpStatusCode.NotFound) {
+//                body {
+//                    div { +"Not found" }
+//                    div { +cause.toString() }
+//                }
+//            }
+//        }
     }
 
     // TODO: have a switch for live / stage / dev
@@ -282,6 +257,35 @@ fun Application.module(testing: Boolean = false) {
 
         host("www.*".toRegex()) {
 
+            install(StatusPages) {
+
+                exception<Throwable> { cause ->
+
+                    when (cause) {
+                        is NotFoundException -> call.respond(HttpStatusCode.NotFound) {
+                            call.cms.errorPages.apply {
+                                error404(call)
+                            }
+                        }
+
+                        else -> call.respond(HttpStatusCode.InternalServerError) {
+                            call.cms.errorPages.apply {
+                                error500(call, cause)
+                            }
+                        }
+                    }
+                }
+
+                status(HttpStatusCode.NotFound) {
+
+                    call.respond(HttpStatusCode.NotFound) {
+                        call.cms.errorPages.apply {
+                            error404(call)
+                        }
+                    }
+                }
+            }
+
             // install the Kontainer into the pipeline
             installKontainer(di.wwwKontainerBlueprint)
 
@@ -293,10 +297,6 @@ fun Application.module(testing: Boolean = false) {
 
             // mount application modules
             initKontainer.use(CmsPublic::class) { mount() }
-
-            get("/__test__") {
-                call.respond("OK")
-            }
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////

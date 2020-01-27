@@ -4,8 +4,11 @@ import de.peekandpoke.modules.cms.domain.CmsElement
 import de.peekandpoke.modules.cms.domain.CmsLayout
 import kotlin.reflect.KClass
 
-class Cms(modules: List<Module>, val markdown: SemanticMarkdown) {
-
+class Cms(
+    modules: List<Module>,
+    val errorPages: CmsErrorPages,
+    val markdown: SemanticMarkdown
+) {
     abstract class Module(
         val layouts: Map<KClass<out CmsLayout>, CmsLayout>,
         val elements: Map<KClass<out CmsElement>, CmsElement>

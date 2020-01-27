@@ -1,4 +1,4 @@
-package de.peekandpoke.com.thebase._sortme_
+package com.thebase._sortme_
 
 import de.peekandpoke.ultra.polyglot.I18n
 import de.peekandpoke.ultra.polyglot.I18nGroup

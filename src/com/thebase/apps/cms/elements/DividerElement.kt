@@ -30,6 +30,8 @@ data class DividerElement(
         override val identifier = "divider-element"
     }
 
+    override val name: String get() = "Divider '$height'"
+
     @Suppress("EnumEntryName")
     enum class Height {
         one,

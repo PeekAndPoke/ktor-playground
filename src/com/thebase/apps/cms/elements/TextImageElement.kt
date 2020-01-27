@@ -18,7 +18,10 @@ import de.peekandpoke.modules.cms.domain.Image
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.polyglot.untranslated
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
-import kotlinx.html.*
+import kotlinx.html.DIV
+import kotlinx.html.FlowContent
+import kotlinx.html.div
+import kotlinx.html.img
 
 @Mutable
 data class TextImageElement(
@@ -32,6 +35,8 @@ data class TextImageElement(
     companion object : Polymorphic.Child {
         override val identifier = "text-image-element"
     }
+
+    override val name: String get() = "Text & Image '$headline'"
 
     enum class Layout {
         ImageLeft,
@@ -137,13 +142,12 @@ data class TextImageElement(
 
         return vm.view {
 
-            formidable(vm.call.i18n, form) {
+            formidable(vm.call.i18n, form, { action = "#element.${actions.index}" }) {
 
                 ui.attached.segment {
 
-                    a { attributes["name"] = vm.path }
-
-                    ui.header H3 {
+                    ui.header
+                        .given(form.isSubmitted() && form.isNotValid()) { red } H3 {
                         icon.id_card_outline()
                         +"Text And Image '$headline'"
                     }

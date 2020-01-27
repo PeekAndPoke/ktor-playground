@@ -49,7 +49,7 @@ class ViewModel(private val fn: suspend (vm: ViewModelBuilder) -> View) {
 
 class ViewModelBuilder internal constructor(val call: ApplicationCall, val path: String = "") {
 
-    fun view(fn: FlowContent.() -> Any?) = View(fn)
+    fun view(fn: FlowContent.() -> Any?) = View(this, fn)
 
     fun reload(): Nothing {
         throw ViewModelAction.Reload
@@ -72,7 +72,9 @@ class ViewModelBuilder internal constructor(val call: ApplicationCall, val path:
     }
 }
 
-class View(private val block: FlowContent.() -> Any?) {
+class View(private val vmb: ViewModelBuilder, private val block: FlowContent.() -> Any?) {
+
+    val path get() = vmb.path
 
     fun render(flow: FlowContent) {
         flow.block()

@@ -1,4 +1,4 @@
-package de.peekandpoke.com.thebase.apps.www
+package com.thebase.apps.www
 
 import de.peekandpoke.ktorfx.webresources.CacheBuster
 import de.peekandpoke.ktorfx.webresources.WebResourceGroup

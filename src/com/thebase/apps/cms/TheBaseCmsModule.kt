@@ -16,6 +16,7 @@ class TheBaseCmsModule : Cms.Module(
         GalleryElement::class to GalleryElement(),
         HeroElement::class to HeroElement(),
         ListElement::class to ListElement(),
+        SnippetElement::class to SnippetElement(),
         TextElement::class to TextElement(),
         TextImageElement::class to TextImageElement()
     )

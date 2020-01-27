@@ -12,7 +12,10 @@ import io.ktor.util.pipeline.PipelineContext
 fun KontainerBuilder.cmsCommon() = module(CmsCommonModule)
 
 val CmsCommonModule = module {
+
+    // cms
     singleton(Cms::class)
+    singleton(CmsErrorPages::class, DefaultErrorPages::class)
     singleton(SemanticMarkdown::class)
 
     // database

@@ -30,6 +30,8 @@ data class TextElement(
         override val identifier = "text-element"
     }
 
+    override val name: String get() = "Text '$headline'"
+
     inner class VmForm(name: String) : MutatorForm<TextElement, TextElementMutator>(mutator(), name) {
 
         val styling = subForm(

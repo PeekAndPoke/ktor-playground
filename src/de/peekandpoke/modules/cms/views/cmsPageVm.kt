@@ -12,6 +12,7 @@ import de.peekandpoke.modules.cms.db.cmsPages
 import de.peekandpoke.modules.cms.domain.CmsPage
 import de.peekandpoke.modules.cms.domain.CmsPageChangeLayoutForm
 import de.peekandpoke.modules.cms.domain.CmsPageForm
+import de.peekandpoke.modules.cms.domain.DeleteForm
 import de.peekandpoke.ultra.vault.Stored
 import io.ktor.application.ApplicationCall
 import io.ultra.ktor_tools.database
@@ -52,6 +53,19 @@ suspend fun ApplicationCall.vm(storedPage: Stored<CmsPage>) = viewModel { vmb ->
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    val deleteForm = DeleteForm(vmb.path + ".delete")
+
+    if (deleteForm.submit(vmb.call)) {
+
+        database.cmsPages.remove(storedPage)
+
+        flashSession.success("The page '${storedPage.value.name}' was deleted")
+
+        vmb.redirect(vmb.call.cmsAdminRoutes.pages)
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     val layoutView = vmb.child("layout") {
 
         storedPage.value.layout.editVm(it) { changed ->
@@ -70,8 +84,8 @@ suspend fun ApplicationCall.vm(storedPage: Stored<CmsPage>) = viewModel { vmb ->
             +"Edit Page ${form.name.value} (${form.result._key})"
         }
 
-        ui.two.column.grid {
-            ui.column {
+        ui.grid {
+            ui.eight.wide.column {
                 formidable(i18n, form) {
 
                     ui.header H2 { +"General settings" }
@@ -89,7 +103,7 @@ suspend fun ApplicationCall.vm(storedPage: Stored<CmsPage>) = viewModel { vmb ->
                 }
             }
 
-            ui.column {
+            ui.four.wide.column {
                 formidable(i18n, changeLayoutForm) {
 
                     ui.header H2 { +"Select Layout" }
@@ -105,8 +119,19 @@ suspend fun ApplicationCall.vm(storedPage: Stored<CmsPage>) = viewModel { vmb ->
                     }
                 }
             }
-        }
 
+            ui.four.wide.column {
+
+                formidable(i18n, changeLayoutForm) {
+
+                    ui.header H2 { +"Delete Page" }
+
+                    ui.top.attached.red.segment {
+                        confirmButton("Delete Page", "Really delete the page '${storedPage.value.name}'") { red.inverted }
+                    }
+                }
+            }
+        }
 
         ui.header H2 { +"Page Elements" }
 

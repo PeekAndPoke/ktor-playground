@@ -35,6 +35,9 @@ interface CmsElement : CmsItem {
      * Actions passed to [editVm]
      */
     interface EditActions {
+
+        val index: Int get() = 0
+
         fun modify(it: CmsElement): Nothing {
             error("not implemented")
         }
@@ -50,7 +53,17 @@ interface CmsElement : CmsItem {
         fun addAfter(it: CmsElement): Nothing {
             error("not implemented")
         }
+
+        fun moveUp(it: CmsElement): Nothing {
+            error("not implemented")
+        }
+
+        fun moveDown(it: CmsElement): Nothing {
+            error("not implemented")
+        }
     }
+
+    val name: String get() = this::class.simpleName ?: "n/a"
 
     suspend fun editVm(vm: ViewModelBuilder, actions: EditActions): View = vm.view {
         div {

@@ -1,6 +1,7 @@
 package de.peekandpoke.ktorfx.formidable.rendering
 
 import de.peekandpoke.ktorfx.formidable.*
+import de.peekandpoke.ktorfx.semanticui.SemanticUi
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ultra.polyglot.I18n
@@ -159,9 +160,9 @@ class FormidableViewBuilder(val i18n: I18n, val form: FORM) {
         }
     }
 
-    fun FlowContent.submitButton(field: ButtonField, title: String) {
+    fun FlowContent.submitButton(field: ButtonField, title: String, style: SemanticUi.() -> SemanticUi = { this }) {
 
-        ui.button Submit {
+        ui.button.apply { style() } Submit {
             id = field.getId().asFormId
             name = field.getId().value
             value = field.value
@@ -170,9 +171,9 @@ class FormidableViewBuilder(val i18n: I18n, val form: FORM) {
         }
     }
 
-    fun FlowContent.confirmButton(field: ButtonField, title: String, confirmation: String) {
+    fun FlowContent.confirmButton(field: ButtonField, title: String, confirmation: String, style: SemanticUi.() -> SemanticUi = { this }) {
 
-        ui.button Submit {
+        ui.button.apply { style() } Submit {
             id = field.getId().asFormId
             name = field.getId().value
             value = field.value
@@ -182,12 +183,16 @@ class FormidableViewBuilder(val i18n: I18n, val form: FORM) {
         }
     }
 
-    fun FlowContent.submitButton(label: String, value: String? = null) {
-        ui.button Submit {
-            value?.let {
-                this.value = value
-            }
-            +label
+    fun FlowContent.confirmButton(title: String, confirmation: String, style: SemanticUi.() -> SemanticUi = { this }) {
+        ui.button.apply { style() } Submit {
+            onClick = "return confirm(\"${confirmation.split("\"").joinToString("\\\"")}\")"
+            +title
+        }
+    }
+
+    fun FlowContent.submitButton(title: String, style: SemanticUi.() -> SemanticUi = { this }) {
+        ui.button.apply { style() } Submit {
+            +title
         }
     }
 

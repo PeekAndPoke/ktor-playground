@@ -35,6 +35,8 @@ data class HeroElement(
         override val identifier = "hero-element"
     }
 
+    override val name: String get() = "Hero '$headline'"
+
     enum class Layout {
         ImageRight,
         FullSizeImage

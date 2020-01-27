@@ -31,6 +31,8 @@ data class ListElement(
         override val identifier = "list-element"
     }
 
+    override val name: String get() = "List '$headline'"
+
     data class Item(
         val icon: String = "",
         val iconColor: SemanticColor = SemanticColor.default,

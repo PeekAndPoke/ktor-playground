@@ -1,4 +1,4 @@
-package de.peekandpoke.com.thebase.apps.www
+package com.thebase.apps.www
 
 import de.peekandpoke.ktorfx.templating.TemplateTools
 import de.peekandpoke.ktorfx.templating.semanticui.SemanticUiPlainTemplate

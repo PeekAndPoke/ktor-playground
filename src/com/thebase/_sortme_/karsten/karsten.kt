@@ -24,3 +24,17 @@ fun <E> List<E>.removeAt(idx: Int) = toMutableList().apply { removeAt(idx) }.toL
 
 fun <E> List<E>.addAt(idx: Int, it: E) = toMutableList().apply { add(idx, it) }.toList()
 
+fun <E> List<E>.swapAt(idx1: Int, idx2: Int): List<E> {
+
+    if (idx1 < 0 || idx1 >= size || idx2 < 0 || idx2 >= size) {
+        return this
+    }
+
+    val mutable = toMutableList()
+
+    val tmp = mutable[idx1]
+    mutable[idx1] = mutable[idx2]
+    mutable[idx2] = tmp
+
+    return mutable.toList()
+}

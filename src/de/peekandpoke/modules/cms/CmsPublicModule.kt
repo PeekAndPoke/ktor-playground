@@ -4,7 +4,6 @@ import de.peekandpoke.ktorfx.templating.respond
 import de.peekandpoke.modules.cms.db.cmsPages
 import de.peekandpoke.ultra.kontainer.KontainerBuilder
 import de.peekandpoke.ultra.kontainer.module
-import de.peekandpoke.ultra.logging.Log
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.features.NotFoundException
@@ -22,24 +21,18 @@ val CmsPublicModule = module {
     singleton(CmsPublic::class)
 }
 
-class CmsPublic(
-    private val log: Log
-) {
+class CmsPublic() {
 
     @KtorExperimentalAPI
     fun Route.mount() {
 
-        get("") {
-            log.debug("Serving home page")
-
+        get {
             servePage("")
         }
 
-        get("/*") {
+        get("/{...}") {
 
             val slug = call.request.uri.trimStart('/')
-
-            log.debug("Serving page '$slug'")
 
             servePage(slug)
         }

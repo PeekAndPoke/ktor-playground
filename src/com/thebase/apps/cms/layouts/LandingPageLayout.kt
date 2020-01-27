@@ -1,9 +1,6 @@
 package com.thebase.apps.cms.layouts
 
-import com.thebase._sortme_.karsten.addAt
-import com.thebase._sortme_.karsten.camelCaseDivide
-import com.thebase._sortme_.karsten.removeAt
-import com.thebase._sortme_.karsten.replaceAt
+import com.thebase._sortme_.karsten.*
 import de.peekandpoke.ktorfx.common.i18n
 import de.peekandpoke.ktorfx.formidable.Form
 import de.peekandpoke.ktorfx.formidable.button
@@ -20,10 +17,7 @@ import de.peekandpoke.modules.cms.domain.CmsLayout
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.polyglot.untranslated
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
-import kotlinx.html.FlowContent
-import kotlinx.html.a
-import kotlinx.html.div
-import kotlinx.html.id
+import kotlinx.html.*
 
 @Mutable
 data class LandingPageLayout(
@@ -40,19 +34,24 @@ data class LandingPageLayout(
         val btn = button("delete")
     }
 
+    inner class MoveElementForm(vmb: ViewModelBuilder) : Form(vmb.path + ".move") {
+        val moveUp = button("move-up")
+        val moveDown = button("move-down")
+    }
+
     inner class AddElementData(var element: String = "")
 
     inner class AddElementForm(vmb: ViewModelBuilder) : Form(vmb.path + ".add") {
         val data = AddElementData()
 
         val select = field(data::element).withOptions(
+            "---".untranslated(),
             vmb.call.cms.elements.map { (k, _) ->
-                (k.qualifiedName ?: "n/a") to (k.simpleName ?: "").camelCaseDivide().untranslated()
+                (k.qualifiedName ?: "n/a") to (k.simpleName ?: "n/a").camelCaseDivide().untranslated()
             }
         )
 
         val before = button("before")
-
         val after = button("after")
     }
 
@@ -128,7 +127,6 @@ data class LandingPageLayout(
     private suspend fun editWithoutElements(vm: ViewModelBuilder, onChange: (CmsLayout) -> Nothing): View {
 
         val actions = createEditActions(onChange, 0)
-
         val addElement = AddFirstElementForm(vm)
 
         if (addElement.submit(vm.call)) {
@@ -158,14 +156,16 @@ data class LandingPageLayout(
 
             val actions = createEditActions(onChange, idx)
 
-            vm.child("$idx") { vmbOuter ->
+            element to vm.child("$idx") { vmbOuter ->
                 // actions
-                val actionsVm = vmbOuter.actions(actions)
+                val actionsVm = vmbOuter.actions(actions, element)
 
                 // individual edit form for each element
-                val editVm = vmbOuter.child("edit") { vmb -> element.editVm(vmb, actions) }
+                val editVm = vmbOuter.child("edit") { vmb ->
+                    element.editVm(vmb, actions)
+                }
 
-                vm.view {
+                vmbOuter.view {
                     ui.grid {
                         ui.twelve.wide.column {
                             editVm.render(this)
@@ -179,16 +179,39 @@ data class LandingPageLayout(
         }
 
         return vm.view {
-            children.forEach { it.render(this) }
+
+            ui.segment {
+                ol {
+                    children.forEachIndexed { idx, pair ->
+                        li {
+                            a(href = "#element.$idx") { +pair.first.name }
+                        }
+                    }
+                }
+            }
+
+            children.forEachIndexed { idx, pair ->
+
+                a { attributes["name"] = "element.$idx" }
+
+                pair.second.render(this)
+            }
         }
     }
 
-    private suspend fun ViewModelBuilder.actions(actions: CmsElement.EditActions): View = child("actions") { vmb ->
+    private suspend fun ViewModelBuilder.actions(actions: CmsElement.EditActions, element: CmsElement): View = child("actions") { vmb ->
 
-        val deleteElement = DeleteForm(vmb)
+        val moveElement = MoveElementForm(vmb)
 
-        if (deleteElement.submit(vmb.call)) {
-            actions.delete()
+        if (moveElement.submit(vmb.call)) {
+            // Move the element up
+            if (moveElement.moveUp.isClicked) {
+                actions.moveUp(element)
+            }
+            // Move the element down
+            if (moveElement.moveDown.isClicked) {
+                actions.moveDown(element)
+            }
         }
 
         val addElement = AddElementForm(vmb)
@@ -196,35 +219,47 @@ data class LandingPageLayout(
         if (addElement.submit(vmb.call)) {
             // Add an element before?
             if (addElement.before.isClicked) {
-                actions.addBefore(
-                    vmb.call.cms.getElement(addElement.data.element)
-                )
+                actions.addBefore(vmb.call.cms.getElement(addElement.data.element))
             }
-
             // Add an element after?
             if (addElement.after.isClicked) {
-                actions.addAfter(
-                    vmb.call.cms.getElement(addElement.data.element)
-                )
+                actions.addAfter(vmb.call.cms.getElement(addElement.data.element))
             }
+        }
+
+        val deleteElement = DeleteForm(vmb)
+
+        if (deleteElement.submit(vmb.call)) {
+            actions.delete()
         }
 
         view {
             ui.top.attached.blue.segment {
 
-                formidable(vmb.call.i18n, deleteElement) {
-                    confirmButton(deleteElement.btn, "Delete Element", "Really delete this Element?")
+                formidable(vmb.call.i18n, moveElement) {
+
+                    ui.two.buttons {
+                        submitButton(moveElement.moveUp, "Move up")
+                        submitButton(moveElement.moveDown, "Move down")
+                    }
                 }
 
                 ui.divider {}
 
                 formidable(vmb.call.i18n, addElement) {
+
                     selectInput(addElement.select, "Add element")
 
                     ui.two.buttons {
                         submitButton(addElement.before, "Add before")
                         submitButton(addElement.after, "Add after")
                     }
+                }
+
+                ui.divider {}
+
+                formidable(vmb.call.i18n, deleteElement) {
+                    confirmButton(deleteElement.btn, "Delete Element", "Really delete this Element?") { red.inverted }
                 }
             }
         }
@@ -233,6 +268,9 @@ data class LandingPageLayout(
     private fun createEditActions(onChange: (CmsLayout) -> Nothing, idx: Int): CmsElement.EditActions {
 
         return object : CmsElement.EditActions {
+
+            override val index: Int get() = idx
+
             override fun modify(it: CmsElement): Nothing {
                 onChange(
                     copy(elements = elements.replaceAt(idx, it))
@@ -254,6 +292,22 @@ data class LandingPageLayout(
             override fun addAfter(it: CmsElement): Nothing {
                 onChange(
                     copy(elements = elements.addAt(idx + 1, it))
+                )
+            }
+
+            override fun moveUp(it: CmsElement): Nothing {
+                val pos = elements.indexOf(it)
+
+                onChange(
+                    copy(elements = elements.swapAt(pos, pos - 1))
+                )
+            }
+
+            override fun moveDown(it: CmsElement): Nothing {
+                val pos = elements.indexOf(it)
+
+                onChange(
+                    copy(elements = elements.swapAt(pos, pos + 1))
                 )
             }
         }

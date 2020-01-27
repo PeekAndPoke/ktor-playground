@@ -47,11 +47,21 @@ inline val PipelineContext<Unit, ApplicationCall>.defaultTemplate: SimpleTemplat
 /**
  * Responds with the default template
  */
+suspend fun ApplicationCall.respond(
+    status: HttpStatusCode = HttpStatusCode.OK,
+    body: SimpleTemplate.() -> Unit
+) {
+    respondHtmlTemplate(defaultTemplate, status, body)
+}
+
+/**
+ * Responds with the default template
+ */
 suspend fun PipelineContext<Unit, ApplicationCall>.respond(
     status: HttpStatusCode = HttpStatusCode.OK,
     body: SimpleTemplate.() -> Unit
 ) {
-    call.respondHtmlTemplate(defaultTemplate, status, body)
+    call.respond(status, body)
 }
 
 @JvmName("respond_withHint")

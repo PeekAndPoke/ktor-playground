@@ -152,7 +152,7 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
 
             respond(call.vm(data.snippet)) {
 
-                breadCrumbs = listOf(CmsMenu.PAGES)
+                breadCrumbs = listOf(CmsMenu.SNIPPETS)
 
                 pageHead {
                     title { +"CMS Edit Snippet" }

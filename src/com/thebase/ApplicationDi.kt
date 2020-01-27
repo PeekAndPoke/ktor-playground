@@ -1,11 +1,11 @@
 package com.thebase
 
+import com.thebase._sortme_.AppI18n
 import com.thebase.apps.admin.AdminTemplate
 import com.thebase.apps.admin.AdminWebResources
+import com.thebase.apps.www.WwwTemplate
+import com.thebase.apps.www.WwwWebResources
 import com.thebase.config.TheBaseConfig
-import de.peekandpoke.com.thebase._sortme_.AppI18n
-import de.peekandpoke.com.thebase.apps.www.WwwTemplate
-import de.peekandpoke.com.thebase.apps.www.WwwWebResources
 import de.peekandpoke.demos.forms.formDemos
 import de.peekandpoke.demos.semanticui.semanticUi
 import de.peekandpoke.karango.karango

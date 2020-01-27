@@ -34,6 +34,8 @@ data class GalleryElement(
         override val identifier = "gallery-element"
     }
 
+    override val name: String get() = "Gallery '$headline' - '$layout'"
+
     data class Item(
         val headline: String = "",
         val text: String = "",
