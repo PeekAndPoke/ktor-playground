@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440.75" height="800.097" viewBox="0 0 1440.75 800.097">
+    <defs>
+        <style>
+            .cls-1{fill:none;stroke:#fff;stroke-miterlimit:10;stroke-width:1.5px}
+        </style>
+    </defs>
+    <g id="Gruppe_599" data-name="Gruppe 599" transform="translate(-1848.17)">
+        <path id="Pfad_191" d="M2924.035 800a361.984 361.984 0 0 0 3.331-49.1c0-198.213-160.689-358.9-358.909-358.9" class="cls-1" data-name="Pfad 191"
+              transform="translate(.881 -.006)"/>
+        <path id="Pfad_191-2" d="M2209.548 750.9a362.2 362.2 0 0 0 3.331 49.1" class="cls-1" data-name="Pfad 191" transform="translate(.332 -.006)"/>
+        <path id="Linie_66" d="M2568.458 391.995h-719.481" class="cls-1" data-name="Linie 66" transform="translate(0 -.003)"/>
+        <circle id="Ellipse_40" cx="179.452" cy="179.452" r="179.452" class="cls-1" data-name="Ellipse 40" transform="translate(2928.481 123.356)"/>
+        <path id="Linie_67" d="M3106.612 0v800" class="cls-1" data-name="Linie 67" transform="translate(1.322)"/>
+        <path id="Pfad_193" d="M3287.6 750.893H1848.92v-4.488c0-396.851 322.017-718.564 719.243-718.564h720.757" class="cls-1" data-name="Pfad 193"/>
+    </g>
+</svg>

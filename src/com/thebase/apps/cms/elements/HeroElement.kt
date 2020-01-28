@@ -19,6 +19,7 @@ import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.polyglot.untranslated
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
 import kotlinx.html.FlowContent
+import kotlinx.html.classes
 import kotlinx.html.div
 import kotlinx.html.img
 
@@ -28,6 +29,7 @@ data class HeroElement(
     val layout: Layout = Layout.ImageRight,
     val headline: String = "",
     val text: String = "",
+    val pattern: Int = 1,
     val images: List<Image> = listOf()
 ) : CmsElement {
 
@@ -54,6 +56,13 @@ data class HeroElement(
         val headline = field(target::headline)
         val text = field(target::text)
 
+        val pattern = field(target::pattern).withOptions(
+            0 to "No Pattern".untranslated(),
+            1 to "Pattern #1".untranslated(),
+            2 to "Pattern #2".untranslated(),
+            3 to "Pattern #3".untranslated()
+        )
+
         val images = images(target::images)
     }
 
@@ -62,6 +71,12 @@ data class HeroElement(
         div(classes = "hero-element") {
 
             ui.basic.inverted.segment.color(styling.backgroundColor) {
+
+                if (layout == Layout.ImageRight && pattern != 0) {
+                    div {
+                        classes = setOf("pattern", "pattern-${pattern.toString().padStart(3, '0')}")
+                    }
+                }
 
                 when (layout) {
                     Layout.ImageRight -> renderImageRight(ctx)
@@ -77,7 +92,7 @@ data class HeroElement(
             ui.grid {
 
                 ui.nine.wide.column {
-                    ui.color(styling.textColor).text.header H1 { nl2br(headline) }
+                    ui.color(styling.textColor).header H1 { nl2br(headline) }
                     ui.color(styling.textColor).text {
                         ctx.apply { markdown(text) }
                     }
@@ -140,9 +155,10 @@ data class HeroElement(
                         +"Hero"
                     }
 
-                    ui.three.fields {
+                    ui.four.fields {
                         partial(this, form.styling)
                         selectInput(form.layout, "Layout")
+                        selectInput(form.pattern, "Pattern")
                     }
 
                     ui.divider {}

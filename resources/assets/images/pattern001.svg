@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440.79" height="800" viewBox="0 0 1440.79 800">
+    <defs>
+        <style>
+            .cls-1{fill:none;stroke:#fff;stroke-miterlimit:10;stroke-width:1.5px}
+        </style>
+    </defs>
+    <g id="Gruppe_598" data-name="Gruppe 598" transform="translate(.74)">
+        <g id="Gruppe_607" data-name="Gruppe 607" transform="translate(0 29.997)">
+            <ellipse id="Ellipse_54" cx="359.986" cy="358.208" class="cls-1" data-name="Ellipse 54" rx="359.986" ry="358.208" transform="translate(.01)"/>
+            <path id="Pfad_296" d="M719.987 800c0-408.417 317.8-742.74 720.013-770" class="cls-1" data-name="Pfad 296" transform="translate(0 -29.997)"/>
+            <path id="Linie_100" d="M0 746.412h719.982" class="cls-1" data-name="Linie 100" transform="translate(0 -29.997)"/>
+        </g>
+        <path id="Linie_100-2" d="M0 800V0" class="cls-1" data-name="Linie 100" transform="translate(719.982)"/>
+    </g>
+</svg>

@@ -28,6 +28,8 @@ fun Form.theBaseColors(prop: KMutableProperty0<SemanticColor>): FormFieldWithOpt
 
 fun Form.styling(styling: ElementStyleMutator) = subForm(ElementStyle.Form(styling))
 
+fun Form.padding(padding: ElementPaddingMutator) = subForm(ElementPadding.Form(padding))
+
 fun Form.images(prop: KProperty0<MutableList<ImageMutator>>) = list(prop, { Image().mutator() }) { item ->
     subForm(
         ImageForm(item.value)
@@ -37,6 +39,11 @@ fun Form.images(prop: KProperty0<MutableList<ImageMutator>>) = list(prop, { Imag
 fun FormidableViewBuilder.partial(flow: FlowContent, form: ElementStyle.Form) = flow.apply {
     selectInput(form.textColor, "Text color")
     selectInput(form.backgroundColor, "Background color")
+}
+
+fun FormidableViewBuilder.partial(flow: FlowContent, form: ElementPadding.Form) = flow.apply {
+    selectInput(form.paddingTop, "Padding on top")
+    selectInput(form.paddingBottom, "Padding on bottom")
 }
 
 fun FormidableViewBuilder.partial(flow: FlowContent, images: MutableListField<ImageMutator, ImageForm>) = flow.apply {

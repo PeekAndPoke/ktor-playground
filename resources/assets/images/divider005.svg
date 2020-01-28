@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440.75" height="600.098" viewBox="0 0 1440.75 600.098">
+    <defs>
+        <style>
+            .cls-1{fill:none;stroke:#fff;stroke-miterlimit:10;stroke-width:1.5px}
+        </style>
+    </defs>
+    <g id="Gruppe_600" data-name="Gruppe 600" transform="translate(0 -3295.952)">
+        <path id="Pfad_185" d="M533.81 3808.355c250.146 0 452.929-202.7 452.929-452.753a456.8 456.8 0 0 0-3.856-59.347" class="cls-1" data-name="Pfad 185"
+              transform="translate(.178)"/>
+        <ellipse id="Ellipse_36" cx="226.464" cy="226.361" class="cls-1" data-name="Ellipse 36" rx="226.464" ry="226.361"
+                 transform="translate(80.882 3355.629)"/>
+        <path id="Ellipse_37"
+              d="M1435.884 3296.79a456.9 456.9 0 0 1 3.787 58.812c0 250.047-202.785 452.75-452.932 452.75s-452.932-202.7-452.932-452.75a456.9 456.9 0 0 1 3.883-59.552"
+              class="cls-1" data-name="Ellipse 37" transform="translate(.329)"/>
+        <path id="Linie_59" d="M80.882 3355.626h905.857" class="cls-1" data-name="Linie 59"/>
+        <path id="Linie_60" d="M533.811 3355.626v540.424" class="cls-1" data-name="Linie 60" transform="translate(.122)"/>
+        <path id="Linie_61" d="M0 3808.561h1440" class="cls-1" data-name="Linie 61" transform="translate(0 -.206)"/>
+        <path id="Linie_62" d="M80.882 3296.256v599.794" class="cls-1" data-name="Linie 62"/>
+    </g>
+</svg>

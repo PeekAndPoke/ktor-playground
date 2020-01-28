@@ -2,11 +2,33 @@
 
 .segment-stack .hero-element {
 
+  position: relative;
+
+  div.pattern-001 {
+    background: url("/assets/images/pattern001.svg");
+  }
+
+  div.pattern-002 {
+    background: url("/assets/images/pattern002.svg");
+  }
+
+  div.pattern-003 {
+    background: url("/assets/images/pattern003.svg");
+  }
+
+  div.pattern {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+    background-position: center center;
+  }
+
   h1.ui.header {
-    font-family: FoundersGroteskX, sans-serif;
-    font-size: 12em;
-    line-height: 0.8em;
-    text-transform: uppercase;
     padding-top: 2px;
   }
 

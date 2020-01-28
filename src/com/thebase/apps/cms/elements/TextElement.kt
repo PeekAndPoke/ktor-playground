@@ -1,13 +1,11 @@
 package com.thebase.apps.cms.elements
 
-import com.thebase.apps.cms.elements.common.ElementStyle
-import com.thebase.apps.cms.elements.common.nl2br
-import com.thebase.apps.cms.elements.common.partial
-import com.thebase.apps.cms.elements.common.styling
+import com.thebase.apps.cms.elements.common.*
 import de.peekandpoke.ktorfx.common.i18n
 import de.peekandpoke.ktorfx.formidable.MutatorForm
 import de.peekandpoke.ktorfx.formidable.field
 import de.peekandpoke.ktorfx.formidable.rendering.formidable
+import de.peekandpoke.ktorfx.formidable.trimmed
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
@@ -21,10 +19,11 @@ import kotlinx.html.div
 
 @Mutable
 data class TextElement(
-    val styling: ElementStyle = ElementStyle.default,
+    override val styling: ElementStyle = ElementStyle.default,
+    override val padding: ElementPadding = ElementPadding.default,
     val headline: String = "",
     val text: String = ""
-) : CmsElement {
+) : CmsElement, StyledElement, PaddedElement {
 
     companion object : Polymorphic.Child {
         override val identifier = "text-element"
@@ -35,30 +34,27 @@ data class TextElement(
     inner class VmForm(name: String) : MutatorForm<TextElement, TextElementMutator>(mutator(), name) {
 
         val styling = styling(target.styling)
+        val padding = padding(target.padding)
 
-        val headline = field(target::headline)
+        val headline = field(target::headline).trimmed()
 
-        val text = field(target::text)
+        val text = field(target::text).trimmed()
     }
 
     override fun FlowContent.render(ctx: RenderCtx) {
 
         div(classes = "text-element") {
 
-            ui.basic.segment.given(styling.backgroundColor.isSet) { inverted.color(styling.backgroundColor) }.then {
+            ui.basic.withStyle().withPadding().segment {
 
                 ui.container {
 
                     if (headline.isNotBlank()) {
-                        ui.color(styling.textColor).header H2 {
-                            nl2br(headline)
-                        }
+                        ui.color(styling.textColor).header H3 { nl2br(headline) }
                     }
 
                     if (text.isNotBlank()) {
-                        ui.color(styling.textColor).text {
-                            ctx.apply { markdown(text) }
-                        }
+                        ui.color(styling.textColor).text { ctx.apply { markdown(text) } }
                     }
                 }
             }
@@ -88,6 +84,7 @@ data class TextElement(
 
                     ui.two.fields {
                         partial(this, form.styling)
+                        partial(this, form.padding)
                     }
 
                     ui.divider {}

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1441.5" height="600.658" viewBox="0 0 1441.5 600.658">
+    <defs>
+        <style>
+            .cls-1{fill:none;stroke:#fff;stroke-miterlimit:10;stroke-width:1.5px}
+        </style>
+    </defs>
+    <g id="Gruppe_606" data-name="Gruppe 606" transform="translate(.74 -1777.67)">
+        <g id="Gruppe_605" data-name="Gruppe 605" transform="translate(.01 1777.67)">
+            <g id="Gruppe_340" data-name="Gruppe 340" transform="translate(0 2.199)">
+                <path id="Pfad_176" d="M359.479 1779.869c3.571 195.524 163.183 352.925 359.556 352.925" class="cls-1" data-name="Pfad 176"
+                      transform="translate(-.007 -1779.869)"/>
+                <path id="Linie_51" d="M719.035 2132.795h720.9" class="cls-1" data-name="Linie 51" transform="translate(0 -1781.232)"/>
+                <path id="Linie_52" d="M729.573 1779.869v597.8" class="cls-1" data-name="Linie 52" transform="translate(-.005 -1779.869)"/>
+                <path id="Ellipse_33" d="M93.6 2379.988a179.809 179.809 0 1 1 172.435 0" class="cls-1" data-name="Ellipse 33"
+                      transform="translate(-.01 -1782.187)"/>
+                <path id="Linie_53" d="M179.818 2377.664v-597.8" class="cls-1" data-name="Linie 53" transform="translate(-.01 -1779.869)"/>
+            </g>
+            <path id="Pfad_179" d="M1440 1777.67c0 250.968-129.394 471.83-325.351 599.994" class="cls-1" data-name="Pfad 179"
+                  transform="translate(0 -1777.67)"/>
+        </g>
+    </g>
+</svg>

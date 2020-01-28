@@ -1,29 +1,27 @@
 @import "variables";
 
 .segment-stack {
+
+  > div > .segment {
+    padding: 0;
+  }
+
   .segment {
 
     .ui.container {
-      padding: 50px @segment-side-padding;
+      padding: 60px @segment-side-padding;
     }
 
-    h2.ui.header {
-      font-family: FoundersGroteskX, sans-serif;
-      text-transform: uppercase;
-      font-size: 5em;
-      line-height: 0.8em;
+    &.attach-top {
+      .ui.container {
+        padding-top: 0;
+      }
     }
 
-    h3.ui.header {
-      font-family: FoundersGroteskX, sans-serif;
-      text-transform: uppercase;
-      font-size: 2em;
-      line-height: 0.8em;
-    }
-
-    p, ul, ol {
-      font-size: 2em;
-      line-height: 1.2em;
+    &.attach-bottom {
+      .ui.container {
+        padding-bottom: 0;
+      }
     }
   }
 }

@@ -109,15 +109,11 @@ data class GalleryElement(
 
             ui.container {
                 if (headline.isNotBlank()) {
-                    ui.color(styling.textColor).header H2 {
-                        nl2br(headline)
-                    }
+                    ui.color(styling.textColor).header H3 { nl2br(headline) }
                 }
 
                 if (text.isNotBlank()) {
-                    ui.color(styling.textColor).text {
-                        ctx.apply { markdown(text) }
-                    }
+                    ui.color(styling.textColor).text { ctx.apply { markdown(text) } }
                 }
             }
         }
@@ -196,7 +192,7 @@ data class GalleryElement(
 
     private fun DIV.headline(it: Item) {
         if (it.headline.isNotBlank()) {
-            ui.color(styling.textColor).header H3 {
+            ui.color(styling.textColor).header H5 {
                 nl2br(it.headline)
             }
         }
@@ -204,7 +200,7 @@ data class GalleryElement(
 
     private fun DIV.text(ctx: RenderCtx, it: Item) {
         if (it.text.isNotBlank()) {
-            ui.color(styling.textColor).text {
+            ui.color(styling.textColor).tiny.text {
                 ctx.apply { markdown(it.text) }
             }
         }

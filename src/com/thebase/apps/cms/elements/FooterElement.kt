@@ -58,11 +58,13 @@ data class FooterElement(
                             }
 
                             ui.five.wide.column {
-                                ctx.apply { markdown(middle) }
+                                ui.tiny.text {
+                                    ctx.apply { markdown(middle) }
+                                }
                             }
 
                             ui.five.wide.right.aligned.column {
-                                ui.header H3 { nl2br(right) }
+                                ui.header H5 { nl2br(right) }
                             }
                         }
 

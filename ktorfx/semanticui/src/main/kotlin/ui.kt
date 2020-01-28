@@ -64,14 +64,14 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
 
     @SemanticUiCssMarker fun with(vararg cls: String) = this + cls
 
-    @SemanticUiCssMarker fun with(vararg cls: String, flow: FlowContent.() -> Unit) = (this + cls).renderDiv(flow)
+    @SemanticUiCssMarker fun with(vararg cls: String, flow: DIV.() -> Unit) = (this + cls).renderDiv(flow)
 
     @SemanticUiCssMarker fun color(color: SemanticColor) = when {
         color.isSet -> with(color.toString())
         else -> this
     }
 
-    @SemanticUiCssMarker fun color(color: SemanticColor, flow: FlowContent.() -> Unit) = with(color.toString(), flow = flow)
+    @SemanticUiCssMarker fun color(color: SemanticColor, flow: DIV.() -> Unit) = with(color.toString(), flow = flow)
 
     // conditional classes
 
@@ -134,6 +134,7 @@ class SemanticUi(private val parent: FlowContent, private val cssClasses: Mutabl
     @SemanticUiCssMarker val form get() = this + "form"
     @SemanticUiCssMarker val field get() = this + "field"
     @SemanticUiCssMarker val fields get() = this + "fields"
+    @SemanticUiCssMarker val checkbox get() = this + "checkbox"
     @SemanticUiCssMarker val error get() = this + "error"
 
     // table

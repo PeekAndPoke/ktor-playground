@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1441.5" height="800.454" viewBox="0 0 1441.5 800.454">
+    <defs>
+        <style>
+            .cls-1{fill:none;stroke:#fff;stroke-miterlimit:10;stroke-width:1.5px}
+        </style>
+    </defs>
+    <g id="Gruppe_603" data-name="Gruppe 603" transform="translate(-3722.571)">
+        <g id="Gruppe_277" data-name="Gruppe 277" transform="translate(3723.321)">
+            <g id="Gruppe_276" data-name="Gruppe 276">
+                <path id="Pfad_133" d="M5163.326 510c0-265.1-214.9-480-480-480s-480 214.905-480 480a477.892 477.892 0 0 0 97.474 290" class="cls-1"
+                      data-name="Pfad 133" transform="translate(-3723.326)"/>
+                <path id="Ellipse_31" d="M4923.326 800.006v-50c0-132.548 107.452-240 240-240" class="cls-1" data-name="Ellipse 31"
+                      transform="translate(-3723.326 -.006)"/>
+                <path id="Ellipse_32"
+                      d="M3820.795 800a477.891 477.891 0 0 1-97.474-290c0-265.1 214.905-480 480-480s480 214.9 480 480a477.893 477.893 0 0 1-97.472 290"
+                      class="cls-1" data-name="Ellipse 32" transform="translate(-3723.321)"/>
+                <path id="Linie_34" d="M4203.326 510.007h960" class="cls-1" data-name="Linie 34" transform="translate(-3723.326 -.004)"/>
+                <path id="Linie_35" d="M4683.326 800V0" class="cls-1" data-name="Linie 35" transform="translate(-3723.325)"/>
+            </g>
+        </g>
+    </g>
+</svg>

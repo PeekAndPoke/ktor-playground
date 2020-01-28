@@ -3,11 +3,8 @@ package com.thebase.apps.cms.elements
 import com.thebase._sortme_.karsten.slickOptions
 import com.thebase.apps.cms.elements.common.*
 import de.peekandpoke.ktorfx.common.i18n
-import de.peekandpoke.ktorfx.formidable.MutatorForm
-import de.peekandpoke.ktorfx.formidable.enum
-import de.peekandpoke.ktorfx.formidable.field
+import de.peekandpoke.ktorfx.formidable.*
 import de.peekandpoke.ktorfx.formidable.rendering.formidable
-import de.peekandpoke.ktorfx.formidable.withOptions
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
@@ -25,12 +22,13 @@ import kotlinx.html.img
 
 @Mutable
 data class TextImageElement(
-    val styling: ElementStyle = ElementStyle.default,
+    override val styling: ElementStyle = ElementStyle.default,
+    override val padding: ElementPadding = ElementPadding.default,
     val layout: Layout = Layout.ImageLeft,
     val headline: String = "",
     val text: String = "",
     val images: List<Image> = listOf()
-) : CmsElement {
+) : CmsElement, StyledElement, PaddedElement {
 
     companion object : Polymorphic.Child {
         override val identifier = "text-image-element"
@@ -48,6 +46,7 @@ data class TextImageElement(
     inner class VmForm(name: String) : MutatorForm<TextImageElement, TextImageElementMutator>(mutator(), name) {
 
         val styling = styling(target.styling)
+        val padding = padding(target.padding)
 
         val layout = enum(target::layout).withOptions(
             Layout.ImageLeft to "Image Left".untranslated(),
@@ -56,8 +55,8 @@ data class TextImageElement(
             Layout.ImageBottom to "Image Bottom".untranslated()
         )
 
-        val headline = field(target::headline)
-        val text = field(target::text)
+        val headline = field(target::headline).trimmed()
+        val text = field(target::text).trimmed()
 
         val images = images(target::images)
     }
@@ -66,27 +65,27 @@ data class TextImageElement(
 
         div(classes = "text-image-element") {
 
-            ui.basic.segment.given(styling.backgroundColor.isSet) { inverted.color(styling.backgroundColor) }.then {
+            ui.basic.withStyle().withPadding().segment {
 
                 ui.container {
                     when (layout) {
                         Layout.ImageRight -> ui.two.column.grid {
-                            ui.column { textH3(ctx) }
+                            ui.column { textH4(ctx) }
                             ui.column { images() }
                         }
 
                         Layout.ImageLeft -> ui.two.column.grid {
                             ui.column { images() }
-                            ui.column { textH3(ctx) }
+                            ui.column { textH4(ctx) }
                         }
 
                         Layout.ImageTop -> {
                             images()
-                            textH2(ctx)
+                            textH3(ctx)
                         }
 
                         Layout.ImageBottom -> {
-                            textH2(ctx)
+                            textH3(ctx)
                             images()
                         }
                     }
@@ -95,14 +94,14 @@ data class TextImageElement(
         }
     }
 
-    private fun DIV.textH2(ctx: RenderCtx) {
-        ui.header H2 { nl2br(headline) }
-        ui.color(styling.textColor).text { ctx.apply { markdown(text) } }
-    }
-
     private fun DIV.textH3(ctx: RenderCtx) {
         ui.header H3 { nl2br(headline) }
         ui.color(styling.textColor).text { ctx.apply { markdown(text) } }
+    }
+
+    private fun DIV.textH4(ctx: RenderCtx) {
+        ui.header H4 { nl2br(headline) }
+        ui.color(styling.textColor).small.text { ctx.apply { markdown(text) } }
     }
 
     private fun DIV.images() {
@@ -151,8 +150,9 @@ data class TextImageElement(
                         +"Text And Image '$headline'"
                     }
 
-                    ui.three.fields {
+                    ui.five.fields {
                         partial(this, form.styling)
+                        partial(this, form.padding)
                         selectInput(form.layout, "Layout")
                     }
 
