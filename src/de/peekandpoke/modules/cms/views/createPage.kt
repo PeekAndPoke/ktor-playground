@@ -26,7 +26,7 @@ internal fun SimpleTemplate.createPage(form: CmsPageForm) {
 
             ui.two.fields {
                 textInput(form.name, label = "Name")
-                textInput(form.slug, label = "Slug")
+                textInput(form.uri, label = "Uri")
             }
 
             ui.button Submit { +"Submit" }

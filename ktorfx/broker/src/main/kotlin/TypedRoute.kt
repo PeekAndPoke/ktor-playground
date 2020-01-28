@@ -1,14 +1,22 @@
 package de.peekandpoke.ktorfx.broker
 
-import de.peekandpoke.ultra.common.toUri
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.jvm.javaType
 
-data class TypedRoute<T : Any>(val converter: OutgoingConverter, val type: KClass<T>, val uri: String) {
+data class TypedRoute<T : Any>(
+    val converter: OutgoingConverter,
+    val type: KClass<T>,
+    val uri: String
+) {
 
-    private val parsedParams = "\\{([^}]*)}".toRegex().findAll(uri).map { it.groupValues[1] }.toList()
+    /**
+     * A typed route bound to an object
+     */
+    data class Bound<T : Any>(val route: TypedRoute<T>, val obj: T)
+
+    val parsedParams = "\\{([^}]*)}".toRegex().findAll(uri).map { it.groupValues[1] }.toList()
 
     init {
         // Check that the route object has a primary constructor
@@ -35,29 +43,7 @@ data class TypedRoute<T : Any>(val converter: OutgoingConverter, val type: KClas
         }
     }
 
-    operator fun invoke(obj: T): String {
+    operator fun invoke(obj: T) = bind(obj)
 
-        var result = uri
-
-        val queryParams = mutableMapOf<String, String>()
-
-        // replace route params or build up query parameters
-        type.declaredMemberProperties.forEach {
-
-            val converted = converter.convert(it.get(obj) ?: "", it.returnType.javaType)
-
-            // replace the route param
-            if (parsedParams.contains(it.name)) {
-                result = result.replace("{${it.name}}", converted)
-            } else {
-                // only add to the query params if the value is non null
-                if (it.get(obj) != null) {
-                    queryParams[it.name] = converted
-                }
-            }
-        }
-
-        // finally append query params if there are any
-        return result.toUri(queryParams)
-    }
+    fun bind(obj: T) = Bound(this, obj)
 }

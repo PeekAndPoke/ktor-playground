@@ -49,6 +49,17 @@ class SemanticIcon(private val parent: FlowContent) {
 
     @SemanticUiCssMarker val inverted get() = this + "inverted"
 
+    // Size ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @SemanticUiCssMarker val mini get() = this + "mini"
+    @SemanticUiCssMarker val tiny get() = this + "tiny"
+    @SemanticUiCssMarker val small get() = this + "small"
+    @SemanticUiCssMarker val medium get() = this + "medium"
+    @SemanticUiCssMarker val large get() = this + "large"
+    @SemanticUiCssMarker val big get() = this + "big"
+    @SemanticUiCssMarker val huge get() = this + "huge"
+    @SemanticUiCssMarker val massive get() = this + "massive"
+
     // Accessibility ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @SemanticUiCssMarker fun american_sign_language_interpreting() = render("american sign language interpreting icon")

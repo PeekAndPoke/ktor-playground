@@ -37,7 +37,7 @@ internal fun SimpleTemplate.repositories(mod: DepotAdmin, repositories: List<Dep
                 repositories.forEach {
                     tr {
                         td {
-                            a(href = mod.routes.getDriver(it.name)) { +it.name }
+                            a(href = mod.routes.getDriver(it.name).url) { +it.name }
                         }
                         td {
                             +it.type

@@ -1,6 +1,7 @@
 package de.peekandpoke.ktorfx.broker
 
 import de.peekandpoke.ultra.common.Lookup
+import de.peekandpoke.ultra.security.csrf.CsrfProtection
 import io.ktor.http.Parameters
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -14,12 +15,15 @@ import kotlin.reflect.jvm.javaType
  * Converter for incoming url data
  */
 class IncomingConverter(
+    private val csrfProtection: CsrfProtection,
     private val lookUp: IncomingConverterLookup,
     private val converters: Lookup<IncomingParamConverter>
 ) {
     suspend fun convert(routeParams: Parameters, queryParams: Parameters, type: KClass<*>): Any {
 
         return coroutineScope {
+
+            val csrf = routeParams["csrf"]
 
             // check if all non optional values are provided
             val callParams = type.primaryConstructor!!.parameters
@@ -33,7 +37,13 @@ class IncomingConverter(
                 .awaitAll()
                 .toMap()
 
-            type.primaryConstructor!!.callBy(callParams)
+            val result = type.primaryConstructor!!.callBy(callParams)
+
+            if (csrf != null && !csrfProtection.validateToken(result.toString(), csrf)) {
+                error("Invalid csrf token")
+            }
+
+            return@coroutineScope result
         }
     }
 

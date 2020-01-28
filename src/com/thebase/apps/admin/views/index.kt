@@ -26,7 +26,7 @@ fun AdminTemplate.index(organisations: Iterable<Stored<Organisation>>) {
                 organisations.forEach { org ->
                     tr {
                         td {
-                            a(href = theBase.routes.listResidentialProperties(org)) { +org._key }
+                            a(href = theBase.routes.listResidentialProperties(org).url) { +org._key }
                         }
                         td {
                             +org.value.name

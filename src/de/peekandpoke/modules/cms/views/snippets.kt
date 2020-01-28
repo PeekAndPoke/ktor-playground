@@ -40,10 +40,10 @@ internal fun SimpleTemplate.snippets(routes: CmsAdminRoutes, pages: List<Stored<
                 pages.forEach {
                     tr {
                         td {
-                            a(href = routes.editSnippet(it)) { +it._id }
+                            a(href = routes.editSnippet(it).url) { +it._id }
                         }
                         td {
-                            a(href = routes.editSnippet(it)) { +it.value.name }
+                            a(href = routes.editSnippet(it).url) { +it.value.name }
                         }
                         td {
                             +(it._meta?.ts?.createdAt?.toString() ?: "n/a")

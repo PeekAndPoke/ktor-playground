@@ -35,7 +35,7 @@ internal fun SimpleTemplate.characters(routes: GameOfThronesRoutes, characters: 
                 characters.forEach {
                     tr {
                         td {
-                            a(href = routes.getCharacter(it)) { +"${it.value.name} ${it.value.surname ?: ""} " }
+                            a(href = routes.getCharacter(it).url) { +"${it.value.name} ${it.value.surname ?: ""} " }
                         }
 
                         td {

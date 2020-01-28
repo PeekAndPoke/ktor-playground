@@ -25,9 +25,9 @@ class CmsSnippetsRepository(driver: KarangoDriver) : EntityRepository<CmsSnippet
 
     fun findAllSorted(): Cursor<Stored<CmsSnippet>> = find {
 
-        FOR(coll) { page ->
-            SORT(page.name.ASC)
-            RETURN(page)
+        FOR(coll) { snippet ->
+            SORT(snippet.name.ASC)
+            RETURN(snippet)
         }
     }
 }

@@ -1,5 +1,7 @@
 package de.peekandpoke.ktorfx.templating.vm
 
+import de.peekandpoke.ktorfx.broker.TypedRoute
+import de.peekandpoke.ktorfx.broker.typedRouteRenderer
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
 import de.peekandpoke.ktorfx.templating.defaultTemplate
 import io.ktor.application.ApplicationCall
@@ -50,6 +52,8 @@ class ViewModel(private val fn: suspend (vm: ViewModelBuilder) -> View) {
 class ViewModelBuilder internal constructor(val call: ApplicationCall, val path: String = "") {
 
     fun view(fn: FlowContent.() -> Any?) = View(this, fn)
+
+    fun <T : Any> route(route: TypedRoute.Bound<T>) = call.typedRouteRenderer(route)
 
     fun reload(): Nothing {
         throw ViewModelAction.Reload

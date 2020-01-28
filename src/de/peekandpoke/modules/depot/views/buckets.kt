@@ -37,7 +37,7 @@ internal fun SimpleTemplate.buckets(mod: DepotAdmin, repository: DepotRepository
                 bucketList.forEach {
                     tr {
                         td {
-                            a(href = mod.routes.getBucket(repository.name, it.name)) { +it.name }
+                            a(href = mod.routes.getBucket(repository.name, it.name).url) { +it.name }
                         }
                         td {
                             +(it.lastModifiedAt?.toString() ?: "n/a")

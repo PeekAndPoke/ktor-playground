@@ -1,5 +1,6 @@
 package de.peekandpoke.ktorfx.insights.gui
 
+import de.peekandpoke.ktorfx.broker.TypedRouteRenderer
 import de.peekandpoke.ktorfx.broker.get
 import de.peekandpoke.ktorfx.common.kontainer
 import de.peekandpoke.ktorfx.insights.Insights
@@ -25,7 +26,12 @@ class InsightsGui(
 
             if (guiData != null) {
                 call.respondBytes(ContentType.Text.Html, HttpStatusCode.OK) {
-                    InsightsBarTemplate(bucketAndFile, routes, guiData).render().toString().toByteArray()
+                    InsightsBarTemplate(
+                        bucketAndFile,
+                        routes,
+                        guiData,
+                        kontainer.get(TypedRouteRenderer::class)
+                    ).render().toString().toByteArray()
                 }
             } else {
                 call.respond(HttpStatusCode.NotFound)

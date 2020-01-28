@@ -38,7 +38,7 @@ internal fun SimpleTemplate.files(mod: DepotAdmin, repository: DepotRepository, 
                 fileList.forEach {
                     tr {
                         td {
-                            a(href = mod.routes.getFile(repository.name, bucket.name, it.name)) { +it.name }
+                            a(href = mod.routes.getFile(repository.name, bucket.name, it.name).url) { +it.name }
                         }
                         td {
                             +(it.lastModifiedAt?.toString() ?: "n/a")

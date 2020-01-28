@@ -75,7 +75,7 @@ data class SnippetElement(
 
                     snippet?.apply {
                         icon.edit()
-                        a(href = vm.call.cmsAdminRoutes.editSnippet(asStored)) { +"Edit snippet '${value.name}'" }
+                        a(href = vm.route(vm.call.cmsAdminRoutes.editSnippet(asStored))) { +"Edit snippet '${value.name}'" }
 
                         ui.divider {}
                     }

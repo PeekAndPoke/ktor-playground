@@ -27,7 +27,7 @@ fun AdminTemplate.listResidentialProperties(properties: Iterable<Stored<Resident
                 properties.forEach { property ->
                     tr {
                         td {
-                            a(href = theBase.routes.listRentableRooms(property)) {
+                            a(href = theBase.routes.listRentableRooms(property).url) {
                                 +property._key
                             }
                         }

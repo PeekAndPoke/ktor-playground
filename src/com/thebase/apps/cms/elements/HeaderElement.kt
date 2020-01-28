@@ -12,7 +12,9 @@ import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.vm.View
 import de.peekandpoke.ktorfx.templating.vm.ViewModelBuilder
+import de.peekandpoke.modules.cms.Cms
 import de.peekandpoke.modules.cms.RenderCtx
+import de.peekandpoke.modules.cms.cms
 import de.peekandpoke.modules.cms.domain.CmsElement
 import de.peekandpoke.modules.cms.domain.Link
 import de.peekandpoke.modules.cms.domain.LinkForm
@@ -42,17 +44,18 @@ data class HeaderElement(
         val subs: List<Link> = listOf()
     )
 
-    class MenuEntryForm(it: HeaderElement_MenuEntryMutator) : MutatorForm<MenuEntry, HeaderElement_MenuEntryMutator>(it) {
-        val link = subForm(LinkForm(target.link))
+    class MenuEntryForm(cms: Cms, it: HeaderElement_MenuEntryMutator) : MutatorForm<MenuEntry, HeaderElement_MenuEntryMutator>(it) {
+
+        val link = subForm(LinkForm(cms, target.link))
 
         val subs = list(target::subs, { Link("", "").mutator() }) { item ->
             subForm(
-                LinkForm(item.value)
+                LinkForm(cms, item.value)
             )
         }
     }
 
-    inner class VmForm(name: String) : MutatorForm<HeaderElement, HeaderElementMutator>(mutator { _: HeaderElement -> Unit }, name) {
+    inner class VmForm(vm: ViewModelBuilder) : MutatorForm<HeaderElement, HeaderElementMutator>(mutator { _: HeaderElement -> Unit }, vm.path) {
 
         val styling = styling(target.styling)
 
@@ -60,7 +63,7 @@ data class HeaderElement(
 
         val items = list(target::items, { MenuEntry().mutator() }) {
             subForm(
-                MenuEntryForm(it.value)
+                MenuEntryForm(vm.call.cms, it.value)
             )
         }
     }
@@ -118,7 +121,7 @@ data class HeaderElement(
 
     override suspend fun editVm(vm: ViewModelBuilder, actions: CmsElement.EditActions): View {
 
-        val form = VmForm(vm.path)
+        val form = VmForm(vm)
 
         if (form.submit(vm.call)) {
             if (form.isModified) {

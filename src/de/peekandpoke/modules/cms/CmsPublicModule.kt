@@ -41,7 +41,7 @@ class CmsPublic() {
     @KtorExperimentalAPI
     private suspend fun PipelineContext<Unit, ApplicationCall>.servePage(slug: String) {
 
-        val page = database.cmsPages.findBySlug(slug) ?: throw NotFoundException("Cms page '$slug' not found")
+        val page = database.cmsPages.findByUri(slug) ?: throw NotFoundException("Cms page '$slug' not found")
 
         val ctx = RenderCtx(cms, call)
 

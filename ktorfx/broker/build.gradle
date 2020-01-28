@@ -39,6 +39,7 @@ dependencies {
 
     // ultra
     implementation "de.peekandpoke.ultra:kontainer:$ultra_version"
+    implementation "de.peekandpoke.ultra:security:$ultra_version"
 
     implementation project(":ultra:vault")
 

@@ -3,7 +3,7 @@ package de.peekandpoke.ktorfx.flashsession
 const val SUCCESS = "success"
 const val INFO = "info"
 const val WARNING = "warning"
-const val DANGER = "danger"
+const val ERROR = "error"
 const val PRIMARY = "primary"
 const val SECONDARY = "secondary"
 const val DARK = "dark"
@@ -15,7 +15,7 @@ fun FlashSession.info(message: String) = add(message, INFO)
 
 fun FlashSession.warning(message: String) = add(message, WARNING)
 
-fun FlashSession.danger(message: String) = add(message, DANGER)
+fun FlashSession.danger(message: String) = add(message, ERROR)
 
 fun FlashSession.primary(message: String) = add(message, PRIMARY)
 

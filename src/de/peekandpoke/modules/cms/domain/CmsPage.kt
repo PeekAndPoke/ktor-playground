@@ -7,10 +7,17 @@ import de.peekandpoke.ultra.mutator.Mutable
 @Mutable
 data class CmsPage(
     val name: String,
-    val slug: String,
+    val uri: String,
     val layout: CmsLayout = CmsLayout.Empty
 ) {
+
+    val isHomepage get() = Link.normalizeUri(uri).isEmpty()
+
+    fun matchesUri(uri: String): Boolean {
+        return Link.normalizeUri(uri) == this.uri.trimStart('/').trim()
+    }
+
     companion object {
-        fun empty() = CmsPage(name = "", slug = "")
+        fun empty() = CmsPage(name = "", uri = "")
     }
 }

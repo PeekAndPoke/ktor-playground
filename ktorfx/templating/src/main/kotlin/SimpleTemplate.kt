@@ -1,5 +1,6 @@
 package de.peekandpoke.ktorfx.templating
 
+import de.peekandpoke.ktorfx.broker.TypedRoute
 import de.peekandpoke.ktorfx.flashsession.FlashSession
 import de.peekandpoke.ktorfx.insights.gui.InsightsBarRenderer
 import de.peekandpoke.ktorfx.semanticui.SemanticUi
@@ -48,4 +49,9 @@ interface SimpleTemplate : Template<HTML> {
     val styles: PlaceholderList<HEAD, HEAD>
     /** Placeholder for the scripts */
     val scripts: PlaceholderList<FlowContent, FlowContent>
+
+    /**
+     * Renders the url of a bound typed route
+     */
+    val <T : Any> TypedRoute.Bound<T>.url get() = tools.routeRenderer.render(this)
 }

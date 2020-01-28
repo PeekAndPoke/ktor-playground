@@ -21,6 +21,7 @@ val KtorFX_Broker = module {
     singleton(IncomingPrimitiveConverter::class)
     singleton(IncomingJavaTimeConverter::class)
 
+    dynamic(TypedRouteRenderer::class)
     singleton(OutgoingConverter::class)
     singleton(OutgoingVaultConverter::class)
     singleton(OutgoingPrimitiveConverter::class)
@@ -36,3 +37,8 @@ inline val ApplicationCall.incomingConverter: IncomingConverter get() = kontaine
  * Shorthand for getting the data converter for incoming from the kontainer
  */
 inline val PipelineContext<Unit, ApplicationCall>.incomingConverter: IncomingConverter get() = call.incomingConverter
+
+/**
+ * Shorthand for getting the typed route renderer
+ */
+inline val ApplicationCall.typedRouteRenderer: TypedRouteRenderer get() = kontainer.get(TypedRouteRenderer::class)

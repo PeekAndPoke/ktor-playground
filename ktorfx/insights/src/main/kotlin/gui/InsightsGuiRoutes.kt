@@ -11,6 +11,8 @@ class InsightsGuiRoutes(converter: OutgoingConverter) : Routes(converter, "/_") 
     val bar = route(BucketAndFile::class, "/insights/bar/{bucket}/{filename}")
 
     val details = route(BucketAndFile::class, "/insights/details/{bucket}/{filename}/show")
-    fun details(bucket: String, filename: String) = details(BucketAndFile(bucket, filename))
+
+    fun details(bucket: String, filename: String) = details.bind(BucketAndFile(bucket, filename))
+
     fun details(file: DepotFile) = details(file.bucket.name, file.name)
 }

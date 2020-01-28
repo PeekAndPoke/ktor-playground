@@ -1,5 +1,7 @@
 package de.peekandpoke.ktorfx.insights.gui
 
+import de.peekandpoke.ktorfx.broker.TypedRoute
+import de.peekandpoke.ktorfx.broker.TypedRouteRenderer
 import de.peekandpoke.ktorfx.insights.InsightsMapper
 import de.peekandpoke.ktorfx.insights.collectors.RuntimeCollector
 import de.peekandpoke.ktorfx.insights.collectors.VaultCollector
@@ -18,6 +20,7 @@ import kotlinx.html.*
 
 class InsightsGuiTemplate(
     private val routes: InsightsGuiRoutes,
+    private val routesRenderer: TypedRouteRenderer,
     private val webResources: WebResources,
     private val mapper: InsightsMapper
 ) : Template<HTML> {
@@ -30,6 +33,11 @@ class InsightsGuiTemplate(
     val menuPlaceholders = PlaceholderList<FlowContent, FlowContent>()
 
     val contentPlaceholders = PlaceholderList<FlowContent, FlowContent>()
+
+    /**
+     * Renders the url of a bound typed route
+     */
+    val <T : Any> TypedRoute.Bound<T>.url get() = routesRenderer.render(this)
 
     init {
         styles {
@@ -119,7 +127,7 @@ class InsightsGuiTemplate(
                 }
 
                 if (guiData.previousFile != null) {
-                    a(href = routes.details(guiData.previousFile)) {
+                    a(href = routes.details(guiData.previousFile).url) {
                         ui.item {
                             icon.arrow_left()
                         }
@@ -127,7 +135,7 @@ class InsightsGuiTemplate(
                 }
 
                 if (guiData.nextFile !== null) {
-                    a(href = routes.details(guiData.nextFile)) {
+                    a(href = routes.details(guiData.nextFile).url) {
                         ui.item {
                             icon.arrow_right()
                         }

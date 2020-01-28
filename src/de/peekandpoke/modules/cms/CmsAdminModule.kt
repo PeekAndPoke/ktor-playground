@@ -1,9 +1,12 @@
 package de.peekandpoke.modules.cms
 
+import com.thebase._sortme_.karsten.redirectToReferrer
 import de.peekandpoke.ktorfx.broker.OutgoingConverter
 import de.peekandpoke.ktorfx.broker.Routes
+import de.peekandpoke.ktorfx.broker.get
 import de.peekandpoke.ktorfx.broker.getOrPost
 import de.peekandpoke.ktorfx.common.kontainer
+import de.peekandpoke.ktorfx.flashsession.danger
 import de.peekandpoke.ktorfx.flashsession.flashSession
 import de.peekandpoke.ktorfx.flashsession.success
 import de.peekandpoke.ktorfx.templating.respond
@@ -53,11 +56,17 @@ class CmsAdminRoutes(converter: OutgoingConverter, cmsAdminMountPoint: String) :
 
     val createPage = route("/pages/create")
 
-    data class EditPage(val page: Stored<CmsPage>)
+    data class EditPage(val page: Stored<CmsPage>) {
+        override fun toString() = page._id
+    }
 
     val editPage = route<EditPage>("/pages/{page}/edit")
 
     fun editPage(page: Stored<CmsPage>) = editPage(EditPage(page))
+
+    val deletePage = route<EditPage>("/pages/{page}/delete/{csrf}")
+
+    fun deletePage(page: Stored<CmsPage>) = deletePage(EditPage(page))
 
     ////  PAGES  ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -77,14 +86,22 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
     fun Route.mount() {
 
         get(routes.index) {
+
+            val validity = cms.validate()
+
             respond {
-                index(routes)
+                index(routes, validity)
             }
         }
 
         get(routes.pages) {
+
+            val pages = database.cmsPages.findAllSorted(
+                call.request.queryParameters["search"] ?: ""
+            ).toList()
+
             respond {
-                pages(routes, database.cmsPages.findAllSorted().toList())
+                pages(routes, pages, cms)
             }
         }
 
@@ -119,6 +136,19 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
             respond {
                 createPage(form)
             }
+        }
+
+        get(routes.deletePage) { data ->
+
+            if (cms.canDelete(data.page)) {
+
+                flashSession.success("Page '${data.page.value.name}' was deleted.")
+
+            } else {
+                flashSession.danger("Page '${data.page.value.name}' cannot be deleted. It is linked by other pages")
+            }
+
+            call.redirectToReferrer()
         }
 
         get(routes.snippets) {

@@ -1,5 +1,7 @@
 package de.peekandpoke.ktorfx.insights.gui
 
+import de.peekandpoke.ktorfx.broker.TypedRoute
+import de.peekandpoke.ktorfx.broker.TypedRouteRenderer
 import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import io.ktor.html.PlaceholderList
@@ -13,7 +15,8 @@ import java.io.StringWriter
 class InsightsBarTemplate(
     private val data: InsightsGuiRoutes.BucketAndFile,
     private val routes: InsightsGuiRoutes,
-    private val guiData: InsightsGuiData
+    private val guiData: InsightsGuiData,
+    private val routeRenderer: TypedRouteRenderer
 ) {
 
     val status = PlaceholderList<FlowContent, FlowContent>()
@@ -24,6 +27,8 @@ class InsightsBarTemplate(
 
     private val consumer: TagConsumer<Appendable> = StringWriter().appendHTML()
 
+    private fun <T : Any> url(route: TypedRoute.Bound<T>) = routeRenderer.render(route)
+
     init {
 
         status {
@@ -31,7 +36,7 @@ class InsightsBarTemplate(
             ui.item {
                 val statusCode = guiData.statusCode
 
-                a(href = routes.details(data), target = "_blank") {
+                a(href = url(routes.details(data)), target = "_blank") {
                     when {
                         statusCode == null -> ui.grey.label { +"???" }
 

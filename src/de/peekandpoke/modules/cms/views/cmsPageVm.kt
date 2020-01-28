@@ -93,7 +93,7 @@ suspend fun ApplicationCall.vm(storedPage: Stored<CmsPage>) = viewModel { vmb ->
                     ui.top.attached.segment {
                         ui.two.fields {
                             textInput(form.name, label = "Name")
-                            textInput(form.slug, label = "Slug")
+                            textInput(form.uri, label = "Uri")
                         }
                     }
 

@@ -212,7 +212,8 @@ class AdminTemplate(
                 ui.given(GameOfThronesMenu has breadCrumbs) { active }.content {
                     ui.accordion.transition.active {
                         ui.item.given(GameOfThronesMenu.CHARACTERS in breadCrumbs) { active } A {
-                            href = gameOfThrones.routes.getCharacters(); +"Game of Thrones"
+                            href = gameOfThrones.routes.getCharacters().url
+                            +"Game of Thrones"
                         }
                     }
                 }

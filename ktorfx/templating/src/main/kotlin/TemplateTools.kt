@@ -1,5 +1,6 @@
 package de.peekandpoke.ktorfx.templating
 
+import de.peekandpoke.ktorfx.broker.TypedRouteRenderer
 import de.peekandpoke.ktorfx.flashsession.FlashSession
 import de.peekandpoke.ktorfx.insights.gui.InsightsBarRenderer
 import de.peekandpoke.ktorfx.webresources.WebResources
@@ -9,6 +10,7 @@ interface TemplateTools {
     val i18n: I18n
     val flashSession: FlashSession
     val webResources: WebResources
+    val routeRenderer: TypedRouteRenderer
     val insightsBarRenderer: InsightsBarRenderer?
     val insightsCollector: TemplateInsightsCollector?
 }

@@ -19,7 +19,7 @@ class CmsPageForm(it: Storable<CmsPage>, mutator: CmsPageMutator) : StorableForm
 
     val name = field(target::name).trimmed().acceptsNonBlank()
 
-    val slug = field(target::slug).trimmed(' ', '/')
+    val uri = field(target::uri).trimmed(' ', '/')
 }
 
 
