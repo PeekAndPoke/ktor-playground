@@ -79,6 +79,10 @@ class CmsAdminRoutes(converter: OutgoingConverter, cmsAdminMountPoint: String) :
     val editSnippet = route<EditSnippet>("/snippets/{snippet}/edit")
 
     fun editSnippet(snippet: Stored<CmsSnippet>) = editSnippet(EditSnippet(snippet))
+
+    val deleteSnippet = route<EditSnippet>("/snippets/{snippet}/delete/{csrf}")
+
+    fun deleteSnippet(snippet: Stored<CmsSnippet>) = deleteSnippet(EditSnippet(snippet))
 }
 
 class CmsAdmin(val routes: CmsAdminRoutes) {
@@ -142,10 +146,12 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
 
             if (cms.canDelete(data.page)) {
 
+                database.cmsPages.remove(data.page)
+
                 flashSession.success("Page '${data.page.value.name}' was deleted.")
 
             } else {
-                flashSession.danger("Page '${data.page.value.name}' cannot be deleted. It is linked by other pages")
+                flashSession.danger("Page '${data.page.value.name}' cannot be deleted. It is linked by other pages.")
             }
 
             call.redirectToReferrer()
@@ -153,7 +159,7 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
 
         get(routes.snippets) {
             respond {
-                snippets(routes, database.cmsSnippets.findAllSorted().toList())
+                snippets(routes, database.cmsSnippets.findAllSorted().toList(), cms)
             }
         }
 
@@ -188,6 +194,21 @@ class CmsAdmin(val routes: CmsAdminRoutes) {
                     title { +"CMS Edit Snippet" }
                 }
             }
+        }
+
+        get(routes.deleteSnippet) { data ->
+
+            if (cms.canDelete(data.snippet)) {
+
+                database.cmsSnippets.remove(data.snippet)
+
+                flashSession.success("Snippet '${data.snippet.value.name}' was deleted.")
+
+            } else {
+                flashSession.danger("Snippet '${data.snippet.value.name}' cannot be deleted. It is linked by other pages.")
+            }
+
+            call.redirectToReferrer()
         }
     }
 }

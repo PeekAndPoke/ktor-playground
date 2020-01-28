@@ -18,7 +18,10 @@ import de.peekandpoke.modules.cms.domain.Image
 import de.peekandpoke.ultra.mutator.Mutable
 import de.peekandpoke.ultra.polyglot.untranslated
 import de.peekandpoke.ultra.slumber.builtin.polymorphism.Polymorphic
-import kotlinx.html.*
+import kotlinx.html.DIV
+import kotlinx.html.FlowContent
+import kotlinx.html.div
+import kotlinx.html.img
 
 @Mutable
 data class TextImageElement(
@@ -161,10 +164,6 @@ data class TextImageElement(
                     }
 
                     ui.header H4 { +"Images" }
-
-                    fileInput {
-                        classes = setOf("cloudinary")
-                    }
 
                     partial(this, form.images)
                 }

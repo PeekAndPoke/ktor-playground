@@ -1,13 +1,15 @@
 package de.peekandpoke.modules.cms.views
 
+import de.peekandpoke.ktorfx.semanticui.icon
 import de.peekandpoke.ktorfx.semanticui.ui
 import de.peekandpoke.ktorfx.templating.SimpleTemplate
+import de.peekandpoke.modules.cms.Cms
 import de.peekandpoke.modules.cms.CmsAdminRoutes
 import de.peekandpoke.modules.cms.domain.CmsSnippet
 import de.peekandpoke.ultra.vault.Stored
 import kotlinx.html.*
 
-internal fun SimpleTemplate.snippets(routes: CmsAdminRoutes, pages: List<Stored<CmsSnippet>>) {
+internal fun SimpleTemplate.snippets(routes: CmsAdminRoutes, pages: List<Stored<CmsSnippet>>, cms: Cms) {
 
     breadCrumbs = listOf(CmsMenu.SNIPPETS)
 
@@ -30,9 +32,9 @@ internal fun SimpleTemplate.snippets(routes: CmsAdminRoutes, pages: List<Stored<
                 tr {
                     th { +"Id" }
                     th { +"Name" }
-                    th { +"Created at" }
                     th { +"Updated at" }
                     th { +"Last edit by" }
+                    th {}
                 }
             }
 
@@ -46,13 +48,18 @@ internal fun SimpleTemplate.snippets(routes: CmsAdminRoutes, pages: List<Stored<
                             a(href = routes.editSnippet(it).url) { +it.value.name }
                         }
                         td {
-                            +(it._meta?.ts?.createdAt?.toString() ?: "n/a")
-                        }
-                        td {
                             +(it._meta?.ts?.updatedAt?.toString() ?: "n/a")
                         }
                         td {
                             +(it._meta?.user?.userId ?: "n/a")
+                        }
+                        td {
+                            if (cms.canDelete(it)) {
+                                ui.red.basic.icon.button A {
+                                    href = routes.deleteSnippet(it).url
+                                    icon.trash()
+                                }
+                            }
                         }
                     }
                 }

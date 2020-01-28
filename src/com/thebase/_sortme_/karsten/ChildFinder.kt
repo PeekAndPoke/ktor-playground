@@ -10,14 +10,17 @@ import kotlin.reflect.jvm.javaField
  */
 class ChildFinder<C : Any, T : Any> private constructor(
     private val searchedClass: KClass<C>,
-    private val inTarget: T
+    private val inTarget: T,
+    private val filter: (C) -> Boolean
 ) {
 
     private val visited = mutableSetOf<Any>()
     private val found = mutableSetOf<C>()
 
     companion object {
-        fun <C : Any, T : Any> find(cls: KClass<C>, inTarget: T) = ChildFinder(cls, inTarget).run()
+        fun <C : Any, T : Any> find(cls: KClass<C>, inTarget: T) = find(cls, inTarget) { true }
+
+        fun <C : Any, T : Any> find(cls: KClass<C>, inTarget: T, filter: (C) -> Boolean) = ChildFinder(cls, inTarget, filter).run()
     }
 
     fun run(): List<C> {
@@ -37,15 +40,15 @@ class ChildFinder<C : Any, T : Any> private constructor(
 
         visited.add(target)
 
-        if (target::class == searchedClass) {
-            @Suppress("UNCHECKED_CAST") found.add(target as C)
+        @Suppress("UNCHECKED_CAST")
+        if (target::class == searchedClass && filter(target as C)) {
+            found.add(target)
             return
         }
 
         when {
             target is List<*> -> visitCollection(target)
             target is Map<*, *> -> visitCollection(target.values)
-//            target::class.isData -> visitObject(target)
             else -> visitObject(target)
         }
     }

@@ -4,6 +4,7 @@ import com.thebase._sortme_.karsten.ChildFinder
 import de.peekandpoke.modules.cms.db.CmsPagesRepository
 import de.peekandpoke.modules.cms.db.CmsSnippetsRepository
 import de.peekandpoke.modules.cms.domain.*
+import de.peekandpoke.ultra.vault.Ref
 import de.peekandpoke.ultra.vault.Stored
 import kotlin.reflect.KClass
 
@@ -19,34 +20,25 @@ class Cms(
         val elements: Map<KClass<out CmsElement>, CmsElement>
     )
 
-    /**
-     * All available layouts
-     */
+    /** All available layouts */
     val layouts: Map<KClass<out CmsLayout>, CmsLayout> = modules.flatMap { it.layouts.toList() }.toMap()
 
-    /**
-     * All available elements
-     */
+    /** All available elements */
     val elements: Map<KClass<out CmsElement>, CmsElement> = modules.flatMap { it.elements.toList() }.toMap()
 
-    /**
-     * All pages
-     */
+    /** All pages */
     private val allPages by lazy { pagesRepository.findAllSorted().toList() }
 
-    /**
-     * Cache for links used in a page
-     */
+    /** Cache for links used in pages */
     private val linksInPage = mutableMapOf<CmsPage, List<Link>>()
 
-    /**
-     * All snippets
-     */
+    /** Cache for all snippets in pages */
+    private val snippetsInPage = mutableMapOf<CmsPage, List<Ref<CmsSnippet>>>()
+
+    /** All snippets */
     private val allSnippets by lazy { snippetsRepository.findAllSorted().toList() }
 
-    /**
-     * Cache for links used in a snippet
-     */
+    /** Cache for links used in snippets */
     private val linksInSnippet = mutableMapOf<CmsSnippet, List<Link>>()
 
     /**
@@ -95,6 +87,7 @@ class Cms(
         return pagesRepository.findByUri(uri) != null
     }
 
+    @JvmName("canDeleteCmsPage")
     fun canDelete(subject: Stored<CmsPage>): Boolean {
 
         if (subject.value.isHomepage) {
@@ -118,8 +111,20 @@ class Cms(
         return pagesOk && snippetsOk
     }
 
+    @JvmName("canDeleteCmsSnippet")
+    fun canDelete(subject: Stored<CmsSnippet>): Boolean {
+        return allPages.all { page ->
+            page.value.getAllSnippets().none { it._id == subject._id }
+        }
+    }
+
     private fun CmsPage.getAllLinks() = linksInPage.getOrPut(this) {
         ChildFinder.find(Link::class, this)
+    }
+
+    private fun CmsPage.getAllSnippets(): List<Ref<CmsSnippet>> = snippetsInPage.getOrPut(this) {
+        @Suppress("UNCHECKED_CAST")
+        ChildFinder.find(Ref::class, this) { it.value is CmsSnippet } as List<Ref<CmsSnippet>>
     }
 
     private fun CmsSnippet.getAllLinks() = linksInSnippet.getOrPut(this) {

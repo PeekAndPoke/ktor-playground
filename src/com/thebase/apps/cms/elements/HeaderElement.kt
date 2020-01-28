@@ -78,7 +78,6 @@ data class HeaderElement(
                     ui.three.column.stackable.grid {
 
                         ui.left.aligned.column {
-                            id = "main-menu"
 
                             ui.horizontal.list.color(styling.textColor).text {
 
@@ -100,8 +99,10 @@ data class HeaderElement(
                             }
                         }
                         ui.center.aligned.column {
-                            ui.red.header.with("the-base-logo") {
-                                +"THE BASE"
+                            a(href = "/", classes = "the-base-logo") {
+                                ui.red.header {
+                                    +"THE BASE"
+                                }
                             }
                         }
                         ui.right.aligned.column {
